@@ -29,6 +29,7 @@ QLineEditHEX::QLineEditHEX(QWidget *parent): QLineEdit(parent)
 
     connect(this,SIGNAL(textChanged(QString)),this,SLOT(_setText(QString)));
 
+    // TODO Context Menu
 //    setContextMenuPolicy(Qt::CustomContextMenu);
 //    connect(this,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(customContextMenu(QPoint)));
 }
