@@ -23,7 +23,7 @@
 QLineEditHEX::QLineEditHEX(QWidget *parent): QLineEdit(parent)
 {
     nValue=0;
-    //    setReadOnly(true); // TODO
+
     setAlignment(Qt::AlignHCenter);
     setInputMask("HHHHHHHHHHHHHHHH");
 
@@ -108,14 +108,14 @@ quint64 QLineEditHEX::getValue()
 {
     quint64 nResult=0;
 
-    nResult=text().toULongLong(0,16);
+    nResult=text().toULongLong(nullptr,16);
 
     return nResult;
 }
 
 void QLineEditHEX::_setText(QString sText)
 {
-    quint64 nCurrentValue=sText.toULongLong(0,16);
+    quint64 nCurrentValue=sText.toULongLong(nullptr,16);
 
     if(nValue!=nCurrentValue)
     {
