@@ -43,12 +43,13 @@ public:
     void setValue(quint64 nValue);
     quint64 getValue();
     void setReadOnly(bool bIsReadOnly);
+
 private slots:
     void currentIndexChangedSlot(int nIndex);
     void itemChangedSlot(QStandardItem *item);
+
 signals:
     void valueChanged(quint64 nValue);
-public slots:
 
 private:
     quint64 nValue;

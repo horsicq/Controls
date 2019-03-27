@@ -216,7 +216,6 @@ void QComboBoxEx::currentIndexChangedSlot(int nIndex)
             setValue(nValue);
         }
     }
-
 }
 
 void QComboBoxEx::itemChangedSlot(QStandardItem *item)

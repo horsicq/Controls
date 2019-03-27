@@ -39,10 +39,13 @@ public:
     void setType(DT_TYPE type);
     void setValue(quint64 nValue);
     quint64 getValue();
+
 private slots:
     void _setDateTime(const QDateTime &dt);
+
 signals:
     void valueChanged(quint64 nValue);
+
 private:
     quint64 nValue;
     DT_TYPE type;
