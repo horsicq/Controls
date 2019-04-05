@@ -30,7 +30,7 @@ class QLineEditHEX : public QLineEdit
 {
     Q_OBJECT
 public:
-    explicit QLineEditHEX(QWidget *parent = nullptr);
+    explicit QLineEditHEX(QWidget *parent=nullptr);
     void setValue(quint8 value);
     void setValue(qint8 value);
     void setValue(quint16 value);

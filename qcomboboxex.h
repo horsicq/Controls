@@ -38,7 +38,7 @@ public:
         CBTYPE_EFLAGS
     };
 
-    explicit QComboBoxEx(QWidget *parent = 0);
+    explicit QComboBoxEx(QWidget *parent=nullptr);
     void setData(QMap<quint64,QString> mapData, CBTYPE cbtype=CBTYPE_NORMAL, quint64 nMask=0);
     void setValue(quint64 nValue);
     quint64 getValue();

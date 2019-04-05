@@ -35,7 +35,7 @@ public:
         DT_TYPE_POSIX
     };
 
-    QDateTimeEditX(QWidget *parent = nullptr);
+    QDateTimeEditX(QWidget *parent=nullptr);
     void setType(DT_TYPE type);
     void setValue(quint64 nValue);
     quint64 getValue();
