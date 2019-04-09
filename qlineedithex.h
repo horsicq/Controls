@@ -46,8 +46,10 @@ public:
 private slots:
     void _setText(QString sText);
     void customContextMenu(const QPoint &pos);
+
 signals:
     void valueChanged(quint64 nValue);
+
 private:
     quint64 nValue;
 };
