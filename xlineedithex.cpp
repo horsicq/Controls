@@ -23,6 +23,7 @@
 XLineEditHEX::XLineEditHEX(QWidget *parent): QLineEdit(parent)
 {
     nValue=0;
+    updateFont();
 
     setAlignment(Qt::AlignHCenter);
     setInputMask("HHHHHHHHHHHHHHHH");
@@ -113,6 +114,12 @@ quint64 XLineEditHEX::getValue()
     return nResult;
 }
 
+void XLineEditHEX::setText(QString sText)
+{
+    QLineEdit::setText(sText);
+    _setText(sText);
+}
+
 void XLineEditHEX::_setText(QString sText)
 {
     quint64 nCurrentValue=sText.toULongLong(nullptr,16);
@@ -120,6 +127,7 @@ void XLineEditHEX::_setText(QString sText)
     if(nValue!=nCurrentValue)
     {
         nValue=nCurrentValue;
+        updateFont();
 
         emit valueChanged(nCurrentValue);
     }
@@ -130,4 +138,20 @@ void XLineEditHEX::customContextMenu(const QPoint &pos)
     QMenu contextMenu(this);
 
     contextMenu.exec(mapToGlobal(pos));
+}
+
+void XLineEditHEX::updateFont()
+{
+    QFont _font=font();
+
+    if(nValue==0)
+    {
+        _font.setBold(false);
+    }
+    else
+    {
+        _font.setBold(true);
+    }
+
+    setFont(_font);
 }

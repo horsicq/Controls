@@ -42,10 +42,11 @@ public:
     void setValue32_64(quint64 value);
     void setStringValue(QString sText, qint32 nMaxLength=0);
     quint64 getValue();
-
+    void setText(QString sText);
 private slots:
     void _setText(QString sText);
     void customContextMenu(const QPoint &pos);
+    void updateFont();
 
 signals:
     void valueChanged(quint64 nValue);
