@@ -68,6 +68,7 @@ quint64 XDateTimeEditX::getValue()
 void XDateTimeEditX::_setDateTime(const QDateTime &dt)
 {
     quint64 nCurrentValue=0;
+
     if(type==DT_TYPE_POSIX)
     {
         nCurrentValue=(quint64)dt.toMSecsSinceEpoch()/1000;

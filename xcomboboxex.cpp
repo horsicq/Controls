@@ -182,6 +182,7 @@ void XComboBoxEx::currentIndexChangedSlot(int nIndex)
                 _nValue&=(~nMask);
 
                 _nValue|=nCurrentValue;
+
                 if(_nValue!=nValue)
                 {
                     nValue=_nValue;

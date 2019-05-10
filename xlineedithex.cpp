@@ -31,8 +31,8 @@ XLineEditHEX::XLineEditHEX(QWidget *parent): QLineEdit(parent)
     connect(this,SIGNAL(textChanged(QString)),this,SLOT(_setText(QString)));
 
     // TODO Context Menu
-//    setContextMenuPolicy(Qt::CustomContextMenu);
-//    connect(this,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(customContextMenu(QPoint)));
+    //    setContextMenuPolicy(Qt::CustomContextMenu);
+    //    connect(this,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(customContextMenu(QPoint)));
 }
 
 void XLineEditHEX::setValue(quint8 value)
@@ -98,10 +98,12 @@ void XLineEditHEX::setValue32_64(quint64 value)
 void XLineEditHEX::setStringValue(QString sText, qint32 nMaxLength)
 {
     setInputMask("");
+
     if(nMaxLength)
     {
         setMaxLength(nMaxLength);
     }
+
     setText(sText);
 }
 
