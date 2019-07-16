@@ -6,5 +6,3 @@ HEADERS += \
 
 SOURCES += \
     $$PWD/xlineedithex.cpp
-
-    

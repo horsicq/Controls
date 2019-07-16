@@ -8,5 +8,3 @@ HEADERS += \
 SOURCES += \
     $$PWD/subclassofqstyleditemdelegate.cpp \
     $$PWD/xcomboboxex.cpp
-
-    
