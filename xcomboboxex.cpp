@@ -221,6 +221,8 @@ void XComboBoxEx::currentIndexChangedSlot(int nIndex)
 
 void XComboBoxEx::itemChangedSlot(QStandardItem *item)
 {
+    Q_UNUSED(item)
+
     if((cbtype==CBTYPE_FLAGS)&&count())
     {
         quint64 nCurrentValue=nValue;
