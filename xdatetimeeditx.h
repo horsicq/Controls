@@ -28,6 +28,7 @@
 class XDateTimeEditX : public QDateTimeEdit
 {
     Q_OBJECT
+
 public:
     enum DT_TYPE
     {

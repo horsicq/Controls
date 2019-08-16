@@ -29,6 +29,7 @@
 class XLineEditHEX : public QLineEdit
 {
     Q_OBJECT
+
 public:
     explicit XLineEditHEX(QWidget *parent=nullptr);
     void setValue(quint8 value);

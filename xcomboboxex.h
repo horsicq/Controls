@@ -30,6 +30,7 @@
 class XComboBoxEx : public QComboBox
 {
     Q_OBJECT
+
 public:
     enum CBTYPE
     {
