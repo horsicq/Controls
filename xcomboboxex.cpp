@@ -22,7 +22,7 @@
 
 XComboBoxEx::XComboBoxEx(QWidget *parent): QComboBox(parent)
 {
-    SubclassOfQStyledItemDelegate *delegate = new SubclassOfQStyledItemDelegate(this);
+    SubclassOfQStyledItemDelegate *delegate=new SubclassOfQStyledItemDelegate(this);
     setItemDelegate(delegate);
 
     nValue=0;

@@ -27,8 +27,8 @@ SubclassOfQStyledItemDelegate::SubclassOfQStyledItemDelegate(QWidget *parent): Q
 
 void SubclassOfQStyledItemDelegate::paint(QPainter *painter_, const QStyleOptionViewItem &option_, const QModelIndex &index_)
 {
-    QStyleOptionViewItem & refToNonConstOption = const_cast<QStyleOptionViewItem &>(option_);
-    refToNonConstOption.showDecorationSelected = false;
+    QStyleOptionViewItem & refToNonConstOption=const_cast<QStyleOptionViewItem &>(option_);
+    refToNonConstOption.showDecorationSelected=false;
     //refToNonConstOption.state &= ~QStyle::State_HasFocus & ~QStyle::State_MouseOver;
 
     QStyledItemDelegate::paint(painter_, refToNonConstOption, index_);
