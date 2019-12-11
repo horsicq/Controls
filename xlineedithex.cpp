@@ -124,6 +124,7 @@ void XLineEditHEX::setText(QString sText)
 
 void XLineEditHEX::_setText(QString sText)
 {
+    // TODO remove Input Mask.
     quint64 nCurrentValue=sText.toULongLong(nullptr,16);
 
     if(nValue!=nCurrentValue)
