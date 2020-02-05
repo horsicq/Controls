@@ -26,9 +26,9 @@ XLineEditHEX::XLineEditHEX(QWidget *parent): QLineEdit(parent)
     updateFont();
 
     setAlignment(Qt::AlignHCenter);
-    setInputMask("HHHHHHHHHHHHHHHH");
 
     connect(this,SIGNAL(textChanged(QString)),this,SLOT(_setText(QString)));
+    setValidator(&validator);
 
     // TODO Context Menu
     //    setContextMenuPolicy(Qt::CustomContextMenu);
@@ -37,7 +37,7 @@ XLineEditHEX::XLineEditHEX(QWidget *parent): QLineEdit(parent)
 
 void XLineEditHEX::setValue(quint8 value)
 {
-    setInputMask("HH");
+    validator.setData(HEXValidator::MODE_HEX,0xFF);
     QString sText=QString("%1").arg(value,2,16,QChar('0'));
     setText(sText);
 }
@@ -49,7 +49,7 @@ void XLineEditHEX::setValue(qint8 value)
 
 void XLineEditHEX::setValue(quint16 value)
 {
-    setInputMask("HHHH");
+    validator.setData(HEXValidator::MODE_HEX,0xFFFF);
     QString sText=QString("%1").arg(value,4,16,QChar('0'));
     setText(sText);
 }
@@ -61,7 +61,7 @@ void XLineEditHEX::setValue(qint16 value)
 
 void XLineEditHEX::setValue(quint32 value)
 {
-    setInputMask("HHHHHHHH");
+    validator.setData(HEXValidator::MODE_HEX,0xFFFFFFFF);
     QString sText=QString("%1").arg(value,8,16,QChar('0'));
     setText(sText);
 }
@@ -73,7 +73,7 @@ void XLineEditHEX::setValue(qint32 value)
 
 void XLineEditHEX::setValue(quint64 value)
 {
-    setInputMask("HHHHHHHHHHHHHHHH");
+    validator.setData(HEXValidator::MODE_HEX,0xFFFFFFFFFFFFFFFF);
     QString sText=QString("%1").arg(value,16,16,QChar('0'));
     setText(sText);
 }
@@ -97,7 +97,7 @@ void XLineEditHEX::setValue32_64(quint64 value)
 
 void XLineEditHEX::setStringValue(QString sText, qint32 nMaxLength)
 {
-    setInputMask("");
+    validator.setData(HEXValidator::MODE_TEXT,0);
 
     if(nMaxLength)
     {
@@ -124,15 +124,17 @@ void XLineEditHEX::setText(QString sText)
 
 void XLineEditHEX::_setText(QString sText)
 {
-    // TODO remove Input Mask.
-    quint64 nCurrentValue=sText.toULongLong(nullptr,16);
-
-    if(nValue!=nCurrentValue)
+    if(validator.getMode()!=HEXValidator::MODE_TEXT)
     {
-        nValue=nCurrentValue;
-        updateFont();
+        quint64 nCurrentValue=sText.toULongLong(nullptr,16);
 
-        emit valueChanged(nCurrentValue);
+        if(nValue!=nCurrentValue)
+        {
+            nValue=nCurrentValue;
+            updateFont();
+
+            emit valueChanged(nCurrentValue);
+        }
     }
 }
 

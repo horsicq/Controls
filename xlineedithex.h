@@ -25,6 +25,7 @@
 #include <QVariant>
 #include <QMenu>
 #include <QAction>
+#include "hexvalidator.h"
 
 class XLineEditHEX : public QLineEdit
 {
@@ -55,6 +56,7 @@ signals:
 
 private:
     quint64 nValue;
+    HEXValidator validator;
 };
 
 #endif // XLINEEDITHEX_H
