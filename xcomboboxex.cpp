@@ -51,7 +51,7 @@ void XComboBoxEx::setData(QMap<quint64,QString> mapData, CBTYPE cbtype, quint64 
     }
     else if(cbtype==CBTYPE_FLAGS)
     {
-        model.setItem(0,0,new QStandardItem("Flags"));
+        model.setItem(0,0,new QStandardItem(tr("Flags")));
     }
 
     int nIndex=1;
