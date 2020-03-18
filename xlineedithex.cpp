@@ -149,14 +149,7 @@ void XLineEditHEX::updateFont()
 {
     QFont _font=font();
 
-    if(nValue==0)
-    {
-        _font.setBold(false);
-    }
-    else
-    {
-        _font.setBold(true);
-    }
+    _font.setBold(nValue!=0);
 
     setFont(_font);
 }
