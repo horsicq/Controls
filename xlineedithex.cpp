@@ -31,6 +31,8 @@ XLineEditHEX::XLineEditHEX(QWidget *parent): QLineEdit(parent)
     setValidator(&validator);
 
     // TODO Context Menu
+    // TODO Copy
+    // TODO clear
     //    setContextMenuPolicy(Qt::CustomContextMenu);
     //    connect(this,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(customContextMenu(QPoint)));
 }
