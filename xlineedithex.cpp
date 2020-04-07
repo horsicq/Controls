@@ -97,6 +97,22 @@ void XLineEditHEX::setValue32_64(quint64 value)
     }
 }
 
+void XLineEditHEX::setModeValue(XLineEditHEX::MODE mode, quint64 value)
+{
+    if(mode==MODE_16)
+    {
+        setValue((quint16)value);
+    }
+    else if(mode==MODE_32)
+    {
+        setValue((quint32)value);
+    }
+    else if(mode==MODE_64)
+    {
+        setValue((quint64)value);
+    }
+}
+
 void XLineEditHEX::setStringValue(QString sText, qint32 nMaxLength)
 {
     validator.setData(HEXValidator::MODE_TEXT,0);

@@ -32,6 +32,13 @@ class XLineEditHEX : public QLineEdit
     Q_OBJECT
 
 public:
+    enum MODE
+    {
+        MODE_16,
+        MODE_32,
+        MODE_64
+    };
+
     explicit XLineEditHEX(QWidget *parent=nullptr);
     void setValue(quint8 value);
     void setValue(qint8 value);
@@ -42,6 +49,7 @@ public:
     void setValue(quint64 value);
     void setValue(qint64 value);
     void setValue32_64(quint64 value);
+    void setModeValue(MODE mode, quint64 value);
     void setStringValue(QString sText, qint32 nMaxLength=0);
     quint64 getValue();
     void setText(QString sText);
