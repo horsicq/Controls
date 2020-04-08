@@ -54,6 +54,8 @@ public:
     quint64 getValue();
     void setText(QString sText);
 	
+    static MODE getModeFromSize(qint32 nSize);
+
 private slots:
     void _setText(QString sText);
     void customContextMenu(const QPoint &pos);

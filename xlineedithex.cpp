@@ -140,6 +140,26 @@ void XLineEditHEX::setText(QString sText)
     _setText(sText);
 }
 
+XLineEditHEX::MODE XLineEditHEX::getModeFromSize(qint32 nSize)
+{
+    MODE result=MODE_64;
+
+    if(((quint64)nSize)>=0xFFFFFFFF)
+    {
+        result=MODE_64;
+    }
+    else if(((quint64)nSize)>=0xFFFF)
+    {
+        result=MODE_32;
+    }
+    else
+    {
+        result=MODE_16;
+    }
+
+    return result;
+}
+
 void XLineEditHEX::_setText(QString sText)
 {
     if(validator.getMode()!=HEXValidator::MODE_TEXT)
