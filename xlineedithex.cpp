@@ -160,6 +160,26 @@ XLineEditHEX::MODE XLineEditHEX::getModeFromSize(qint32 nSize)
     return result;
 }
 
+QString XLineEditHEX::getFormatString(XLineEditHEX::MODE mode, qint64 value)
+{
+    QString sResult;
+
+    if(mode==MODE_16)
+    {
+        sResult=QString("%1").arg(value,4,16,QChar('0'));
+    }
+    else if(mode==MODE_32)
+    {
+        sResult=QString("%1").arg(value,8,16,QChar('0'));
+    }
+    else if(mode==MODE_64)
+    {
+        sResult=QString("%1").arg(value,16,16,QChar('0'));
+    }
+
+    return sResult;
+}
+
 void XLineEditHEX::_setText(QString sText)
 {
     if(validator.getMode()!=HEXValidator::MODE_TEXT)

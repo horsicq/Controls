@@ -55,6 +55,7 @@ public:
     void setText(QString sText);
 	
     static MODE getModeFromSize(qint32 nSize);
+    static QString getFormatString(MODE mode, qint64 value);
 
 private slots:
     void _setText(QString sText);
