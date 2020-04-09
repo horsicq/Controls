@@ -180,6 +180,26 @@ QString XLineEditHEX::getFormatString(XLineEditHEX::MODE mode, qint64 value)
     return sResult;
 }
 
+qint32 XLineEditHEX::getWidthFromMode(XLineEditHEX::MODE mode)
+{
+    qint32 nResult=100;
+
+    if(mode==MODE_16)
+    {
+        nResult=60;
+    }
+    else if(mode==MODE_32)
+    {
+        nResult=80;
+    }
+    else if(mode==MODE_64)
+    {
+        nResult=120;
+    }
+
+    return nResult;
+}
+
 void XLineEditHEX::_setText(QString sText)
 {
     if(validator.getMode()!=HEXValidator::MODE_TEXT)
