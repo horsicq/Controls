@@ -164,17 +164,26 @@ QString XLineEditHEX::getFormatString(XLineEditHEX::MODE mode, qint64 value)
 {
     QString sResult;
 
+    int nMod=8;
+
     if(mode==MODE_16)
     {
-        sResult=QString("%1").arg(value,4,16,QChar('0'));
+        nMod=4;
     }
     else if(mode==MODE_32)
     {
-        sResult=QString("%1").arg(value,8,16,QChar('0'));
+        nMod=8;
     }
     else if(mode==MODE_64)
     {
-        sResult=QString("%1").arg(value,16,16,QChar('0'));
+        nMod=16;
+    }
+
+    sResult=QString("%1").arg(value,nMod,16,QChar('0'));
+
+    if(value<0)
+    {
+        sResult=sResult.right(nMod);
     }
 
     return sResult;
