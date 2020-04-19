@@ -209,6 +209,13 @@ qint32 XLineEditHEX::getWidthFromMode(XLineEditHEX::MODE mode)
     return nResult;
 }
 
+int XLineEditHEX::getSymbolWidth(QWidget *pWidget)
+{
+    QFontMetrics fm(pWidget->font());
+
+    return fm.width("W"); // TODO Check
+}
+
 void XLineEditHEX::_setText(QString sText)
 {
     if(validator.getMode()!=HEXValidator::MODE_TEXT)

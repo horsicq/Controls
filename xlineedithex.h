@@ -58,6 +58,8 @@ public:
     static QString getFormatString(MODE mode, qint64 value);
     static qint32 getWidthFromMode(MODE mode);
 
+    static int getSymbolWidth(QWidget *pWidget);
+
 private slots:
     void _setText(QString sText);
     void customContextMenu(const QPoint &pos);
