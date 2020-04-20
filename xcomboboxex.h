@@ -60,4 +60,6 @@ private:
     quint64 nMask;
 };
 
+#define PXComboBoxEx XComboBoxEx *
+
 #endif // XCOMBOBOXEX_H

@@ -45,4 +45,6 @@ private:
     quint64 _nMax;
 };
 
+#define PXLineEditHEX XLineEditHEX *
+
 #endif // HEXVALIDATOR_H
