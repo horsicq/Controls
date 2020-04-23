@@ -25,6 +25,7 @@
 #include <QVariant>
 #include <QMenu>
 #include <QAction>
+#include <QShortcut>
 #include "hexvalidator.h"
 
 class XLineEditHEX : public QLineEdit
@@ -60,10 +61,14 @@ public:
 
     static int getSymbolWidth(QWidget *pWidget);
 
+protected:
+//    void keyPressEvent(QKeyEvent* keyEvent);
+
 private slots:
     void _setText(QString sText);
     void customContextMenu(const QPoint &pos);
     void updateFont();
+    void _copy();
 
 signals:
     void valueChanged(quint64 nValue);

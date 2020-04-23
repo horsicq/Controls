@@ -216,6 +216,11 @@ int XLineEditHEX::getSymbolWidth(QWidget *pWidget)
     return fm.width("W"); // TODO Check
 }
 
+//void XLineEditHEX::keyPressEvent(QKeyEvent *keyEvent)
+//{
+//    qDebug("void XLineEditHEX::keyPressEvent(QKeyEvent *keyEvent)");
+//}
+
 void XLineEditHEX::_setText(QString sText)
 {
     if(validator.getMode()!=HEXValidator::MODE_TEXT)
@@ -246,4 +251,9 @@ void XLineEditHEX::updateFont()
     _font.setBold(nValue!=0);
 
     setFont(_font);
+}
+
+void XLineEditHEX::_copy()
+{
+    qDebug("void XLineEditHEX::_copy()");
 }
