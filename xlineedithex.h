@@ -54,11 +54,9 @@ public:
     void setStringValue(QString sText, qint32 nMaxLength=0);
     quint64 getValue();
     void setText(QString sText);
-	
     static MODE getModeFromSize(qint32 nSize);
     static QString getFormatString(MODE mode, qint64 value);
     static qint32 getWidthFromMode(MODE mode);
-
     static int getSymbolWidth(QWidget *pWidget);
 
 protected:
@@ -77,5 +75,7 @@ private:
     quint64 nValue;
     HEXValidator validator;
 };
+
+#define PXLineEditHEX XLineEditHEX *
 
 #endif // XLINEEDITHEX_H
