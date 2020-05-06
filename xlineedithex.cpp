@@ -189,21 +189,22 @@ QString XLineEditHEX::getFormatString(XLineEditHEX::MODE mode, qint64 value)
     return sResult;
 }
 
-qint32 XLineEditHEX::getWidthFromMode(XLineEditHEX::MODE mode)
+qint32 XLineEditHEX::getWidthFromMode(QWidget *pWidget,XLineEditHEX::MODE mode)
 {
-    qint32 nResult=100;
+    int nSymbolWidth=getSymbolWidth(pWidget);
+    qint32 nResult=nSymbolWidth*8;
 
     if(mode==MODE_16)
     {
-        nResult=60;
+        nResult=nSymbolWidth*4;
     }
     else if(mode==MODE_32)
     {
-        nResult=80;
+        nResult=nSymbolWidth*8;
     }
-    else if(mode==MODE_64)
+    else if(mode==nSymbolWidth*12)
     {
-        nResult=120;
+        nResult=140;
     }
 
     return nResult;

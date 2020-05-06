@@ -56,7 +56,7 @@ public:
     void setText(QString sText);
     static MODE getModeFromSize(qint32 nSize);
     static QString getFormatString(MODE mode, qint64 value);
-    static qint32 getWidthFromMode(MODE mode);
+    static qint32 getWidthFromMode(QWidget *pWidget, MODE mode);
     static int getSymbolWidth(QWidget *pWidget);
 
 protected:
