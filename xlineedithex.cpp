@@ -202,9 +202,9 @@ qint32 XLineEditHEX::getWidthFromMode(QWidget *pWidget,XLineEditHEX::MODE mode)
     {
         nResult=nSymbolWidth*8;
     }
-    else if(mode==nSymbolWidth*12)
+    else if(mode==MODE_64)
     {
-        nResult=140;
+        nResult=nSymbolWidth*12;
     }
 
     return nResult;
