@@ -33,6 +33,7 @@ XLineEditHEX::XLineEditHEX(QWidget *parent): QLineEdit(parent)
     // TODO Context Menu
     // TODO Copy
     // TODO clear
+    // mn TODO 10/16
     //    setContextMenuPolicy(Qt::CustomContextMenu);
     //    connect(this,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(customContextMenu(QPoint)));
 }
