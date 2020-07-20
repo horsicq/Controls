@@ -55,7 +55,7 @@ public:
     quint64 getValue();
     void setText(QString sText);
     static MODE getModeFromSize(qint32 nSize);
-    static QString getFormatString(MODE mode, qint64 value);
+    static QString getFormatString(MODE mode, qint64 nValue);
     static qint32 getWidthFromMode(QWidget *pWidget, MODE mode);
     static int getSymbolWidth(QWidget *pWidget);
 
@@ -64,7 +64,7 @@ protected:
 
 private slots:
     void _setText(QString sText);
-    void customContextMenu(const QPoint &pos);
+    void customContextMenu(const QPoint &nPos);
     void updateFont();
     void _copy();
 

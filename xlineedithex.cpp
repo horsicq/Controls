@@ -161,7 +161,7 @@ XLineEditHEX::MODE XLineEditHEX::getModeFromSize(qint32 nSize)
     return result;
 }
 
-QString XLineEditHEX::getFormatString(XLineEditHEX::MODE mode, qint64 value)
+QString XLineEditHEX::getFormatString(XLineEditHEX::MODE mode, qint64 nValue)
 {
     QString sResult;
 
@@ -180,9 +180,9 @@ QString XLineEditHEX::getFormatString(XLineEditHEX::MODE mode, qint64 value)
         nMod=16;
     }
 
-    sResult=QString("%1").arg(value,nMod,16,QChar('0'));
+    sResult=QString("%1").arg(nValue,nMod,16,QChar('0'));
 
-    if(value<0)
+    if(nValue<0)
     {
         sResult=sResult.right(nMod);
     }
@@ -239,11 +239,11 @@ void XLineEditHEX::_setText(QString sText)
     }
 }
 
-void XLineEditHEX::customContextMenu(const QPoint &pos)
+void XLineEditHEX::customContextMenu(const QPoint &nPos)
 {
     QMenu contextMenu(this);
 
-    contextMenu.exec(mapToGlobal(pos));
+    contextMenu.exec(mapToGlobal(nPos));
 }
 
 void XLineEditHEX::updateFont()
