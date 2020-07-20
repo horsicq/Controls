@@ -38,7 +38,7 @@ public:
     explicit HEXValidator(QObject *parent=nullptr);
     void setData(MODE mode,quint64 nMax);
     MODE getMode();
-    virtual State validate(QString &input,int &pos) const;
+    virtual State validate(QString &nInput,int &nPos) const;
 
 private:
     MODE _mode;

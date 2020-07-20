@@ -37,13 +37,13 @@ HEXValidator::MODE HEXValidator::getMode()
     return _mode;
 }
 
-QValidator::State HEXValidator::validate(QString &input, int &pos) const
+QValidator::State HEXValidator::validate(QString &nInput, int &nPos) const
 {
-    Q_UNUSED(pos)
+    Q_UNUSED(nPos)
 
     QValidator::State result=Acceptable;
 
-    if(!input.isEmpty())
+    if(!nInput.isEmpty())
     {
         if(_mode==MODE_HEX)
         {
@@ -52,7 +52,7 @@ QValidator::State HEXValidator::validate(QString &input, int &pos) const
             bool bSuccess=false;
             quint64 nValue=0;
 
-            nValue=input.toULongLong(&bSuccess,16);
+            nValue=nInput.toULongLong(&bSuccess,16);
 
             if(bSuccess&&(nValue<=_nMax))
             {
