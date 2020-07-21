@@ -38,10 +38,10 @@ XLineEditHEX::XLineEditHEX(QWidget *parent): QLineEdit(parent)
     //    connect(this,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(customContextMenu(QPoint)));
 }
 
-void XLineEditHEX::setValue(quint8 value)
+void XLineEditHEX::setValue(quint8 nValue)
 {
     validator.setData(HEXValidator::MODE_HEX,0xFF);
-    QString sText=QString("%1").arg(value,2,16,QChar('0'));
+    QString sText=QString("%1").arg(nValue,2,16,QChar('0'));
     setText(sText);
 }
 

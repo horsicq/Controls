@@ -41,7 +41,7 @@ public:
     };
 
     explicit XLineEditHEX(QWidget *parent=nullptr);
-    void setValue(quint8 value);
+    void setValue(quint8 nValue);
     void setValue(qint8 value);
     void setValue(quint16 value);
     void setValue(qint16 value);
