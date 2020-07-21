@@ -42,15 +42,15 @@ public:
 
     explicit XLineEditHEX(QWidget *parent=nullptr);
     void setValue(quint8 nValue);
-    void setValue(qint8 value);
-    void setValue(quint16 value);
-    void setValue(qint16 value);
-    void setValue(quint32 value);
-    void setValue(qint32 value);
-    void setValue(quint64 value);
-    void setValue(qint64 value);
-    void setValue32_64(quint64 value);
-    void setModeValue(MODE mode, quint64 value);
+    void setValue(qint8 nValue);
+    void setValue(quint16 nValue);
+    void setValue(qint16 nValue);
+    void setValue(quint32 nValue);
+    void setValue(qint32 nValue);
+    void setValue(quint64 nValue);
+    void setValue(qint64 nValue);
+    void setValue32_64(quint64 nValue);
+    void setModeValue(MODE mode, quint64 nValue);
     void setStringValue(QString sText, qint32 nMaxLength=0);
     quint64 getValue();
     void setText(QString sText);

@@ -45,72 +45,72 @@ void XLineEditHEX::setValue(quint8 nValue)
     setText(sText);
 }
 
-void XLineEditHEX::setValue(qint8 value)
+void XLineEditHEX::setValue(qint8 nValue)
 {
-    setValue((quint8)value);
+    setValue((quint8)nValue);
 }
 
-void XLineEditHEX::setValue(quint16 value)
+void XLineEditHEX::setValue(quint16 nValue)
 {
     validator.setData(HEXValidator::MODE_HEX,0xFFFF);
-    QString sText=QString("%1").arg(value,4,16,QChar('0'));
+    QString sText=QString("%1").arg(nValue,4,16,QChar('0'));
     setText(sText);
 }
 
-void XLineEditHEX::setValue(qint16 value)
+void XLineEditHEX::setValue(qint16 nValue)
 {
-    setValue((quint16)value);
+    setValue((quint16)nValue);
 }
 
-void XLineEditHEX::setValue(quint32 value)
+void XLineEditHEX::setValue(quint32 nValue)
 {
     validator.setData(HEXValidator::MODE_HEX,0xFFFFFFFF);
-    QString sText=QString("%1").arg(value,8,16,QChar('0'));
+    QString sText=QString("%1").arg(nValue,8,16,QChar('0'));
     setText(sText);
 }
 
-void XLineEditHEX::setValue(qint32 value)
+void XLineEditHEX::setValue(qint32 nValue)
 {
-    setValue((quint32)value);
+    setValue((quint32)nValue);
 }
 
-void XLineEditHEX::setValue(quint64 value)
+void XLineEditHEX::setValue(quint64 nValue)
 {
     validator.setData(HEXValidator::MODE_HEX,0xFFFFFFFFFFFFFFFF);
-    QString sText=QString("%1").arg(value,16,16,QChar('0'));
+    QString sText=QString("%1").arg(nValue,16,16,QChar('0'));
     setText(sText);
 }
 
-void XLineEditHEX::setValue(qint64 value)
+void XLineEditHEX::setValue(qint64 nValue)
 {
-    setValue((quint64)value);
+    setValue((quint64)nValue);
 }
 
-void XLineEditHEX::setValue32_64(quint64 value)
+void XLineEditHEX::setValue32_64(quint64 nValue)
 {
-    if(value>=0xFFFFFFFF)
+    if(nValue>=0xFFFFFFFF)
     {
-        setValue((quint64)value);
+        setValue((quint64)nValue);
     }
     else
     {
-        setValue((quint32)value);
+        setValue((quint32)nValue);
     }
 }
 
-void XLineEditHEX::setModeValue(XLineEditHEX::MODE mode, quint64 value)
+void XLineEditHEX::setModeValue(XLineEditHEX::MODE mode, quint64 nValue)
 {
     if(mode==MODE_16)
     {
-        setValue((quint16)value);
+        setValue((quint16)nValue);
     }
     else if(mode==MODE_32)
     {
-        setValue((quint32)value);
+        setValue((quint32)nValue);
     }
     else if(mode==MODE_64)
     {
-        setValue((quint64)value);
+        setValue((quint64)nValue);
     }
 }
 
