@@ -40,7 +40,7 @@ public:
         MODE_64
     };
 
-    explicit XLineEditHEX(QWidget *parent=nullptr);
+    explicit XLineEditHEX(QWidget *Parent=nullptr);
     void setValue(quint8 nValue);
     void setValue(qint8 nValue);
     void setValue(quint16 nValue);

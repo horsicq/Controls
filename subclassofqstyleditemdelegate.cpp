@@ -20,7 +20,7 @@
 //
 #include "subclassofqstyleditemdelegate.h"
 
-SubclassOfQStyledItemDelegate::SubclassOfQStyledItemDelegate(QWidget *parent): QStyledItemDelegate(parent)
+SubclassOfQStyledItemDelegate::SubclassOfQStyledItemDelegate(QWidget *Parent): QStyledItemDelegate(Parent)
 {
 
 }

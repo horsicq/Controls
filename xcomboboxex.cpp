@@ -20,7 +20,7 @@
 //
 #include "xcomboboxex.h"
 
-XComboBoxEx::XComboBoxEx(QWidget *parent): QComboBox(parent)
+XComboBoxEx::XComboBoxEx(QWidget *Parent): QComboBox(Parent)
 {
     SubclassOfQStyledItemDelegate *delegate=new SubclassOfQStyledItemDelegate(this);
     setItemDelegate(delegate);

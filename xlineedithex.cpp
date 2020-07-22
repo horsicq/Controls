@@ -20,7 +20,7 @@
 //
 #include "xlineedithex.h"
 
-XLineEditHEX::XLineEditHEX(QWidget *parent): QLineEdit(parent)
+XLineEditHEX::XLineEditHEX(QWidget *Parent): QLineEdit(Parent)
 {
     nValue=0;
     updateFont();
