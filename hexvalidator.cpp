@@ -20,7 +20,7 @@
 //
 #include "hexvalidator.h"
 
-HEXValidator::HEXValidator(QObject *parent) : QValidator(parent)
+HEXValidator::HEXValidator(QObject *pParent) : QValidator(pParent)
 {
     _mode=MODE_HEX;
     _nMax=0xFFFFFFFFFFFFFFFF;
