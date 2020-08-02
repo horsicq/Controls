@@ -27,7 +27,7 @@
 class SubclassOfQStyledItemDelegate : public QStyledItemDelegate
 {
 public:
-    explicit SubclassOfQStyledItemDelegate(QWidget *Parent=nullptr);
+    explicit SubclassOfQStyledItemDelegate(QWidget *pParent=nullptr);
 	
 protected:
     virtual void paint(QPainter * _pPainter, const QStyleOptionViewItem & _option, const QModelIndex & _index);
