@@ -100,7 +100,11 @@ void XLineEditHEX::setValue32_64(quint64 nValue)
 
 void XLineEditHEX::setModeValue(XLineEditHEX::MODE mode, quint64 nValue)
 {
-    if(mode==MODE_16)
+    if(mode==MODE_8)
+    {
+        setValue((quint8)nValue);
+    }
+    else if(mode==MODE_16)
     {
         setValue((quint16)nValue);
     }
@@ -153,9 +157,13 @@ XLineEditHEX::MODE XLineEditHEX::getModeFromSize(qint32 nSize)
     {
         result=MODE_32;
     }
-    else
+    else if(((quint64)nSize)>=0xFF)
     {
         result=MODE_16;
+    }
+    else
+    {
+        result=MODE_8;
     }
 
     return result;
@@ -167,7 +175,11 @@ QString XLineEditHEX::getFormatString(XLineEditHEX::MODE mode, qint64 nValue)
 
     int nMod=8;
 
-    if(mode==MODE_16)
+    if(mode==MODE_8)
+    {
+        nMod=2;
+    }
+    else if(mode==MODE_16)
     {
         nMod=4;
     }
@@ -195,7 +207,11 @@ qint32 XLineEditHEX::getWidthFromMode(QWidget *pWidget,XLineEditHEX::MODE mode)
     int nSymbolWidth=getSymbolWidth(pWidget);
     qint32 nResult=nSymbolWidth*8;
 
-    if(mode==MODE_16)
+    if(mode==MODE_8)
+    {
+        nResult=nSymbolWidth*2;
+    }
+    else if(mode==MODE_16)
     {
         nResult=nSymbolWidth*4;
     }

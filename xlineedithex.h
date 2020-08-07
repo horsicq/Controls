@@ -35,6 +35,7 @@ class XLineEditHEX : public QLineEdit
 public:
     enum MODE
     {
+        MODE_8,
         MODE_16,
         MODE_32,
         MODE_64
