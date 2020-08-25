@@ -47,7 +47,7 @@ public:
 
 private slots:
     void currentIndexChangedSlot(int nIndex);
-    void itemChangedSlot(QStandardItem *item);
+    void itemChangedSlot(QStandardItem *pItem);
 
 signals:
     void valueChanged(quint64 nValue);

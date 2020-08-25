@@ -219,9 +219,9 @@ void XComboBoxEx::currentIndexChangedSlot(int nIndex)
     }
 }
 
-void XComboBoxEx::itemChangedSlot(QStandardItem *item)
+void XComboBoxEx::itemChangedSlot(QStandardItem *pItem)
 {
-    Q_UNUSED(item)
+    Q_UNUSED(pItem)
 
     if((cbtype==CBTYPE_FLAGS)&&count())
     {
