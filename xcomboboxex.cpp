@@ -81,11 +81,13 @@ void XComboBoxEx::setValue(quint64 nValue)
 {
     this->nValue=nValue;
 
+    int nNumberOfItems=model.rowCount();
+
     if(cbtype==CBTYPE_NORMAL)
     {
         bool bFound=false;
 
-        for(int i=1; i<model.rowCount(); i++)
+        for(int i=1; i<nNumberOfItems; i++)
         {
             if(model.item(i,0)->data(Qt::UserRole).toULongLong()==nValue)
             {
@@ -104,7 +106,7 @@ void XComboBoxEx::setValue(quint64 nValue)
     {
         bool bFound=false;
 
-        for(int i=1; i<model.rowCount(); i++)
+        for(int i=1; i<nNumberOfItems; i++)
         {
             if(model.item(i,0)->data(Qt::UserRole).toULongLong()&nValue)
             {
@@ -121,7 +123,7 @@ void XComboBoxEx::setValue(quint64 nValue)
     }
     else if(cbtype==CBTYPE_FLAGS)
     {
-        for(int i=1; i<model.rowCount(); i++)
+        for(int i=1; i<nNumberOfItems; i++)
         {
             if(model.item(i,0)->data(Qt::UserRole).toULongLong()&nValue)
             {
@@ -144,9 +146,11 @@ void XComboBoxEx::setReadOnly(bool bIsReadOnly)
 {
     this->bIsReadOnly=bIsReadOnly;
 
+    int nNumberOfItems=model.rowCount();
+
     if(cbtype==CBTYPE_FLAGS)
     {
-        for(int i=0; i<model.rowCount(); i++)
+        for(int i=0; i<nNumberOfItems; i++)
         {
             if(bIsReadOnly)
             {
