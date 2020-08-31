@@ -231,7 +231,9 @@ void XComboBoxEx::itemChangedSlot(QStandardItem *pItem)
     {
         quint64 nCurrentValue=nValue;
 
-        for(int i=1; i<model.rowCount(); i++)
+        int nNumberOfItems=model.rowCount();
+
+        for(int i=1; i<nNumberOfItems; i++)
         {
             if(model.item(i,0)->data(Qt::CheckStateRole).toInt()==Qt::Checked)
             {
