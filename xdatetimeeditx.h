@@ -38,7 +38,7 @@ public:
     };
 
     XDateTimeEditX(QWidget *pParent=nullptr);
-    void setType(DT_TYPE type);
+    void setType(DT_TYPE dtType);
     void setValue(quint64 nValue);
     quint64 getValue();
 
@@ -49,8 +49,8 @@ signals:
     void valueChanged(quint64 nValue);
 
 private:
-    quint64 nValue;
-    DT_TYPE type;
+    quint64 g_nValue;
+    DT_TYPE g_dtType;
 };
 
 #endif // XDATETIMEEDITX_H

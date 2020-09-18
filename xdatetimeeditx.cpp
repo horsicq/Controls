@@ -22,17 +22,17 @@
 
 XDateTimeEditX::XDateTimeEditX(QWidget *pParent): QDateTimeEdit(pParent)
 {
-    nValue=0;
-    type=DT_TYPE_UNKNOWN;
+    g_nValue=0;
+    g_dtType=DT_TYPE_UNKNOWN;
 
     connect(this,SIGNAL(dateTimeChanged(const QDateTime &)),this,SLOT(_setDateTime(const QDateTime &)));
 }
 
-void XDateTimeEditX::setType(XDateTimeEditX::DT_TYPE type)
+void XDateTimeEditX::setType(XDateTimeEditX::DT_TYPE dtType)
 {
-    this->type=type;
+    this->g_dtType=dtType;
 
-    if(type==DT_TYPE_POSIX)
+    if(dtType==DT_TYPE_POSIX)
     {
         setDisplayFormat("yyyy-MM-dd hh:mm:ss");
         QDateTime dt;
@@ -44,11 +44,11 @@ void XDateTimeEditX::setType(XDateTimeEditX::DT_TYPE type)
 
 void XDateTimeEditX::setValue(quint64 nValue)
 {
-    if(this->nValue!=nValue)
+    if(this->g_nValue!=nValue)
     {
-        this->nValue=nValue;
+        this->g_nValue=nValue;
 
-        if(type==DT_TYPE_POSIX)
+        if(g_dtType==DT_TYPE_POSIX)
         {
             QDateTime dt;
             dt.setMSecsSinceEpoch((quint64)nValue*1000);
@@ -62,21 +62,21 @@ void XDateTimeEditX::setValue(quint64 nValue)
 
 quint64 XDateTimeEditX::getValue()
 {
-    return nValue;
+    return g_nValue;
 }
 
 void XDateTimeEditX::_setDateTime(const QDateTime &dt)
 {
     quint64 nCurrentValue=0;
 
-    if(type==DT_TYPE_POSIX)
+    if(g_dtType==DT_TYPE_POSIX)
     {
         nCurrentValue=(quint64)dt.toMSecsSinceEpoch()/1000;
     }
 
-    if(nValue!=nCurrentValue)
+    if(g_nValue!=nCurrentValue)
     {
-        nValue=nCurrentValue;
+        g_nValue=nCurrentValue;
 
         emit valueChanged(nCurrentValue);
     }
