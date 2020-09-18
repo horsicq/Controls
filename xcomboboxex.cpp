@@ -25,9 +25,9 @@ XComboBoxEx::XComboBoxEx(QWidget *pParent): QComboBox(pParent)
     SubclassOfQStyledItemDelegate *delegate=new SubclassOfQStyledItemDelegate(this);
     setItemDelegate(delegate);
 
-    nValue=0;
-    bIsReadOnly=false;
-    cbtype=CBTYPE_NORMAL;
+    g_nValue=0;
+    g_bIsReadOnly=false;
+    g_cbtype=CBTYPE_NORMAL;
 
     connect(this,SIGNAL(currentIndexChanged(int)),this,SLOT(currentIndexChangedSlot(int)));
     connect(&model,SIGNAL(itemChanged(QStandardItem *)),this,SLOT(itemChangedSlot(QStandardItem *)));
@@ -35,8 +35,8 @@ XComboBoxEx::XComboBoxEx(QWidget *pParent): QComboBox(pParent)
 
 void XComboBoxEx::setData(QMap<quint64,QString> mapData, CBTYPE cbtype, quint64 nMask)
 {
-    this->cbtype=cbtype;
-    this->nMask=nMask;
+    this->g_cbtype=cbtype;
+    this->g_nMask=nMask;
 
     QMapIterator<quint64,QString> iter(mapData);
 
@@ -79,11 +79,11 @@ void XComboBoxEx::setData(QMap<quint64,QString> mapData, CBTYPE cbtype, quint64 
 
 void XComboBoxEx::setValue(quint64 nValue)
 {
-    this->nValue=nValue;
+    this->g_nValue=nValue;
 
     int nNumberOfItems=model.rowCount();
 
-    if(cbtype==CBTYPE_NORMAL)
+    if(g_cbtype==CBTYPE_NORMAL)
     {
         bool bFound=false;
 
@@ -102,7 +102,7 @@ void XComboBoxEx::setValue(quint64 nValue)
             setCurrentIndex(0);
         }
     }
-    else if(cbtype==CBTYPE_EFLAGS)
+    else if(g_cbtype==CBTYPE_EFLAGS)
     {
         bool bFound=false;
 
@@ -121,7 +121,7 @@ void XComboBoxEx::setValue(quint64 nValue)
             setCurrentIndex(0);
         }
     }
-    else if(cbtype==CBTYPE_FLAGS)
+    else if(g_cbtype==CBTYPE_FLAGS)
     {
         for(int i=1; i<nNumberOfItems; i++)
         {
@@ -139,16 +139,16 @@ void XComboBoxEx::setValue(quint64 nValue)
 
 quint64 XComboBoxEx::getValue()
 {
-    return nValue;
+    return g_nValue;
 }
 
 void XComboBoxEx::setReadOnly(bool bIsReadOnly)
 {
-    this->bIsReadOnly=bIsReadOnly;
+    this->g_bIsReadOnly=bIsReadOnly;
 
     int nNumberOfItems=model.rowCount();
 
-    if(cbtype==CBTYPE_FLAGS)
+    if(g_cbtype==CBTYPE_FLAGS)
     {
         for(int i=0; i<nNumberOfItems; i++)
         {
@@ -166,59 +166,59 @@ void XComboBoxEx::setReadOnly(bool bIsReadOnly)
 
 void XComboBoxEx::currentIndexChangedSlot(int nIndex)
 {
-    if(cbtype==CBTYPE_FLAGS)
+    if(g_cbtype==CBTYPE_FLAGS)
     {
         if(nIndex)
         {
             setCurrentIndex(0);
         }
     }
-    else if(cbtype==CBTYPE_EFLAGS)
+    else if(g_cbtype==CBTYPE_EFLAGS)
     {
-        if(!bIsReadOnly)
+        if(!g_bIsReadOnly)
         {
             if(nIndex)
             {
                 quint64 nCurrentValue=itemData(nIndex).toULongLong();
 
-                quint64 _nValue=nValue;
+                quint64 _nValue=g_nValue;
 
-                _nValue&=(~nMask);
+                _nValue&=(~g_nMask);
 
                 _nValue|=nCurrentValue;
 
-                if(_nValue!=nValue)
+                if(_nValue!=g_nValue)
                 {
-                    nValue=_nValue;
-                    emit valueChanged(nValue);
+                    g_nValue=_nValue;
+                    emit valueChanged(g_nValue);
                 }
             }
         }
         else
         {
             // restore
-            setValue(nValue);
+            setValue(g_nValue);
         }
     }
-    else if(cbtype==CBTYPE_NORMAL)
+    else if(g_cbtype==CBTYPE_NORMAL)
     {
-        if(!bIsReadOnly)
+        if(!g_bIsReadOnly)
         {
             if(nIndex)
             {
                 quint64 nCurrentValue=itemData(nIndex).toULongLong();
 
-                if(nCurrentValue!=nValue)
+                if(nCurrentValue!=g_nValue)
                 {
-                    nValue=nCurrentValue;
-                    emit valueChanged(nValue);
+                    g_nValue=nCurrentValue;
+                    emit valueChanged(g_nValue);
                 }
             }
         }
         else
         {
             // restore
-            setValue(nValue);
+            setValue(g_nValue);
         }
     }
 }
@@ -227,9 +227,9 @@ void XComboBoxEx::itemChangedSlot(QStandardItem *pItem)
 {
     Q_UNUSED(pItem)
 
-    if((cbtype==CBTYPE_FLAGS)&&count())
+    if((g_cbtype==CBTYPE_FLAGS)&&count())
     {
-        quint64 nCurrentValue=nValue;
+        quint64 nCurrentValue=g_nValue;
 
         int nNumberOfItems=model.rowCount();
 
@@ -245,9 +245,9 @@ void XComboBoxEx::itemChangedSlot(QStandardItem *pItem)
             }
         }
 
-        if(nCurrentValue!=nValue)
+        if(nCurrentValue!=g_nValue)
         {
-            nValue=nCurrentValue;
+            g_nValue=nCurrentValue;
             emit valueChanged(nCurrentValue);
         }
     }

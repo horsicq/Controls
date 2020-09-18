@@ -43,21 +43,21 @@ public:
     void setData(QMap<quint64,QString> mapData, CBTYPE cbtype=CBTYPE_NORMAL, quint64 nMask=0);
     void setValue(quint64 nValue);
     quint64 getValue();
-    void setReadOnly(bool bIsReadOnly);
+    void setReadOnly(bool g_bIsReadOnly);
 
 private slots:
     void currentIndexChangedSlot(int nIndex);
     void itemChangedSlot(QStandardItem *pItem);
 
 signals:
-    void valueChanged(quint64 nValue);
+    void valueChanged(quint64 g_nValue);
 
 private:
-    quint64 nValue;
-    bool bIsReadOnly;
+    quint64 g_nValue;
+    bool g_bIsReadOnly;
     QStandardItemModel model;
-    CBTYPE cbtype;
-    quint64 nMask;
+    CBTYPE g_cbtype;
+    quint64 g_nMask;
 };
 
 #define PXComboBoxEx XComboBoxEx *
