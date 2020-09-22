@@ -41,8 +41,8 @@ public:
     virtual State validate(QString &nInput,int &nPos) const;
 
 private:
-    MODE _mode;
-    quint64 _nMax;
+    MODE g_mode;
+    quint64 g_nMax;
 };
 
 #endif // HEXVALIDATOR_H

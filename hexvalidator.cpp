@@ -22,19 +22,19 @@
 
 HEXValidator::HEXValidator(QObject *pParent) : QValidator(pParent)
 {
-    _mode=MODE_HEX;
-    _nMax=0xFFFFFFFFFFFFFFFF;
+    g_mode=MODE_HEX;
+    g_nMax=0xFFFFFFFFFFFFFFFF;
 }
 
 void HEXValidator::setData(HEXValidator::MODE mode, quint64 nMax)
 {
-    _mode=mode;
-    _nMax=nMax;
+    g_mode=mode;
+    g_nMax=nMax;
 }
 
 HEXValidator::MODE HEXValidator::getMode()
 {
-    return _mode;
+    return g_mode;
 }
 
 QValidator::State HEXValidator::validate(QString &nInput, int &nPos) const
@@ -45,7 +45,7 @@ QValidator::State HEXValidator::validate(QString &nInput, int &nPos) const
 
     if(!nInput.isEmpty())
     {
-        if(_mode==MODE_HEX)
+        if(g_mode==MODE_HEX)
         {
             result=Invalid;
 
@@ -54,7 +54,7 @@ QValidator::State HEXValidator::validate(QString &nInput, int &nPos) const
 
             nValue=nInput.toULongLong(&bSuccess,16);
 
-            if(bSuccess&&(nValue<=_nMax))
+            if(bSuccess&&(nValue<=g_nMax))
             {
                 result=Acceptable;
             }
