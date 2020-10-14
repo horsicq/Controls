@@ -43,19 +43,19 @@ public:
     void setData(QMap<quint64,QString> mapData, CBTYPE cbtype=CBTYPE_NORMAL, quint64 nMask=0);
     void setValue(quint64 nValue);
     quint64 getValue();
-    void setReadOnly(bool g_bIsReadOnly);
+    void setReadOnly(bool bIsReadOnly);
 
 private slots:
     void currentIndexChangedSlot(int nIndex);
     void itemChangedSlot(QStandardItem *pItem);
 
 signals:
-    void valueChanged(quint64 g_nValue);
+    void valueChanged(quint64 nValue);
 
 private:
     quint64 g_nValue;
     bool g_bIsReadOnly;
-    QStandardItemModel model;
+    QStandardItemModel g_model;
     CBTYPE g_cbtype;
     quint64 g_nMask;
 };
