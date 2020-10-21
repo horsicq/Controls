@@ -30,7 +30,7 @@ public:
     explicit SubclassOfQStyledItemDelegate(QWidget *pParent=nullptr);
 	
 protected:
-    virtual void paint(QPainter * _pPainter, const QStyleOptionViewItem & _option, const QModelIndex & _index);
+    virtual void paint(QPainter * _pPainter,const QStyleOptionViewItem & _option,const QModelIndex & _index);
 };
 
 #endif // SUBCLASSOFQSTYLEDITEMDELEGATE_H
