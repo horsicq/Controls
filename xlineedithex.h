@@ -51,13 +51,13 @@ public:
     void setValue(quint64 nValue);
     void setValue(qint64 nValue);
     void setValue32_64(quint64 nValue);
-    void setModeValue(MODE mode, quint64 nValue);
-    void setStringValue(QString sText, qint32 nMaxLength=0);
+    void setModeValue(MODE mode,quint64 nValue);
+    void setStringValue(QString sText,qint32 nMaxLength=0);
     quint64 getValue();
     void setText(QString sText);
     static MODE getModeFromSize(qint32 nSize);
-    static QString getFormatString(MODE mode, qint64 nValue);
-    static qint32 getWidthFromMode(QWidget *pWidget, MODE mode);
+    static QString getFormatString(MODE mode,qint64 nValue);
+    static qint32 getWidthFromMode(QWidget *pWidget,MODE mode);
     static int getSymbolWidth(QWidget *pWidget);
 
 protected:
