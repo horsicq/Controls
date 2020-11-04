@@ -73,8 +73,8 @@ signals:
     void valueChanged(quint64 nValue);
 
 private:
-    quint64 nValue;
-    HEXValidator validator;
+    quint64 g_nValue;
+    HEXValidator g_validator;
 };
 
 #define PXLineEditHEX XLineEditHEX *

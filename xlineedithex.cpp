@@ -22,13 +22,13 @@
 
 XLineEditHEX::XLineEditHEX(QWidget *pParent): QLineEdit(pParent)
 {
-    nValue=0;
+    g_nValue=0;
     updateFont();
 
     setAlignment(Qt::AlignHCenter);
 
     connect(this,SIGNAL(textChanged(QString)),this,SLOT(_setText(QString)));
-    setValidator(&validator);
+    setValidator(&g_validator);
 
     // TODO Context Menu
     // TODO Copy
@@ -40,7 +40,7 @@ XLineEditHEX::XLineEditHEX(QWidget *pParent): QLineEdit(pParent)
 
 void XLineEditHEX::setValue(quint8 nValue)
 {
-    validator.setData(HEXValidator::MODE_HEX,0xFF);
+    g_validator.setData(HEXValidator::MODE_HEX,0xFF);
     QString sText=QString("%1").arg(nValue,2,16,QChar('0'));
     setText(sText);
 }
@@ -52,7 +52,7 @@ void XLineEditHEX::setValue(qint8 nValue)
 
 void XLineEditHEX::setValue(quint16 nValue)
 {
-    validator.setData(HEXValidator::MODE_HEX,0xFFFF);
+    g_validator.setData(HEXValidator::MODE_HEX,0xFFFF);
     QString sText=QString("%1").arg(nValue,4,16,QChar('0'));
     setText(sText);
 }
@@ -64,7 +64,7 @@ void XLineEditHEX::setValue(qint16 nValue)
 
 void XLineEditHEX::setValue(quint32 nValue)
 {
-    validator.setData(HEXValidator::MODE_HEX,0xFFFFFFFF);
+    g_validator.setData(HEXValidator::MODE_HEX,0xFFFFFFFF);
     QString sText=QString("%1").arg(nValue,8,16,QChar('0'));
     setText(sText);
 }
@@ -76,7 +76,7 @@ void XLineEditHEX::setValue(qint32 nValue)
 
 void XLineEditHEX::setValue(quint64 nValue)
 {
-    validator.setData(HEXValidator::MODE_HEX,0xFFFFFFFFFFFFFFFF);
+    g_validator.setData(HEXValidator::MODE_HEX,0xFFFFFFFFFFFFFFFF);
     QString sText=QString("%1").arg(nValue,16,16,QChar('0'));
     setText(sText);
 }
@@ -120,7 +120,7 @@ void XLineEditHEX::setModeValue(XLineEditHEX::MODE mode, quint64 nValue)
 
 void XLineEditHEX::setStringValue(QString sText, qint32 nMaxLength)
 {
-    validator.setData(HEXValidator::MODE_TEXT,0);
+    g_validator.setData(HEXValidator::MODE_TEXT,0);
 
     if(nMaxLength)
     {
@@ -241,13 +241,13 @@ int XLineEditHEX::getSymbolWidth(QWidget *pWidget)
 
 void XLineEditHEX::_setText(QString sText)
 {
-    if(validator.getMode()!=HEXValidator::MODE_TEXT)
+    if(g_validator.getMode()!=HEXValidator::MODE_TEXT)
     {
         quint64 nCurrentValue=sText.toULongLong(nullptr,16);
 
-        if(nValue!=nCurrentValue)
+        if(g_nValue!=nCurrentValue)
         {
-            nValue=nCurrentValue;
+            g_nValue=nCurrentValue;
             updateFont();
 
             emit valueChanged(nCurrentValue);
@@ -266,7 +266,7 @@ void XLineEditHEX::updateFont()
 {
     QFont _font=font();
 
-    _font.setBold(nValue!=0);
+    _font.setBold(g_nValue!=0);
 
     setFont(_font);
 }
