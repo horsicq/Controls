@@ -40,6 +40,7 @@ XAbstractTableView::XAbstractTableView(QWidget *pParent) : QAbstractScrollArea(p
     g_nHeaderHeight=20;
     g_nLineDelta=4; // TODO Check
     g_state={};
+    g_bBlink=false;
 
     setContextMenuPolicy(Qt::CustomContextMenu);
 
@@ -47,6 +48,11 @@ XAbstractTableView::XAbstractTableView(QWidget *pParent) : QAbstractScrollArea(p
 
     connect(verticalScrollBar(),SIGNAL(valueChanged(int)),this,SLOT(verticalScroll()));
     connect(horizontalScrollBar(),SIGNAL(valueChanged(int)),this,SLOT(horisontalScroll()));
+
+    connect(&g_timerCursor,SIGNAL(timeout()),this,SLOT(updateBlink()));
+
+    g_timerCursor.setInterval(500);
+    g_timerCursor.start();
 }
 
 XAbstractTableView::~XAbstractTableView()
@@ -71,62 +77,86 @@ void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
     g_pPainter->setPen(viewport()->palette().color(QPalette::WindowText));
     g_pPainter->setBackgroundMode(Qt::TransparentMode);
 
-    startPainting();
-
-    int nNumberOfColumns=g_listColumns.count();
-
-    qint32 nTopLeftY=pEvent->rect().topLeft().y();
-    qint32 nTopLeftX=pEvent->rect().topLeft().x()-g_nXOffset;
-
-    qint32 nHeight=pEvent->rect().height();
-
-    qint32 nX=nTopLeftX;
-
-    // Drsw lines and headers
-    for(int i=0;i<nNumberOfColumns;i++)
+    if(g_rectCursor!=pEvent->rect())
     {
-        qint32 nHeaderHeight=g_nHeaderHeight;
-        qint32 nColumnWidth=g_listColumns.at(i).nWidth;
+        startPainting();
 
-        if(nHeaderHeight>0)
+        int nNumberOfColumns=g_listColumns.count();
+
+        qint32 nTopLeftY=pEvent->rect().topLeft().y();
+        qint32 nTopLeftX=pEvent->rect().topLeft().x()-g_nXOffset;
+
+        qint32 nHeight=pEvent->rect().height();
+
+        qint32 nX=nTopLeftX;
+
+        // Drsw lines and headers
+        for(int i=0;i<nNumberOfColumns;i++)
         {
-            QStyleOptionButton styleOptionButton;
-            styleOptionButton.state=QStyle::State_Enabled;
+            qint32 nHeaderHeight=g_nHeaderHeight;
+            qint32 nColumnWidth=g_listColumns.at(i).nWidth;
 
-            styleOptionButton.rect=QRect(nX,nTopLeftY,nColumnWidth,nHeaderHeight);
+            if(nHeaderHeight>0)
+            {
+                QStyleOptionButton styleOptionButton;
+                styleOptionButton.state=QStyle::State_Enabled;
 
-            pushButtonHeader.style()->drawControl(QStyle::CE_PushButton,&styleOptionButton,g_pPainter,&pushButtonHeader);
+                styleOptionButton.rect=QRect(nX,nTopLeftY,nColumnWidth,nHeaderHeight);
 
-            QRect rect=QRect(nX+4,nTopLeftY,nColumnWidth-8,nHeaderHeight);
-            g_pPainter->drawText(rect,Qt::AlignVCenter|Qt::AlignLeft,g_listColumns.at(i).sTitle); // TODO alignment
+                pushButtonHeader.style()->drawControl(QStyle::CE_PushButton,&styleOptionButton,g_pPainter,&pushButtonHeader);
+
+                QRect rect=QRect(nX+4,nTopLeftY,nColumnWidth-8,nHeaderHeight);
+                g_pPainter->drawText(rect,Qt::AlignVCenter|Qt::AlignLeft,g_listColumns.at(i).sTitle); // TODO alignment
+            }
+
+            if(g_bShowLines)
+            {
+                g_pPainter->drawLine(nX+nColumnWidth,nTopLeftY+nHeaderHeight,nX+nColumnWidth,nTopLeftY+nHeight);
+            }
+
+            nX+=nColumnWidth;
         }
 
-        if(g_bShowLines)
+        nX=nTopLeftX;
+
+        for(int i=0;i<nNumberOfColumns;i++)
         {
-            g_pPainter->drawLine(nX+nColumnWidth,nTopLeftY+nHeaderHeight,nX+nColumnWidth,nTopLeftY+nHeight);
+            qint32 nHeaderHeight=g_nHeaderHeight;
+            qint32 nColumnWidth=g_listColumns.at(i).nWidth;
+
+            paintColumn(i,nX,nTopLeftY+nHeaderHeight,nColumnWidth,nHeight-nHeaderHeight);
+
+            for(int j=0;j<g_nLinesProPage;j++)
+            {
+                paintCell(j,i,nX,nTopLeftY+nHeaderHeight+(j*g_nLineHeight),nColumnWidth,g_nLineHeight);
+            }
+
+            nX+=nColumnWidth;
         }
 
-        nX+=nColumnWidth;
+        endPainting();
     }
 
-    nX=nTopLeftX;
-
-    for(int i=0;i<nNumberOfColumns;i++)
+    // Draw cursor
+    if(g_rectCursor.width()&&g_rectCursor.height())
     {
-        qint32 nHeaderHeight=g_nHeaderHeight;
-        qint32 nColumnWidth=g_listColumns.at(i).nWidth;
+        // TODO bold
+        QRect rectSelected;
+        rectSelected.setRect(g_rectCursor.x(),g_rectCursor.y(),g_rectCursor.width(),g_rectCursor.height());
 
-        paintColumn(i,nX,nTopLeftY+nHeaderHeight,nColumnWidth,nHeight-nHeaderHeight);
-
-        for(int j=0;j<g_nLinesProPage;j++)
+        if(g_bBlink&&hasFocus())
         {
-            paintCell(j,i,nX,nTopLeftY+nHeaderHeight+(j*g_nLineHeight),nColumnWidth,g_nLineHeight);
+            g_pPainter->setPen(viewport()->palette().color(QPalette::Highlight));
+            g_pPainter->fillRect(rectSelected,this->palette().color(QPalette::WindowText));
+        }
+        else
+        {
+            g_pPainter->setPen(viewport()->palette().color(QPalette::WindowText));
+            g_pPainter->fillRect(rectSelected,this->palette().color(QPalette::Base));
         }
 
-        nX+=nColumnWidth;
+        g_pPainter->drawText(g_rectCursor.x(),g_rectCursor.y()+g_nLineHeight-g_nLineDelta,g_sCursorText);
     }
-
-    endPainting();
 
     delete g_pPainter;
 }
@@ -357,9 +387,30 @@ void XAbstractTableView::adjust(bool bUpdateData)
     // TODO
 }
 
+void XAbstractTableView::setCursor(QRect rect,QString sText)
+{
+    g_rectCursor=rect;
+    g_sCursorText=sText;
+}
+
+void XAbstractTableView::setSelection(qint64 nOffset, qint64 nSize)
+{
+    _initSelection(nOffset);
+    _setSelection(nOffset+nSize);
+
+    adjust();
+    viewport()->update();
+}
+
 void XAbstractTableView::_customContextMenu(const QPoint &pos)
 {
     contextMenu(mapToGlobal(pos));
+}
+
+void XAbstractTableView::updateBlink()
+{
+    g_bBlink=(bool)(!g_bBlink);
+    viewport()->update(g_rectCursor);
 }
 
 void XAbstractTableView::resizeEvent(QResizeEvent *pEvent)
@@ -372,10 +423,13 @@ void XAbstractTableView::mouseMoveEvent(QMouseEvent *pEvent)
 {
     if(g_bMouseSelection)
     {
-        qint64 nOffset=cursorPositionToOffset(getCursorPosition(pEvent->pos()));
+        CURSOR_POSITION cursorPosition=getCursorPosition(pEvent->pos());
+        qint64 nOffset=cursorPositionToOffset(cursorPosition);
 
         if(nOffset!=-1)
         {
+            g_state.nCursorOffset=nOffset;
+            g_state.cursorPosition=cursorPosition;
             _setSelection(nOffset);
         }
     }
@@ -392,10 +446,13 @@ void XAbstractTableView::mousePressEvent(QMouseEvent *pEvent)
 
     if(pEvent->button()==Qt::LeftButton)
     {
-        qint64 nOffset=cursorPositionToOffset(getCursorPosition(pEvent->pos()));
+        CURSOR_POSITION cursorPosition=getCursorPosition(pEvent->pos());
+        qint64 nOffset=cursorPositionToOffset(cursorPosition);
 
         if(nOffset!=-1)
         {
+            g_state.nCursorOffset=nOffset;
+            g_state.cursorPosition=cursorPosition;
             _initSelection(nOffset);
             g_bMouseSelection=true;
         }
@@ -415,6 +472,5 @@ void XAbstractTableView::keyPressEvent(QKeyEvent *pEvent)
 
 void XAbstractTableView::wheelEvent(QWheelEvent *pEvent)
 {
-    // TODO
     QAbstractScrollArea::wheelEvent(pEvent);
 }

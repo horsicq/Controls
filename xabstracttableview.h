@@ -31,6 +31,7 @@
 #include <QMenu>
 #include <QShortcut>
 #include <QFileDialog>
+#include <QTimer>
 #include "xshortcuts.h"
 
 class XAbstractTableView : public QAbstractScrollArea
@@ -62,8 +63,10 @@ public:
 
     struct STATE
     {
+        qint64 nCursorOffset;
         qint64 nSelectionOffset;
         qint64 nSelectionSize;
+        CURSOR_POSITION cursorPosition;
     };
 
     explicit XAbstractTableView(QWidget *pParent=nullptr);
@@ -93,6 +96,11 @@ public:
     qint32 getLineDelta();
 
     STATE getState();
+    void adjust(bool bUpdateData=false);
+
+    void setCursor(QRect rect,QString sText);
+
+    void setSelection(qint64 nOffset,qint64 nSize);
 
 private:
     void _initSelection(qint64 nOffset);
@@ -101,8 +109,8 @@ private:
 private slots:
     void verticalScroll();
     void horisontalScroll();
-    void adjust(bool bUpdateData=false);
     void _customContextMenu(const QPoint &pos);
+    void updateBlink();
 
 protected:
     virtual void paintEvent(QPaintEvent* pEvent) override;
@@ -111,7 +119,6 @@ protected:
     virtual void mousePressEvent(QMouseEvent *pEvent);
     virtual void keyPressEvent(QKeyEvent *pEvent);
     virtual void wheelEvent(QWheelEvent *pEvent);
-
     virtual bool isOffsetValid(qint64 nOffset)=0;
     virtual qint64 cursorPositionToOffset(CURSOR_POSITION cursorPosition)=0;
     virtual void updateData()=0;
@@ -147,6 +154,11 @@ private:
     STATE g_state;
     bool g_bMouseSelection;
     qint64 g_nSelectionInitOffset;
+
+    QTimer g_timerCursor;
+    QRect g_rectCursor;
+    QString g_sCursorText;
+    bool g_bBlink;
 };
 
 #endif // XABSTRACTTABLEVIEW_H
