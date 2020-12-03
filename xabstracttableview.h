@@ -21,6 +21,7 @@
 #ifndef XABSTRACTTABLEVIEW_H
 #define XABSTRACTTABLEVIEW_H
 
+#include <QApplication>
 #include <QAbstractScrollArea>
 #include <QStyleOptionButton>
 #include <QPushButton>
@@ -96,6 +97,9 @@ public:
     qint32 getLineDelta();
 
     STATE getState();
+    qint64 getCursorOffset();
+    void setCursorOffset(qint64 nValue);
+
     void adjust(bool bUpdateData=false);
 
     void setCursor(QRect rect,QString sText);
@@ -120,6 +124,7 @@ protected:
     virtual void keyPressEvent(QKeyEvent *pEvent);
     virtual void wheelEvent(QWheelEvent *pEvent);
     virtual bool isOffsetValid(qint64 nOffset)=0;
+    virtual bool isEnd(qint64 nOffset)=0;
     virtual qint64 cursorPositionToOffset(CURSOR_POSITION cursorPosition)=0;
     virtual void updateData()=0;
     virtual void startPainting()=0;

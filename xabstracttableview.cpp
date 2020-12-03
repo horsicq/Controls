@@ -290,9 +290,19 @@ XAbstractTableView::STATE XAbstractTableView::getState()
     return g_state;
 }
 
+qint64 XAbstractTableView::getCursorOffset()
+{
+    return g_state.nCursorOffset;
+}
+
+void XAbstractTableView::setCursorOffset(qint64 nValue)
+{
+    g_state.nCursorOffset=nValue;
+}
+
 void XAbstractTableView::_initSelection(qint64 nOffset)
 {
-    if(isOffsetValid(nOffset))
+    if(isOffsetValid(nOffset)||isEnd(nOffset))
     {
         g_nSelectionInitOffset=nOffset;
         g_state.nSelectionOffset=nOffset;
@@ -302,7 +312,7 @@ void XAbstractTableView::_initSelection(qint64 nOffset)
 
 void XAbstractTableView::_setSelection(qint64 nOffset)
 {
-    if(isOffsetValid(nOffset))
+    if(isOffsetValid(nOffset)||isEnd(nOffset))
     {
         if(nOffset>g_nSelectionInitOffset)
         {
@@ -334,7 +344,12 @@ void XAbstractTableView::adjust(bool bUpdateData)
 
     g_nLineHeight=g_nCharHeight+5;
 
-    qint32 nLinesProPage=(g_nViewHeight)/g_nLineHeight; // mb nHeight-4
+    qint32 nLinesProPage=(g_nViewHeight-g_nHeaderHeight)/g_nLineHeight;
+
+    if(nLinesProPage<0)
+    {
+        nLinesProPage=0;
+    }
 
     if(g_nLinesProPage!=nLinesProPage)
     {
@@ -466,7 +481,6 @@ void XAbstractTableView::mousePressEvent(QMouseEvent *pEvent)
 
 void XAbstractTableView::keyPressEvent(QKeyEvent *pEvent)
 {
-    // TODO
     QAbstractScrollArea::keyPressEvent(pEvent);
 }
 
