@@ -102,7 +102,10 @@ public:
 
     void adjust(bool bUpdateData=false);
 
-    void setCursor(QRect rect,QString sText);
+    void setCursor(QRect rect,QString sText,qint32 nDelta);
+    void resetCursor();
+
+    qint32 getCursorDelta();
 
     void setSelection(qint64 nOffset,qint64 nSize);
 
@@ -163,6 +166,7 @@ private:
     QTimer g_timerCursor;
     QRect g_rectCursor;
     QString g_sCursorText;
+    qint32 g_nCursorDelta;
     bool g_bBlink;
 };
 

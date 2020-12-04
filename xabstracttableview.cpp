@@ -399,13 +399,26 @@ void XAbstractTableView::adjust(bool bUpdateData)
         updateData();
     }
 
+    resetCursor();
+
     // TODO
 }
 
-void XAbstractTableView::setCursor(QRect rect,QString sText)
+void XAbstractTableView::setCursor(QRect rect, QString sText, qint32 nDelta)
 {
     g_rectCursor=rect;
     g_sCursorText=sText;
+    g_nCursorDelta=nDelta;
+}
+
+void XAbstractTableView::resetCursor()
+{
+    setCursor(QRect(),"",0);
+}
+
+qint32 XAbstractTableView::getCursorDelta()
+{
+    return g_nCursorDelta;
 }
 
 void XAbstractTableView::setSelection(qint64 nOffset, qint64 nSize)
