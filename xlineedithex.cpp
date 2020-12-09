@@ -273,5 +273,6 @@ void XLineEditHEX::updateFont()
 
 void XLineEditHEX::_copy()
 {
+    // TODO !!!
     qDebug("void XLineEditHEX::_copy()");
 }
