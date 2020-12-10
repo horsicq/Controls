@@ -386,7 +386,7 @@ void XAbstractTableView::adjust(bool bUpdateData)
 
     g_nXOffset=horizontalScrollBar()->value();
 
-    qint32 nStart=verticalScrollBar()->value(); // TODO fix scroll for the large files
+    qint32 nStart=getVerticalScrollBarOffset();
 
     if(g_nViewStart!=nStart)
     {
@@ -500,4 +500,23 @@ void XAbstractTableView::keyPressEvent(QKeyEvent *pEvent)
 void XAbstractTableView::wheelEvent(QWheelEvent *pEvent)
 {
     QAbstractScrollArea::wheelEvent(pEvent);
+}
+
+void XAbstractTableView::goToOffset(qint64 nOffset)
+{
+    if(isOffsetValid(nOffset))
+    {
+        g_nViewStart=nOffset;
+        setVerticalScrollBarOffset(nOffset);
+    }
+}
+
+qint64 XAbstractTableView::getVerticalScrollBarOffset()
+{
+    return verticalScrollBar()->value();
+}
+
+void XAbstractTableView::setVerticalScrollBarOffset(qint64 nOffset)
+{
+    verticalScrollBar()->setValue((qint32)nOffset);
 }

@@ -134,8 +134,10 @@ protected:
     virtual void paintColumn(qint32 nColumn,qint32 nLeft,qint32 nTop,qint32 nWidth,qint32 nHeight)=0;
     virtual void paintCell(qint32 nRow,qint32 nColumn,qint32 nLeft,qint32 nTop,qint32 nWidth,qint32 nHeight)=0;
     virtual void endPainting()=0;
-    virtual void goToOffset(qint64 nOffset)=0;
+    virtual void goToOffset(qint64 nOffset);
     virtual void contextMenu(const QPoint &pos){Q_UNUSED(pos)}
+    virtual qint64 getVerticalScrollBarOffset();
+    virtual void setVerticalScrollBarOffset(qint64 nOffset);
 
 private:
     qint64 g_nNumberOfRows;
