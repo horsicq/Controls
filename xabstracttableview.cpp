@@ -191,16 +191,17 @@ void XAbstractTableView::setTotalLineCount(qint64 nValue)
 
     // TODO fix scroll for the large files
     // mb flag for large files
-    if(nValue>0x7FFFFFFF)
+    if(nValue>getMaxScrollValue())
     {
-        nScrollValue=0x7FFFFFFF;
+        nScrollValue=(qint32)getMaxScrollValue();
     }
     else
     {
         nScrollValue=(qint32)nValue;
     }
 
-    verticalScrollBar()->setRange(0,nValue);
+    verticalScrollBar()->setRange(0,nScrollValue);
+    qDebug(QString("verticalScrollBar()->MAX: %1").arg(verticalScrollBar()->maximum(),0,16).toLatin1().data());
 
     g_nTotalLineCount=nValue;
 }
@@ -213,6 +214,11 @@ quint64 XAbstractTableView::getTotalLineCount()
 qint32 XAbstractTableView::getLinesProPage()
 {
     return g_nLinesProPage;
+}
+
+void XAbstractTableView::setViewStart(qint64 nValue)
+{
+    g_nViewStart=nValue;
 }
 
 qint64 XAbstractTableView::getViewStart()
@@ -329,7 +335,9 @@ void XAbstractTableView::_setSelection(qint64 nOffset)
 
 void XAbstractTableView::verticalScroll()
 {
-    adjust();
+    g_nViewStart=getScrollValue();
+
+    adjust(true);
 }
 
 void XAbstractTableView::horisontalScroll()
@@ -386,20 +394,12 @@ void XAbstractTableView::adjust(bool bUpdateData)
 
     g_nXOffset=horizontalScrollBar()->value();
 
-    qint32 nStart=getVerticalScrollBarOffset();
-
-    if(g_nViewStart!=nStart)
-    {
-        bUpdateData=true;
-        g_nViewStart=nStart;
-    }
-
     if(bUpdateData)
     {
         updateData();
     }
 
-    resetCursor();
+//    resetCursor(); // TODO Check
 
     // TODO
 }
@@ -428,6 +428,11 @@ void XAbstractTableView::setSelection(qint64 nOffset, qint64 nSize)
 
     adjust();
     viewport()->update();
+}
+
+qint64 XAbstractTableView::getMaxScrollValue()
+{
+    return 0x7FFFFFFF;
 }
 
 void XAbstractTableView::_customContextMenu(const QPoint &pos)
@@ -502,21 +507,25 @@ void XAbstractTableView::wheelEvent(QWheelEvent *pEvent)
     QAbstractScrollArea::wheelEvent(pEvent);
 }
 
-void XAbstractTableView::goToOffset(qint64 nOffset)
+bool XAbstractTableView::goToOffset(qint64 nOffset)
 {
+    bool bResult=false;
+
     if(isOffsetValid(nOffset))
     {
-        g_nViewStart=nOffset;
-        setVerticalScrollBarOffset(nOffset);
+        setScrollValue(nOffset);
+        bResult=true;
     }
+
+    return bResult;
 }
 
-qint64 XAbstractTableView::getVerticalScrollBarOffset()
+qint64 XAbstractTableView::getScrollValue()
 {
     return verticalScrollBar()->value();
 }
 
-void XAbstractTableView::setVerticalScrollBarOffset(qint64 nOffset)
+void XAbstractTableView::setScrollValue(qint64 nOffset)
 {
     verticalScrollBar()->setValue((qint32)nOffset);
 }

@@ -83,6 +83,8 @@ public:
     quint64 getTotalLineCount();
 
     qint32 getLinesProPage();
+
+    void setViewStart(qint64 nValue);
     qint64 getViewStart();
 
     qint32 getCharWidth();
@@ -109,6 +111,8 @@ public:
 
     void setSelection(qint64 nOffset,qint64 nSize);
 
+    qint64 getMaxScrollValue();
+
 private:
     void _initSelection(qint64 nOffset);
     void _setSelection(qint64 nOffset);
@@ -134,10 +138,10 @@ protected:
     virtual void paintColumn(qint32 nColumn,qint32 nLeft,qint32 nTop,qint32 nWidth,qint32 nHeight)=0;
     virtual void paintCell(qint32 nRow,qint32 nColumn,qint32 nLeft,qint32 nTop,qint32 nWidth,qint32 nHeight)=0;
     virtual void endPainting()=0;
-    virtual void goToOffset(qint64 nOffset);
+    virtual bool goToOffset(qint64 nOffset);
     virtual void contextMenu(const QPoint &pos){Q_UNUSED(pos)}
-    virtual qint64 getVerticalScrollBarOffset();
-    virtual void setVerticalScrollBarOffset(qint64 nOffset);
+    virtual qint64 getScrollValue();
+    virtual void setScrollValue(qint64 nOffset);
 
 private:
     qint64 g_nNumberOfRows;
