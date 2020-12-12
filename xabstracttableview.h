@@ -41,6 +41,7 @@ class XAbstractTableView : public QAbstractScrollArea
 public:
     struct COLUMN
     {
+        qint32 nLeft;
         qint32 nWidth;
         QString sTitle;
     };
@@ -49,17 +50,20 @@ public:
     {
         PT_UNKNOWN=0,
         PT_HEADER,
-        PT_CELL
+        PT_CELL,
     };
 
     struct CURSOR_POSITION
     {
         bool bIsValid;
         PT ptype;
+        qint32 nY;
+        qint32 nX;
         qint32 nRow;
         qint32 nColumn;
         qint32 nCellTop;
         qint32 nCellLeft;
+        bool bResizeColumn;
     };
 
     struct STATE
@@ -104,8 +108,8 @@ public:
 
     void adjust(bool bUpdateData=false);
 
-    void setCursor(QRect rect,QString sText,qint32 nDelta);
-    void resetCursor();
+    void setCursorData(QRect rect,QString sText,qint32 nDelta);
+    void resetCursorData();
 
     qint32 getCursorDelta();
 
@@ -128,6 +132,7 @@ protected:
     virtual void resizeEvent(QResizeEvent *pEvent);
     virtual void mouseMoveEvent(QMouseEvent *pEvent);
     virtual void mousePressEvent(QMouseEvent *pEvent);
+    virtual void mouseReleaseEvent(QMouseEvent *pEvent);
     virtual void keyPressEvent(QKeyEvent *pEvent);
     virtual void wheelEvent(QWheelEvent *pEvent);
     virtual bool isOffsetValid(qint64 nOffset)=0;
@@ -166,8 +171,10 @@ private:
     QPainter *g_pPainter;
 
     STATE g_state;
+    bool g_bMouseResizeColumn;
     bool g_bMouseSelection;
     qint64 g_nSelectionInitOffset;
+    qint32 g_nInitColumnNumber;
 
     QTimer g_timerCursor;
     QRect g_rectCursor;
