@@ -231,7 +231,7 @@ int XLineEditHEX::getSymbolWidth(QWidget *pWidget)
 {
     QFontMetrics fm(pWidget->font());
 
-    return fm.width("W"); // TODO Check
+    return fm.boundingRect("W").width(); // TODO Check
 }
 
 //void XLineEditHEX::keyPressEvent(QKeyEvent *keyEvent)
