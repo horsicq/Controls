@@ -212,7 +212,6 @@ void XAbstractTableView::setTotalLineCount(qint64 nValue)
     }
 
     verticalScrollBar()->setRange(0,nScrollValue);
-    qDebug(QString("verticalScrollBar()->MAX: %1").arg(verticalScrollBar()->maximum(),0,16).toLatin1().data());
 
     g_nTotalLineCount=nValue;
 }
