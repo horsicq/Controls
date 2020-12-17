@@ -69,10 +69,19 @@ void XAbstractTableView::addColumn(qint32 nWidth, QString sTitle)
 {
     COLUMN column={};
 
+    column.bEnable=true;
     column.nWidth=nWidth;
     column.sTitle=sTitle;
 
     g_listColumns.append(column);
+}
+
+void XAbstractTableView::setColumnEnabled(qint32 nNumber, bool bState)
+{
+    if(nNumber<g_listColumns.count())
+    {
+        g_listColumns[nNumber].bEnable=bState;
+    }
 }
 
 void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
@@ -100,18 +109,21 @@ void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
 
         for(int i=0;i<nNumberOfColumns;i++)
         {
-            qint32 nColumnWidth=g_listColumns.at(i).nWidth;
-
-            getPainter()->fillRect(nX,nTopLeftY+nHeaderHeight,nColumnWidth,nHeight-nHeaderHeight,viewport()->palette().color(QPalette::Base));
-
-            paintColumn(i,nX,nTopLeftY+nHeaderHeight,nColumnWidth,nHeight-nHeaderHeight);
-
-            for(int j=0;j<g_nLinesProPage;j++)
+            if(g_listColumns.at(i).bEnable)
             {
-                paintCell(j,i,nX,nTopLeftY+nHeaderHeight+(j*g_nLineHeight),nColumnWidth,g_nLineHeight);
-            }
+                qint32 nColumnWidth=g_listColumns.at(i).nWidth;
 
-            nX+=nColumnWidth;
+                getPainter()->fillRect(nX,nTopLeftY+nHeaderHeight,nColumnWidth,nHeight-nHeaderHeight,viewport()->palette().color(QPalette::Base));
+
+                paintColumn(i,nX,nTopLeftY+nHeaderHeight,nColumnWidth,nHeight-nHeaderHeight);
+
+                for(int j=0;j<g_nLinesProPage;j++)
+                {
+                    paintCell(j,i,nX,nTopLeftY+nHeaderHeight+(j*g_nLineHeight),nColumnWidth,g_nLineHeight);
+                }
+
+                nX+=nColumnWidth;
+            }
         }
 
         // Rest
@@ -122,27 +134,30 @@ void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
         // Draw lines and headers
         for(int i=0;i<nNumberOfColumns;i++)
         {
-            qint32 nColumnWidth=g_listColumns.at(i).nWidth;
-
-            if(nHeaderHeight>0)
+            if(g_listColumns.at(i).bEnable)
             {
-                QStyleOptionButton styleOptionButton;
-                styleOptionButton.state=QStyle::State_Enabled;
+                qint32 nColumnWidth=g_listColumns.at(i).nWidth;
 
-                styleOptionButton.rect=QRect(nX,nTopLeftY,nColumnWidth,nHeaderHeight);
+                if(nHeaderHeight>0)
+                {
+                    QStyleOptionButton styleOptionButton;
+                    styleOptionButton.state=QStyle::State_Enabled;
 
-                pushButtonHeader.style()->drawControl(QStyle::CE_PushButton,&styleOptionButton,g_pPainter,&pushButtonHeader);
+                    styleOptionButton.rect=QRect(nX,nTopLeftY,nColumnWidth,nHeaderHeight);
 
-                QRect rect=QRect(nX+4,nTopLeftY,nColumnWidth-8,nHeaderHeight);
-                g_pPainter->drawText(rect,Qt::AlignVCenter|Qt::AlignLeft,g_listColumns.at(i).sTitle); // TODO alignment
+                    pushButtonHeader.style()->drawControl(QStyle::CE_PushButton,&styleOptionButton,g_pPainter,&pushButtonHeader);
+
+                    QRect rect=QRect(nX+4,nTopLeftY,nColumnWidth-8,nHeaderHeight);
+                    g_pPainter->drawText(rect,Qt::AlignVCenter|Qt::AlignLeft,g_listColumns.at(i).sTitle); // TODO alignment
+                }
+
+                if(g_bShowLines)
+                {
+                    g_pPainter->drawLine(nX+nColumnWidth,nTopLeftY+nHeaderHeight,nX+nColumnWidth,nTopLeftY+nHeight);
+                }
+
+                nX+=nColumnWidth;
             }
-
-            if(g_bShowLines)
-            {
-                g_pPainter->drawLine(nX+nColumnWidth,nTopLeftY+nHeaderHeight,nX+nColumnWidth,nTopLeftY+nHeight);
-            }
-
-            nX+=nColumnWidth;
         }
 
         endPainting();
@@ -253,32 +268,35 @@ XAbstractTableView::CURSOR_POSITION XAbstractTableView::getCursorPosition(QPoint
 
     for(int i=0;i<nNumberOfColumns;i++)
     {
-        if((result.nX>=nCurrentOffset)&&(result.nX<(nCurrentOffset+g_listColumns.at(i).nWidth)))
+        if(g_listColumns.at(i).bEnable)
         {
-            result.bIsValid=true;
-            result.nColumn=i;
-
-            if(result.nY<g_nHeaderHeight)
+            if((result.nX>=nCurrentOffset)&&(result.nX<(nCurrentOffset+g_listColumns.at(i).nWidth)))
             {
-                result.ptype=PT_HEADER;
-            }
-            else
-            {
-                result.ptype=PT_CELL;
-                result.nRow=(result.nY-g_nHeaderHeight)/g_nLineHeight;
-                result.nCellTop=(result.nY-g_nHeaderHeight)%g_nLineHeight;
-                result.nCellLeft=result.nX-nCurrentOffset;
+                result.bIsValid=true;
+                result.nColumn=i;
+
+                if(result.nY<g_nHeaderHeight)
+                {
+                    result.ptype=PT_HEADER;
+                }
+                else
+                {
+                    result.ptype=PT_CELL;
+                    result.nRow=(result.nY-g_nHeaderHeight)/g_nLineHeight;
+                    result.nCellTop=(result.nY-g_nHeaderHeight)%g_nLineHeight;
+                    result.nCellLeft=result.nX-nCurrentOffset;
+                }
+
+                if(result.nX>=(nCurrentOffset+g_listColumns.at(i).nWidth-g_nLineDelta))
+                {
+                    result.bResizeColumn=true;
+                }
+
+                break;
             }
 
-            if(result.nX>=(nCurrentOffset+g_listColumns.at(i).nWidth-g_nLineDelta))
-            {
-                result.bResizeColumn=true;
-            }
-
-            break;
+            nCurrentOffset+=g_listColumns.at(i).nWidth;
         }
-
-        nCurrentOffset+=g_listColumns.at(i).nWidth;
     }
 
     return result;
@@ -385,8 +403,11 @@ void XAbstractTableView::adjust(bool bUpdateData)
 
     for(int i=0;i<nNumberOfColumns;i++)
     {
-        g_listColumns[i].nLeft=g_nTableWidth;
-        g_nTableWidth+=g_listColumns.at(i).nWidth;
+        if(g_listColumns.at(i).bEnable)
+        {
+            g_listColumns[i].nLeft=g_nTableWidth;
+            g_nTableWidth+=g_listColumns.at(i).nWidth;
+        }
     }
 
     qint32 nDelta=g_nTableWidth-g_nViewWidth;

@@ -41,6 +41,7 @@ class XAbstractTableView : public QAbstractScrollArea
 public:
     struct COLUMN
     {
+        bool bEnable;
         qint32 nLeft;
         qint32 nWidth;
         QString sTitle;
@@ -78,6 +79,8 @@ public:
     ~XAbstractTableView();
 
     void addColumn(qint32 nWidth,QString sTitle);
+    void setColumnEnabled(qint32 nNumber,bool bState);
+
     void reload(bool bUpdateData=false);
 
     void setTextFont(const QFont &font);
