@@ -84,6 +84,14 @@ void XAbstractTableView::setColumnEnabled(qint32 nNumber, bool bState)
     }
 }
 
+void XAbstractTableView::setColumnWidth(qint32 nNumber, qint32 nWidth)
+{
+    if(nNumber<g_listColumns.count())
+    {
+        g_listColumns[nNumber].nWidth=nWidth;
+    }
+}
+
 void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
 {
     g_pPainter=new QPainter(this->viewport());

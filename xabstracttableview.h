@@ -80,6 +80,7 @@ public:
 
     void addColumn(qint32 nWidth,QString sTitle);
     void setColumnEnabled(qint32 nNumber,bool bState);
+    void setColumnWidth(qint32 nNumber,qint32 nWidth);
 
     void reload(bool bUpdateData=false);
 
