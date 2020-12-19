@@ -21,8 +21,6 @@
 #ifndef XDATETIMEEDITX_H
 #define XDATETIMEEDITX_H
 
-#include <QObject>
-#include <QWidget>
 #include <QDateTimeEdit>
 
 class XDateTimeEditX : public QDateTimeEdit
