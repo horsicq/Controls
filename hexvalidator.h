@@ -21,7 +21,6 @@
 #ifndef HEXVALIDATOR_H
 #define HEXVALIDATOR_H
 
-#include <QObject>
 #include <QValidator>
 
 class HEXValidator : public QValidator
