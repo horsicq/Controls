@@ -36,6 +36,7 @@ XAbstractTableView::XAbstractTableView(QWidget *pParent) : QAbstractScrollArea(p
     g_nTableWidth=0;
     g_nSelectionInitOffset=-1;
     g_nNumberOfRows=0;
+    g_nCursorDelta=0;
     g_nXOffset=0;
     g_bShowLines=true;
     g_nHeaderHeight=20;
@@ -175,18 +176,15 @@ void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
     if(g_rectCursor.width()&&g_rectCursor.height())
     {
         // TODO bold
-        QRect rectSelected;
-        rectSelected.setRect(g_rectCursor.x(),g_rectCursor.y(),g_rectCursor.width(),g_rectCursor.height());
-
         if(g_bBlink&&hasFocus())
         {
             g_pPainter->setPen(viewport()->palette().color(QPalette::Highlight));
-            g_pPainter->fillRect(rectSelected,this->palette().color(QPalette::WindowText));
+            g_pPainter->fillRect(g_rectCursor,this->palette().color(QPalette::WindowText));
         }
         else
         {
             g_pPainter->setPen(viewport()->palette().color(QPalette::WindowText));
-            g_pPainter->fillRect(rectSelected,this->palette().color(QPalette::Base));
+            g_pPainter->fillRect(g_rectCursor,this->palette().color(QPalette::Base));
         }
 
         g_pPainter->drawText(g_rectCursor.x(),g_rectCursor.y()+g_nLineHeight-g_nLineDelta,g_sCursorText);
@@ -204,8 +202,7 @@ void XAbstractTableView::reload(bool bUpdateData)
 void XAbstractTableView::setTextFont(const QFont &font)
 {
     const QFontMetricsF fm(font);
-    g_nCharWidth=fm.boundingRect('2').width();
-    g_nCharWidth=qMax(fm.boundingRect('W').width(),(qreal)g_nCharWidth);
+    g_nCharWidth=fm.maxWidth();
     g_nCharHeight=fm.height();
 
     g_fontText=font;
@@ -342,9 +339,14 @@ qint64 XAbstractTableView::getCursorOffset()
     return g_state.nCursorOffset;
 }
 
-void XAbstractTableView::setCursorOffset(qint64 nValue)
+void XAbstractTableView::setCursorOffset(qint64 nValue, qint32 nColumn)
 {
     g_state.nCursorOffset=nValue;
+
+    if(nColumn!=-1)
+    {
+        g_state.cursorPosition.nColumn=nColumn;
+    }
 }
 
 void XAbstractTableView::_initSelection(qint64 nOffset)
@@ -585,7 +587,7 @@ void XAbstractTableView::wheelEvent(QWheelEvent *pEvent)
     QAbstractScrollArea::wheelEvent(pEvent);
 }
 
-bool XAbstractTableView::goToOffset(qint64 nOffset)
+bool XAbstractTableView::_goToOffset(qint64 nOffset)
 {
     bool bResult=false;
 

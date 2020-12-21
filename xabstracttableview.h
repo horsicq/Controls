@@ -108,7 +108,7 @@ public:
 
     STATE getState();
     qint64 getCursorOffset();
-    void setCursorOffset(qint64 nValue);
+    void setCursorOffset(qint64 nValue,qint32 nColumn=-1);
 
     void adjust(bool bUpdateData=false);
 
@@ -147,7 +147,7 @@ protected:
     virtual void paintColumn(qint32 nColumn,qint32 nLeft,qint32 nTop,qint32 nWidth,qint32 nHeight)=0;
     virtual void paintCell(qint32 nRow,qint32 nColumn,qint32 nLeft,qint32 nTop,qint32 nWidth,qint32 nHeight)=0;
     virtual void endPainting()=0;
-    virtual bool goToOffset(qint64 nOffset);
+    virtual bool _goToOffset(qint64 nOffset);
     virtual void contextMenu(const QPoint &pos){Q_UNUSED(pos)}
     virtual qint64 getScrollValue();
     virtual void setScrollValue(qint64 nOffset);
