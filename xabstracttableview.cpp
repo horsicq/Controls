@@ -66,7 +66,7 @@ XAbstractTableView::~XAbstractTableView()
 
 }
 
-void XAbstractTableView::addColumn(qint32 nWidth, QString sTitle)
+void XAbstractTableView::addColumn(QString sTitle, qint32 nWidth)
 {
     COLUMN column={};
 
@@ -207,6 +207,7 @@ void XAbstractTableView::setTextFont(const QFont &font)
 
     g_fontText=font;
 
+    adjustColumns();
     adjust();
     viewport()->update();
 }
@@ -448,6 +449,11 @@ void XAbstractTableView::adjust(bool bUpdateData)
 
 //    resetCursor(); // TODO Check
 
+    // TODO
+}
+
+void XAbstractTableView::adjustColumns()
+{
     // TODO
 }
 

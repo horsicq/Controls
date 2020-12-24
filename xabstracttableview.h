@@ -78,7 +78,7 @@ public:
     explicit XAbstractTableView(QWidget *pParent=nullptr);
     ~XAbstractTableView();
 
-    void addColumn(qint32 nWidth,QString sTitle);
+    void addColumn(QString sTitle,qint32 nWidth=0);
     void setColumnEnabled(qint32 nNumber,bool bState);
     void setColumnWidth(qint32 nNumber,qint32 nWidth);
 
@@ -151,6 +151,7 @@ protected:
     virtual void contextMenu(const QPoint &pos){Q_UNUSED(pos)}
     virtual qint64 getScrollValue();
     virtual void setScrollValue(qint64 nOffset);
+    virtual void adjustColumns();
 
 private:
     qint64 g_nNumberOfRows;
