@@ -209,11 +209,11 @@ qint32 XLineEditHEX::getWidthFromMode(QWidget *pWidget,XLineEditHEX::MODE mode)
 
     if(mode==MODE_8)
     {
-        nResult=nSymbolWidth*2;
+        nResult=nSymbolWidth*4;
     }
     else if(mode==MODE_16)
     {
-        nResult=nSymbolWidth*4;
+        nResult=nSymbolWidth*6;
     }
     else if(mode==MODE_32)
     {
