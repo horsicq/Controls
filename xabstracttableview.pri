@@ -6,3 +6,8 @@ HEADERS += \
 
 SOURCES += \
     $$PWD/xabstracttableview.cpp
+
+!contains(XCONFIG, dialogtextinfo) {
+    XCONFIG += dialogtextinfo
+    include($$PWD/../FormatDialogs/dialogtextinfo.pri)
+}
