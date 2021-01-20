@@ -121,6 +121,11 @@ public:
 
     qint64 getMaxScrollValue();
 
+    void setLastColumnScretch(bool bState);
+    void setHeaderVisible(bool bState);
+    void setColumnFixed(bool bState);
+    void setLinesVisible(bool bState);
+
 private:
     void _initSelection(qint64 nOffset);
     void _setSelection(qint64 nOffset);
@@ -156,7 +161,6 @@ protected:
 private:
     qint64 g_nNumberOfRows;
     QList<COLUMN> g_listColumns;
-    bool g_bShowLines;
     qint32 g_nHeaderHeight;
     QPushButton pushButtonHeader; // TODO
     qint32 g_nXOffset;
@@ -186,6 +190,11 @@ private:
     QString g_sCursorText;
     qint32 g_nCursorDelta;
     bool g_bBlink;
+
+    bool g_bLastColumnScretch;
+    bool g_bHeaderVisible;
+    bool g_bColumnFixed;
+    bool g_bLinesVisible;
 };
 
 #endif // XABSTRACTTABLEVIEW_H

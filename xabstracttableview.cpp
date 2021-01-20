@@ -38,11 +38,14 @@ XAbstractTableView::XAbstractTableView(QWidget *pParent) : QAbstractScrollArea(p
     g_nNumberOfRows=0;
     g_nCursorDelta=0;
     g_nXOffset=0;
-    g_bShowLines=true;
     g_nHeaderHeight=20;
     g_nLineDelta=4; // TODO Check
     g_state={};
     g_bBlink=false;
+    g_bLastColumnScretch=false;
+    g_bHeaderVisible=false;
+    g_bColumnFixed=false;
+    g_bLinesVisible=false;
 
     g_nInitColumnNumber=0;
 
@@ -59,6 +62,10 @@ XAbstractTableView::XAbstractTableView(QWidget *pParent) : QAbstractScrollArea(p
     g_timerCursor.start();
 
     setMouseTracking(true); // Important
+
+    setHeaderVisible(true);
+    setColumnFixed(false);
+    setLinesVisible(true);
 }
 
 XAbstractTableView::~XAbstractTableView()
@@ -114,7 +121,7 @@ void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
 
         qint32 nX=nTopLeftX;
 
-        qint32 nHeaderHeight=g_nHeaderHeight;
+        qint32 nHeaderHeight=(g_bHeaderVisible)?(g_nHeaderHeight):(0);
 
         for(int i=0;i<nNumberOfColumns;i++)
         {
@@ -160,7 +167,7 @@ void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
                     g_pPainter->drawText(rect,Qt::AlignVCenter|Qt::AlignLeft,g_listColumns.at(i).sTitle); // TODO alignment
                 }
 
-                if(g_bShowLines)
+                if(g_bLinesVisible)
                 {
                     g_pPainter->drawLine(nX+nColumnWidth,nTopLeftY+nHeaderHeight,nX+nColumnWidth,nTopLeftY+nHeight);
                 }
@@ -269,6 +276,8 @@ XAbstractTableView::CURSOR_POSITION XAbstractTableView::getCursorPosition(QPoint
     result.nY=pos.y();
     result.nX=pos.x();
 
+    qint32 nHeaderHeight=(g_bHeaderVisible)?(g_nHeaderHeight):(0);
+
     qint32 nCurrentOffset=0;
     int nNumberOfColumns=g_listColumns.count();
 
@@ -281,21 +290,24 @@ XAbstractTableView::CURSOR_POSITION XAbstractTableView::getCursorPosition(QPoint
                 result.bIsValid=true;
                 result.nColumn=i;
 
-                if(result.nY<g_nHeaderHeight)
+                if(result.nY<nHeaderHeight)
                 {
                     result.ptype=PT_HEADER;
                 }
                 else
                 {
                     result.ptype=PT_CELL;
-                    result.nRow=(result.nY-g_nHeaderHeight)/g_nLineHeight;
-                    result.nCellTop=(result.nY-g_nHeaderHeight)%g_nLineHeight;
+                    result.nRow=(result.nY-nHeaderHeight)/g_nLineHeight;
+                    result.nCellTop=(result.nY-nHeaderHeight)%g_nLineHeight;
                     result.nCellLeft=result.nX-nCurrentOffset;
                 }
 
                 if(result.nX>=(nCurrentOffset+g_listColumns.at(i).nWidth-g_nLineDelta))
                 {
-                    result.bResizeColumn=true;
+                    if(!g_bColumnFixed)
+                    {
+                        result.bResizeColumn=true;
+                    }
                 }
 
                 break;
@@ -396,7 +408,9 @@ void XAbstractTableView::adjust(bool bUpdateData)
 
     g_nLineHeight=g_nCharHeight+5;
 
-    qint32 nLinesProPage=(g_nViewHeight-g_nHeaderHeight)/g_nLineHeight;
+    qint32 nHeaderHeight=(g_bHeaderVisible)?(g_nHeaderHeight):(0);
+
+    qint32 nLinesProPage=(g_nViewHeight-nHeaderHeight)/g_nLineHeight;
 
     if(nLinesProPage<0)
     {
@@ -412,6 +426,14 @@ void XAbstractTableView::adjust(bool bUpdateData)
     g_nTableWidth=0;
     int nNumberOfColumns=g_listColumns.count();
 
+    if(g_bLastColumnScretch)
+    {
+        if(nNumberOfColumns)
+        {
+            nNumberOfColumns--;
+        }
+    }
+
     for(int i=0;i<nNumberOfColumns;i++)
     {
         if(g_listColumns.at(i).bEnable)
@@ -423,19 +445,17 @@ void XAbstractTableView::adjust(bool bUpdateData)
 
     qint32 nDelta=g_nTableWidth-g_nViewWidth;
 
-    // TODO set last column width
-
-//    if(nDelta<=0)
-//    {
-//        int nNumberOfColumns=g_listColumns.count();
-
-//        if(nNumberOfColumns)
-//        {
-//            g_listColumns[nNumberOfColumns-1].nWidth-=(nDelta);
-//        }
-
-//        nDelta=-1;
-//    }
+    if(g_bLastColumnScretch)
+    {
+        if(nDelta<0)
+        {
+            g_listColumns[nNumberOfColumns].nWidth=-(nDelta);
+        }
+        else
+        {
+            g_listColumns[nNumberOfColumns].nWidth=0;
+        }
+    }
 
     horizontalScrollBar()->setRange(0,nDelta);
     horizontalScrollBar()->setPageStep(g_nViewWidth);
@@ -486,6 +506,26 @@ void XAbstractTableView::setSelection(qint64 nOffset, qint64 nSize)
 qint64 XAbstractTableView::getMaxScrollValue()
 {
     return 0x7FFFFFFF;
+}
+
+void XAbstractTableView::setLastColumnScretch(bool bState)
+{
+    g_bLastColumnScretch=bState;
+}
+
+void XAbstractTableView::setHeaderVisible(bool bState)
+{
+    g_bHeaderVisible=bState;
+}
+
+void XAbstractTableView::setColumnFixed(bool bState)
+{
+    g_bColumnFixed=bState;
+}
+
+void XAbstractTableView::setLinesVisible(bool bState)
+{
+    g_bLinesVisible=bState;
 }
 
 void XAbstractTableView::_customContextMenu(const QPoint &pos)
