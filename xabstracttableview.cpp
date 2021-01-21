@@ -528,6 +528,22 @@ void XAbstractTableView::setLinesVisible(bool bState)
     g_bLinesVisible=bState;
 }
 
+QFont XAbstractTableView::getMonoFont(qint32 nFontSize)
+{
+    QFont fontResult;
+#ifdef Q_OS_WIN
+    fontResult=QFont("Courier",nFontSize);
+#endif
+#ifdef Q_OS_LINUX
+    fontResult=QFont("Monospace",nFontSize);
+#endif
+#ifdef Q_OS_OSX
+    fontResult=QFont("Courier",nFontSize); // TODO Check "Menlo"
+#endif
+
+    return fontResult;
+}
+
 void XAbstractTableView::_customContextMenu(const QPoint &pos)
 {
     contextMenu(mapToGlobal(pos));

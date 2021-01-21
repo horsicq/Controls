@@ -38,6 +38,7 @@
 class XAbstractTableView : public QAbstractScrollArea
 {
     Q_OBJECT
+
 public:
     struct COLUMN
     {
@@ -125,6 +126,8 @@ public:
     void setHeaderVisible(bool bState);
     void setColumnFixed(bool bState);
     void setLinesVisible(bool bState);
+
+    static QFont getMonoFont(qint32 nFontSize);
 
 private:
     void _initSelection(qint64 nOffset);
