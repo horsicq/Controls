@@ -102,7 +102,6 @@ public:
 
     bool isOffsetSelected(qint64 nOffset);
 
-    QPainter *getPainter();
     QPainter *getBoldTextPointer();
 
     qint32 getLineDelta();
@@ -147,16 +146,16 @@ protected:
     virtual void mouseReleaseEvent(QMouseEvent *pEvent);
     virtual void keyPressEvent(QKeyEvent *pEvent);
     virtual void wheelEvent(QWheelEvent *pEvent);
-    virtual bool isOffsetValid(qint64 nOffset)=0;
-    virtual bool isEnd(qint64 nOffset)=0;
-    virtual qint64 cursorPositionToOffset(CURSOR_POSITION cursorPosition)=0;
-    virtual void updateData()=0;
-    virtual void startPainting()=0;
-    virtual void paintColumn(qint32 nColumn,qint32 nLeft,qint32 nTop,qint32 nWidth,qint32 nHeight)=0;
-    virtual void paintCell(qint32 nRow,qint32 nColumn,qint32 nLeft,qint32 nTop,qint32 nWidth,qint32 nHeight)=0;
-    virtual void endPainting()=0;
+    virtual bool isOffsetValid(qint64 nOffset);
+    virtual bool isEnd(qint64 nOffset);
+    virtual qint64 cursorPositionToOffset(CURSOR_POSITION cursorPosition);
+    virtual void updateData();
+    virtual void startPainting(QPainter *pPainter);
+    virtual void paintColumn(QPainter *pPainter,qint32 nColumn,qint32 nLeft,qint32 nTop,qint32 nWidth,qint32 nHeight);
+    virtual void paintCell(QPainter *pPainter,qint32 nRow,qint32 nColumn,qint32 nLeft,qint32 nTop,qint32 nWidth,qint32 nHeight);
+    virtual void endPainting(QPainter *pPainter);
     virtual bool _goToOffset(qint64 nOffset);
-    virtual void contextMenu(const QPoint &pos){Q_UNUSED(pos)}
+    virtual void contextMenu(const QPoint &pos);
     virtual qint64 getScrollValue();
     virtual void setScrollValue(qint64 nOffset);
     virtual void adjustColumns();
@@ -179,8 +178,6 @@ private:
     qint32 g_nTableWidth;
 
     qint32 g_nLineDelta;
-
-    QPainter *g_pPainter;
 
     STATE g_state;
     bool g_bMouseResizeColumn;

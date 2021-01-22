@@ -1,4 +1,4 @@
-// copyright (c) 2020 hors<horsicq@gmail.com>
+// copyright (c) 2020-2021 hors<horsicq@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,6 @@ XAbstractTableView::XAbstractTableView(QWidget *pParent) : QAbstractScrollArea(p
 {
     g_bMouseResizeColumn=false;
     g_bMouseSelection=false;
-    g_pPainter=nullptr;
     g_nViewStart=0;
     g_nCharWidth=0;
     g_nCharHeight=0;
@@ -66,6 +65,7 @@ XAbstractTableView::XAbstractTableView(QWidget *pParent) : QAbstractScrollArea(p
     setHeaderVisible(true);
     setColumnFixed(false);
     setLinesVisible(true);
+    // TODO Cursor off default
 }
 
 XAbstractTableView::~XAbstractTableView()
@@ -102,102 +102,106 @@ void XAbstractTableView::setColumnWidth(qint32 nNumber, qint32 nWidth)
 
 void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
 {
-    g_pPainter=new QPainter(this->viewport());
-    g_pPainter->setFont(g_fontText);
-    g_pPainter->setPen(viewport()->palette().color(QPalette::WindowText));
-    g_pPainter->setBackgroundMode(Qt::TransparentMode);
+    QPainter *pPainter=new QPainter(this->viewport());
+    pPainter->setFont(g_fontText);
+    pPainter->setPen(viewport()->palette().color(QPalette::WindowText));
+    pPainter->setBackgroundMode(Qt::TransparentMode);
 
     if(g_rectCursor!=pEvent->rect())
     {
-        startPainting();
+        startPainting(pPainter);
 
         int nNumberOfColumns=g_listColumns.count();
 
-        qint32 nTopLeftY=pEvent->rect().topLeft().y();
-        qint32 nTopLeftX=pEvent->rect().topLeft().x()-g_nXOffset;
-        qint32 nScreenWidth=pEvent->rect().width();
-
-        qint32 nHeight=pEvent->rect().height();
-
-        qint32 nX=nTopLeftX;
-
-        qint32 nHeaderHeight=(g_bHeaderVisible)?(g_nHeaderHeight):(0);
-
-        for(int i=0;i<nNumberOfColumns;i++)
+        if(nNumberOfColumns)
         {
-            if(g_listColumns.at(i).bEnable)
+            qint32 nTopLeftY=pEvent->rect().topLeft().y();
+            qint32 nTopLeftX=pEvent->rect().topLeft().x()-g_nXOffset;
+            qint32 nScreenWidth=pEvent->rect().width();
+
+            qint32 nHeight=pEvent->rect().height();
+
+            qint32 nX=nTopLeftX;
+
+            qint32 nHeaderHeight=(g_bHeaderVisible)?(g_nHeaderHeight):(0);
+
+            for(int i=0;i<nNumberOfColumns;i++)
             {
-                qint32 nColumnWidth=g_listColumns.at(i).nWidth;
-
-                getPainter()->fillRect(nX,nTopLeftY+nHeaderHeight,nColumnWidth,nHeight-nHeaderHeight,viewport()->palette().color(QPalette::Base));
-
-                paintColumn(i,nX,nTopLeftY+nHeaderHeight,nColumnWidth,nHeight-nHeaderHeight);
-
-                for(int j=0;j<g_nLinesProPage;j++)
+                if(g_listColumns.at(i).bEnable)
                 {
-                    paintCell(j,i,nX,nTopLeftY+nHeaderHeight+(j*g_nLineHeight),nColumnWidth,g_nLineHeight);
-                }
+                    qint32 nColumnWidth=g_listColumns.at(i).nWidth;
 
-                nX+=nColumnWidth;
+                    pPainter->fillRect(nX,nTopLeftY+nHeaderHeight,nColumnWidth,nHeight-nHeaderHeight,viewport()->palette().color(QPalette::Base));
+
+                    paintColumn(pPainter,i,nX,nTopLeftY+nHeaderHeight,nColumnWidth,nHeight-nHeaderHeight);
+
+                    for(int j=0;j<g_nLinesProPage;j++)
+                    {
+                        paintCell(pPainter,j,i,nX,nTopLeftY+nHeaderHeight+(j*g_nLineHeight),nColumnWidth,g_nLineHeight);
+                    }
+
+                    nX+=nColumnWidth;
+                }
+            }
+
+            // Rest
+            pPainter->fillRect(nX,nTopLeftY,nScreenWidth-nX,nHeight,viewport()->palette().color(QPalette::Base));
+
+            nX=nTopLeftX;
+
+            // Draw lines and headers
+            for(int i=0;i<nNumberOfColumns;i++)
+            {
+                if(g_listColumns.at(i).bEnable)
+                {
+                    qint32 nColumnWidth=g_listColumns.at(i).nWidth;
+
+                    if(nHeaderHeight>0)
+                    {
+                        QStyleOptionButton styleOptionButton;
+                        styleOptionButton.state=QStyle::State_Enabled;
+
+                        styleOptionButton.rect=QRect(nX,nTopLeftY,nColumnWidth,nHeaderHeight);
+
+                        pushButtonHeader.style()->drawControl(QStyle::CE_PushButton,&styleOptionButton,pPainter,&pushButtonHeader);
+
+                        QRect rect=QRect(nX+4,nTopLeftY,nColumnWidth-8,nHeaderHeight);
+                        pPainter->drawText(rect,Qt::AlignVCenter|Qt::AlignLeft,g_listColumns.at(i).sTitle); // TODO alignment
+                    }
+
+                    if(g_bLinesVisible)
+                    {
+                        pPainter->drawLine(nX+nColumnWidth,nTopLeftY+nHeaderHeight,nX+nColumnWidth,nTopLeftY+nHeight);
+                    }
+
+                    nX+=nColumnWidth;
+                }
             }
         }
 
-        // Rest
-        getPainter()->fillRect(nX,nTopLeftY,nScreenWidth-nX,nHeight,viewport()->palette().color(QPalette::Base));
-
-        nX=nTopLeftX;
-
-        // Draw lines and headers
-        for(int i=0;i<nNumberOfColumns;i++)
-        {
-            if(g_listColumns.at(i).bEnable)
-            {
-                qint32 nColumnWidth=g_listColumns.at(i).nWidth;
-
-                if(nHeaderHeight>0)
-                {
-                    QStyleOptionButton styleOptionButton;
-                    styleOptionButton.state=QStyle::State_Enabled;
-
-                    styleOptionButton.rect=QRect(nX,nTopLeftY,nColumnWidth,nHeaderHeight);
-
-                    pushButtonHeader.style()->drawControl(QStyle::CE_PushButton,&styleOptionButton,g_pPainter,&pushButtonHeader);
-
-                    QRect rect=QRect(nX+4,nTopLeftY,nColumnWidth-8,nHeaderHeight);
-                    g_pPainter->drawText(rect,Qt::AlignVCenter|Qt::AlignLeft,g_listColumns.at(i).sTitle); // TODO alignment
-                }
-
-                if(g_bLinesVisible)
-                {
-                    g_pPainter->drawLine(nX+nColumnWidth,nTopLeftY+nHeaderHeight,nX+nColumnWidth,nTopLeftY+nHeight);
-                }
-
-                nX+=nColumnWidth;
-            }
-        }
-
-        endPainting();
+        endPainting(pPainter);
     }
 
     // Draw cursor
+    // TODO Cursor off
     if(g_rectCursor.width()&&g_rectCursor.height())
     {
         // TODO bold
         if(g_bBlink&&hasFocus())
         {
-            g_pPainter->setPen(viewport()->palette().color(QPalette::Highlight));
-            g_pPainter->fillRect(g_rectCursor,this->palette().color(QPalette::WindowText));
+            pPainter->setPen(viewport()->palette().color(QPalette::Highlight));
+            pPainter->fillRect(g_rectCursor,this->palette().color(QPalette::WindowText));
         }
         else
         {
-            g_pPainter->setPen(viewport()->palette().color(QPalette::WindowText));
-            g_pPainter->fillRect(g_rectCursor,this->palette().color(QPalette::Base));
+            pPainter->setPen(viewport()->palette().color(QPalette::WindowText));
+            pPainter->fillRect(g_rectCursor,this->palette().color(QPalette::Base));
         }
 
-        g_pPainter->drawText(g_rectCursor.x(),g_rectCursor.y()+g_nLineHeight-g_nLineDelta,g_sCursorText);
+        pPainter->drawText(g_rectCursor.x(),g_rectCursor.y()+g_nLineHeight-g_nLineDelta,g_sCursorText);
     }
 
-    delete g_pPainter;
+    delete pPainter;
 }
 
 void XAbstractTableView::reload(bool bUpdateData)
@@ -330,11 +334,6 @@ bool XAbstractTableView::isOffsetSelected(qint64 nOffset)
     }
 
     return bResult;
-}
-
-QPainter *XAbstractTableView::getPainter()
-{
-    return g_pPainter;
 }
 
 qint32 XAbstractTableView::getLineDelta()
@@ -649,6 +648,63 @@ void XAbstractTableView::wheelEvent(QWheelEvent *pEvent)
     QAbstractScrollArea::wheelEvent(pEvent);
 }
 
+bool XAbstractTableView::isOffsetValid(qint64 nOffset)
+{
+    Q_UNUSED(nOffset)
+
+    return false;
+}
+
+bool XAbstractTableView::isEnd(qint64 nOffset)
+{
+    Q_UNUSED(nOffset)
+
+    return false;
+}
+
+qint64 XAbstractTableView::cursorPositionToOffset(XAbstractTableView::CURSOR_POSITION cursorPosition)
+{
+    Q_UNUSED(cursorPosition)
+
+    return 0;
+}
+
+void XAbstractTableView::updateData()
+{
+
+}
+
+void XAbstractTableView::startPainting(QPainter *pPainter)
+{
+    Q_UNUSED(pPainter)
+}
+
+void XAbstractTableView::paintColumn(QPainter *pPainter, qint32 nColumn, qint32 nLeft, qint32 nTop, qint32 nWidth, qint32 nHeight)
+{
+    Q_UNUSED(pPainter)
+    Q_UNUSED(nColumn)
+    Q_UNUSED(nLeft)
+    Q_UNUSED(nTop)
+    Q_UNUSED(nWidth)
+    Q_UNUSED(nHeight)
+}
+
+void XAbstractTableView::paintCell(QPainter *pPainter, qint32 nRow, qint32 nColumn, qint32 nLeft, qint32 nTop, qint32 nWidth, qint32 nHeight)
+{
+    Q_UNUSED(pPainter)
+    Q_UNUSED(nRow)
+    Q_UNUSED(nColumn)
+    Q_UNUSED(nLeft)
+    Q_UNUSED(nTop)
+    Q_UNUSED(nWidth)
+    Q_UNUSED(nHeight)
+}
+
+void XAbstractTableView::endPainting(QPainter *pPainter)
+{
+    Q_UNUSED(pPainter)
+}
+
 bool XAbstractTableView::_goToOffset(qint64 nOffset)
 {
     bool bResult=false;
@@ -660,6 +716,11 @@ bool XAbstractTableView::_goToOffset(qint64 nOffset)
     }
 
     return bResult;
+}
+
+void XAbstractTableView::contextMenu(const QPoint &pos)
+{
+    Q_UNUSED(pos)
 }
 
 qint64 XAbstractTableView::getScrollValue()
