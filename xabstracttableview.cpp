@@ -48,6 +48,10 @@ XAbstractTableView::XAbstractTableView(QWidget *pParent) : QAbstractScrollArea(p
 
     g_nInitColumnNumber=0;
 
+    g_pShortcuts=&scEmpty;
+
+    installEventFilter(this);
+
     setContextMenuPolicy(Qt::CustomContextMenu);
 
     connect(this,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(_customContextMenu(QPoint)));
@@ -202,6 +206,24 @@ void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
     }
 
     delete pPainter;
+}
+
+bool XAbstractTableView::eventFilter(QObject *pObj, QEvent *pEvent)
+{
+    Q_UNUSED(pObj)
+
+    if(pEvent->type()==QEvent::FocusIn)
+    {
+//        qDebug("QEvent::FocusIn");
+        registerShortcuts(true);
+    }
+    else if(pEvent->type()==QEvent::FocusOut)
+    {
+//        qDebug("QEvent::FocusOut");
+        registerShortcuts(false);
+    }
+
+    return false;
 }
 
 void XAbstractTableView::reload(bool bUpdateData)
@@ -476,6 +498,11 @@ void XAbstractTableView::adjustColumns()
     // TODO
 }
 
+void XAbstractTableView::registerShortcuts(bool bState)
+{
+    Q_UNUSED(bState)
+}
+
 void XAbstractTableView::setCursorData(QRect rect, QString sText, qint32 nDelta)
 {
     g_rectCursor=rect;
@@ -541,6 +568,16 @@ QFont XAbstractTableView::getMonoFont(qint32 nFontSize)
 #endif
 
     return fontResult;
+}
+
+void XAbstractTableView::setShortcuts(XShortcuts *pShortcuts)
+{
+    g_pShortcuts=pShortcuts;
+}
+
+XShortcuts *XAbstractTableView::getShortcuts()
+{
+    return g_pShortcuts;
 }
 
 void XAbstractTableView::_customContextMenu(const QPoint &pos)

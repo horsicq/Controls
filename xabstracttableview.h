@@ -128,6 +128,9 @@ public:
 
     static QFont getMonoFont(qint32 nFontSize);
 
+    void setShortcuts(XShortcuts *pShortcuts);
+    XShortcuts *getShortcuts();
+
 private:
     void _initSelection(qint64 nOffset);
     void _setSelection(qint64 nOffset);
@@ -140,6 +143,7 @@ private slots:
 
 protected:
     virtual void paintEvent(QPaintEvent* pEvent) override;
+    bool eventFilter(QObject *pObj,QEvent *pEvent) override;
     virtual void resizeEvent(QResizeEvent *pEvent);
     virtual void mouseMoveEvent(QMouseEvent *pEvent);
     virtual void mousePressEvent(QMouseEvent *pEvent);
@@ -159,6 +163,7 @@ protected:
     virtual qint64 getScrollValue();
     virtual void setScrollValue(qint64 nOffset);
     virtual void adjustColumns();
+    virtual void registerShortcuts(bool bState);
 
 private:
     qint64 g_nNumberOfRows;
@@ -195,6 +200,9 @@ private:
     bool g_bHeaderVisible;
     bool g_bColumnFixed;
     bool g_bLinesVisible;
+
+    XShortcuts *g_pShortcuts;
+    XShortcuts scEmpty;
 };
 
 #endif // XABSTRACTTABLEVIEW_H

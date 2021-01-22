@@ -11,3 +11,8 @@ SOURCES += \
     XCONFIG += dialogtextinfo
     include($$PWD/../FormatDialogs/dialogtextinfo.pri)
 }
+
+!contains(XCONFIG, xshortcuts) {
+    XCONFIG += xshortcuts
+    include($$PWD/../XShortcuts/xshortcuts.pri)
+}
