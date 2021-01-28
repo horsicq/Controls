@@ -37,18 +37,19 @@ XAbstractTableView::XAbstractTableView(QWidget *pParent) : QAbstractScrollArea(p
     g_nNumberOfRows=0;
     g_nCursorDelta=0;
     g_nXOffset=0;
-    g_nHeaderHeight=20;
-    g_nLineDelta=4; // TODO Check
+    g_nHeaderHeight=20; // TODO Set
+    g_nLineDelta=0; // TODO Check
     g_state={};
     g_bBlink=false;
     g_bLastColumnScretch=false;
     g_bHeaderVisible=false;
     g_bColumnFixed=false;
-    g_bLinesVisible=false;
+    g_bVerticalLinesVisible=false;
+    g_bHorisontalLinesVisible=false;
 
     g_nInitColumnNumber=0;
 
-    g_pShortcuts=&scEmpty;
+    g_pShortcuts=&g_scEmpty;
 
     installEventFilter(this);
 
@@ -68,7 +69,8 @@ XAbstractTableView::XAbstractTableView(QWidget *pParent) : QAbstractScrollArea(p
 
     setHeaderVisible(true);
     setColumnFixed(false);
-    setLinesVisible(true);
+    setVerticalLinesVisible(true);
+    setLineDelta(4);
     // TODO Cursor off default
 }
 
@@ -167,15 +169,23 @@ void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
 
                         styleOptionButton.rect=QRect(nX,nTopLeftY,nColumnWidth,nHeaderHeight);
 
-                        pushButtonHeader.style()->drawControl(QStyle::CE_PushButton,&styleOptionButton,pPainter,&pushButtonHeader);
+                        g_pushButtonHeader.style()->drawControl(QStyle::CE_PushButton,&styleOptionButton,pPainter,&g_pushButtonHeader);
 
                         QRect rect=QRect(nX+4,nTopLeftY,nColumnWidth-8,nHeaderHeight);
                         pPainter->drawText(rect,Qt::AlignVCenter|Qt::AlignLeft,g_listColumns.at(i).sTitle); // TODO alignment
                     }
 
-                    if(g_bLinesVisible)
+                    if(g_bVerticalLinesVisible)
                     {
                         pPainter->drawLine(nX+nColumnWidth,nTopLeftY+nHeaderHeight,nX+nColumnWidth,nTopLeftY+nHeight);
+                    }
+
+                    if(g_bHorisontalLinesVisible)
+                    {
+                        for(int j=0;j<g_nLinesProPage;j++)
+                        {
+                            pPainter->drawLine(nX,nTopLeftY+nHeaderHeight+((j+1)*g_nLineHeight),nX+nColumnWidth,nTopLeftY+nHeaderHeight+(j+1)*g_nLineHeight);
+                        }
                     }
 
                     nX+=nColumnWidth;
@@ -273,6 +283,11 @@ void XAbstractTableView::setTotalLineCount(qint64 nValue)
 quint64 XAbstractTableView::getTotalLineCount()
 {
     return g_nTotalLineCount;
+}
+
+void XAbstractTableView::setLineDelta(qint32 nValue)
+{
+    g_nLineDelta=nValue;
 }
 
 qint32 XAbstractTableView::getLinesProPage()
@@ -424,10 +439,12 @@ void XAbstractTableView::horisontalScroll()
 
 void XAbstractTableView::adjust(bool bUpdateData)
 {
+    qDebug("adjust");
+
     g_nViewWidth=viewport()->width();
     g_nViewHeight=viewport()->height();
 
-    g_nLineHeight=g_nCharHeight+5;
+    g_nLineHeight=g_nCharHeight+g_nLineDelta;
 
     qint32 nHeaderHeight=(g_bHeaderVisible)?(g_nHeaderHeight):(0);
 
@@ -549,9 +566,14 @@ void XAbstractTableView::setColumnFixed(bool bState)
     g_bColumnFixed=bState;
 }
 
-void XAbstractTableView::setLinesVisible(bool bState)
+void XAbstractTableView::setVerticalLinesVisible(bool bState)
 {
-    g_bLinesVisible=bState;
+    g_bVerticalLinesVisible=bState;
+}
+
+void XAbstractTableView::setHorisontalLinesVisible(bool bState)
+{
+    g_bHorisontalLinesVisible=bState;
 }
 
 QFont XAbstractTableView::getMonoFont(qint32 nFontSize)
@@ -767,5 +789,7 @@ qint64 XAbstractTableView::getScrollValue()
 
 void XAbstractTableView::setScrollValue(qint64 nOffset)
 {
+    setViewStart(nOffset);
     verticalScrollBar()->setValue((qint32)nOffset);
+    adjust(true);
 }

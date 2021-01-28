@@ -91,6 +91,8 @@ public:
     void setTotalLineCount(qint64 nValue);
     quint64 getTotalLineCount();
 
+    void setLineDelta(qint32 nValue);
+
     qint32 getLinesProPage();
 
     void setViewStart(qint64 nValue);
@@ -124,7 +126,8 @@ public:
     void setLastColumnScretch(bool bState);
     void setHeaderVisible(bool bState);
     void setColumnFixed(bool bState);
-    void setLinesVisible(bool bState);
+    void setVerticalLinesVisible(bool bState);
+    void setHorisontalLinesVisible(bool bState);
 
     static QFont getMonoFont(qint32 nFontSize);
 
@@ -169,7 +172,7 @@ private:
     qint64 g_nNumberOfRows;
     QList<COLUMN> g_listColumns;
     qint32 g_nHeaderHeight;
-    QPushButton pushButtonHeader; // TODO
+    QPushButton g_pushButtonHeader; // TODO
     qint32 g_nXOffset;
     qint64 g_nViewStart;
     qint32 g_nCharWidth;
@@ -199,10 +202,11 @@ private:
     bool g_bLastColumnScretch;
     bool g_bHeaderVisible;
     bool g_bColumnFixed;
-    bool g_bLinesVisible;
+    bool g_bVerticalLinesVisible;
+    bool g_bHorisontalLinesVisible;
 
     XShortcuts *g_pShortcuts;
-    XShortcuts scEmpty;
+    XShortcuts g_scEmpty;
 };
 
 #endif // XABSTRACTTABLEVIEW_H
