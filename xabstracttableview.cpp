@@ -49,7 +49,7 @@ XAbstractTableView::XAbstractTableView(QWidget *pParent) : QAbstractScrollArea(p
 
     g_nInitColumnNumber=0;
 
-    g_pShortcuts=&g_scEmpty;
+    setShortcuts(&g_scEmpty);
 
     installEventFilter(this);
 
@@ -439,8 +439,6 @@ void XAbstractTableView::horisontalScroll()
 
 void XAbstractTableView::adjust(bool bUpdateData)
 {
-    qDebug("adjust");
-
     g_nViewWidth=viewport()->width();
     g_nViewHeight=viewport()->height();
 
