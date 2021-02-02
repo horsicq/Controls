@@ -233,7 +233,7 @@ bool XAbstractTableView::eventFilter(QObject *pObj, QEvent *pEvent)
         registerShortcuts(false);
     }
 
-    return false;
+    return QObject::eventFilter(pObj,pEvent);
 }
 
 void XAbstractTableView::reload(bool bUpdateData)
