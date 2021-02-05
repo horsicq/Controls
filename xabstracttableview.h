@@ -76,6 +76,12 @@ public:
         CURSOR_POSITION cursorPosition;
     };
 
+    struct OS
+    {
+        qint64 nOffset;
+        qint64 nSize;
+    };
+
     explicit XAbstractTableView(QWidget *pParent=nullptr);
     ~XAbstractTableView();
 
@@ -155,7 +161,7 @@ protected:
     virtual void wheelEvent(QWheelEvent *pEvent);
     virtual bool isOffsetValid(qint64 nOffset);
     virtual bool isEnd(qint64 nOffset);
-    virtual qint64 cursorPositionToOffset(CURSOR_POSITION cursorPosition);
+    virtual OS cursorPositionToOS(CURSOR_POSITION cursorPosition);
     virtual void updateData();
     virtual void startPainting(QPainter *pPainter);
     virtual void paintColumn(QPainter *pPainter,qint32 nColumn,qint32 nLeft,qint32 nTop,qint32 nWidth,qint32 nHeight);

@@ -623,7 +623,7 @@ void XAbstractTableView::mouseMoveEvent(QMouseEvent *pEvent)
 
     if(g_bMouseSelection)
     {
-        qint64 nOffset=cursorPositionToOffset(cursorPosition);
+        qint64 nOffset=cursorPositionToOS(cursorPosition).nOffset;
 
         if(nOffset!=-1)
         {
@@ -664,7 +664,7 @@ void XAbstractTableView::mousePressEvent(QMouseEvent *pEvent)
     if(pEvent->button()==Qt::LeftButton)
     {
         CURSOR_POSITION cursorPosition=getCursorPosition(pEvent->pos());
-        qint64 nOffset=cursorPositionToOffset(cursorPosition);
+        qint64 nOffset=cursorPositionToOS(cursorPosition).nOffset;
 
         if(cursorPosition.bResizeColumn)
         {
@@ -689,7 +689,19 @@ void XAbstractTableView::mousePressEvent(QMouseEvent *pEvent)
 
 void XAbstractTableView::mouseReleaseEvent(QMouseEvent *pEvent)
 {
-    Q_UNUSED(pEvent)
+    if(pEvent->button()==Qt::LeftButton)
+    {
+        CURSOR_POSITION cursorPosition=getCursorPosition(pEvent->pos());
+        OS os=cursorPositionToOS(cursorPosition);
+
+        if(g_state.nCursorOffset==os.nOffset)
+        {
+            _setSelection(os.nOffset+os.nSize);
+
+            adjust();
+            viewport()->update();
+        }
+    }
 
     g_bMouseResizeColumn=false;
     g_bMouseSelection=false;
@@ -719,11 +731,13 @@ bool XAbstractTableView::isEnd(qint64 nOffset)
     return false;
 }
 
-qint64 XAbstractTableView::cursorPositionToOffset(XAbstractTableView::CURSOR_POSITION cursorPosition)
+XAbstractTableView::OS XAbstractTableView::cursorPositionToOS(XAbstractTableView::CURSOR_POSITION cursorPosition)
 {
     Q_UNUSED(cursorPosition)
 
-    return 0;
+    OS result={};
+
+    return result;
 }
 
 void XAbstractTableView::updateData()
