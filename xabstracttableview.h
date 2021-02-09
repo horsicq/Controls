@@ -140,6 +140,9 @@ public:
     void setShortcuts(XShortcuts *pShortcuts);
     XShortcuts *getShortcuts();
 
+signals:
+    void cursorChanged(qint64 nOffset);
+
 private:
     void _initSelection(qint64 nOffset);
     void _setSelection(qint64 nOffset);

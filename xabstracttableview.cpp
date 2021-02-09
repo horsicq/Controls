@@ -396,6 +396,8 @@ void XAbstractTableView::setCursorOffset(qint64 nValue, qint32 nColumn)
     {
         g_state.cursorPosition.nColumn=nColumn;
     }
+
+    emit cursorChanged(nValue);
 }
 
 void XAbstractTableView::_initSelection(qint64 nOffset)
@@ -633,6 +635,8 @@ void XAbstractTableView::mouseMoveEvent(QMouseEvent *pEvent)
 
             adjust();
             viewport()->update();
+
+            emit cursorChanged(nOffset);
         }
     }
     else if(g_bMouseResizeColumn)
@@ -678,6 +682,8 @@ void XAbstractTableView::mousePressEvent(QMouseEvent *pEvent)
             g_state.cursorPosition=cursorPosition;
             _initSelection(nOffset);
             g_bMouseSelection=true;
+
+            emit cursorChanged(nOffset);
         }
 
         adjust();
