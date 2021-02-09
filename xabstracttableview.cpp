@@ -789,6 +789,7 @@ bool XAbstractTableView::_goToOffset(qint64 nOffset)
     if(isOffsetValid(nOffset))
     {
         setScrollValue(nOffset);
+        setCursorOffset(nOffset);
         bResult=true;
     }
 
