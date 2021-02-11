@@ -72,6 +72,7 @@ public:
     struct STATE
     {
         qint64 nCursorOffset;
+        QVariant varCursorData;
         qint64 nSelectionOffset;
         qint64 nSelectionSize;
         CURSOR_POSITION cursorPosition;
@@ -87,6 +88,7 @@ public:
     ~XAbstractTableView();
 
     void addColumn(QString sTitle,qint32 nWidth=0,bool bClickable=false);
+    void setColumnTitle(qint32 nNumber,QString sTitle);
     void setColumnEnabled(qint32 nNumber,bool bState);
     void setColumnWidth(qint32 nNumber,qint32 nWidth);
 
