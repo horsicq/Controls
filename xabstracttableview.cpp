@@ -47,7 +47,10 @@ XAbstractTableView::XAbstractTableView(QWidget *pParent) : QAbstractScrollArea(p
     g_bVerticalLinesVisible=false;
     g_bHorisontalLinesVisible=false;
 
-    g_nInitColumnNumber=0;
+    g_nResizeColumnNumber=0;
+
+    g_bHeaderClickButton=false;
+    g_nHeaderClickColumnNumber=0;
 
     setShortcuts(&g_scEmpty);
 
@@ -79,13 +82,14 @@ XAbstractTableView::~XAbstractTableView()
 
 }
 
-void XAbstractTableView::addColumn(QString sTitle, qint32 nWidth)
+void XAbstractTableView::addColumn(QString sTitle, qint32 nWidth, bool bClickable)
 {
     COLUMN column={};
 
     column.bEnable=true;
     column.nWidth=nWidth;
     column.sTitle=sTitle;
+    column.bClickable=bClickable;
 
     g_listColumns.append(column);
 }
@@ -165,7 +169,15 @@ void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
                     if(nHeaderHeight>0)
                     {
                         QStyleOptionButton styleOptionButton;
-                        styleOptionButton.state=QStyle::State_Enabled;
+
+                        if((g_bHeaderClickButton)&&(g_nHeaderClickColumnNumber==i))
+                        {
+                            styleOptionButton.state=QStyle::State_Raised; // TODO Check
+                        }
+                        else
+                        {
+                            styleOptionButton.state=QStyle::State_Enabled;
+                        }
 
                         styleOptionButton.rect=QRect(nX,nTopLeftY,nColumnWidth,nHeaderHeight);
 
@@ -520,6 +532,11 @@ void XAbstractTableView::registerShortcuts(bool bState)
     Q_UNUSED(bState)
 }
 
+void XAbstractTableView::_headerClicked(qint32 nNumber)
+{
+    emit headerClicked(nNumber);
+}
+
 void XAbstractTableView::setCursorData(QRect rect, QString sText, qint32 nDelta)
 {
     g_rectCursor=rect;
@@ -641,9 +658,9 @@ void XAbstractTableView::mouseMoveEvent(QMouseEvent *pEvent)
     }
     else if(g_bMouseResizeColumn)
     {
-        qint32 nColumnWidth=qMax(g_nLineDelta,cursorPosition.nX-g_listColumns.at(g_nInitColumnNumber).nLeft);
+        qint32 nColumnWidth=qMax(g_nLineDelta,cursorPosition.nX-g_listColumns.at(g_nResizeColumnNumber).nLeft);
 
-        g_listColumns[g_nInitColumnNumber].nWidth=nColumnWidth;
+        g_listColumns[g_nResizeColumnNumber].nWidth=nColumnWidth;
 
         adjust();
         viewport()->update();
@@ -660,6 +677,14 @@ void XAbstractTableView::mouseMoveEvent(QMouseEvent *pEvent)
         }
     }
 
+    if(g_bHeaderClickButton)
+    {
+        g_bHeaderClickButton=((cursorPosition.ptype==PT_HEADER)&&(g_nHeaderClickColumnNumber==cursorPosition.nColumn));
+
+        adjust();
+        viewport()->update();
+    }
+
     QAbstractScrollArea::mouseMoveEvent(pEvent);
 }
 
@@ -673,8 +698,13 @@ void XAbstractTableView::mousePressEvent(QMouseEvent *pEvent)
         if(cursorPosition.bResizeColumn)
         {
             g_bMouseResizeColumn=true;
-            g_nInitColumnNumber=cursorPosition.nColumn;
+            g_nResizeColumnNumber=cursorPosition.nColumn;
             setCursor(Qt::SplitHCursor);
+        }
+        else if((cursorPosition.ptype==PT_HEADER)&&(g_listColumns.at(cursorPosition.nColumn).bClickable))
+        {
+            g_bHeaderClickButton=true;
+            g_nHeaderClickColumnNumber=cursorPosition.nColumn;
         }
         else if(nOffset!=-1)
         {
@@ -697,20 +727,28 @@ void XAbstractTableView::mouseReleaseEvent(QMouseEvent *pEvent)
 {
     if(pEvent->button()==Qt::LeftButton)
     {
-        CURSOR_POSITION cursorPosition=getCursorPosition(pEvent->pos());
-        OS os=cursorPositionToOS(cursorPosition);
-
-        if(g_state.nCursorOffset==os.nOffset)
+        if(g_bHeaderClickButton)
         {
-            _setSelection(os.nOffset+os.nSize);
-
-            adjust();
-            viewport()->update();
+            _headerClicked(g_nHeaderClickColumnNumber);
         }
+        else
+        {
+            CURSOR_POSITION cursorPosition=getCursorPosition(pEvent->pos());
+            OS os=cursorPositionToOS(cursorPosition);
+
+            if(g_state.nCursorOffset==os.nOffset)
+            {
+                _setSelection(os.nOffset+os.nSize);
+            }
+        }
+
+        adjust();
+        viewport()->update();
     }
 
     g_bMouseResizeColumn=false;
     g_bMouseSelection=false;
+    g_bHeaderClickButton=false;
 }
 
 void XAbstractTableView::keyPressEvent(QKeyEvent *pEvent)

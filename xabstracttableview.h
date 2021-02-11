@@ -46,6 +46,7 @@ public:
         qint32 nLeft;
         qint32 nWidth;
         QString sTitle;
+        bool bClickable;
     };
 
     enum PT
@@ -85,7 +86,7 @@ public:
     explicit XAbstractTableView(QWidget *pParent=nullptr);
     ~XAbstractTableView();
 
-    void addColumn(QString sTitle,qint32 nWidth=0);
+    void addColumn(QString sTitle,qint32 nWidth=0,bool bClickable=false);
     void setColumnEnabled(qint32 nNumber,bool bState);
     void setColumnWidth(qint32 nNumber,qint32 nWidth);
 
@@ -144,6 +145,7 @@ signals:
     void cursorChanged(qint64 nOffset);
     void errorMessage(QString sText);
     void editState(bool bState);
+    void headerClicked(qint32 nNumber);
 
 private:
     void _initSelection(qint64 nOffset);
@@ -178,6 +180,7 @@ protected:
     virtual void setScrollValue(qint64 nOffset);
     virtual void adjustColumns();
     virtual void registerShortcuts(bool bState);
+    virtual void _headerClicked(qint32 nNumber);
 
 private:
     qint64 g_nNumberOfRows;
@@ -199,10 +202,12 @@ private:
     qint32 g_nLineDelta;
 
     STATE g_state;
-    bool g_bMouseResizeColumn;
     bool g_bMouseSelection;
     qint64 g_nSelectionInitOffset;
-    qint32 g_nInitColumnNumber;
+    bool g_bMouseResizeColumn;
+    qint32 g_nResizeColumnNumber;
+    bool g_bHeaderClickButton;
+    qint32 g_nHeaderClickColumnNumber;
 
     QTimer g_timerCursor;
     QRect g_rectCursor;
