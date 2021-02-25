@@ -33,9 +33,9 @@
 #include <QShortcut>
 #include <QFileDialog>
 #include <QTimer>
-#include "xshortcuts.h"
+#include "xshortcutstscrollarea.h"
 
-class XAbstractTableView : public QAbstractScrollArea
+class XAbstractTableView : public XShortcutstScrollArea
 {
     Q_OBJECT
 
@@ -140,9 +140,6 @@ public:
 
     static QFont getMonoFont(qint32 nFontSize);
 
-    void setShortcuts(XShortcuts *pShortcuts);
-    XShortcuts *getShortcuts();
-
 signals:
     void cursorChanged(qint64 nOffset);
     void errorMessage(QString sText);
@@ -161,7 +158,6 @@ private slots:
 
 protected:
     virtual void paintEvent(QPaintEvent* pEvent) override;
-    bool eventFilter(QObject *pObj,QEvent *pEvent) override;
     virtual void resizeEvent(QResizeEvent *pEvent);
     virtual void mouseMoveEvent(QMouseEvent *pEvent);
     virtual void mousePressEvent(QMouseEvent *pEvent);
@@ -181,7 +177,6 @@ protected:
     virtual qint64 getScrollValue();
     virtual void setScrollValue(qint64 nOffset);
     virtual void adjustColumns();
-    virtual void registerShortcuts(bool bState);
     virtual void _headerClicked(qint32 nNumber);
 
 private:
@@ -222,9 +217,6 @@ private:
     bool g_bColumnFixed;
     bool g_bVerticalLinesVisible;
     bool g_bHorisontalLinesVisible;
-
-    XShortcuts *g_pShortcuts;
-    XShortcuts g_scEmpty;
 };
 
 #endif // XABSTRACTTABLEVIEW_H

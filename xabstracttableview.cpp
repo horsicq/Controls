@@ -20,7 +20,7 @@
 //
 #include "xabstracttableview.h"
 
-XAbstractTableView::XAbstractTableView(QWidget *pParent) : QAbstractScrollArea(pParent)
+XAbstractTableView::XAbstractTableView(QWidget *pParent) : XShortcutstScrollArea(pParent)
 {
     g_bMouseResizeColumn=false;
     g_bMouseSelection=false;
@@ -52,10 +52,6 @@ XAbstractTableView::XAbstractTableView(QWidget *pParent) : QAbstractScrollArea(p
     g_bHeaderClickButton=false;
     g_nHeaderClickColumnNumber=0;
 
-    setShortcuts(&g_scEmpty);
-
-    installEventFilter(this);
-
     setContextMenuPolicy(Qt::CustomContextMenu);
 
     connect(this,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(_customContextMenu(QPoint)));
@@ -75,6 +71,8 @@ XAbstractTableView::XAbstractTableView(QWidget *pParent) : QAbstractScrollArea(p
     setVerticalLinesVisible(true);
     setLineDelta(4);
     // TODO Cursor off default
+
+    installEventFilter(this);
 }
 
 XAbstractTableView::~XAbstractTableView()
@@ -236,24 +234,6 @@ void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
     }
 
     delete pPainter;
-}
-
-bool XAbstractTableView::eventFilter(QObject *pObj, QEvent *pEvent)
-{
-    Q_UNUSED(pObj)
-
-    if(pEvent->type()==QEvent::FocusIn)
-    {
-//        qDebug("QEvent::FocusIn");
-        registerShortcuts(true);
-    }
-    else if(pEvent->type()==QEvent::FocusOut)
-    {
-//        qDebug("QEvent::FocusOut");
-        registerShortcuts(false);
-    }
-
-    return QObject::eventFilter(pObj,pEvent);
 }
 
 void XAbstractTableView::reload(bool bUpdateData)
@@ -535,11 +515,6 @@ void XAbstractTableView::adjustColumns()
     // TODO
 }
 
-void XAbstractTableView::registerShortcuts(bool bState)
-{
-    Q_UNUSED(bState)
-}
-
 void XAbstractTableView::_headerClicked(qint32 nNumber)
 {
     emit headerClicked(nNumber);
@@ -615,16 +590,6 @@ QFont XAbstractTableView::getMonoFont(qint32 nFontSize)
 #endif
 
     return fontResult;
-}
-
-void XAbstractTableView::setShortcuts(XShortcuts *pShortcuts)
-{
-    g_pShortcuts=pShortcuts;
-}
-
-XShortcuts *XAbstractTableView::getShortcuts()
-{
-    return g_pShortcuts;
 }
 
 void XAbstractTableView::_customContextMenu(const QPoint &pos)
