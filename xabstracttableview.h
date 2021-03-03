@@ -82,6 +82,7 @@ public:
     {
         qint64 nOffset;
         qint64 nSize;
+        QVariant varExtra;
     };
 
     explicit XAbstractTableView(QWidget *pParent=nullptr);
@@ -123,7 +124,7 @@ public:
 
     void adjust(bool bUpdateData=false);
 
-    void setCursorData(QRect rect,QString sText,qint32 nDelta);
+    void setCursorData(QRect rectSquare,QRect rectText,QString sText,qint32 nDelta);
     void resetCursorData();
 
     qint32 getCursorDelta();
@@ -207,7 +208,8 @@ private:
     qint32 g_nHeaderClickColumnNumber;
 
     QTimer g_timerCursor;
-    QRect g_rectCursor;
+    QRect g_rectCursorSquare;
+    QRect g_rectCursorText;
     QString g_sCursorText;
     qint32 g_nCursorDelta;
     bool g_bBlink;

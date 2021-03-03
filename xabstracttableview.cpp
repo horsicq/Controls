@@ -123,7 +123,7 @@ void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
     pPainter->setPen(viewport()->palette().color(QPalette::WindowText));
     pPainter->setBackgroundMode(Qt::TransparentMode);
 
-    if(g_rectCursor!=pEvent->rect())
+    if(g_rectCursorSquare!=pEvent->rect())
     {
         startPainting(pPainter);
 
@@ -216,21 +216,21 @@ void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
 
     // Draw cursor
     // TODO Cursor off
-    if(g_rectCursor.width()&&g_rectCursor.height())
+    if(g_rectCursorSquare.width()&&g_rectCursorSquare.height())
     {
         // TODO bold
         if(g_bBlink&&hasFocus())
         {
             pPainter->setPen(viewport()->palette().color(QPalette::Highlight));
-            pPainter->fillRect(g_rectCursor,this->palette().color(QPalette::WindowText));
+            pPainter->fillRect(g_rectCursorSquare,this->palette().color(QPalette::WindowText));
         }
         else
         {
             pPainter->setPen(viewport()->palette().color(QPalette::WindowText));
-            pPainter->fillRect(g_rectCursor,this->palette().color(QPalette::Base));
+            pPainter->fillRect(g_rectCursorSquare,this->palette().color(QPalette::Base));
         }
 
-        pPainter->drawText(g_rectCursor.x(),g_rectCursor.y()+g_nLineHeight-g_nLineDelta,g_sCursorText);
+        pPainter->drawText(g_rectCursorText.x(),g_rectCursorText.y()+g_nLineHeight-g_nLineDelta,g_sCursorText);
     }
 
     delete pPainter;
@@ -520,16 +520,17 @@ void XAbstractTableView::_headerClicked(qint32 nNumber)
     emit headerClicked(nNumber);
 }
 
-void XAbstractTableView::setCursorData(QRect rect, QString sText, qint32 nDelta)
+void XAbstractTableView::setCursorData(QRect rectSquare, QRect rectText, QString sText, qint32 nDelta)
 {
-    g_rectCursor=rect;
+    g_rectCursorSquare=rectSquare;
+    g_rectCursorText=rectText;
     g_sCursorText=sText;
     g_nCursorDelta=nDelta;
 }
 
 void XAbstractTableView::resetCursorData()
 {
-    setCursorData(QRect(),"",0);
+    setCursorData(QRect(),QRect(),"",0);
 }
 
 qint32 XAbstractTableView::getCursorDelta()
@@ -600,7 +601,7 @@ void XAbstractTableView::_customContextMenu(const QPoint &pos)
 void XAbstractTableView::updateBlink()
 {
     g_bBlink=(bool)(!g_bBlink);
-    viewport()->update(g_rectCursor);
+    viewport()->update(g_rectCursorSquare);
 }
 
 void XAbstractTableView::resizeEvent(QResizeEvent *pEvent)
