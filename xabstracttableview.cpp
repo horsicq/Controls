@@ -218,7 +218,6 @@ void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
     // TODO Cursor off
     if(g_rectCursorSquare.width()&&g_rectCursorSquare.height())
     {
-        // TODO bold
         if(g_bBlink&&hasFocus())
         {
             pPainter->setPen(viewport()->palette().color(QPalette::Highlight));
@@ -230,7 +229,18 @@ void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
             pPainter->fillRect(g_rectCursorSquare,this->palette().color(QPalette::Base));
         }
 
-        pPainter->drawText(g_rectCursorText.x(),g_rectCursorText.y()+g_nLineHeight-g_nLineDelta,g_sCursorText);
+        if(g_rectCursorText.width()&&g_rectCursorText.height())
+        {
+            pPainter->save();
+
+            QFont font=pPainter->font();
+            font.setBold(true);
+            pPainter->setFont(font);
+
+            pPainter->drawText(g_rectCursorText.x(),g_rectCursorText.y()+g_nLineHeight-g_nLineDelta,g_sCursorText);
+
+            pPainter->restore();
+        }
     }
 
     delete pPainter;
