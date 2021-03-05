@@ -398,7 +398,7 @@ qint64 XAbstractTableView::getCursorOffset()
     return g_state.nCursorOffset;
 }
 
-void XAbstractTableView::setCursorOffset(qint64 nValue, qint32 nColumn)
+void XAbstractTableView::setCursorOffset(qint64 nValue, qint32 nColumn, QVariant varCursorData)
 {
     g_state.nCursorOffset=nValue;
 
@@ -406,6 +406,8 @@ void XAbstractTableView::setCursorOffset(qint64 nValue, qint32 nColumn)
     {
         g_state.cursorPosition.nColumn=nColumn;
     }
+
+    g_state.varCursorData=varCursorData;
 
     emit cursorChanged(nValue);
 }
@@ -626,18 +628,19 @@ void XAbstractTableView::mouseMoveEvent(QMouseEvent *pEvent)
 
     if(g_bMouseSelection)
     {
-        qint64 nOffset=cursorPositionToOS(cursorPosition).nOffset;
+        OS os=cursorPositionToOS(cursorPosition);
 
-        if(nOffset!=-1)
+        if(os.nOffset!=-1)
         {
-            g_state.nCursorOffset=nOffset;
+            g_state.nCursorOffset=os.nOffset;
+            g_state.varCursorData=os.varData;
             g_state.cursorPosition=cursorPosition;
-            _setSelection(nOffset);
+            _setSelection(os.nOffset);
 
             adjust();
             viewport()->update();
 
-            emit cursorChanged(nOffset);
+            emit cursorChanged(os.nOffset);
         }
     }
     else if(g_bMouseResizeColumn)
@@ -677,7 +680,7 @@ void XAbstractTableView::mousePressEvent(QMouseEvent *pEvent)
     if(pEvent->button()==Qt::LeftButton)
     {
         CURSOR_POSITION cursorPosition=getCursorPosition(pEvent->pos());
-        qint64 nOffset=cursorPositionToOS(cursorPosition).nOffset;
+        OS os=cursorPositionToOS(cursorPosition);
 
         if(cursorPosition.bResizeColumn)
         {
@@ -690,14 +693,15 @@ void XAbstractTableView::mousePressEvent(QMouseEvent *pEvent)
             g_bHeaderClickButton=true;
             g_nHeaderClickColumnNumber=cursorPosition.nColumn;
         }
-        else if(nOffset!=-1)
+        else if(os.nOffset!=-1)
         {
-            g_state.nCursorOffset=nOffset;
+            g_state.nCursorOffset=os.nOffset;
+            g_state.varCursorData=os.varData;
             g_state.cursorPosition=cursorPosition;
-            _initSelection(nOffset);
+            _initSelection(os.nOffset);
             g_bMouseSelection=true;
 
-            emit cursorChanged(nOffset);
+            emit cursorChanged(os.nOffset);
         }
 
         adjust();
