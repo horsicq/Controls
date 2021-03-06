@@ -34,8 +34,8 @@ XLineEditHEX::XLineEditHEX(QWidget *pParent): QLineEdit(pParent)
     // TODO Copy
     // TODO clear
     // mb TODO 10/16
-    //    setContextMenuPolicy(Qt::CustomContextMenu);
-    //    connect(this,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(customContextMenu(QPoint)));
+    setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(this,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(customContextMenu(QPoint)));
 }
 
 void XLineEditHEX::setValue(quint8 nValue)
@@ -259,6 +259,18 @@ void XLineEditHEX::customContextMenu(const QPoint &nPos)
 {
     QMenu contextMenu(this);
 
+    QAction actionCopy(QString("%1: \"%2\"").arg(tr("Copy")).arg(text()),this);
+    connect(&actionCopy,SIGNAL(triggered()),this,SLOT(_copy()));
+    contextMenu.addAction(&actionCopy);
+
+    QAction actionCopyValue(QString("%1: \"%2\"").arg(tr("Copy")).arg(QString::number(getValue())),this);
+    connect(&actionCopyValue,SIGNAL(triggered()),this,SLOT(_copyValue()));
+
+    if(g_validator.getMode()!=HEXValidator::MODE_TEXT)
+    {
+        contextMenu.addAction(&actionCopyValue);
+    }
+
     contextMenu.exec(mapToGlobal(nPos));
 }
 
@@ -273,6 +285,10 @@ void XLineEditHEX::updateFont()
 
 void XLineEditHEX::_copy()
 {
-    // TODO !!!
-    qDebug("void XLineEditHEX::_copy()");
+    QApplication::clipboard()->setText(text());
+}
+
+void XLineEditHEX::_copyValue()
+{
+    QApplication::clipboard()->setText(QString::number(getValue()));
 }

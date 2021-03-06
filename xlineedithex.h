@@ -26,6 +26,8 @@
 #include <QMenu>
 #include <QAction>
 #include <QShortcut>
+#include <QClipboard>
+#include <QApplication>
 #include "hexvalidator.h"
 
 class XLineEditHEX : public QLineEdit
@@ -68,6 +70,7 @@ private slots:
     void customContextMenu(const QPoint &nPos);
     void updateFont();
     void _copy();
+    void _copyValue();
 
 signals:
     void valueChanged(quint64 nValue);
