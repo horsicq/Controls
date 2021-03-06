@@ -40,6 +40,11 @@ XLineEditHEX::XLineEditHEX(QWidget *pParent): QLineEdit(pParent)
     connect(this,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(customContextMenu(QPoint)));
 }
 
+void XLineEditHEX::setOptions(XLineEditHEX::OPTIONS options)
+{
+    g_options=options;
+}
+
 void XLineEditHEX::setValue(quint8 nValue)
 {
     g_validator.setData(HEXValidator::MODE_HEX,0xFF);

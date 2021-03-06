@@ -45,12 +45,17 @@ public:
 
     struct OPTIONS
     {
+        bool bDemangle;
         bool bShowHexAddress;
         bool bShowHexOffset;
         bool bShowHexRelAddress;
+        bool bShowDisasmAddress;
+        bool bShowDisasmOffset;
+        bool bShowDisasmRelAddress;
     };
 
     explicit XLineEditHEX(QWidget *pParent=nullptr);
+    void setOptions(OPTIONS options);
     void setValue(quint8 nValue);
     void setValue(qint8 nValue);
     void setValue(quint16 nValue);
