@@ -43,6 +43,13 @@ public:
         MODE_64
     };
 
+    struct OPTIONS
+    {
+        bool bShowHexAddress;
+        bool bShowHexOffset;
+        bool bShowHexRelAddress;
+    };
+
     explicit XLineEditHEX(QWidget *pParent=nullptr);
     void setValue(quint8 nValue);
     void setValue(qint8 nValue);
