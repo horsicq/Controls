@@ -85,6 +85,7 @@ signals:
 private:
     quint64 g_nValue;
     HEXValidator g_validator;
+    OPTIONS g_options;
 };
 
 #define PXLineEditHEX XLineEditHEX *

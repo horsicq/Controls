@@ -23,6 +23,8 @@
 XLineEditHEX::XLineEditHEX(QWidget *pParent): QLineEdit(pParent)
 {
     g_nValue=0;
+    g_options={};
+
     updateFont();
 
     setAlignment(Qt::AlignHCenter);
