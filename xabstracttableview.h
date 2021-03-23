@@ -139,7 +139,7 @@ public:
     void setVerticalLinesVisible(bool bState);
     void setHorisontalLinesVisible(bool bState);
 
-    static QFont getMonoFont(qint32 nFontSize);
+    static QFont getMonoFont(qint32 nFontSize=-1);
 
 signals:
     void cursorChanged(qint64 nOffset);

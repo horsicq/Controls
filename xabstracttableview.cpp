@@ -592,6 +592,16 @@ void XAbstractTableView::setHorisontalLinesVisible(bool bState)
 QFont XAbstractTableView::getMonoFont(qint32 nFontSize)
 {
     QFont fontResult;
+
+    if(nFontSize==-1)
+    {
+    #ifdef Q_OS_OSX
+        nFontSize=12;
+    #else
+        nFontSize=10;
+    #endif
+    }
+
 #ifdef Q_OS_WIN
     fontResult=QFont("Courier",nFontSize);
 #endif
@@ -599,7 +609,7 @@ QFont XAbstractTableView::getMonoFont(qint32 nFontSize)
     fontResult=QFont("Monospace",nFontSize);
 #endif
 #ifdef Q_OS_OSX
-    fontResult=QFont("Courier",nFontSize); // TODO Check "Menlo"
+    fontResult=QFont("Menlo",nFontSize);
 #endif
 
     return fontResult;
