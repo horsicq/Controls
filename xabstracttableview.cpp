@@ -818,14 +818,27 @@ void XAbstractTableView::endPainting(QPainter *pPainter)
     Q_UNUSED(pPainter)
 }
 
-bool XAbstractTableView::_goToOffset(qint64 nOffset)
+bool XAbstractTableView::_goToOffset(qint64 nOffset, bool bSaveCursor)
 {
     bool bResult=false;
 
     if(isOffsetValid(nOffset))
     {
+        qint64 nCursorOffset=0;
+
+        if(bSaveCursor)
+        {
+            nCursorOffset=getCursorOffset();
+        }
+        else
+        {
+            nCursorOffset=nOffset;
+        }
+
         setScrollValue(nOffset);
-        setCursorOffset(nOffset);
+
+        setCursorOffset(nCursorOffset);
+
         bResult=true;
     }
 
