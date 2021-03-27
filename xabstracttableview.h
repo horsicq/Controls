@@ -120,7 +120,7 @@ public:
 
     STATE getState();
     qint64 getCursorOffset();
-    void setCursorOffset(qint64 nValue, qint32 nColumn=-1, QVariant varCursorData=QVariant());
+    void setCursorOffset(qint64 nValue,qint32 nColumn=-1,QVariant varCursorData=QVariant());
 
     void adjust(bool bUpdateData=false);
 
