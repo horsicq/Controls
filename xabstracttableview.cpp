@@ -398,7 +398,7 @@ qint64 XAbstractTableView::getCursorOffset()
     return g_state.nCursorOffset;
 }
 
-void XAbstractTableView::setCursorOffset(qint64 nValue, qint32 nColumn, QVariant varCursorData)
+void XAbstractTableView::setCursorOffset(qint64 nValue, qint32 nColumn, QVariant varCursorExtraInfo)
 {
     g_state.nCursorOffset=nValue;
 
@@ -407,7 +407,7 @@ void XAbstractTableView::setCursorOffset(qint64 nValue, qint32 nColumn, QVariant
         g_state.cursorPosition.nColumn=nColumn;
     }
 
-    g_state.varCursorData=varCursorData;
+    g_state.varCursorExtraInfo=varCursorExtraInfo;
 
     emit cursorChanged(nValue);
 }
@@ -643,7 +643,7 @@ void XAbstractTableView::mouseMoveEvent(QMouseEvent *pEvent)
         if(os.nOffset!=-1)
         {
             g_state.nCursorOffset=os.nOffset;
-            g_state.varCursorData=os.varData;
+            g_state.varCursorExtraInfo=os.varData;
             g_state.cursorPosition=cursorPosition;
             _setSelection(os.nOffset);
 
@@ -706,7 +706,7 @@ void XAbstractTableView::mousePressEvent(QMouseEvent *pEvent)
         else if(os.nOffset!=-1)
         {
             g_state.nCursorOffset=os.nOffset;
-            g_state.varCursorData=os.varData;
+            g_state.varCursorExtraInfo=os.varData;
             g_state.cursorPosition=cursorPosition;
             _initSelection(os.nOffset);
             g_bMouseSelection=true;

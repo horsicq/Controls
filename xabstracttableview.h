@@ -72,7 +72,7 @@ public:
     struct STATE
     {
         qint64 nCursorOffset;
-        QVariant varCursorData;
+        QVariant varCursorExtraInfo;
         qint64 nSelectionOffset;
         qint64 nSelectionSize;
         CURSOR_POSITION cursorPosition;
@@ -120,7 +120,7 @@ public:
 
     STATE getState();
     qint64 getCursorOffset();
-    void setCursorOffset(qint64 nValue,qint32 nColumn=-1,QVariant varCursorData=QVariant());
+    void setCursorOffset(qint64 nValue, qint32 nColumn=-1, QVariant varCursorExtraInfo=QVariant());
 
     void adjust(bool bUpdateData=false);
 
