@@ -218,7 +218,7 @@ void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
     // TODO Cursor off
     if(g_rectCursorSquare.width()&&g_rectCursorSquare.height())
     {
-        if(g_bBlink&&hasFocus())
+        if(g_bBlink)
         {
             pPainter->setPen(viewport()->palette().color(QPalette::Highlight));
             pPainter->fillRect(g_rectCursorSquare,this->palette().color(QPalette::WindowText));
@@ -622,8 +622,19 @@ void XAbstractTableView::_customContextMenu(const QPoint &pos)
 
 void XAbstractTableView::updateBlink()
 {
-    g_bBlink=(bool)(!g_bBlink);
-    viewport()->update(g_rectCursorSquare);
+    if(isFocused())
+    {
+        g_bBlink=(bool)(!g_bBlink);
+        viewport()->update(g_rectCursorSquare);
+    }
+    else
+    {
+        if(!g_bBlink)
+        {
+            g_bBlink=true;
+            viewport()->update(g_rectCursorSquare);
+        }
+    }
 }
 
 void XAbstractTableView::resizeEvent(QResizeEvent *pEvent)
