@@ -137,6 +137,15 @@ void XLineEditHEX::setStringValue(QString sText, qint32 nMaxLength)
     setText(sText);
 }
 
+void XLineEditHEX::setUUID(QString sText)
+{
+    g_validator.setData(HEXValidator::MODE_UUID,0);
+
+    setInputMask(">NNNNNNNN-NNNN-NNNN-NNNN-NNNNNNNNNNNN;0");
+
+    setText(sText);
+}
+
 quint64 XLineEditHEX::getValue()
 {
     quint64 nResult=0;
@@ -248,7 +257,15 @@ int XLineEditHEX::getSymbolWidth(QWidget *pWidget)
 
 void XLineEditHEX::_setText(QString sText)
 {
-    if(g_validator.getMode()!=HEXValidator::MODE_TEXT)
+    if(g_validator.getMode()==HEXValidator::MODE_TEXT)
+    {
+        emit valueChanged(text());
+    }
+    else if(g_validator.getMode()==HEXValidator::MODE_UUID)
+    {
+        emit valueChanged(displayText());
+    }
+    else
     {
         quint64 nCurrentValue=sText.toULongLong(nullptr,16);
 

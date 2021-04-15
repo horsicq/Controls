@@ -67,6 +67,7 @@ public:
     void setValue32_64(quint64 nValue);
     void setModeValue(MODE mode,quint64 nValue);
     void setStringValue(QString sText,qint32 nMaxLength=0);
+    void setUUID(QString sText);
     quint64 getValue();
     void setText(QString sText);
     static MODE getModeFromSize(qint32 nSize);
@@ -86,6 +87,7 @@ private slots:
 
 signals:
     void valueChanged(quint64 nValue);
+    void valueChanged(QString sValue);
 
 private:
     quint64 g_nValue;

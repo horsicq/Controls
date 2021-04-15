@@ -31,7 +31,8 @@ public:
     enum MODE
     {
         MODE_TEXT=0,
-        MODE_HEX
+        MODE_HEX,
+        MODE_UUID
     };
 
     explicit HEXValidator(QObject *pParent=nullptr);
