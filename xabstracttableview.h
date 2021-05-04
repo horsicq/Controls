@@ -141,6 +141,8 @@ public:
 
     static QFont getMonoFont(qint32 nFontSize=-1);
 
+    qint64 getSelectionInitOffset();
+
 signals:
     void cursorChanged(qint64 nOffset);
     void errorMessage(QString sText);

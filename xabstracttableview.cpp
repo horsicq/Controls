@@ -615,6 +615,11 @@ QFont XAbstractTableView::getMonoFont(qint32 nFontSize)
     return fontResult;
 }
 
+qint64 XAbstractTableView::getSelectionInitOffset()
+{
+    return g_nSelectionInitOffset;
+}
+
 void XAbstractTableView::_customContextMenu(const QPoint &pos)
 {
     contextMenu(mapToGlobal(pos));
