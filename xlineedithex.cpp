@@ -25,6 +25,16 @@ XLineEditHEX::XLineEditHEX(QWidget *pParent): QLineEdit(pParent)
     g_nValue=0;
     g_options={};
 
+//#ifdef Q_OS_WIN
+//    setFont(QFont("Courier"));
+//#endif
+//#ifdef Q_OS_LINUX
+//    setFont(QFont("Monospace"));
+//#endif
+//#ifdef Q_OS_OSX
+//    setFont(QFont("Menlo"));
+//#endif
+
     updateFont();
 
     setAlignment(Qt::AlignHCenter);
@@ -161,19 +171,19 @@ void XLineEditHEX::setText(QString sText)
     _setText(sText);
 }
 
-XLineEditHEX::MODE XLineEditHEX::getModeFromSize(qint32 nSize)
+XLineEditHEX::MODE XLineEditHEX::getModeFromValue(qint32 nValue)
 {
     MODE result=MODE_64;
 
-    if(((quint64)nSize)>=0xFFFFFFFF)
+    if(((quint64)nValue)>=0xFFFFFFFF)
     {
         result=MODE_64;
     }
-    else if(((quint64)nSize)>=0xFFFF)
+    else if(((quint64)nValue)>=0xFFFF)
     {
         result=MODE_32;
     }
-    else if(((quint64)nSize)>=0xFF)
+    else if(((quint64)nValue)>=0xFF)
     {
         result=MODE_16;
     }
@@ -205,7 +215,7 @@ QString XLineEditHEX::getFormatString(XLineEditHEX::MODE mode, qint64 nValue)
     }
     else if(mode==MODE_64)
     {
-        nMod=16;
+        nMod=16; // TODO Check 14?
     }
 
     sResult=QString("%1").arg(nValue,nMod,16,QChar('0'));

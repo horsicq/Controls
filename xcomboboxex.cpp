@@ -27,7 +27,7 @@ XComboBoxEx::XComboBoxEx(QWidget *pParent): QComboBox(pParent)
 
     g_nValue=0;
     g_bIsReadOnly=false;
-    g_cbtype=CBTYPE_NORMAL;
+    g_cbtype=CBTYPE_LIST;
 
     connect(this,SIGNAL(currentIndexChanged(int)),this,SLOT(currentIndexChangedSlot(int)));
     connect(&g_model,SIGNAL(itemChanged(QStandardItem *)),this,SLOT(itemChangedSlot(QStandardItem *)));
@@ -45,7 +45,7 @@ void XComboBoxEx::setData(QMap<quint64,QString> mapData, CBTYPE cbtype, quint64 
 
     g_model.setRowCount(mapData.count());
 
-    if((cbtype==CBTYPE_NORMAL)||(cbtype==CBTYPE_EFLAGS))
+    if((cbtype==CBTYPE_LIST)||(cbtype==CBTYPE_ELIST))
     {
         g_model.setItem(0,0,new QStandardItem("")); // Empty
     }
@@ -83,13 +83,15 @@ void XComboBoxEx::setValue(quint64 nValue)
 
     int nNumberOfItems=g_model.rowCount();
 
-    if(g_cbtype==CBTYPE_NORMAL)
+    if(g_cbtype==CBTYPE_LIST)
     {
         bool bFound=false;
 
         for(int i=1; i<nNumberOfItems; i++)
         {
-            if(g_model.item(i,0)->data(Qt::UserRole).toULongLong()==nValue)
+            quint64 _nValue=g_model.item(i,0)->data(Qt::UserRole).toULongLong();
+
+            if(_nValue==nValue)
             {
                 setCurrentIndex(i);
                 bFound=true;
@@ -102,13 +104,16 @@ void XComboBoxEx::setValue(quint64 nValue)
             setCurrentIndex(0);
         }
     }
-    else if(g_cbtype==CBTYPE_EFLAGS)
+    else if(g_cbtype==CBTYPE_ELIST)
     {
         bool bFound=false;
 
         for(int i=1; i<nNumberOfItems; i++)
         {
-            if(g_model.item(i,0)->data(Qt::UserRole).toULongLong()&nValue)
+            quint64 _nValue=g_model.item(i,0)->data(Qt::UserRole).toULongLong();
+            nValue&=g_nMask;
+
+            if(_nValue==nValue)
             {
                 setCurrentIndex(i);
                 bFound=true;
@@ -125,7 +130,9 @@ void XComboBoxEx::setValue(quint64 nValue)
     {
         for(int i=1; i<nNumberOfItems; i++)
         {
-            if(g_model.item(i,0)->data(Qt::UserRole).toULongLong()&nValue)
+            quint64 _nValue=g_model.item(i,0)->data(Qt::UserRole).toULongLong();
+
+            if(_nValue&nValue)
             {
                 g_model.item(i,0)->setData(Qt::Checked,Qt::CheckStateRole);
             }
@@ -173,7 +180,7 @@ void XComboBoxEx::currentIndexChangedSlot(int nIndex)
             setCurrentIndex(0);
         }
     }
-    else if(g_cbtype==CBTYPE_EFLAGS)
+    else if(g_cbtype==CBTYPE_ELIST)
     {
         if(!g_bIsReadOnly)
         {
@@ -200,7 +207,7 @@ void XComboBoxEx::currentIndexChangedSlot(int nIndex)
             setValue(g_nValue);
         }
     }
-    else if(g_cbtype==CBTYPE_NORMAL)
+    else if(g_cbtype==CBTYPE_LIST)
     {
         if(!g_bIsReadOnly)
         {

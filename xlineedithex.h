@@ -70,7 +70,7 @@ public:
     void setUUID(QString sText);
     quint64 getValue();
     void setText(QString sText);
-    static MODE getModeFromSize(qint32 nSize);
+    static MODE getModeFromValue(qint32 nValue);
     static QString getFormatString(MODE mode,qint64 nValue);
     static qint32 getWidthFromMode(QWidget *pWidget,MODE mode);
     static int getSymbolWidth(QWidget *pWidget);
