@@ -2,10 +2,12 @@ INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
 
 HEADERS += \
-    $$PWD/xabstracttableview.h
+    $$PWD/xabstracttableview.h \
+    $$PWD/xdevicetableview.h
 
 SOURCES += \
-    $$PWD/xabstracttableview.cpp
+    $$PWD/xabstracttableview.cpp \
+    $$PWD/xdevicetableview.cpp
 
 !contains(XCONFIG, dialogtextinfo) {
     XCONFIG += dialogtextinfo
