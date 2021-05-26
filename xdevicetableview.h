@@ -56,6 +56,7 @@ public:
 
     void goToAddress(qint64 nAddress);
     void goToOffset(qint64 nOffset);
+    void setSelectionAddress(qint64 nAddress,qint64 nSize);
 
 protected slots:
     void _goToAddressSlot();

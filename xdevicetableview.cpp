@@ -100,7 +100,7 @@ bool XDeviceTableView::isReplaced(qint64 nOffset, qint32 nSize)
 void XDeviceTableView::goToAddress(qint64 nAddress)
 {
     qint64 nOffset=XBinary::addressToOffset(getMemoryMap(),nAddress);
-    _goToOffset(nOffset);
+    _goToOffset(nOffset); // TODO Check
     // TODO reload
 }
 
@@ -108,6 +108,16 @@ void XDeviceTableView::goToOffset(qint64 nOffset)
 {
     _goToOffset(nOffset);
     // TODO reload
+}
+
+void XDeviceTableView::setSelectionAddress(qint64 nAddress, qint64 nSize)
+{
+    qint64 nOffset=XBinary::addressToOffset(getMemoryMap(),nAddress);
+
+    if(nOffset!=-1)
+    {
+        setSelection(nOffset,nSize);
+    }
 }
 
 void XDeviceTableView::_goToAddressSlot()
