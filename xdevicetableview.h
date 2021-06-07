@@ -43,6 +43,7 @@ public:
     XDeviceTableView(QWidget *pParent=nullptr);
     void setDevice(QIODevice *pDevice);
     QIODevice *getDevice();
+    qint64 getDataSize();
     void setMemoryMap(XBinary::_MEMORY_MAP memoryMap);
     XBinary::_MEMORY_MAP *getMemoryMap();
     void setSignaturesPath(QString sSignaturesPath);
@@ -58,6 +59,10 @@ public:
     void goToOffset(qint64 nOffset);
     void setSelectionAddress(qint64 nAddress,qint64 nSize);
 
+protected:
+    virtual bool isOffsetValid(qint64 nOffset);
+    virtual bool isEnd(qint64 nOffset);
+
 protected slots:
     void _goToAddressSlot();
     void _goToOffsetSlot();
@@ -72,6 +77,7 @@ protected slots:
 
 private:
     QIODevice *g_pDevice;
+    qint64 g_nDataSize;
     XBinary::_MEMORY_MAP g_memoryMap;
     SearchProcess::SEARCHDATA g_searchData;
     QList<XBinary::MEMORY_REPLACE> g_listReplaces;

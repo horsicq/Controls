@@ -23,6 +23,7 @@
 XDeviceTableView::XDeviceTableView(QWidget *pParent) : XAbstractTableView(pParent)
 {
     g_pDevice=nullptr;
+    g_nDataSize=0;
     g_searchData={};
     g_addressMode=MODE_ADDRESS;
 }
@@ -30,11 +31,17 @@ XDeviceTableView::XDeviceTableView(QWidget *pParent) : XAbstractTableView(pParen
 void XDeviceTableView::setDevice(QIODevice *pDevice)
 {
     g_pDevice=pDevice;
+    g_nDataSize=pDevice->size();
 }
 
 QIODevice *XDeviceTableView::getDevice()
 {
     return g_pDevice;
+}
+
+qint64 XDeviceTableView::getDataSize()
+{
+    return g_nDataSize;
 }
 
 void XDeviceTableView::setMemoryMap(XBinary::_MEMORY_MAP memoryMap)
@@ -118,6 +125,23 @@ void XDeviceTableView::setSelectionAddress(qint64 nAddress, qint64 nSize)
     {
         setSelection(nOffset,nSize);
     }
+}
+
+bool XDeviceTableView::isOffsetValid(qint64 nOffset)
+{
+    bool bResult=false;
+
+    if((nOffset>=0)&&(nOffset<g_nDataSize))
+    {
+        bResult=true;
+    }
+
+    return bResult;
+}
+
+bool XDeviceTableView::isEnd(qint64 nOffset)
+{
+    return (nOffset==g_nDataSize);
 }
 
 void XDeviceTableView::_goToAddressSlot()

@@ -320,6 +320,20 @@ qint32 XAbstractTableView::getCharWidth()
     return g_nCharWidth;
 }
 
+qint32 XAbstractTableView::getCharWidth(QWidget *pWidget)
+{
+    const QFontMetricsF fm(pWidget->font());
+
+    return fm.maxWidth();
+}
+
+qint32 XAbstractTableView::getCharHeight(QWidget *pWidget)
+{
+    const QFontMetricsF fm(pWidget->font());
+
+    return fm.height();
+}
+
 XAbstractTableView::CURSOR_POSITION XAbstractTableView::getCursorPosition(QPoint pos)
 {
     CURSOR_POSITION result={};
