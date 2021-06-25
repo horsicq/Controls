@@ -450,6 +450,8 @@ void XAbstractTableView::_setSelection(qint64 nOffset)
             g_state.nSelectionOffset=nOffset;
             g_state.nSelectionSize=g_nSelectionInitOffset-nOffset;
         }
+
+        emit selectionChanged();
     }
 }
 

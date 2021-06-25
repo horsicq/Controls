@@ -147,6 +147,7 @@ public:
 
 signals:
     void cursorChanged(qint64 nOffset);
+    void selectionChanged();
     void errorMessage(QString sText);
     void editState(bool bState);
     void headerClicked(qint32 nNumber);
