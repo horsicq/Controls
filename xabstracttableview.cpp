@@ -768,7 +768,7 @@ void XAbstractTableView::mouseReleaseEvent(QMouseEvent *pEvent)
 
             if(g_state.nCursorOffset==os.nOffset)
             {
-                _setSelection(os.nOffset+os.nSize);
+                _setSelection(os.nOffset+os.nSize-1);
             }
         }
 
