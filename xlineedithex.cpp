@@ -215,7 +215,7 @@ QString XLineEditHEX::getFormatString(XLineEditHEX::MODE mode, qint64 nValue)
     }
     else if(mode==MODE_64)
     {
-        nMod=16; // TODO Check 14?
+        nMod=16; // TODO Check 14 symbols width?
     }
 
     sResult=QString("%1").arg(nValue,nMod,16,QChar('0'));
