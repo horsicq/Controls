@@ -766,10 +766,12 @@ void XAbstractTableView::mouseReleaseEvent(QMouseEvent *pEvent)
             CURSOR_POSITION cursorPosition=getCursorPosition(pEvent->pos());
             OS os=cursorPositionToOS(cursorPosition);
 
-            if(g_state.nCursorOffset==os.nOffset)
-            {
-                _setSelection(os.nOffset+os.nSize-1);
-            }
+            _setSelection(os.nOffset+os.nSize);
+
+//            if(g_state.nCursorOffset==os.nOffset)
+//            {
+//                _setSelection(os.nOffset+os.nSize-1);
+//            }
         }
 
         adjust();
