@@ -293,11 +293,11 @@ void XLineEditHEX::customContextMenu(const QPoint &nPos)
 {
     QMenu contextMenu(this);
 
-    QAction actionCopy(QString("%1: \"%2\"").arg(tr("Copy")).arg(text()),this);
+    QAction actionCopy(QString("%1: \"%2\"").arg(tr("Copy"),text()),this);
     connect(&actionCopy,SIGNAL(triggered()),this,SLOT(_copy()));
     contextMenu.addAction(&actionCopy);
 
-    QAction actionCopyValue(QString("%1: \"%2\"").arg(tr("Copy")).arg(QString::number(getValue())),this);
+    QAction actionCopyValue(QString("%1: \"%2\"").arg(tr("Copy"),QString::number(getValue())),this);
     connect(&actionCopyValue,SIGNAL(triggered()),this,SLOT(_copyValue()));
 
     if(g_validator.getMode()!=HEXValidator::MODE_TEXT)
