@@ -22,14 +22,13 @@
 
 SubclassOfQStyledItemDelegate::SubclassOfQStyledItemDelegate(QWidget *pParent): QStyledItemDelegate(pParent)
 {
-
 }
 
-void SubclassOfQStyledItemDelegate::paint(QPainter *_pPainter, const QStyleOptionViewItem &_option, const QModelIndex &_index)
+void SubclassOfQStyledItemDelegate::paint(QPainter *pPainter, const QStyleOptionViewItem &styleOptionViewItem, const QModelIndex &modelIndex)
 {
-    QStyleOptionViewItem & refToNonConstOption=const_cast<QStyleOptionViewItem &>(_option);
+    QStyleOptionViewItem & refToNonConstOption=const_cast<QStyleOptionViewItem &>(styleOptionViewItem);
     refToNonConstOption.showDecorationSelected=false;
     //refToNonConstOption.state &= ~QStyle::State_HasFocus & ~QStyle::State_MouseOver;
 
-    QStyledItemDelegate::paint(_pPainter, refToNonConstOption, _index);
+    QStyledItemDelegate::paint(pPainter,refToNonConstOption,modelIndex);
 }
