@@ -177,7 +177,7 @@ void XDeviceTableView::_dumpToFileSlot()
 {
     QString sFilter;
     sFilter+=QString("%1 (*.bin)").arg(tr("Raw data"));
-    QString sSaveFileName=XBinary::getResultFileName(getDevice(),"dump.bin");
+    QString sSaveFileName=XBinary::getResultFileName(getDevice(),QString("%1.bin").arg(tr("Dump")));
     QString sFileName=QFileDialog::getSaveFileName(this,tr("Save dump"),sSaveFileName,sFilter);
 
     if(!sFileName.isEmpty())
