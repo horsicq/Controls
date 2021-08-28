@@ -61,7 +61,7 @@ XAbstractTableView::XAbstractTableView(QWidget *pParent) : XShortcutstScrollArea
 
     connect(&g_timerCursor,SIGNAL(timeout()),this,SLOT(updateBlink()));
 
-    g_timerCursor.setInterval(500);
+    g_timerCursor.setInterval(500); // TODO Consts
     g_timerCursor.start();
 
     setMouseTracking(true); // Important
