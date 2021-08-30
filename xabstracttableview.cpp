@@ -80,6 +80,16 @@ XAbstractTableView::~XAbstractTableView()
 
 }
 
+void XAbstractTableView::clear()
+{
+#ifdef QT_DEBUG
+    qDebug("void XAbstractTableView::clear()");
+#endif
+    // TODO
+//    adjust(true);
+//    update();
+}
+
 void XAbstractTableView::addColumn(QString sTitle, qint32 nWidth, bool bClickable)
 {
     COLUMN column={};

@@ -88,6 +88,8 @@ public:
     explicit XAbstractTableView(QWidget *pParent=nullptr);
     ~XAbstractTableView();
 
+    void clear();
+
     void addColumn(QString sTitle,qint32 nWidth=0,bool bClickable=false);
     void setColumnTitle(qint32 nNumber,QString sTitle);
     void setColumnEnabled(qint32 nNumber,bool bState);
