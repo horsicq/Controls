@@ -52,6 +52,9 @@ XAbstractTableView::XAbstractTableView(QWidget *pParent) : XShortcutstScrollArea
     g_bHeaderClickButton=false;
     g_nHeaderClickColumnNumber=0;
 
+    g_nCurrentBlockOffset=0;
+    g_nCurrentBlockSize=0;
+
     setContextMenuPolicy(Qt::CustomContextMenu);
 
     connect(this,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(_customContextMenu(QPoint)));
@@ -646,6 +649,27 @@ qint64 XAbstractTableView::getSelectionInitOffset()
     return g_nSelectionInitOffset;
 }
 
+void XAbstractTableView::setCurrentBlock(qint64 nOffset, qint64 nSize)
+{
+    g_nCurrentBlockOffset=nOffset;
+    g_nCurrentBlockSize=nSize;
+}
+
+bool XAbstractTableView::isOffsetInCurrentBlock(qint64 nOffset)
+{
+    bool bResult=false;
+
+    if(g_nCurrentBlockSize)
+    {
+        if((g_nCurrentBlockOffset<=nOffset)&&(nOffset<(g_nCurrentBlockOffset+g_nCurrentBlockSize)))
+        {
+            bResult=true;
+        }
+    }
+
+    return bResult;
+}
+
 void XAbstractTableView::_customContextMenu(const QPoint &pos)
 {
     contextMenu(mapToGlobal(pos));
@@ -862,7 +886,7 @@ void XAbstractTableView::endPainting(QPainter *pPainter)
     Q_UNUSED(pPainter)
 }
 
-bool XAbstractTableView::_goToOffset(qint64 nOffset, bool bSaveCursor)
+bool XAbstractTableView::_goToOffset(qint64 nOffset, bool bSaveCursor, bool bShort)
 {
     bool bResult=false;
 
@@ -879,7 +903,17 @@ bool XAbstractTableView::_goToOffset(qint64 nOffset, bool bSaveCursor)
             nCursorOffset=nOffset;
         }
 
-        setScrollValue(nOffset);
+        bool bScroll=true;
+
+        if(bShort&&isOffsetInCurrentBlock(nOffset))
+        {
+            bScroll=false;
+        }
+
+        if(bScroll)
+        {
+            setScrollValue(nOffset);
+        }
 
         setCursorOffset(nCursorOffset);
 

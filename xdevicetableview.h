@@ -55,7 +55,7 @@ public:
     QByteArray read_array(qint64 nOffset,qint32 nSize);
     bool isReplaced(qint64 nOffset,qint32 nSize);
 
-    void goToAddress(qint64 nAddress);
+    void goToAddress(qint64 nAddress,bool bShort=false);
     void goToOffset(qint64 nOffset);
     void setSelectionAddress(qint64 nAddress,qint64 nSize);
 
