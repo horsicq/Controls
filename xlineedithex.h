@@ -43,7 +43,7 @@ public:
         MODE_64
     };
 
-    struct OPTIONS
+    struct OPTIONS // TODO Check
     {
         bool bDemangle;
         bool bShowHexAddress;
