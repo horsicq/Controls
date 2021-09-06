@@ -352,7 +352,7 @@ XAbstractTableView::CURSOR_POSITION XAbstractTableView::getCursorPosition(QPoint
     CURSOR_POSITION result={};
 
     result.nY=pos.y();
-    result.nX=pos.x();
+    result.nX=pos.x(); // TODO if horisontal scroll
 
     qint32 nHeaderHeight=(g_bHeaderVisible)?(g_nHeaderHeight):(0);
 
