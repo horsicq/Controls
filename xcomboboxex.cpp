@@ -38,8 +38,6 @@ void XComboBoxEx::setData(QMap<quint64,QString> mapData, CBTYPE cbtype, quint64 
     this->g_cbtype=cbtype;
     this->g_nMask=nMask;
 
-    QMapIterator<quint64,QString> iter(mapData);
-
     g_model.clear();
     g_model.setColumnCount(1);
 
@@ -55,6 +53,8 @@ void XComboBoxEx::setData(QMap<quint64,QString> mapData, CBTYPE cbtype, quint64 
     }
 
     int nIndex=1;
+
+    QMapIterator<quint64,QString> iter(mapData);
 
     while(iter.hasNext())
     {
