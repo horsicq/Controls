@@ -30,7 +30,7 @@ XComboBoxEx::XComboBoxEx(QWidget *pParent): QComboBox(pParent)
     g_cbtype=CBTYPE_LIST;
 
     connect(this,SIGNAL(currentIndexChanged(int)),this,SLOT(currentIndexChangedSlot(int)));
-    connect(&g_model,SIGNAL(itemChanged(QStandardItem *)),this,SLOT(itemChangedSlot(QStandardItem *)));
+    connect(&g_model,SIGNAL(itemChanged(QStandardItem*)),this,SLOT(itemChangedSlot(QStandardItem*)));
 }
 
 void XComboBoxEx::setData(QMap<quint64,QString> mapData, CBTYPE cbtype, quint64 nMask)
