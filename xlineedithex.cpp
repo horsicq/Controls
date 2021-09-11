@@ -151,6 +151,7 @@ void XLineEditHEX::setUUID(QString sText)
 {
     g_validator.setData(HEXValidator::MODE_UUID,0);
 
+    // TODO Check
     setInputMask(">NNNNNNNN-NNNN-NNNN-NNNN-NNNNNNNNNNNN;0");
 
     setText(sText);
