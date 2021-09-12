@@ -93,7 +93,9 @@ QByteArray XDeviceTableView::read_array(qint64 nOffset, qint32 nSize)
 
     if(XBinary::_replaceMemory(nOffset,baResult.data(),nSize,&g_listReplaces))
     {
+    #ifdef QT_DEBUG
         qDebug("Replaced"); // TODO remove
+    #endif
     }
 
     return baResult;
