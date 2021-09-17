@@ -547,7 +547,6 @@ void XAbstractTableView::adjust(bool bUpdateData)
     }
 
 //    resetCursor(); // TODO Check
-
     // TODO
 }
 

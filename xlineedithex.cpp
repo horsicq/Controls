@@ -25,6 +25,7 @@ XLineEditHEX::XLineEditHEX(QWidget *pParent): QLineEdit(pParent)
     g_nValue=0;
     g_options={};
 
+    // TODO options
 //#ifdef Q_OS_WIN
 //    setFont(QFont("Courier"));
 //#endif
