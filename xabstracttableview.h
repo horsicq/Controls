@@ -168,12 +168,12 @@ private slots:
 
 protected:
     virtual void paintEvent(QPaintEvent* pEvent) override;
-    virtual void resizeEvent(QResizeEvent *pEvent);
-    virtual void mouseMoveEvent(QMouseEvent *pEvent);
-    virtual void mousePressEvent(QMouseEvent *pEvent);
-    virtual void mouseReleaseEvent(QMouseEvent *pEvent);
-    virtual void keyPressEvent(QKeyEvent *pEvent);
-    virtual void wheelEvent(QWheelEvent *pEvent);
+    virtual void resizeEvent(QResizeEvent *pEvent) override;
+    virtual void mouseMoveEvent(QMouseEvent *pEvent) override;
+    virtual void mousePressEvent(QMouseEvent *pEvent) override;
+    virtual void mouseReleaseEvent(QMouseEvent *pEvent) override;
+    virtual void keyPressEvent(QKeyEvent *pEvent) override;
+    virtual void wheelEvent(QWheelEvent *pEvent) override;
     virtual bool isOffsetValid(qint64 nOffset);
     virtual bool isEnd(qint64 nOffset);
     virtual OS cursorPositionToOS(CURSOR_POSITION cursorPosition);
