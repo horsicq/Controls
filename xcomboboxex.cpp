@@ -22,8 +22,8 @@
 
 XComboBoxEx::XComboBoxEx(QWidget *pParent): QComboBox(pParent)
 {
-    SubclassOfQStyledItemDelegate *delegate=new SubclassOfQStyledItemDelegate(this);
-    setItemDelegate(delegate);
+    SubclassOfQStyledItemDelegate *pDelegate=new SubclassOfQStyledItemDelegate(this);
+    setItemDelegate(pDelegate);
 
     g_nValue=0;
     g_bIsReadOnly=false;
