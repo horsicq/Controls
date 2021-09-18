@@ -172,7 +172,7 @@ void XLineEditHEX::setText(QString sText)
     _setText(sText);
 }
 
-XLineEditHEX::MODE XLineEditHEX::getModeFromValue(qint32 nValue)
+XLineEditHEX::MODE XLineEditHEX::getModeFromValue(quint64 nValue)
 {
     MODE result=MODE_64;
 
