@@ -104,6 +104,18 @@ void XLineEditHEX::setValue(qint64 nValue)
     setValue((quint64)nValue);
 }
 
+void XLineEditHEX::setValueOS(quint64 nValue)
+{
+    MODE mode=MODE_32;
+
+    if(sizeof(void *)==8)
+    {
+        mode=MODE_64;
+    }
+
+    setModeValue(mode,nValue);
+}
+
 void XLineEditHEX::setValue32_64(quint64 nValue)
 {
     if(nValue>=0xFFFFFFFF)

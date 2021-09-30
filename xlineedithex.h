@@ -64,6 +64,7 @@ public:
     void setValue(qint32 nValue);
     void setValue(quint64 nValue);
     void setValue(qint64 nValue);
+    void setValueOS(quint64 nValue);
     void setValue32_64(quint64 nValue);
     void setModeValue(MODE mode,quint64 nValue);
     void setStringValue(QString sText,qint32 nMaxLength=0);
