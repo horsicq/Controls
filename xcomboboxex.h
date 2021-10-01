@@ -36,7 +36,7 @@ public:
     {
         CBTYPE_LIST=0,
         CBTYPE_FLAGS,
-        CBTYPE_ELIST
+        CBTYPE_ELIST        // Extended list
     };
 
     explicit XComboBoxEx(QWidget *pParent=nullptr);
