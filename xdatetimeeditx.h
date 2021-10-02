@@ -32,7 +32,6 @@ public:
     {
         DT_TYPE_UNKNOWN=0,
         DT_TYPE_POSIX
-        // TODO Check
         // TODO More
     };
 

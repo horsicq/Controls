@@ -193,7 +193,7 @@ private:
     qint64 g_nNumberOfRows;
     QList<COLUMN> g_listColumns;
     qint32 g_nHeaderHeight;
-    QPushButton g_pushButtonHeader; // TODO
+    QPushButton g_pushButtonHeader;
     qint32 g_nXOffset;
     qint64 g_nViewStart;
     qint32 g_nCharWidth;
