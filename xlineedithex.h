@@ -43,15 +43,15 @@ public:
         MODE_64
     };
 
-    struct OPTIONS // TODO Check
+    struct OPTIONS
     {
-        bool bDemangle;
-        bool bShowHexAddress;
-        bool bShowHexOffset;
-        bool bShowHexRelAddress;
-        bool bShowDisasmAddress;
-        bool bShowDisasmOffset;
-        bool bShowDisasmRelAddress;
+        bool bDemangle; // TODO Check
+        bool bShowHexAddress; // TODO Check
+        bool bShowHexOffset; // TODO Check
+        bool bShowHexRelAddress; // TODO Check
+        bool bShowDisasmAddress; // TODO Check
+        bool bShowDisasmOffset; // TODO Check
+        bool bShowDisasmRelAddress; // TODO Check
     };
 
     explicit XLineEditHEX(QWidget *pParent=nullptr);
