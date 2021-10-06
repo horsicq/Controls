@@ -710,7 +710,7 @@ void XAbstractTableView::mouseMoveEvent(QMouseEvent *pEvent)
             g_state.nCursorOffset=os.nOffset;
             g_state.varCursorExtraInfo=os.varData;
             g_state.cursorPosition=cursorPosition;
-            _setSelection(os.nOffset);
+            _setSelection(os.nOffset+os.nSize);
 
             adjust();
             viewport()->update();
