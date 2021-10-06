@@ -22,9 +22,9 @@
 #define XCOMBOBOXEX_H
 
 #include <QComboBox>
-#include <QVariant>
 #include <QHash>
 #include <QStandardItemModel>
+#include <QVariant>
 #include "subclassofqstyleditemdelegate.h"
 
 class XComboBoxEx : public QComboBox
