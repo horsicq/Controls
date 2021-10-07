@@ -21,13 +21,13 @@
 #ifndef XLINEEDITHEX_H
 #define XLINEEDITHEX_H
 
-#include <QLineEdit>
-#include <QVariant>
-#include <QMenu>
 #include <QAction>
-#include <QShortcut>
-#include <QClipboard>
 #include <QApplication>
+#include <QClipboard>
+#include <QLineEdit>
+#include <QMenu>
+#include <QShortcut>
+#include <QVariant>
 #include "hexvalidator.h"
 
 class XLineEditHEX : public QLineEdit
