@@ -177,10 +177,8 @@ void XDeviceTableView::_goToOffsetSlot()
 
 void XDeviceTableView::_dumpToFileSlot()
 {
-    QString sFilter;
-    sFilter+=QString("%1 (*.bin)").arg(tr("Raw data"));
     QString sSaveFileName=XBinary::getResultFileName(getDevice(),QString("%1.bin").arg(tr("Dump")));
-    QString sFileName=QFileDialog::getSaveFileName(this,tr("Save dump"),sSaveFileName,sFilter);
+    QString sFileName=QFileDialog::getSaveFileName(this,tr("Save dump"),sSaveFileName,QString("%1 (*.bin)").arg(tr("Raw data")));
 
     if(!sFileName.isEmpty())
     {
