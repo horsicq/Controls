@@ -21,7 +21,6 @@
 #ifndef SUBCLASSOFQSTYLEDITEMDELEGATE_H
 #define SUBCLASSOFQSTYLEDITEMDELEGATE_H
 
-#include <QWidget>
 #include <QStyledItemDelegate>
 
 class SubclassOfQStyledItemDelegate : public QStyledItemDelegate
