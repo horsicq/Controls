@@ -32,6 +32,7 @@ public:
     struct TABLECELL
     {
         QString sText;
+        bool bBold;
         Qt::AlignmentFlag alignmentFlag;
     };
 
