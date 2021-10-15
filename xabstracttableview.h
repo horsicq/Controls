@@ -22,7 +22,6 @@
 #define XABSTRACTTABLEVIEW_H
 
 #include <QApplication>
-#include <QAbstractScrollArea>
 #include <QStyleOptionButton>
 #include <QPushButton>
 #include <QPainter>
