@@ -22,15 +22,15 @@
 #define XABSTRACTTABLEVIEW_H
 
 #include <QApplication>
-#include <QStyleOptionButton>
-#include <QPushButton>
-#include <QPainter>
-#include <QPaintEvent>
-#include <QScrollBar>
-#include <QMessageBox>
-#include <QMenu>
-#include <QShortcut>
 #include <QFileDialog>
+#include <QMenu>
+#include <QMessageBox>
+#include <QPaintEvent>
+#include <QPainter>
+#include <QPushButton>
+#include <QScrollBar>
+#include <QShortcut>
+#include <QStyleOptionButton>
 #include <QTimer>
 #include "xshortcutstscrollarea.h"
 
