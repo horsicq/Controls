@@ -21,13 +21,13 @@
 #ifndef XDEVICETABLEVIEW_H
 #define XDEVICETABLEVIEW_H
 
+#include "dialogdumpprocess.h"
+#include "dialoggotoaddress.h"
+#include "dialoghexsignature.h"
+#include "dialogsearch.h"
+#include "dialogsearchprocess.h"
 #include "xabstracttableview.h"
 #include "xformats.h"
-#include "dialoggotoaddress.h"
-#include "dialogsearch.h"
-#include "dialogdumpprocess.h"
-#include "dialogsearchprocess.h"
-#include "dialoghexsignature.h"
 
 class XDeviceTableView : public XAbstractTableView
 {
