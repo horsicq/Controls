@@ -154,7 +154,7 @@ void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
 
             qint32 nHeaderHeight=(g_bHeaderVisible)?(g_nHeaderHeight):(0);
 
-            for(int i=0;i<nNumberOfColumns;i++)
+            for(qint32 i=0;i<nNumberOfColumns;i++)
             {
                 if(g_listColumns.at(i).bEnable)
                 {
