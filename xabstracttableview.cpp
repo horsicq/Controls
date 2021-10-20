@@ -179,7 +179,7 @@ void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
             nX=nTopLeftX;
 
             // Draw lines and headers
-            for(int i=0;i<nNumberOfColumns;i++)
+            for(qint32 i=0;i<nNumberOfColumns;i++)
             {
                 if(g_listColumns.at(i).bEnable)
                 {
