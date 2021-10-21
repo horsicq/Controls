@@ -513,7 +513,7 @@ void XAbstractTableView::adjust(bool bUpdateData)
         }
     }
 
-    for(int i=0;i<nNumberOfColumns;i++)
+    for(qint32 i=0;i<nNumberOfColumns;i++)
     {
         if(g_listColumns.at(i).bEnable)
         {
