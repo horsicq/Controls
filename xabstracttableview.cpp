@@ -359,7 +359,7 @@ XAbstractTableView::CURSOR_POSITION XAbstractTableView::getCursorPosition(QPoint
     qint32 nCurrentOffset=0;
     int nNumberOfColumns=g_listColumns.count();
 
-    for(int i=0;i<nNumberOfColumns;i++)
+    for(qint32 i=0;i<nNumberOfColumns;i++)
     {
         if(g_listColumns.at(i).bEnable)
         {
