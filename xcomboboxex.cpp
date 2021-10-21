@@ -87,7 +87,7 @@ void XComboBoxEx::setValue(quint64 nValue)
     {
         bool bFound=false;
 
-        for(int i=1;i<nNumberOfItems;i++)
+        for(qint32 i=1;i<nNumberOfItems;i++)
         {
             quint64 _nValue=g_model.item(i,0)->data(Qt::UserRole).toULongLong();
 
