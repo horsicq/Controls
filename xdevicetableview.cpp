@@ -77,9 +77,9 @@ XDeviceTableView::MODE XDeviceTableView::getAddressMode()
 
 void XDeviceTableView::setMemoryReplaces(QList<XBinary::MEMORY_REPLACE> listReplaces)
 {
-    int nNumberOfRecords=listReplaces.count();
+    qint32 nNumberOfRecords=listReplaces.count();
 
-    for(int i=0;i<nNumberOfRecords;i++)
+    for(qint32 i=0;i<nNumberOfRecords;i++)
     {
         listReplaces[i].nOffset=XBinary::addressToOffset(&g_memoryMap,listReplaces.at(i).nAddress);
     }
