@@ -157,7 +157,7 @@ void XComboBoxEx::setReadOnly(bool bIsReadOnly)
 
     if(g_cbtype==CBTYPE_FLAGS)
     {
-        for(int i=0;i<nNumberOfItems;i++)
+        for(qint32 i=0;i<nNumberOfItems;i++)
         {
             if(bIsReadOnly)
             {
