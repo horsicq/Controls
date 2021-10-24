@@ -164,7 +164,7 @@ void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
 
                     paintColumn(pPainter,i,nX,nTopLeftY+nHeaderHeight,nColumnWidth,nHeight-nHeaderHeight);
 
-                    for(int j=0;j<g_nLinesProPage;j++)
+                    for(qint32 j=0;j<g_nLinesProPage;j++)
                     {
                         paintCell(pPainter,j,i,nX,nTopLeftY+nHeaderHeight+(j*g_nLineHeight),nColumnWidth,g_nLineHeight);
                     }
