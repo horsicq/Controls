@@ -140,7 +140,7 @@ void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
     {
         startPainting(pPainter);
 
-        int nNumberOfColumns=g_listColumns.count();
+        qint32 nNumberOfColumns=g_listColumns.count();
 
         if(nNumberOfColumns)
         {
