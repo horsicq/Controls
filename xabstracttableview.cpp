@@ -503,7 +503,7 @@ void XAbstractTableView::adjust(bool bUpdateData)
     }
 
     g_nTableWidth=0;
-    int nNumberOfColumns=g_listColumns.count();
+    qint32 nNumberOfColumns=g_listColumns.count();
 
     if(g_bLastColumnScretch)
     {

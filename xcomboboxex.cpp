@@ -81,7 +81,7 @@ void XComboBoxEx::setValue(quint64 nValue)
 {
     this->g_nValue=nValue;
 
-    int nNumberOfItems=g_model.rowCount();
+    qint32 nNumberOfItems=g_model.rowCount();
 
     if(g_cbtype==CBTYPE_LIST)
     {
