@@ -238,7 +238,7 @@ void XComboBoxEx::itemChangedSlot(QStandardItem *pItem)
     {
         quint64 nCurrentValue=g_nValue;
 
-        int nNumberOfItems=g_model.rowCount();
+        qint32 nNumberOfItems=g_model.rowCount();
 
         for(qint32 i=1;i<nNumberOfItems;i++)
         {
