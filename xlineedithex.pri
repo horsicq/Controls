@@ -8,3 +8,6 @@ HEADERS += \
 SOURCES += \
     $$PWD/hexvalidator.cpp \
     $$PWD/xlineedithex.cpp
+
+DISTFILES += \
+    $$PWD/xlineedithex.cmake
