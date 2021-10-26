@@ -153,7 +153,7 @@ void XComboBoxEx::setReadOnly(bool bIsReadOnly)
 {
     this->g_bIsReadOnly=bIsReadOnly;
 
-    int nNumberOfItems=g_model.rowCount();
+    qint32 nNumberOfItems=g_model.rowCount();
 
     if(g_cbtype==CBTYPE_FLAGS)
     {
