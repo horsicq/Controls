@@ -243,7 +243,7 @@ QString XLineEditHEX::getFormatString(XLineEditHEX::MODE mode, qint64 nValue)
 
 qint32 XLineEditHEX::getWidthFromMode(QWidget *pWidget,XLineEditHEX::MODE mode)
 {
-    int nSymbolWidth=getSymbolWidth(pWidget);
+    qint32 nSymbolWidth=getSymbolWidth(pWidget);
     qint32 nResult=nSymbolWidth*8;
 
     if(mode==MODE_8)
