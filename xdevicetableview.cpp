@@ -91,7 +91,7 @@ QByteArray XDeviceTableView::read_array(qint64 nOffset, qint32 nSize)
 {
     QByteArray baResult=XBinary::read_array(getDevice(),nOffset,nSize);
 
-    if(XBinary::_replaceMemory(nOffset,baResult.data(),nSize,&g_listReplaces))
+    if(XBinary::_replaceMemory(nOffset,baResult.data(),nSize,&g_listReplaces)) // TODO optimize
     {
     #ifdef QT_DEBUG
         qDebug("Replaced");

@@ -74,7 +74,7 @@ public:
     static MODE getModeFromValue(quint64 nValue);
     static QString getFormatString(MODE mode,qint64 nValue);
     static qint32 getWidthFromMode(QWidget *pWidget,MODE mode);
-    static int getSymbolWidth(QWidget *pWidget);
+    static qint32 getSymbolWidth(QWidget *pWidget);
 
 protected:
 //    void keyPressEvent(QKeyEvent* keyEvent);

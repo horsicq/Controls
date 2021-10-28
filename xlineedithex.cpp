@@ -266,7 +266,7 @@ qint32 XLineEditHEX::getWidthFromMode(QWidget *pWidget,XLineEditHEX::MODE mode)
     return nResult;
 }
 
-int XLineEditHEX::getSymbolWidth(QWidget *pWidget)
+qint32 XLineEditHEX::getSymbolWidth(QWidget *pWidget)
 {
     QFontMetrics fm(pWidget->font());
 
