@@ -52,7 +52,7 @@ void XComboBoxEx::setData(QMap<quint64,QString> mapData, CBTYPE cbtype, quint64 
         g_model.setItem(0,0,new QStandardItem(tr("Flags")));
     }
 
-    int nIndex=1;
+    qint32 nIndex=1;
 
     QMapIterator<quint64,QString> iter(mapData);
 
@@ -60,16 +60,16 @@ void XComboBoxEx::setData(QMap<quint64,QString> mapData, CBTYPE cbtype, quint64 
     {
         iter.next();
 
-        QStandardItem* item=new QStandardItem(iter.value());
-        item->setData(iter.key(),Qt::UserRole);
+        QStandardItem *pItem=new QStandardItem(iter.value());
+        pItem->setData(iter.key(),Qt::UserRole);
 
         if(cbtype==CBTYPE_FLAGS)
         {
-            item->setFlags(Qt::ItemIsUserCheckable|Qt::ItemIsEnabled);
-            item->setData(Qt::Unchecked,Qt::CheckStateRole);
+            pItem->setFlags(Qt::ItemIsUserCheckable|Qt::ItemIsEnabled);
+            pItem->setData(Qt::Unchecked,Qt::CheckStateRole);
         }
 
-        g_model.setItem(nIndex,0,item);
+        g_model.setItem(nIndex,0,pItem);
 
         nIndex++;
     }
