@@ -212,7 +212,7 @@ QString XLineEditHEX::getFormatString(XLineEditHEX::MODE mode, qint64 nValue)
 {
     QString sResult;
 
-    int nMod=8;
+    qint32 nMod=8;
 
     if(mode==MODE_8)
     {
