@@ -87,6 +87,10 @@ public:
     explicit XAbstractTableView(QWidget *pParent=nullptr);
     ~XAbstractTableView();
 
+    void setActive(bool bIsActive);
+    bool isActive();
+//    void setEnabled(bool bEnabled);
+
     void clear();
 
     void addColumn(QString sTitle,qint32 nWidth=0,bool bClickable=false);
@@ -189,6 +193,7 @@ protected:
     virtual void _headerClicked(qint32 nNumber);
 
 private:
+    bool g_bIsActive;
     qint64 g_nNumberOfRows;
     QList<COLUMN> g_listColumns;
     qint32 g_nHeaderHeight;

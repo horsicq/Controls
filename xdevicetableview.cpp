@@ -32,6 +32,8 @@ void XDeviceTableView::setDevice(QIODevice *pDevice)
 {
     g_pDevice=pDevice;
     g_nDataSize=pDevice->size();
+
+    setActive(true);
 }
 
 QIODevice *XDeviceTableView::getDevice()
