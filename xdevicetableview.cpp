@@ -62,11 +62,6 @@ XBinary::_MEMORY_MAP *XDeviceTableView::getMemoryMap()
     return &g_memoryMap;
 }
 
-void XDeviceTableView::setSignaturesPath(QString sSignaturesPath)
-{
-    g_sSignaturesPath=sSignaturesPath;
-}
-
 void XDeviceTableView::setAddressMode(XDeviceTableView::MODE addressMode)
 {
     g_addressMode=addressMode;
@@ -196,9 +191,9 @@ void XDeviceTableView::_hexSignatureSlot()
 {
     STATE state=getState();
 
-    DialogHexSignature dhs(this,getDevice(),state.nSelectionOffset,state.nSelectionSize,g_sSignaturesPath);
+    DialogHexSignature dhs(this,getDevice(),state.nSelectionOffset,state.nSelectionSize);
 
-    dhs.setShortcuts(getShortcuts());
+    dhs.setGlobal(getShortcuts(),getGlobalOptions());
 
     dhs.exec();
 }

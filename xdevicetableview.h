@@ -46,7 +46,6 @@ public:
     qint64 getDataSize();
     void setMemoryMap(XBinary::_MEMORY_MAP memoryMap);
     XBinary::_MEMORY_MAP *getMemoryMap();
-    void setSignaturesPath(QString sSignaturesPath);
     void setAddressMode(MODE addressMode);
     MODE getAddressMode();
 
@@ -81,7 +80,6 @@ private:
     XBinary::_MEMORY_MAP g_memoryMap;
     SearchProcess::SEARCHDATA g_searchData;
     QList<XBinary::MEMORY_REPLACE> g_listReplaces;
-    QString g_sSignaturesPath;
     MODE g_addressMode;
 };
 
