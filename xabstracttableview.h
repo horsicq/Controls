@@ -93,7 +93,7 @@ public:
 
     void clear();
 
-    void addColumn(QString sTitle,qint32 nWidth=0,bool bClickable=false);
+    void addColumn(QString sTitle,qint32 nWidth=0,bool bClickable=false,bool bEnable=true);
     void setColumnTitle(qint32 nNumber,QString sTitle);
     void setColumnEnabled(qint32 nNumber,bool bState);
     void setColumnWidth(qint32 nNumber,qint32 nWidth);

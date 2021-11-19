@@ -124,11 +124,11 @@ void XAbstractTableView::clear()
     update();
 }
 
-void XAbstractTableView::addColumn(QString sTitle, qint32 nWidth, bool bClickable)
+void XAbstractTableView::addColumn(QString sTitle, qint32 nWidth, bool bClickable, bool bEnable)
 {
     COLUMN column={};
 
-    column.bEnable=true;
+    column.bEnable=bEnable;
     column.nWidth=nWidth;
     column.sTitle=sTitle;
     column.bClickable=bClickable;
@@ -214,10 +214,10 @@ void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
                 // Draw lines and headers
                 for(qint32 i=0;i<nNumberOfColumns;i++)
                 {
+                    qint32 nColumnWidth=g_listColumns.at(i).nWidth;
+
                     if(g_listColumns.at(i).bEnable)
                     {
-                        qint32 nColumnWidth=g_listColumns.at(i).nWidth;
-
                         if(nHeaderHeight>0)
                         {
                             QStyleOptionButton styleOptionButton;
@@ -562,13 +562,16 @@ void XAbstractTableView::adjust(bool bUpdateData)
 
         if(g_bLastColumnScretch)
         {
+            // TODO !!!
+            qint32 _nNumberOfColumns=g_listColumns.count();
+
             if(nDelta<0)
             {
-                g_listColumns[nNumberOfColumns].nWidth=-(nDelta);
+                g_listColumns[_nNumberOfColumns-1].nWidth=-(nDelta);
             }
             else
             {
-                g_listColumns[nNumberOfColumns].nWidth=0;
+                g_listColumns[_nNumberOfColumns-1].nWidth=0;
             }
         }
 
