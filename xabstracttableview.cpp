@@ -74,39 +74,44 @@ XAbstractTableView::~XAbstractTableView()
 
 void XAbstractTableView::setActive(bool bIsActive)
 {
+    bool bChanged=(g_bIsActive!=bIsActive);
+
+#ifdef QT_DEBUG
     if(g_bIsActive==bIsActive)
     {
-    #ifdef QT_DEBUG
         qDebug("Double set!!!");
-    #endif
     }
+#endif
 
-    if(bIsActive)
+    if(bChanged)
     {
-        connect(this,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(_customContextMenu(QPoint)));
-        connect(verticalScrollBar(),SIGNAL(valueChanged(int)),this,SLOT(verticalScroll()));
-        connect(horizontalScrollBar(),SIGNAL(valueChanged(int)),this,SLOT(horisontalScroll()));
-        connect(&g_timerCursor,SIGNAL(timeout()),this,SLOT(updateBlink()));
+        if(bIsActive)
+        {
+            connect(this,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(_customContextMenu(QPoint)));
+            connect(verticalScrollBar(),SIGNAL(valueChanged(int)),this,SLOT(verticalScroll()));
+            connect(horizontalScrollBar(),SIGNAL(valueChanged(int)),this,SLOT(horisontalScroll()));
+            connect(&g_timerCursor,SIGNAL(timeout()),this,SLOT(updateBlink()));
 
-        g_timerCursor.setInterval(500); // TODO Consts
-        g_timerCursor.start();
+            g_timerCursor.setInterval(500); // TODO Consts
+            g_timerCursor.start();
+        }
+        else
+        {
+            disconnect(this,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(_customContextMenu(QPoint)));
+            disconnect(verticalScrollBar(),SIGNAL(valueChanged(int)),this,SLOT(verticalScroll()));
+            disconnect(horizontalScrollBar(),SIGNAL(valueChanged(int)),this,SLOT(horisontalScroll()));
+            disconnect(&g_timerCursor,SIGNAL(timeout()),this,SLOT(updateBlink()));
+
+            g_timerCursor.stop();
+
+            verticalScrollBar()->setRange(0,0);
+            horizontalScrollBar()->setRange(0,0);
+        }
+
+        setMouseTracking(bIsActive); // Important
+
+        g_bIsActive=bIsActive;
     }
-    else
-    {
-        disconnect(this,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(_customContextMenu(QPoint)));
-        disconnect(verticalScrollBar(),SIGNAL(valueChanged(int)),this,SLOT(verticalScroll()));
-        disconnect(horizontalScrollBar(),SIGNAL(valueChanged(int)),this,SLOT(horisontalScroll()));
-        disconnect(&g_timerCursor,SIGNAL(timeout()),this,SLOT(updateBlink()));
-
-        g_timerCursor.stop();
-
-        verticalScrollBar()->setRange(0,0);
-        horizontalScrollBar()->setRange(0,0);
-    }
-
-    setMouseTracking(bIsActive); // Important
-
-    g_bIsActive=bIsActive;
 }
 
 bool XAbstractTableView::isActive()
