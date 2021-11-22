@@ -37,6 +37,7 @@ public:
     enum MODE
     {
         MODE_ADDRESS,
+        MODE_OFFSET,
         MODE_RELADDRESS
     };
 
