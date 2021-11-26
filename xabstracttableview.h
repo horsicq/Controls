@@ -140,7 +140,7 @@ public:
 
     qint64 getMaxScrollValue();
 
-    void setLastColumnScretch(bool bState);
+    void setLastColumnStretch(bool bState);
     void setHeaderVisible(bool bState);
     void setColumnFixed(bool bState);
     void setVerticalLinesVisible(bool bState);
@@ -227,7 +227,7 @@ private:
     qint32 g_nCursorDelta;
     bool g_bBlink;
 
-    bool g_bLastColumnScretch;
+    bool g_bLastColumnStretch;
     bool g_bHeaderVisible;
     bool g_bColumnFixed;
     bool g_bVerticalLinesVisible;

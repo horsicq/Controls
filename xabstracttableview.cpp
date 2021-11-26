@@ -42,7 +42,7 @@ XAbstractTableView::XAbstractTableView(QWidget *pParent) : XShortcutstScrollArea
     g_nLineDelta=0; // TODO Check
     g_state={};
     g_bBlink=false;
-    g_bLastColumnScretch=false;
+    g_bLastColumnStretch=false;
     g_bHeaderVisible=false;
     g_bColumnFixed=false;
     g_bVerticalLinesVisible=false;
@@ -546,7 +546,7 @@ void XAbstractTableView::adjust(bool bUpdateData)
         g_nTableWidth=0;
         qint32 nNumberOfColumns=g_listColumns.count();
 
-        if(g_bLastColumnScretch)
+        if(g_bLastColumnStretch)
         {
             if(nNumberOfColumns)
             {
@@ -565,7 +565,7 @@ void XAbstractTableView::adjust(bool bUpdateData)
 
         qint32 nDelta=g_nTableWidth-g_nViewWidth;
 
-        if(g_bLastColumnScretch)
+        if(g_bLastColumnStretch)
         {
             // TODO !!!
             qint32 _nNumberOfColumns=g_listColumns.count();
@@ -637,9 +637,9 @@ qint64 XAbstractTableView::getMaxScrollValue()
     return 0x7FFFFFFF;
 }
 
-void XAbstractTableView::setLastColumnScretch(bool bState)
+void XAbstractTableView::setLastColumnStretch(bool bState)
 {
-    g_bLastColumnScretch=bState;
+    g_bLastColumnStretch=bState;
 }
 
 void XAbstractTableView::setHeaderVisible(bool bState)
