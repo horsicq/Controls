@@ -149,6 +149,7 @@ public:
     static QFont getMonoFont(qint32 nFontSize=-1);
 
     qint64 getSelectionInitOffset();
+
     void setCurrentBlock(qint64 nOffset,qint64 nSize);
     bool isOffsetInCurrentBlock(qint64 nOffset);
 
