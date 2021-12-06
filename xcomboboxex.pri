@@ -10,4 +10,6 @@ SOURCES += \
     $$PWD/xcomboboxex.cpp
 
 DISTFILES += \
+    $$PWD/LICENSE \
+    $$PWD/README.md \
     $$PWD/xcomboboxex.cmake
