@@ -10,4 +10,6 @@ SOURCES += \
     $$PWD/xlineedithex.cpp
 
 DISTFILES += \
+    $$PWD/LICENSE \
+    $$PWD/README.md \
     $$PWD/xlineedithex.cmake
