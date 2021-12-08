@@ -42,7 +42,6 @@ public:
     void addTableRow(QList<TABLECELL> listCells);
     void addTableEnd();
     QString toString();
-
     static QString makeLink(QString sText,QString sLink);
 
 private:
