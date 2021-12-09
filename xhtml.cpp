@@ -36,7 +36,7 @@ void XHtml::addTableBegin()
 
 void XHtml::addTableRow(QList<TABLECELL> listCells)
 {
-    int nNumbersOfCell=listCells.count();
+    qint32 nNumbersOfCell=listCells.count();
 
     if(nNumbersOfCell)
     {
