@@ -6,3 +6,7 @@ HEADERS += \
 
 SOURCES += \
     $$PWD/xdatetimeeditx.cpp
+
+DISTFILES += \
+    $$PWD/LICENSE \
+    $$PWD/README.md
