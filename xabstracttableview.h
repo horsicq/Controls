@@ -90,7 +90,6 @@ public:
     void setActive(bool bIsActive);
     bool isActive();
 //    void setEnabled(bool bEnabled);
-
     void clear();
 
     void addColumn(QString sTitle,qint32 nWidth=0,bool bClickable=false,bool bEnable=true);
