@@ -41,6 +41,7 @@ public:
         MODE_16,
         MODE_32,
         MODE_64
+        // TODO 128
     };
 
     struct OPTIONS
