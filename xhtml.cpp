@@ -44,7 +44,7 @@ void XHtml::addTableRow(QList<TABLECELL> listCells)
 
         for(int i=0;i<nNumbersOfCell;i++)
         {
-            g_sString.append("<td align=\"center\">"); // TODO !!!
+            g_sString.append("<td align=\"center\">"); // TODO
 
             QString sCellText=listCells.at(i).sText;
 
