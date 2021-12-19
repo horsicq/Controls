@@ -42,7 +42,7 @@ void XHtml::addTableRow(QList<TABLECELL> listCells)
     {
         g_sString.append("<tr>");
 
-        for(int i=0;i<nNumbersOfCell;i++)
+        for(qint32 i=0;i<nNumbersOfCell;i++)
         {
             g_sString.append("<td align=\"center\">"); // TODO
 
