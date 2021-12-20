@@ -23,6 +23,7 @@
 XLineEditHEX::XLineEditHEX(QWidget *pParent): QLineEdit(pParent)
 {
     g_nValue=0;
+    g_bIsColon=false;
     g_options={};
 
     // TODO options
@@ -83,7 +84,21 @@ void XLineEditHEX::setValue(qint16 nValue)
 void XLineEditHEX::setValue(quint32 nValue)
 {
     g_validator.setData(HEXValidator::MODE_HEX,0xFFFFFFFF);
-    QString sText=QString("%1").arg(nValue,8,16,QChar('0'));
+    QString sText;
+
+    if(g_bIsColon)
+    {
+        quint16 nHigh=(quint16)(nValue>>16);
+        quint16 nLow=(quint16)(nValue);
+        QString sHigh=QString("%1").arg(nHigh,4,16,QChar('0'));
+        QString sLow=QString("%1").arg(nLow,4,16,QChar('0'));
+        sText=QString("%1:%2").arg(sHigh,sLow);
+    }
+    else
+    {
+        sText=QString("%1").arg(nValue,8,16,QChar('0'));
+    }
+
     setText(sText);
 }
 
@@ -95,7 +110,21 @@ void XLineEditHEX::setValue(qint32 nValue)
 void XLineEditHEX::setValue(quint64 nValue)
 {
     g_validator.setData(HEXValidator::MODE_HEX,0xFFFFFFFFFFFFFFFF);
-    QString sText=QString("%1").arg(nValue,16,16,QChar('0'));
+    QString sText;
+
+    if(g_bIsColon)
+    {
+        quint32 nHigh=(quint32)(nValue>>32);
+        quint32 nLow=(quint32)(nValue);
+        QString sHigh=QString("%1").arg(nHigh,8,16,QChar('0'));
+        QString sLow=QString("%1").arg(nLow,8,16,QChar('0'));
+        sText=QString("%1:%2").arg(sHigh,sLow);
+    }
+    else
+    {
+        sText=QString("%1").arg(nValue,16,16,QChar('0'));
+    }
+
     setText(sText);
 }
 
@@ -173,7 +202,17 @@ quint64 XLineEditHEX::getValue()
 {
     quint64 nResult=0;
 
-    nResult=text().toULongLong(nullptr,16);
+    QString sText=text();
+
+    if(g_bIsColon)
+    {
+        if(sText.contains(":"))
+        {
+            sText=sText.remove(":");
+        }
+    }
+
+    nResult=sText.toULongLong(nullptr,16);
 
     return nResult;
 }
@@ -271,6 +310,11 @@ qint32 XLineEditHEX::getSymbolWidth(QWidget *pWidget)
     QFontMetrics fm(pWidget->font());
 
     return fm.boundingRect("W").width(); // TODO Check
+}
+
+void XLineEditHEX::setColon(bool bIsColon)
+{
+    g_bIsColon=bIsColon;
 }
 
 //void XLineEditHEX::keyPressEvent(QKeyEvent *keyEvent)

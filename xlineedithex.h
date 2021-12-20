@@ -76,6 +76,7 @@ public:
     static QString getFormatString(MODE mode,qint64 nValue);
     static qint32 getWidthFromMode(QWidget *pWidget,MODE mode);
     static qint32 getSymbolWidth(QWidget *pWidget);
+    void setColon(bool bIsColon);
 
 protected:
 //    void keyPressEvent(QKeyEvent* keyEvent);
@@ -95,6 +96,7 @@ private:
     quint64 g_nValue;
     HEXValidator g_validator;
     OPTIONS g_options;
+    bool g_bIsColon;
 };
 
 #define PXLineEditHEX XLineEditHEX *
