@@ -138,7 +138,6 @@ public:
     void setSelection(qint64 nOffset,qint64 nSize);
 
     qint64 getMaxScrollValue();
-
     void setLastColumnStretch(bool bState);
     void setHeaderVisible(bool bState);
     void setColumnFixed(bool bState);
