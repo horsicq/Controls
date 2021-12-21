@@ -42,6 +42,7 @@ public:
     };
 
     XDeviceTableView(QWidget *pParent=nullptr);
+
     void setDevice(QIODevice *pDevice);
     QIODevice *getDevice();
     qint64 getDataSize();
