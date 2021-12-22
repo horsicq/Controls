@@ -107,13 +107,13 @@ void XDeviceTableView::goToAddress(qint64 nAddress, bool bShort)
 {
     qint64 nOffset=XBinary::addressToOffset(getMemoryMap(),nAddress);
     _goToOffset(nOffset,false,bShort); // TODO Check
-    // TODO reload
+    // mb TODO reload
 }
 
 void XDeviceTableView::goToOffset(qint64 nOffset)
 {
     _goToOffset(nOffset);
-    // TODO reload
+    // mb TODO reload
 }
 
 void XDeviceTableView::setSelectionAddress(qint64 nAddress, qint64 nSize)
