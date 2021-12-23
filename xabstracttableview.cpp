@@ -714,6 +714,16 @@ bool XAbstractTableView::isOffsetInCurrentBlock(qint64 nOffset)
     return bResult;
 }
 
+qint32 XAbstractTableView::getLineHeight()
+{
+    return g_nLineHeight;
+}
+
+qint32 XAbstractTableView::getHeaderHeight()
+{
+    return g_nHeaderHeight;
+}
+
 void XAbstractTableView::_customContextMenu(const QPoint &pos)
 {
     contextMenu(mapToGlobal(pos));
