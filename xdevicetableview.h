@@ -50,7 +50,6 @@ public:
     XBinary::_MEMORY_MAP *getMemoryMap();
     void setAddressMode(MODE addressMode);
     MODE getAddressMode();
-
     void setMemoryReplaces(QList<XBinary::MEMORY_REPLACE> listReplaces);
 
     QByteArray read_array(qint64 nOffset,qint32 nSize);
