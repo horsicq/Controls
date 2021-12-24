@@ -146,7 +146,6 @@ public:
     qint64 getSelectionInitOffset();
     void setCurrentBlock(qint64 nOffset,qint64 nSize);
     bool isOffsetInCurrentBlock(qint64 nOffset);
-
     qint32 getLineHeight();
     qint32 getHeaderHeight();
 
