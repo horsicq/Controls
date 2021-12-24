@@ -123,7 +123,6 @@ public:
     QPainter *getBoldTextPointer();
 
     qint32 getLineDelta();
-
     STATE getState();
     qint64 getCursorOffset();
     void setCursorOffset(qint64 nValue,qint32 nColumn=-1,QVariant varCursorExtraInfo=QVariant());
