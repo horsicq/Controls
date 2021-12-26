@@ -119,7 +119,6 @@ public:
     CURSOR_POSITION getCursorPosition(QPoint pos);
 
     bool isOffsetSelected(qint64 nOffset);
-
     QPainter *getBoldTextPointer();
 
     qint32 getLineDelta();
