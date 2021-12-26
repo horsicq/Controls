@@ -106,7 +106,6 @@ public:
     quint64 getTotalLineCount();
 
     void setLineDelta(qint32 nValue);
-
     qint32 getLinesProPage();
 
     void setViewStart(qint64 nValue);
