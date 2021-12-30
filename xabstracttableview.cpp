@@ -424,6 +424,11 @@ XAbstractTableView::CURSOR_POSITION XAbstractTableView::getCursorPosition(QPoint
                     if(!g_bColumnFixed)
                     {
                         result.bResizeColumn=true;
+
+                        if((result.nColumn==(nNumberOfColumns-1))&&(g_bLastColumnStretch))
+                        {
+                            result.bResizeColumn=false;
+                        }
                     }
                 }
 
@@ -567,6 +572,7 @@ void XAbstractTableView::adjust(bool bUpdateData)
 
         if(g_bLastColumnStretch)
         {
+//            nDelta+=3; // TODO Check
             // TODO !!!
             qint32 _nNumberOfColumns=g_listColumns.count();
 
@@ -881,6 +887,33 @@ void XAbstractTableView::mouseReleaseEvent(QMouseEvent *pEvent)
         g_bMouseSelection=false;
         g_bHeaderClickButton=false;
     }
+}
+
+void XAbstractTableView::mouseDoubleClickEvent(QMouseEvent *pEvent)
+{
+    if(isActive())
+    {
+        if(pEvent->button()==Qt::LeftButton)
+        {
+            CURSOR_POSITION cursorPosition=getCursorPosition(pEvent->pos());
+            OS os=cursorPositionToOS(cursorPosition);
+
+            if((cursorPosition.ptype==PT_HEADER)&&(g_listColumns.at(cursorPosition.nColumn).bClickable))
+            {
+                // TODO
+            }
+            else if(os.nOffset!=-1)
+            {
+                // TODO
+                qDebug("mouseDoubleClickEvent");
+            }
+
+            adjust();
+            viewport()->update();
+        }
+    }
+
+    QAbstractScrollArea::mouseDoubleClickEvent(pEvent);
 }
 
 void XAbstractTableView::keyPressEvent(QKeyEvent *pEvent)

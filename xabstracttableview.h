@@ -170,6 +170,7 @@ protected:
     virtual void mouseMoveEvent(QMouseEvent *pEvent) override;
     virtual void mousePressEvent(QMouseEvent *pEvent) override;
     virtual void mouseReleaseEvent(QMouseEvent *pEvent) override;
+    virtual void mouseDoubleClickEvent(QMouseEvent *pEvent) override;
     virtual void keyPressEvent(QKeyEvent *pEvent) override;
     virtual void wheelEvent(QWheelEvent *pEvent) override;
     virtual bool isOffsetValid(qint64 nOffset);
