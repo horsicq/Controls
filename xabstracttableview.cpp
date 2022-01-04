@@ -611,6 +611,11 @@ void XAbstractTableView::_headerClicked(qint32 nNumber)
     emit headerClicked(nNumber);
 }
 
+void XAbstractTableView::_cellDoubleClicked(qint32 nRow, qint32 nColumn)
+{
+    emit cellDoubleClicked(nRow,nColumn);
+}
+
 void XAbstractTableView::setCursorData(QRect rectSquare, QRect rectText, QString sText, qint32 nDelta)
 {
     g_rectCursorSquare=rectSquare;
@@ -904,12 +909,11 @@ void XAbstractTableView::mouseDoubleClickEvent(QMouseEvent *pEvent)
             }
             else if(os.nOffset!=-1)
             {
-                // TODO
-                qDebug("mouseDoubleClickEvent");
+                _cellDoubleClicked(cursorPosition.nRow,cursorPosition.nColumn);
             }
 
-            adjust();
-            viewport()->update();
+//            adjust();
+//            viewport()->update();
         }
     }
 

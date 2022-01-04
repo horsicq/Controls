@@ -38,7 +38,8 @@ public:
     {
         MODE_ADDRESS,
         MODE_OFFSET,
-        MODE_RELADDRESS
+        MODE_RELADDRESS,
+        MODE_THIS
     };
 
     XDeviceTableView(QWidget *pParent=nullptr);

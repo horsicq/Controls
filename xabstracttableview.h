@@ -153,6 +153,7 @@ signals:
     void infoMessage(QString sText);
     void editState(bool bState);
     void headerClicked(qint32 nNumber);
+    void cellDoubleClicked(qint32 nRow,qint32 nColumn);
 
 private:
     void _initSelection(qint64 nOffset);
@@ -187,6 +188,7 @@ protected:
     virtual void setScrollValue(qint64 nOffset);
     virtual void adjustColumns();
     virtual void _headerClicked(qint32 nNumber);
+    virtual void _cellDoubleClicked(qint32 nRow,qint32 nColumn);
 
 private:
     bool g_bIsActive;
