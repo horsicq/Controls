@@ -59,7 +59,7 @@ QValidator::State HEXValidator::validate(QString &nInput, int &nPos) const
                 result=Acceptable;
             }
         }
-        // TODO validate GUID !!!
+        // TODO validate UUID !!!
     }
 
     return result;

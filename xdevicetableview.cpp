@@ -145,11 +145,11 @@ bool XDeviceTableView::isEnd(qint64 nOffset)
 
 void XDeviceTableView::_goToAddressSlot()
 {
-    DialogGoToAddress::TYPE type=DialogGoToAddress::TYPE_ADDRESS;
+    DialogGoToAddress::TYPE type=DialogGoToAddress::TYPE_VIRTUALADDRESS;
 
     if(g_addressMode==MODE_RELADDRESS)
     {
-        type=DialogGoToAddress::TYPE_RELADDRESS;
+        type=DialogGoToAddress::TYPE_RELVIRTUALADDRESS;
     }
 
     DialogGoToAddress da(this,getMemoryMap(),type);
