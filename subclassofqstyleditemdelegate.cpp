@@ -24,7 +24,7 @@ SubclassOfQStyledItemDelegate::SubclassOfQStyledItemDelegate(QWidget *pParent): 
 {
 }
 
-void SubclassOfQStyledItemDelegate::paint(QPainter *pPainter, const QStyleOptionViewItem &styleOptionViewItem, const QModelIndex &modelIndex)
+void SubclassOfQStyledItemDelegate::paint(QPainter *pPainter, const QStyleOptionViewItem &styleOptionViewItem, const QModelIndex &modelIndex) const
 {
     QStyleOptionViewItem & refToNonConstOption=const_cast<QStyleOptionViewItem &>(styleOptionViewItem);
     refToNonConstOption.showDecorationSelected=false;
