@@ -224,7 +224,7 @@ void XComboBoxEx::currentIndexChangedSlot(int nIndex)
         }
         else
         {
-            // restore
+            // restore ild value
             setValue(g_nValue);
         }
     }
