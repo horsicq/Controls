@@ -25,7 +25,7 @@ XDateTimeEditX::XDateTimeEditX(QWidget *pParent): QDateTimeEdit(pParent)
     g_nValue=0;
     g_dtType=DT_TYPE_UNKNOWN;
 
-    connect(this,SIGNAL(dateTimeChanged(const QDateTime &)),this,SLOT(_setDateTime(const QDateTime &)));
+    connect(this,SIGNAL(dateTimeChanged(QDateTime)),this,SLOT(_setDateTime(QDateTime)));
 }
 
 void XDateTimeEditX::setType(XDateTimeEditX::DT_TYPE dtType)
