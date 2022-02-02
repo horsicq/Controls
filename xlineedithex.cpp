@@ -26,17 +26,6 @@ XLineEditHEX::XLineEditHEX(QWidget *pParent): QLineEdit(pParent)
     g_bIsColon=false;
     g_options={};
 
-    // TODO options
-//#ifdef Q_OS_WIN
-//    setFont(QFont("Courier"));
-//#endif
-//#ifdef Q_OS_LINUX
-//    setFont(QFont("Monospace"));
-//#endif
-//#ifdef Q_OS_OSX
-//    setFont(QFont("Menlo"));
-//#endif
-
     updateFont();
 
     setAlignment(Qt::AlignHCenter);
