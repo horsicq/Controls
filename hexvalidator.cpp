@@ -60,6 +60,8 @@ QValidator::State HEXValidator::validate(QString &nInput, int &nPos) const
             }
         }
         // TODO validate UUID !!!
+        // NNNNNNNN-NNNN-NNNN-NNNN-NNNNNNNNNNNN
+        // As 5 uints
     }
 
     return result;
