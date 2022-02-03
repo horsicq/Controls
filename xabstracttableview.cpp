@@ -97,6 +97,7 @@ void XAbstractTableView::setActive(bool bIsActive)
         }
         else
         {
+            // TODO Check
             disconnect(this,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(_customContextMenu(QPoint)));
             disconnect(verticalScrollBar(),SIGNAL(valueChanged(int)),this,SLOT(verticalScroll()));
             disconnect(horizontalScrollBar(),SIGNAL(valueChanged(int)),this,SLOT(horisontalScroll()));
