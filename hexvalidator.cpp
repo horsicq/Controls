@@ -26,7 +26,7 @@ HEXValidator::HEXValidator(QObject *pParent) : QValidator(pParent)
     g_nMax=0xFFFFFFFFFFFFFFFF;
 }
 
-void HEXValidator::setData(HEXValidator::MODE mode, quint64 nMax)
+void HEXValidator::setData(HEXValidator::MODE mode,quint64 nMax)
 {
     g_mode=mode;
     g_nMax=nMax;
