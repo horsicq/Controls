@@ -37,7 +37,7 @@ HEXValidator::MODE HEXValidator::getMode()
     return g_mode;
 }
 
-QValidator::State HEXValidator::validate(QString &nInput, int &nPos) const
+QValidator::State HEXValidator::validate(QString &nInput,int &nPos) const
 {
     Q_UNUSED(nPos)
 
