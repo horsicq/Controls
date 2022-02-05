@@ -130,7 +130,7 @@ void XAbstractTableView::clear()
     update();
 }
 
-void XAbstractTableView::addColumn(QString sTitle, qint32 nWidth, bool bClickable, bool bEnable)
+void XAbstractTableView::addColumn(QString sTitle,qint32 nWidth,bool bClickable,bool bEnable)
 {
     COLUMN column={};
 
