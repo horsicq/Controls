@@ -142,7 +142,7 @@ void XAbstractTableView::addColumn(QString sTitle,qint32 nWidth,bool bClickable,
     g_listColumns.append(column);
 }
 
-void XAbstractTableView::setColumnTitle(qint32 nNumber, QString sTitle)
+void XAbstractTableView::setColumnTitle(qint32 nNumber,QString sTitle)
 {
     if(nNumber<g_listColumns.count())
     {
