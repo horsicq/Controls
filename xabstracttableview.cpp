@@ -150,7 +150,7 @@ void XAbstractTableView::setColumnTitle(qint32 nNumber,QString sTitle)
     }
 }
 
-void XAbstractTableView::setColumnEnabled(qint32 nNumber, bool bState)
+void XAbstractTableView::setColumnEnabled(qint32 nNumber,bool bState)
 {
     if(nNumber<g_listColumns.count())
     {
