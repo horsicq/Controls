@@ -158,7 +158,7 @@ void XAbstractTableView::setColumnEnabled(qint32 nNumber,bool bState)
     }
 }
 
-void XAbstractTableView::setColumnWidth(qint32 nNumber, qint32 nWidth)
+void XAbstractTableView::setColumnWidth(qint32 nNumber,qint32 nWidth)
 {
     if(nNumber<g_listColumns.count())
     {
