@@ -617,7 +617,7 @@ void XAbstractTableView::_cellDoubleClicked(qint32 nRow, qint32 nColumn)
     emit cellDoubleClicked(nRow,nColumn);
 }
 
-void XAbstractTableView::setCursorData(QRect rectSquare, QRect rectText, QString sText, qint32 nDelta)
+void XAbstractTableView::setCursorData(QRect rectSquare,QRect rectText,QString sText,qint32 nDelta)
 {
     g_rectCursorSquare=rectSquare;
     g_rectCursorText=rectText;
