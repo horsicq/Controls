@@ -635,7 +635,7 @@ qint32 XAbstractTableView::getCursorDelta()
     return g_nCursorDelta;
 }
 
-void XAbstractTableView::setSelection(qint64 nOffset, qint64 nSize)
+void XAbstractTableView::setSelection(qint64 nOffset,qint64 nSize)
 {
     _initSelection(nOffset);
     _setSelection(nOffset+nSize);
