@@ -33,7 +33,7 @@ XComboBoxEx::XComboBoxEx(QWidget *pParent): QComboBox(pParent)
     connect(&g_model,SIGNAL(itemChanged(QStandardItem*)),this,SLOT(itemChangedSlot(QStandardItem*)));
 }
 
-void XComboBoxEx::setData(QMap<quint64,QString> mapData, CBTYPE cbtype, quint64 nMask)
+void XComboBoxEx::setData(QMap<quint64,QString> mapData,CBTYPE cbtype,quint64 nMask)
 {
     this->g_cbtype=cbtype;
     this->g_nMask=nMask;
