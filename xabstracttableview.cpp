@@ -612,7 +612,7 @@ void XAbstractTableView::_headerClicked(qint32 nNumber)
     emit headerClicked(nNumber);
 }
 
-void XAbstractTableView::_cellDoubleClicked(qint32 nRow, qint32 nColumn)
+void XAbstractTableView::_cellDoubleClicked(qint32 nRow,qint32 nColumn)
 {
     emit cellDoubleClicked(nRow,nColumn);
 }
