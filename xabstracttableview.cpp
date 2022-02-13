@@ -974,7 +974,7 @@ void XAbstractTableView::paintColumn(QPainter *pPainter,qint32 nColumn,qint32 nL
     Q_UNUSED(nHeight)
 }
 
-void XAbstractTableView::paintCell(QPainter *pPainter, qint32 nRow, qint32 nColumn, qint32 nLeft, qint32 nTop, qint32 nWidth, qint32 nHeight)
+void XAbstractTableView::paintCell(QPainter *pPainter,qint32 nRow,qint32 nColumn,qint32 nLeft,qint32 nTop,qint32 nWidth,qint32 nHeight)
 {
     Q_UNUSED(pPainter)
     Q_UNUSED(nRow)
