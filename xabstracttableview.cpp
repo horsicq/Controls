@@ -990,7 +990,7 @@ void XAbstractTableView::endPainting(QPainter *pPainter)
     Q_UNUSED(pPainter)
 }
 
-bool XAbstractTableView::_goToOffset(qint64 nOffset, bool bSaveCursor, bool bShort)
+bool XAbstractTableView::_goToOffset(qint64 nOffset,bool bSaveCursor,bool bShort)
 {
     bool bResult=false;
 
