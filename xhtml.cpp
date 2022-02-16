@@ -75,7 +75,7 @@ QString XHtml::toString()
     return g_sString;
 }
 
-QString XHtml::makeLink(QString sText, QString sLink)
+QString XHtml::makeLink(QString sText,QString sLink)
 {
     QString sResult;
 
