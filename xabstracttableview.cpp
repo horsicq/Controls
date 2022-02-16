@@ -705,7 +705,7 @@ qint64 XAbstractTableView::getSelectionInitOffset()
     return g_nSelectionInitOffset;
 }
 
-void XAbstractTableView::setCurrentBlock(qint64 nOffset, qint64 nSize)
+void XAbstractTableView::setCurrentBlock(qint64 nOffset,qint64 nSize)
 {
     g_nCurrentBlockOffset=nOffset;
     g_nCurrentBlockSize=nSize;
