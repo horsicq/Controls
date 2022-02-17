@@ -98,7 +98,7 @@ QByteArray XDeviceTableView::read_array(qint64 nOffset,qint32 nSize)
     return baResult;
 }
 
-bool XDeviceTableView::isReplaced(qint64 nOffset, qint32 nSize)
+bool XDeviceTableView::isReplaced(qint64 nOffset,qint32 nSize)
 {
     return XBinary::_isReplaced(nOffset,nSize,&g_listReplaces);
 }
