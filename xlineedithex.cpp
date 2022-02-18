@@ -22,7 +22,6 @@
 
 XLineEditHEX::XLineEditHEX(QWidget *pParent): QLineEdit(pParent)
 {
-    g_nValue=0;
     g_bIsColon=false;
     g_options={};
 
@@ -46,83 +45,121 @@ void XLineEditHEX::setOptions(XLineEditHEX::OPTIONS options)
     g_options=options;
 }
 
-void XLineEditHEX::setValue(quint8 nValue)
+void XLineEditHEX::setValue(quint8 nValue, HEXValidator::MODE validatorMode)
 {
-    g_validator.setData(HEXValidator::MODE_HEX,0xFF);
-    QString sText=QString("%1").arg(nValue,2,16,QChar('0'));
-    setText(sText);
-}
+    g_validator.setData(validatorMode,0xFF);
 
-void XLineEditHEX::setValue(qint8 nValue)
-{
-    setValue((quint8)nValue);
-}
-
-void XLineEditHEX::setValue(quint16 nValue)
-{
-    g_validator.setData(HEXValidator::MODE_HEX,0xFFFF);
-    QString sText=QString("%1").arg(nValue,4,16,QChar('0'));
-    setText(sText);
-}
-
-void XLineEditHEX::setValue(qint16 nValue)
-{
-    setValue((quint16)nValue);
-}
-
-void XLineEditHEX::setValue(quint32 nValue)
-{
-    g_validator.setData(HEXValidator::MODE_HEX,0xFFFFFFFF);
     QString sText;
 
-    if(g_bIsColon)
+    if(validatorMode==HEXValidator::MODE_HEX)
     {
-        quint16 nHigh=(quint16)(nValue>>16);
-        quint16 nLow=(quint16)(nValue);
-        QString sHigh=QString("%1").arg(nHigh,4,16,QChar('0'));
-        QString sLow=QString("%1").arg(nLow,4,16,QChar('0'));
-        sText=QString("%1:%2").arg(sHigh,sLow);
+        sText=QString("%1").arg(nValue,2,16,QChar('0'));
     }
-    else
+    else if(validatorMode==HEXValidator::MODE_DEC)
     {
-        sText=QString("%1").arg(nValue,8,16,QChar('0'));
+         sText=QString("%1").arg(nValue);
     }
 
     setText(sText);
 }
 
-void XLineEditHEX::setValue(qint32 nValue)
+void XLineEditHEX::setValue(qint8 nValue, HEXValidator::MODE validatorMode)
 {
-    setValue((quint32)nValue);
+    setValue((quint8)nValue,validatorMode);
 }
 
-void XLineEditHEX::setValue(quint64 nValue)
+void XLineEditHEX::setValue(quint16 nValue, HEXValidator::MODE validatorMode)
 {
-    g_validator.setData(HEXValidator::MODE_HEX,0xFFFFFFFFFFFFFFFF);
+    g_validator.setData(validatorMode,0xFFFF);
+
     QString sText;
 
-    if(g_bIsColon)
+    if(validatorMode==HEXValidator::MODE_HEX)
     {
-        quint32 nHigh=(quint32)(nValue>>32);
-        quint32 nLow=(quint32)(nValue);
-        QString sHigh=QString("%1").arg(nHigh,8,16,QChar('0'));
-        QString sLow=QString("%1").arg(nLow,8,16,QChar('0'));
-        sText=QString("%1:%2").arg(sHigh,sLow);
+        sText=QString("%1").arg(nValue,4,16,QChar('0'));
     }
-    else
+    else if(validatorMode==HEXValidator::MODE_DEC)
     {
-        sText=QString("%1").arg(nValue,16,16,QChar('0'));
+         sText=QString("%1").arg(nValue);
     }
 
     setText(sText);
 }
 
-void XLineEditHEX::setValue(qint64 nValue)
+void XLineEditHEX::setValue(qint16 nValue, HEXValidator::MODE validatorMode)
 {
-    setValue((quint64)nValue);
+    setValue((quint16)nValue,validatorMode);
 }
 
-void XLineEditHEX::setValueOS(quint64 nValue)
+void XLineEditHEX::setValue(quint32 nValue, HEXValidator::MODE validatorMode)
+{
+    g_validator.setData(validatorMode,0xFFFFFFFF);
+
+    QString sText;
+
+    if(validatorMode==HEXValidator::MODE_HEX)
+    {
+        if(g_bIsColon)
+        {
+            quint16 nHigh=(quint16)(nValue>>16);
+            quint16 nLow=(quint16)(nValue);
+            QString sHigh=QString("%1").arg(nHigh,4,16,QChar('0'));
+            QString sLow=QString("%1").arg(nLow,4,16,QChar('0'));
+            sText=QString("%1:%2").arg(sHigh,sLow);
+        }
+        else
+        {
+            sText=QString("%1").arg(nValue,8,16,QChar('0'));
+        }
+    }
+    else if(validatorMode==HEXValidator::MODE_DEC)
+    {
+        sText=QString("%1").arg(nValue);
+    }
+
+    setText(sText);
+}
+
+void XLineEditHEX::setValue(qint32 nValue, HEXValidator::MODE validatorMode)
+{
+    setValue((quint32)nValue,validatorMode);
+}
+
+void XLineEditHEX::setValue(quint64 nValue, HEXValidator::MODE validatorMode)
+{
+    g_validator.setData(validatorMode,0xFFFFFFFFFFFFFFFF);
+
+    QString sText;
+
+    if(validatorMode==HEXValidator::MODE_HEX)
+    {
+        if(g_bIsColon)
+        {
+            quint32 nHigh=(quint32)(nValue>>32);
+            quint32 nLow=(quint32)(nValue);
+            QString sHigh=QString("%1").arg(nHigh,8,16,QChar('0'));
+            QString sLow=QString("%1").arg(nLow,8,16,QChar('0'));
+            sText=QString("%1:%2").arg(sHigh,sLow);
+        }
+        else
+        {
+            sText=QString("%1").arg(nValue,16,16,QChar('0'));
+        }
+    }
+    else if(validatorMode==HEXValidator::MODE_DEC)
+    {
+        sText=QString("%1").arg(nValue);
+    }
+
+    setText(sText);
+}
+
+void XLineEditHEX::setValue(qint64 nValue, HEXValidator::MODE validatorMode)
+{
+    setValue((quint64)nValue,validatorMode);
+}
+
+void XLineEditHEX::setValueOS(quint64 nValue, HEXValidator::MODE validatorMode)
 {
     MODE mode=MODE_32;
 
@@ -131,38 +168,38 @@ void XLineEditHEX::setValueOS(quint64 nValue)
         mode=MODE_64;
     }
 
-    setModeValue(mode,nValue);
+    setModeValue(mode,nValue,validatorMode);
 }
 
-void XLineEditHEX::setValue32_64(quint64 nValue)
+void XLineEditHEX::setValue32_64(quint64 nValue, HEXValidator::MODE validatorMode)
 {
     if(nValue>=0xFFFFFFFF)
     {
-        setValue((quint64)nValue);
+        setValue((quint64)nValue,validatorMode);
     }
     else
     {
-        setValue((quint32)nValue);
+        setValue((quint32)nValue,validatorMode);
     }
 }
 
-void XLineEditHEX::setModeValue(XLineEditHEX::MODE mode, quint64 nValue)
+void XLineEditHEX::setModeValue(XLineEditHEX::MODE mode, quint64 nValue, HEXValidator::MODE validatorMode)
 {
     if(mode==MODE_8)
     {
-        setValue((quint8)nValue);
+        setValue((quint8)nValue,validatorMode);
     }
     else if(mode==MODE_16)
     {
-        setValue((quint16)nValue);
+        setValue((quint16)nValue,validatorMode);
     }
     else if(mode==MODE_32)
     {
-        setValue((quint32)nValue);
+        setValue((quint32)nValue,validatorMode);
     }
     else if(mode==MODE_64)
     {
-        setValue((quint64)nValue);
+        setValue((quint64)nValue,validatorMode);
     }
 }
 
@@ -193,22 +230,33 @@ quint64 XLineEditHEX::getValue()
 
     QString sText=text();
 
-    if(g_bIsColon)
+    if(g_validator.getMode()==HEXValidator::MODE_HEX)
     {
-        if(sText.contains(":"))
+        if(g_bIsColon)
         {
-            sText=sText.remove(":");
+            if(sText.contains(":"))
+            {
+                sText=sText.remove(":");
+            }
         }
-    }
 
-    nResult=sText.toULongLong(nullptr,16);
+        nResult=sText.toULongLong(nullptr,16);
+    }
+    else if(g_validator.getMode()==HEXValidator::MODE_DEC)
+    {
+        nResult=sText.toULongLong(nullptr,10);
+    }
 
     return nResult;
 }
 
+QVariant XLineEditHEX::_getValue()
+{
+    return vValue;
+}
+
 void XLineEditHEX::setText(QString sText)
 {
-    QLineEdit::setText(sText);
     _setText(sText);
 }
 
@@ -313,6 +361,7 @@ void XLineEditHEX::setColon(bool bIsColon)
 
 void XLineEditHEX::_setText(QString sText)
 {
+    // TODO fix strings like 00011111111
     if(g_validator.getMode()==HEXValidator::MODE_TEXT)
     {
         emit valueChanged(text());
@@ -321,18 +370,32 @@ void XLineEditHEX::_setText(QString sText)
     {
         emit valueChanged(displayText());
     }
-    else
+    else if(g_validator.getMode()==HEXValidator::MODE_HEX)
     {
         quint64 nCurrentValue=sText.toULongLong(nullptr,16);
 
-        if(g_nValue!=nCurrentValue)
+        if(vValue.toULongLong()!=nCurrentValue)
         {
-            g_nValue=nCurrentValue;
+            vValue=nCurrentValue;
             updateFont();
 
             emit valueChanged(nCurrentValue);
         }
     }
+    else if(g_validator.getMode()==HEXValidator::MODE_DEC)
+    {
+        quint64 nCurrentValue=sText.toULongLong(nullptr,10);
+
+        if(vValue.toULongLong()!=nCurrentValue)
+        {
+            vValue=nCurrentValue;
+            updateFont();
+
+            emit valueChanged(nCurrentValue);
+        }
+    }
+
+    QLineEdit::setText(sText);
 }
 
 void XLineEditHEX::customContextMenu(const QPoint &nPos)
@@ -358,7 +421,7 @@ void XLineEditHEX::updateFont()
 {
     QFont _font=font();
 
-    _font.setBold(g_nValue!=0);
+    _font.setBold(vValue.toULongLong()!=0); // TODO another modes
 
     setFont(_font);
 }

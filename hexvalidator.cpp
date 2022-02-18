@@ -59,6 +59,20 @@ QValidator::State HEXValidator::validate(QString &nInput,int &nPos) const
                 result=Acceptable;
             }
         }
+        else if(g_mode==MODE_DEC)
+        {
+            result=Invalid;
+
+            bool bSuccess=false;
+            quint64 nValue=0;
+
+            nValue=nInput.toULongLong(&bSuccess,10);
+
+            if(bSuccess&&(nValue<=g_nMax))
+            {
+                result=Acceptable;
+            }
+        }
         // TODO validate UUID !!!
         // NNNNNNNN-NNNN-NNNN-NNNN-NNNNNNNNNNNN
         // As 5 uints

@@ -31,6 +31,7 @@ public:
     enum MODE
     {
         MODE_TEXT=0,
+        MODE_DEC,
         MODE_HEX,
         MODE_UUID
     };

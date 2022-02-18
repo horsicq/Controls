@@ -57,20 +57,21 @@ public:
 
     explicit XLineEditHEX(QWidget *pParent=nullptr);
     void setOptions(OPTIONS options);
-    void setValue(quint8 nValue);
-    void setValue(qint8 nValue);
-    void setValue(quint16 nValue);
-    void setValue(qint16 nValue);
-    void setValue(quint32 nValue);
-    void setValue(qint32 nValue);
-    void setValue(quint64 nValue);
-    void setValue(qint64 nValue);
-    void setValueOS(quint64 nValue);
-    void setValue32_64(quint64 nValue);
-    void setModeValue(MODE mode,quint64 nValue);
+    void setValue(quint8 nValue,HEXValidator::MODE validatorMode=HEXValidator::MODE_HEX);
+    void setValue(qint8 nValue,HEXValidator::MODE validatorMode=HEXValidator::MODE_HEX);
+    void setValue(quint16 nValue,HEXValidator::MODE validatorMode=HEXValidator::MODE_HEX);
+    void setValue(qint16 nValue,HEXValidator::MODE validatorMode=HEXValidator::MODE_HEX);
+    void setValue(quint32 nValue,HEXValidator::MODE validatorMode=HEXValidator::MODE_HEX);
+    void setValue(qint32 nValue,HEXValidator::MODE validatorMode=HEXValidator::MODE_HEX);
+    void setValue(quint64 nValue,HEXValidator::MODE validatorMode=HEXValidator::MODE_HEX);
+    void setValue(qint64 nValue,HEXValidator::MODE validatorMode=HEXValidator::MODE_HEX);
+    void setValueOS(quint64 nValue,HEXValidator::MODE validatorMode=HEXValidator::MODE_HEX);
+    void setValue32_64(quint64 nValue,HEXValidator::MODE validatorMode=HEXValidator::MODE_HEX);
+    void setModeValue(MODE mode,quint64 nValue,HEXValidator::MODE validatorMode=HEXValidator::MODE_HEX);
     void setStringValue(QString sText,qint32 nMaxLength=0);
     void setUUID(QString sText);
     quint64 getValue();
+    QVariant _getValue();
     void setText(QString sText);
     static MODE getModeFromValue(quint64 nValue);
     static QString getFormatString(MODE mode,qint64 nValue);
@@ -93,7 +94,7 @@ signals:
     void valueChanged(QString sValue);
 
 private:
-    quint64 g_nValue;
+    QVariant vValue;
     HEXValidator g_validator;
     OPTIONS g_options;
     bool g_bIsColon;
