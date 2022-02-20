@@ -63,7 +63,7 @@ void XLineEditHEX::setValue(quint8 nValue,HEXValidator::MODE validatorMode)
     setText(sText);
 }
 
-void XLineEditHEX::setValue(qint8 nValue, HEXValidator::MODE validatorMode)
+void XLineEditHEX::setValue(qint8 nValue,HEXValidator::MODE validatorMode)
 {
     setValue((quint8)nValue,validatorMode);
 }
