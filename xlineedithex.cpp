@@ -45,7 +45,7 @@ void XLineEditHEX::setOptions(XLineEditHEX::OPTIONS options)
     g_options=options;
 }
 
-void XLineEditHEX::setValue(quint8 nValue, HEXValidator::MODE validatorMode)
+void XLineEditHEX::setValue(quint8 nValue,HEXValidator::MODE validatorMode)
 {
     g_validator.setData(validatorMode,0xFF);
 
