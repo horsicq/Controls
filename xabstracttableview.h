@@ -145,6 +145,7 @@ public:
     bool isOffsetInCurrentBlock(qint64 nOffset);
     qint32 getLineHeight();
     qint32 getHeaderHeight();
+    void setSelectionEnable(bool bState);
 
 signals:
     void cursorChanged(qint64 nOffset);
@@ -233,6 +234,8 @@ private:
 
     qint64 g_nCurrentBlockOffset;
     qint64 g_nCurrentBlockSize;
+
+    bool g_bIsSelectionEnable;
 };
 
 #endif // XABSTRACTTABLEVIEW_H

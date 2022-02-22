@@ -56,6 +56,8 @@ XAbstractTableView::XAbstractTableView(QWidget *pParent) : XShortcutstScrollArea
     g_nCurrentBlockOffset=0;
     g_nCurrentBlockSize=0;
 
+    g_bIsSelectionEnable=true;
+
     setContextMenuPolicy(Qt::CustomContextMenu);
 
     setHeaderVisible(true);
@@ -637,11 +639,14 @@ qint32 XAbstractTableView::getCursorDelta()
 
 void XAbstractTableView::setSelection(qint64 nOffset,qint64 nSize)
 {
-    _initSelection(nOffset);
-    _setSelection(nOffset+nSize);
+    if(g_bIsSelectionEnable)
+    {
+        _initSelection(nOffset);
+        _setSelection(nOffset+nSize);
 
-    adjust();
-    viewport()->update();
+        adjust();
+        viewport()->update();
+    }
 }
 
 qint64 XAbstractTableView::getMaxScrollValue()
@@ -736,6 +741,11 @@ qint32 XAbstractTableView::getHeaderHeight()
     return g_nHeaderHeight;
 }
 
+void XAbstractTableView::setSelectionEnable(bool bState)
+{
+    g_bIsSelectionEnable=bState;
+}
+
 void XAbstractTableView::_customContextMenu(const QPoint &pos)
 {
     contextMenu(mapToGlobal(pos));
@@ -773,7 +783,7 @@ void XAbstractTableView::mouseMoveEvent(QMouseEvent *pEvent)
     {
         CURSOR_POSITION cursorPosition=getCursorPosition(pEvent->pos());
 
-        if(g_bMouseSelection)
+        if(g_bIsSelectionEnable&&g_bMouseSelection)
         {
             OS os=cursorPositionToOS(cursorPosition);
 
@@ -848,8 +858,12 @@ void XAbstractTableView::mousePressEvent(QMouseEvent *pEvent)
                 g_state.nCursorOffset=os.nOffset;
                 g_state.varCursorExtraInfo=os.varData;
                 g_state.cursorPosition=cursorPosition;
-                _initSelection(os.nOffset);
-                g_bMouseSelection=true;
+
+                if(g_bIsSelectionEnable)
+                {
+                    _initSelection(os.nOffset);
+                    g_bMouseSelection=true;
+                }
 
                 emit cursorChanged(os.nOffset);
             }
@@ -872,7 +886,7 @@ void XAbstractTableView::mouseReleaseEvent(QMouseEvent *pEvent)
             {
                 _headerClicked(g_nHeaderClickColumnNumber);
             }
-            else
+            else if(g_bIsSelectionEnable)
             {
                 CURSOR_POSITION cursorPosition=getCursorPosition(pEvent->pos());
                 OS os=cursorPositionToOS(cursorPosition);
@@ -890,8 +904,12 @@ void XAbstractTableView::mouseReleaseEvent(QMouseEvent *pEvent)
         }
 
         g_bMouseResizeColumn=false;
-        g_bMouseSelection=false;
         g_bHeaderClickButton=false;
+
+        if(g_bIsSelectionEnable)
+        {
+            g_bMouseSelection=false;
+        }
     }
 }
 
