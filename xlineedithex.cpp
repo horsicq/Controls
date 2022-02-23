@@ -68,7 +68,7 @@ void XLineEditHEX::setValue(qint8 nValue,HEXValidator::MODE validatorMode)
     setValue((quint8)nValue,validatorMode);
 }
 
-void XLineEditHEX::setValue(quint16 nValue, HEXValidator::MODE validatorMode)
+void XLineEditHEX::setValue(quint16 nValue,HEXValidator::MODE validatorMode)
 {
     g_validator.setData(validatorMode,0xFFFF);
 
