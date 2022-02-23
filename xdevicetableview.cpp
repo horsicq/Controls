@@ -116,7 +116,7 @@ void XDeviceTableView::goToOffset(qint64 nOffset)
     // mb TODO reload
 }
 
-void XDeviceTableView::setSelectionAddress(qint64 nAddress, qint64 nSize)
+void XDeviceTableView::setSelectionAddress(qint64 nAddress,qint64 nSize)
 {
     qint64 nOffset=XBinary::addressToOffset(getMemoryMap(),nAddress);
 
