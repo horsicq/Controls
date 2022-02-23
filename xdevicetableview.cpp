@@ -84,6 +84,12 @@ void XDeviceTableView::setMemoryReplaces(QList<XBinary::MEMORY_REPLACE> listRepl
     g_listReplaces=listReplaces;
 }
 
+qint64 XDeviceTableView::write_array(qint64 nOffset,char *pBuffer,qint64 nSize)
+{
+    // TODO replace memory
+    return XBinary::write_array(getDevice(),nOffset,pBuffer,nSize);
+}
+
 QByteArray XDeviceTableView::read_array(qint64 nOffset,qint32 nSize)
 {
     QByteArray baResult=XBinary::read_array(getDevice(),nOffset,nSize);
