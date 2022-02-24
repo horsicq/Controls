@@ -123,7 +123,7 @@ public:
     qint32 getLineDelta();
     STATE getState();
     qint64 getCursorOffset();
-    void setCursorOffset(qint64 nValue,qint32 nColumn=-1,QVariant varCursorExtraInfo=QVariant());
+    void setCursorOffset(qint64 nOffset,qint32 nColumn=-1,QVariant varCursorExtraInfo=QVariant());
     void adjust(bool bUpdateData=false);
 
     void setCursorData(QRect rectSquare,QRect rectText,QString sText,qint32 nDelta);
@@ -225,7 +225,6 @@ private:
     QString g_sCursorText;
     qint32 g_nCursorDelta;
     bool g_bBlink;
-
     bool g_bLastColumnStretch;
     bool g_bHeaderVisible;
     bool g_bColumnFixed;
