@@ -120,7 +120,7 @@ void XLineEditHEX::setValue(quint32 nValue,HEXValidator::MODE validatorMode)
     setText(sText);
 }
 
-void XLineEditHEX::setValue(qint32 nValue, HEXValidator::MODE validatorMode)
+void XLineEditHEX::setValue(qint32 nValue,HEXValidator::MODE validatorMode)
 {
     setValue((quint32)nValue,validatorMode);
 }
