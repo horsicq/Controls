@@ -58,6 +58,11 @@ public:
     void goToAddress(qint64 nAddress,bool bShort=false);
     void goToOffset(qint64 nOffset);
     void setSelectionAddress(qint64 nAddress,qint64 nSize);
+    bool isEdited();
+    bool saveBackup();
+    void enableReadOnly(bool bState);
+    void setEdited(bool bState);
+    void setReadonly(bool bState);
 
 protected:
     virtual bool isOffsetValid(qint64 nOffset);

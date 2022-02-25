@@ -109,7 +109,12 @@ qint64 XDeviceTableView::write_array(qint64 nOffset,char *pBuffer,qint64 nSize)
 
     _pBuffer=pBuffer;
 
-    qint64 nResult=XBinary::write_array(getDevice(),nOffset,_pBuffer,nSize);
+    qint64 nResult=0;
+
+    if(saveBackup())
+    {
+        nResult=XBinary::write_array(getDevice(),nOffset,_pBuffer,nSize);
+    }
 
     if(bReplaced)
     {
@@ -159,6 +164,40 @@ void XDeviceTableView::setSelectionAddress(qint64 nAddress,qint64 nSize)
     {
         setSelection(nOffset,nSize);
     }
+}
+
+bool XDeviceTableView::isEdited()
+{
+    bool bResult=XBinary::isBackupPresent(g_pDevice);
+
+    return bResult;
+}
+
+bool XDeviceTableView::saveBackup()
+{
+    bool bResult=true;
+
+    if((getGlobalOptions()->isSaveBackup())&&(!isEdited()))
+    {
+        bResult=XBinary::saveBackup(g_pDevice);
+    }
+
+    return bResult;
+}
+
+void XDeviceTableView::enableReadOnly(bool bState)
+{
+    // TODO
+}
+
+void XDeviceTableView::setEdited(bool bState)
+{
+    // TODO
+}
+
+void XDeviceTableView::setReadonly(bool bState)
+{
+    // TODO
 }
 
 bool XDeviceTableView::isOffsetValid(qint64 nOffset)
