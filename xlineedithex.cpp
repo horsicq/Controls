@@ -154,7 +154,7 @@ void XLineEditHEX::setValue(quint64 nValue,HEXValidator::MODE validatorMode)
     setText(sText);
 }
 
-void XLineEditHEX::setValue(qint64 nValue, HEXValidator::MODE validatorMode)
+void XLineEditHEX::setValue(qint64 nValue,HEXValidator::MODE validatorMode)
 {
     setValue((quint64)nValue,validatorMode);
 }
