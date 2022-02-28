@@ -203,7 +203,7 @@ void XLineEditHEX::setModeValue(XLineEditHEX::MODE mode, quint64 nValue, HEXVali
     }
 }
 
-void XLineEditHEX::setStringValue(QString sText, qint32 nMaxLength)
+void XLineEditHEX::setStringValue(QString sText,qint32 nMaxLength)
 {
     g_validator.setData(HEXValidator::MODE_TEXT,0);
 
