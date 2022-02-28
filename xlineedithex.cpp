@@ -171,7 +171,7 @@ void XLineEditHEX::setValueOS(quint64 nValue,HEXValidator::MODE validatorMode)
     setModeValue(mode,nValue,validatorMode);
 }
 
-void XLineEditHEX::setValue32_64(quint64 nValue, HEXValidator::MODE validatorMode)
+void XLineEditHEX::setValue32_64(quint64 nValue,HEXValidator::MODE validatorMode)
 {
     if(nValue>=0xFFFFFFFF)
     {
