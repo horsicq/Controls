@@ -284,7 +284,7 @@ XLineEditHEX::MODE XLineEditHEX::getModeFromValue(quint64 nValue)
     return result;
 }
 
-QString XLineEditHEX::getFormatString(XLineEditHEX::MODE mode, qint64 nValue)
+QString XLineEditHEX::getFormatString(XLineEditHEX::MODE mode,qint64 nValue)
 {
     QString sResult;
 
