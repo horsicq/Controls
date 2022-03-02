@@ -60,9 +60,11 @@ public:
     void setSelectionAddress(qint64 nAddress,qint64 nSize);
     bool isEdited();
     bool saveBackup();
-    void enableReadOnly(bool bState);
-    void setEdited(bool bState);
     void setReadonly(bool bState);
+    bool isReadonly();
+
+public slots:
+    void setEdited();
 
 protected:
     virtual bool isOffsetValid(qint64 nOffset);
@@ -79,6 +81,7 @@ protected slots:
     void _copyAsHexSlot();
     void _copyCursorAddressSlot();
     void _copyCursorOffsetSlot();
+    void _setEdited();
 
 private:
     QIODevice *g_pDevice;
@@ -87,6 +90,7 @@ private:
     SearchProcess::SEARCHDATA g_searchData;
     QList<XBinary::MEMORY_REPLACE> g_listReplaces;
     MODE g_addressMode;
+    bool g_bIsReadonly;
 };
 
 #endif // XDEVICETABLEVIEW_H

@@ -26,12 +26,15 @@ XDeviceTableView::XDeviceTableView(QWidget *pParent) : XAbstractTableView(pParen
     g_nDataSize=0;
     g_searchData={};
     g_addressMode=MODE_ADDRESS;
+    g_bIsReadonly=true;
 }
 
 void XDeviceTableView::setDevice(QIODevice *pDevice)
 {
     g_pDevice=pDevice;
     g_nDataSize=pDevice->size();
+
+    setReadonly(!(pDevice->isWritable()));
 
     setActive(true);
 }
@@ -86,39 +89,42 @@ void XDeviceTableView::setMemoryReplaces(QList<XBinary::MEMORY_REPLACE> listRepl
 
 qint64 XDeviceTableView::write_array(qint64 nOffset,char *pBuffer,qint64 nSize)
 {
-    char *_pBuffer=nullptr;
-    bool bReplaced=false;
-
-    if(XBinary::_updateReplaces(nOffset,pBuffer,nSize,&g_listReplaces)) // TODO optimize
-    {
-        bReplaced=true;
-    #ifdef QT_DEBUG
-        qDebug("Replaced write present");
-    #endif
-        _pBuffer=new char[nSize];
-
-        XBinary::_copyMemory(_pBuffer,pBuffer,nSize);
-
-        if(XBinary::_replaceMemory(nOffset,_pBuffer,nSize,&g_listReplaces)) // TODO optimize
-        {
-        #ifdef QT_DEBUG
-            qDebug("Replace write");
-        #endif
-        }
-    }
-
-    _pBuffer=pBuffer;
-
     qint64 nResult=0;
 
-    if(saveBackup())
+    if(getDevice())
     {
-        nResult=XBinary::write_array(getDevice(),nOffset,_pBuffer,nSize);
-    }
+        char *_pBuffer=nullptr;
+        bool bReplaced=false;
 
-    if(bReplaced)
-    {
-        delete [] _pBuffer;
+        if(XBinary::_updateReplaces(nOffset,pBuffer,nSize,&g_listReplaces)) // TODO optimize
+        {
+            bReplaced=true;
+        #ifdef QT_DEBUG
+            qDebug("Replaced write present");
+        #endif
+            _pBuffer=new char[nSize];
+
+            XBinary::_copyMemory(_pBuffer,pBuffer,nSize);
+
+            if(XBinary::_replaceMemory(nOffset,_pBuffer,nSize,&g_listReplaces)) // TODO optimize
+            {
+            #ifdef QT_DEBUG
+                qDebug("Replace write");
+            #endif
+            }
+        }
+
+        _pBuffer=pBuffer;
+
+        if(saveBackup())
+        {
+            nResult=XBinary::write_array(getDevice(),nOffset,_pBuffer,nSize);
+        }
+
+        if(bReplaced)
+        {
+            delete [] _pBuffer;
+        }
     }
 
     return nResult;
@@ -126,13 +132,18 @@ qint64 XDeviceTableView::write_array(qint64 nOffset,char *pBuffer,qint64 nSize)
 
 QByteArray XDeviceTableView::read_array(qint64 nOffset,qint32 nSize)
 {
-    QByteArray baResult=XBinary::read_array(getDevice(),nOffset,nSize);
+    QByteArray baResult;
 
-    if(XBinary::_replaceMemory(nOffset,baResult.data(),nSize,&g_listReplaces)) // TODO optimize
+    if(getDevice())
     {
-    #ifdef QT_DEBUG
-        qDebug("Replaced read present");
-    #endif
+        baResult=XBinary::read_array(getDevice(),nOffset,nSize);
+
+        if(XBinary::_replaceMemory(nOffset,baResult.data(),nSize,&g_listReplaces)) // TODO optimize
+        {
+        #ifdef QT_DEBUG
+            qDebug("Replaced read present");
+        #endif
+        }
     }
 
     return baResult;
@@ -185,19 +196,26 @@ bool XDeviceTableView::saveBackup()
     return bResult;
 }
 
-void XDeviceTableView::enableReadOnly(bool bState)
-{
-    // TODO
-}
+void XDeviceTableView::setEdited()
+{       
+//    QFile *pFile=dynamic_cast<QFile *>(getDevice());
 
-void XDeviceTableView::setEdited(bool bState)
-{
-    // TODO
+//    if(pFile)
+//    {
+//        pFile->flush();
+//    }
+
+    updateData();
 }
 
 void XDeviceTableView::setReadonly(bool bState)
 {
-    // TODO
+    g_bIsReadonly=bState;
+}
+
+bool XDeviceTableView::isReadonly()
+{
+    return g_bIsReadonly;
 }
 
 bool XDeviceTableView::isOffsetValid(qint64 nOffset)
@@ -357,4 +375,11 @@ void XDeviceTableView::_copyCursorOffsetSlot()
     STATE state=getState();
 
     QApplication::clipboard()->setText(XBinary::valueToHex(XBinary::MODE_UNKNOWN,state.nCursorOffset));
+}
+
+void XDeviceTableView::_setEdited()
+{
+    setEdited();
+
+    emit changed();
 }
