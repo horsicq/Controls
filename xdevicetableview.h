@@ -45,7 +45,9 @@ public:
     XDeviceTableView(QWidget *pParent=nullptr);
 
     void setDevice(QIODevice *pDevice);
+    void setBackupDevice(QIODevice *pDevice);
     QIODevice *getDevice();
+    QIODevice *getBackupDevice();
     qint64 getDataSize();
     void setMemoryMap(XBinary::_MEMORY_MAP memoryMap);
     XBinary::_MEMORY_MAP *getMemoryMap();
@@ -85,6 +87,7 @@ protected slots:
 
 private:
     QIODevice *g_pDevice;
+    QIODevice *g_pBackupDevice;
     qint64 g_nDataSize;
     XBinary::_MEMORY_MAP g_memoryMap;
     SearchProcess::SEARCHDATA g_searchData;
