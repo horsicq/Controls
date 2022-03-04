@@ -40,6 +40,7 @@ public:
     };
 
     explicit XComboBoxEx(QWidget *pParent=nullptr);
+
     void setData(QMap<quint64,QString> mapData,CBTYPE cbtype=CBTYPE_LIST,quint64 nMask=0);
     void setValue(quint64 nValue);
     quint64 getValue();
