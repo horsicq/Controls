@@ -23,6 +23,7 @@
 XDeviceTableView::XDeviceTableView(QWidget *pParent) : XAbstractTableView(pParent)
 {
     g_pDevice=nullptr;
+    g_pBackupDevice=nullptr;
     g_nDataSize=0;
     g_searchData={};
     g_addressMode=MODE_ADDRESS;
@@ -32,16 +33,45 @@ XDeviceTableView::XDeviceTableView(QWidget *pParent) : XAbstractTableView(pParen
 void XDeviceTableView::setDevice(QIODevice *pDevice)
 {
     g_pDevice=pDevice;
-    g_nDataSize=pDevice->size();
 
-//    setReadonly(!(pDevice->isWritable()));
+    if(pDevice)
+    {
+        g_nDataSize=pDevice->size();
 
-    setActive(true);
+    //    setReadonly(!(pDevice->isWritable()));
+
+        setActive(true);
+    }
+    else
+    {
+        setActive(false);
+    }
+}
+
+void XDeviceTableView::setBackupDevice(QIODevice *pDevice)
+{
+    g_pBackupDevice=pDevice;
 }
 
 QIODevice *XDeviceTableView::getDevice()
 {
     return g_pDevice;
+}
+
+QIODevice *XDeviceTableView::getBackupDevice()
+{
+    QIODevice *pResult=nullptr;
+
+    if(g_pBackupDevice)
+    {
+        pResult=g_pBackupDevice;
+    }
+    else
+    {
+        pResult=g_pDevice;
+    }
+
+    return pResult;
 }
 
 qint64 XDeviceTableView::getDataSize()
@@ -179,7 +209,7 @@ void XDeviceTableView::setSelectionAddress(qint64 nAddress,qint64 nSize)
 
 bool XDeviceTableView::isEdited()
 {
-    bool bResult=XBinary::isBackupPresent(g_pDevice);
+    bool bResult=XBinary::isBackupPresent(getBackupDevice());
 
     return bResult;
 }
@@ -190,7 +220,8 @@ bool XDeviceTableView::saveBackup()
 
     if((getGlobalOptions()->isSaveBackup())&&(!isEdited()))
     {
-        bResult=XBinary::saveBackup(g_pDevice);
+        // Save backup
+        bResult=XBinary::saveBackup(getBackupDevice());
     }
 
     return bResult;
