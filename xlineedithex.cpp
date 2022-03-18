@@ -252,7 +252,7 @@ quint64 XLineEditHEX::getValue()
 
 QVariant XLineEditHEX::_getValue()
 {
-    return vValue;
+    return g_vValue;
 }
 
 void XLineEditHEX::setText(QString sText)
@@ -374,9 +374,9 @@ void XLineEditHEX::_setText(QString sText)
     {
         quint64 nCurrentValue=sText.toULongLong(nullptr,16);
 
-        if(vValue.toULongLong()!=nCurrentValue)
+        if(g_vValue.toULongLong()!=nCurrentValue)
         {
-            vValue=nCurrentValue;
+            g_vValue=nCurrentValue;
             updateFont();
 
             emit valueChanged(nCurrentValue);
@@ -386,9 +386,9 @@ void XLineEditHEX::_setText(QString sText)
     {
         quint64 nCurrentValue=sText.toULongLong(nullptr,10);
 
-        if(vValue.toULongLong()!=nCurrentValue)
+        if(g_vValue.toULongLong()!=nCurrentValue)
         {
-            vValue=nCurrentValue;
+            g_vValue=nCurrentValue;
             updateFont();
 
             emit valueChanged(nCurrentValue);
@@ -421,7 +421,7 @@ void XLineEditHEX::updateFont()
 {
     QFont _font=font();
 
-    _font.setBold(vValue.toULongLong()!=0); // TODO another modes
+    _font.setBold(g_vValue.toULongLong()!=0); // TODO another modes
 
     setFont(_font);
 }

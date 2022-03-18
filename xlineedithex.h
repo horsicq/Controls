@@ -94,7 +94,7 @@ signals:
     void valueChanged(QString sValue);
 
 private:
-    QVariant vValue;
+    QVariant g_vValue;
     HEXValidator g_validator;
     OPTIONS g_options;
     bool g_bIsColon;
