@@ -412,5 +412,5 @@ void XDeviceTableView::_setEdited()
 {
     setEdited();
 
-    emit changed();
+    emit dataChanged();
 }
