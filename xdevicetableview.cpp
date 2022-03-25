@@ -150,6 +150,7 @@ qint64 XDeviceTableView::write_array(qint64 nOffset,char *pBuffer,qint64 nSize)
         {
             nResult=XBinary::write_array(getDevice(),nOffset,_pBuffer,nSize);
         }
+        // mb TODO error message if fails
 
         if(bReplaced)
         {

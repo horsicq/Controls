@@ -56,6 +56,7 @@ public:
     };
 
     explicit XLineEditHEX(QWidget *pParent=nullptr);
+
     void setOptions(OPTIONS options);
     void setValue(quint8 nValue,HEXValidator::MODE validatorMode=HEXValidator::MODE_HEX);
     void setValue(qint8 nValue,HEXValidator::MODE validatorMode=HEXValidator::MODE_HEX);
