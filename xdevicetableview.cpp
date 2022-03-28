@@ -39,7 +39,6 @@ void XDeviceTableView::setDevice(QIODevice *pDevice)
         g_nDataSize=pDevice->size();
 
     //    setReadonly(!(pDevice->isWritable()));
-
         setActive(true);
     }
     else
