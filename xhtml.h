@@ -40,7 +40,7 @@ public:
 
     void appendText(QString sText);
     void addTableBegin();
-    void addTableRow(QList<TABLECELL> listCells);
+    void addTableRow(QList<TABLECELL> listTableCells);
     void addTableEnd();
     QString toString();
     static QString makeLink(QString sText,QString sLink);

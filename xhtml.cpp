@@ -34,9 +34,9 @@ void XHtml::addTableBegin()
     g_sString.append("<table border=\"1\" style=\"border-style:solid;\" cellspacing=\"-1\" cellpadding=\"5\">"); // TODO consts
 }
 
-void XHtml::addTableRow(QList<TABLECELL> listCells)
+void XHtml::addTableRow(QList<TABLECELL> listTableCells)
 {
-    qint32 nNumbersOfCell=listCells.count();
+    qint32 nNumbersOfCell=listTableCells.count();
 
     if(nNumbersOfCell)
     {
@@ -48,13 +48,13 @@ void XHtml::addTableRow(QList<TABLECELL> listCells)
 
             QString sCellText;
 
-            if(listCells.at(i).bBold)
+            if(listTableCells.at(i).bBold)
             {
-                sCellText=QString("<b>%1</b>").arg(listCells.at(i).sText);
+                sCellText=QString("<b>%1</b>").arg(listTableCells.at(i).sText);
             }
             else
             {
-                sCellText=listCells.at(i).sText;
+                sCellText=listTableCells.at(i).sText;
             }
 
             g_sString.append(sCellText);
