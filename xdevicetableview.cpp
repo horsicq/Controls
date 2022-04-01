@@ -116,7 +116,7 @@ void XDeviceTableView::setMemoryReplaces(QList<XBinary::MEMORY_REPLACE> listRepl
     g_listReplaces=listReplaces;
 }
 
-qint64 XDeviceTableView::write_array(qint64 nOffset,char *pBuffer,qint64 nSize)
+qint64 XDeviceTableView::write_array(qint64 nOffset, char *pData, qint64 nDataSize)
 {
     qint64 nResult=0;
 
@@ -125,17 +125,17 @@ qint64 XDeviceTableView::write_array(qint64 nOffset,char *pBuffer,qint64 nSize)
         char *_pBuffer=nullptr;
         bool bReplaced=false;
 
-        if(XBinary::_updateReplaces(nOffset,pBuffer,nSize,&g_listReplaces)) // TODO optimize
+        if(XBinary::_updateReplaces(nOffset,pData,nDataSize,&g_listReplaces)) // TODO optimize
         {
             bReplaced=true;
         #ifdef QT_DEBUG
             qDebug("Replaced write present");
         #endif
-            _pBuffer=new char[nSize];
+            _pBuffer=new char[nDataSize];
 
-            XBinary::_copyMemory(_pBuffer,pBuffer,nSize);
+            XBinary::_copyMemory(_pBuffer,pData,nDataSize);
 
-            if(XBinary::_replaceMemory(nOffset,_pBuffer,nSize,&g_listReplaces)) // TODO optimize
+            if(XBinary::_replaceMemory(nOffset,_pBuffer,nDataSize,&g_listReplaces)) // TODO optimize
             {
             #ifdef QT_DEBUG
                 qDebug("Replace write");
@@ -143,11 +143,11 @@ qint64 XDeviceTableView::write_array(qint64 nOffset,char *pBuffer,qint64 nSize)
             }
         }
 
-        _pBuffer=pBuffer;
+        _pBuffer=pData;
 
         if(saveBackup())
         {
-            nResult=XBinary::write_array(getDevice(),nOffset,_pBuffer,nSize);
+            nResult=XBinary::write_array(getDevice(),nOffset,_pBuffer,nDataSize);
         }
         // mb TODO error message if fails
 

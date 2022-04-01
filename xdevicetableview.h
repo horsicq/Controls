@@ -54,7 +54,7 @@ public:
     void setAddressMode(MODE addressMode);
     MODE getAddressMode();
     void setMemoryReplaces(QList<XBinary::MEMORY_REPLACE> listReplaces);
-    qint64 write_array(qint64 nOffset,char *pBuffer,qint64 nSize);
+    qint64 write_array(qint64 nOffset,char *pData,qint64 nDataSize);
     QByteArray read_array(qint64 nOffset,qint32 nSize);
     bool isReplaced(qint64 nOffset,qint32 nSize);
     void goToAddress(qint64 nAddress,bool bShort=false);
