@@ -35,6 +35,7 @@ XAbstractTableView::XAbstractTableView(QWidget *pParent) : XShortcutstScrollArea
     g_nViewHeight=0;
     g_nTableWidth=0;
     g_nSelectionInitOffset=-1;
+    g_nSelectionInitSize=0;
     g_nNumberOfRows=0;
     g_nCursorDelta=0;
     g_nXOffset=0;
@@ -486,29 +487,30 @@ void XAbstractTableView::setCursorOffset(qint64 nOffset,qint32 nColumn,QVariant 
     emit cursorChanged(nOffset);
 }
 
-void XAbstractTableView::_initSelection(qint64 nOffset)
+void XAbstractTableView::_initSelection(qint64 nOffset, qint64 nSize)
 {
     if(isOffsetValid(nOffset)||isEnd(nOffset))
     {
         g_nSelectionInitOffset=nOffset;
+        g_nSelectionInitSize=nSize;
         g_state.nSelectionOffset=nOffset;
         g_state.nSelectionSize=0;
     }
 }
 
-void XAbstractTableView::_setSelection(qint64 nOffset)
+void XAbstractTableView::_setSelection(qint64 nOffset, qint64 nSize)
 {
     if(isOffsetValid(nOffset)||isEnd(nOffset))
     {
         if(nOffset>g_nSelectionInitOffset)
         {
             g_state.nSelectionOffset=g_nSelectionInitOffset;
-            g_state.nSelectionSize=nOffset-g_nSelectionInitOffset;
+            g_state.nSelectionSize=nOffset-g_nSelectionInitOffset+nSize;
         }
         else
         {
             g_state.nSelectionOffset=nOffset;
-            g_state.nSelectionSize=g_nSelectionInitOffset-nOffset;
+            g_state.nSelectionSize=g_nSelectionInitOffset-nOffset+g_nSelectionInitSize;
         }
 
         emit selectionChanged();
@@ -619,6 +621,13 @@ void XAbstractTableView::_cellDoubleClicked(qint32 nRow,qint32 nColumn)
     emit cellDoubleClicked(nRow,nColumn);
 }
 
+qint64 XAbstractTableView::getRecordSize(qint64 nOffset)
+{
+    Q_UNUSED(nOffset)
+
+    return 1;
+}
+
 void XAbstractTableView::setCursorData(QRect rectSquare,QRect rectText,QString sText,qint32 nDelta)
 {
     g_rectCursorSquare=rectSquare;
@@ -641,8 +650,8 @@ void XAbstractTableView::setSelection(qint64 nOffset,qint64 nSize)
 {
     if(g_bIsSelectionEnable)
     {
-        _initSelection(nOffset);
-        _setSelection(nOffset+nSize);
+        _initSelection(nOffset,nSize);
+        _setSelection(nOffset,nSize);
 
         adjust();
         viewport()->update();
@@ -792,7 +801,7 @@ void XAbstractTableView::mouseMoveEvent(QMouseEvent *pEvent)
                 g_state.nCursorOffset=os.nOffset;
                 g_state.varCursorExtraInfo=os.varData;
                 g_state.cursorPosition=cursorPosition;
-                _setSelection(os.nOffset+os.nSize);
+                _setSelection(os.nOffset,os.nSize);
 
                 adjust();
                 viewport()->update();
@@ -861,7 +870,7 @@ void XAbstractTableView::mousePressEvent(QMouseEvent *pEvent)
 
                 if(g_bIsSelectionEnable)
                 {
-                    _initSelection(os.nOffset);
+                    _initSelection(os.nOffset,os.nSize);
                     g_bMouseSelection=true;
                 }
 
@@ -891,7 +900,7 @@ void XAbstractTableView::mouseReleaseEvent(QMouseEvent *pEvent)
                 CURSOR_POSITION cursorPosition=getCursorPosition(pEvent->pos());
                 OS os=cursorPositionToOS(cursorPosition);
 
-                _setSelection(os.nOffset+os.nSize);
+                _setSelection(os.nOffset,os.nSize);
 
     //            if(g_state.nCursorOffset==os.nOffset)
     //            {

@@ -157,8 +157,8 @@ signals:
     void cellDoubleClicked(qint32 nRow,qint32 nColumn);
 
 private:
-    void _initSelection(qint64 nOffset);
-    void _setSelection(qint64 nOffset);
+    void _initSelection(qint64 nOffset,qint64 nSize);
+    void _setSelection(qint64 nOffset,qint64 nSize);
 
 private slots:
     void verticalScroll();
@@ -190,6 +190,7 @@ protected:
     virtual void adjustColumns();
     virtual void _headerClicked(qint32 nNumber);
     virtual void _cellDoubleClicked(qint32 nRow,qint32 nColumn);
+    virtual qint64 getRecordSize(qint64 nOffset);
 
 private:
     bool g_bIsActive;
@@ -214,6 +215,7 @@ private:
     STATE g_state;
     bool g_bMouseSelection;
     qint64 g_nSelectionInitOffset;
+    qint64 g_nSelectionInitSize;
     bool g_bMouseResizeColumn;
     qint32 g_nResizeColumnNumber;
     bool g_bHeaderClickButton;
