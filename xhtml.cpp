@@ -31,7 +31,7 @@ void XHtml::appendText(QString sText)
 
 void XHtml::addTableBegin()
 {
-    g_sString.append("<table border=\"1\" style=\"border-style:solid;\" cellspacing=\"-1\" cellpadding=\"5\">"); // TODO consts
+    g_sString.append("<table border=\"1\" style=\"border-style:solid;\" cellspacing=\"-1\" cellpadding=\"5\">"); // TODO cellpadding consts
 }
 
 void XHtml::addTableRow(QList<TABLECELL> listTableCells)
