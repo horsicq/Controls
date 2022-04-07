@@ -112,8 +112,6 @@ public:
     qint64 getViewStart();
 
     qint32 getCharWidth();
-    static qint32 getCharWidth(QWidget *pWidget);
-    static qint32 getCharHeight(QWidget *pWidget);
 
     CURSOR_POSITION getCursorPosition(QPoint pos);
 
