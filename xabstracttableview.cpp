@@ -473,7 +473,7 @@ void XAbstractTableView::setCursorOffset(qint64 nOffset,qint32 nColumn,QVariant 
     emit cursorChanged(nOffset);
 }
 
-void XAbstractTableView::_initSelection(qint64 nOffset, qint64 nSize)
+void XAbstractTableView::_initSelection(qint64 nOffset,qint64 nSize)
 {
     if(isOffsetValid(nOffset)||isEnd(nOffset))
     {

@@ -53,7 +53,7 @@ public:
     XBinary::_MEMORY_MAP *getMemoryMap();
     void setAddressMode(MODE addressMode);
     MODE getAddressMode();
-    void setMemoryReplaces(QList<XBinary::MEMORY_REPLACE> listReplaces);
+    void setMemoryReplaces(QList<XBinary::MEMORY_REPLACE> listReplaces); // TODO remove, ise xInfoDB
     qint64 write_array(qint64 nOffset,char *pData,qint64 nDataSize);
     QByteArray read_array(qint64 nOffset,qint32 nSize);
     bool isReplaced(qint64 nOffset,qint32 nSize);
