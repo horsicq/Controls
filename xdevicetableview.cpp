@@ -22,12 +22,23 @@
 
 XDeviceTableView::XDeviceTableView(QWidget *pParent) : XAbstractTableView(pParent)
 {
+    g_pXInfoDB=nullptr;
     g_pDevice=nullptr;
     g_pBackupDevice=nullptr;
     g_nDataSize=0;
     g_searchData={};
     g_addressMode=MODE_ADDRESS;
     g_bIsReadonly=true;
+}
+
+void XDeviceTableView::setXInfoDB(XInfoDB *pXInfoDB)
+{
+    g_pXInfoDB=pXInfoDB;
+}
+
+XInfoDB *XDeviceTableView::getXInfoDB()
+{
+    return g_pXInfoDB;
 }
 
 void XDeviceTableView::setDevice(QIODevice *pDevice)

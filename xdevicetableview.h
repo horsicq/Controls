@@ -28,6 +28,7 @@
 #include "dialogsearchprocess.h"
 #include "xabstracttableview.h"
 #include "xformats.h"
+#include "xinfodb.h"
 
 class XDeviceTableView : public XAbstractTableView
 {
@@ -44,6 +45,8 @@ public:
 
     XDeviceTableView(QWidget *pParent=nullptr);
 
+    void setXInfoDB(XInfoDB *pXInfoDB);
+    XInfoDB *getXInfoDB();
     void setDevice(QIODevice *pDevice);
     void setBackupDevice(QIODevice *pDevice);
     QIODevice *getDevice();
@@ -86,6 +89,7 @@ protected slots:
     void _setEdited();
 
 private:
+    XInfoDB *g_pXInfoDB;
     QIODevice *g_pDevice;
     QIODevice *g_pBackupDevice;
     qint64 g_nDataSize;
