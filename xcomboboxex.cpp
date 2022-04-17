@@ -22,12 +22,12 @@
 
 XComboBoxEx::XComboBoxEx(QWidget *pParent): QComboBox(pParent)
 {
-    SubclassOfQStyledItemDelegate *pDelegate=new SubclassOfQStyledItemDelegate(this);
-    setItemDelegate(pDelegate);
-
     g_nValue=0;
     g_bIsReadOnly=false;
     g_cbtype=CBTYPE_LIST;
+
+    SubclassOfQStyledItemDelegate *pDelegate=new SubclassOfQStyledItemDelegate(this);
+    setItemDelegate(pDelegate);
 
     connect(this,SIGNAL(currentIndexChanged(int)),this,SLOT(currentIndexChangedSlot(int)));
     connect(&g_model,SIGNAL(itemChanged(QStandardItem*)),this,SLOT(itemChangedSlot(QStandardItem*)));
