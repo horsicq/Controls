@@ -194,7 +194,7 @@ bool XDeviceTableView::isReplaced(qint64 nOffset,qint32 nSize)
     return XBinary::_isReplaced(nOffset,nSize,&g_listReplaces);
 }
 
-void XDeviceTableView::goToAddress(qint64 nAddress,bool bShort)
+void XDeviceTableView::goToAddress(XADDR nAddress, bool bShort)
 {
     qint64 nOffset=XBinary::addressToOffset(getMemoryMap(),nAddress);
     _goToOffset(nOffset,false,bShort); // TODO Check
@@ -207,7 +207,7 @@ void XDeviceTableView::goToOffset(qint64 nOffset)
     // mb TODO reload
 }
 
-void XDeviceTableView::setSelectionAddress(qint64 nAddress,qint64 nSize)
+void XDeviceTableView::setSelectionAddress(XADDR nAddress,qint64 nSize)
 {
     qint64 nOffset=XBinary::addressToOffset(getMemoryMap(),nAddress);
 
@@ -397,7 +397,7 @@ void XDeviceTableView::_copyCursorAddressSlot()
 {
     STATE state=getState();
 
-    qint64 nAddress=0;
+    XADDR nAddress=0;
 
     if(g_addressMode==MODE_ADDRESS)
     {
