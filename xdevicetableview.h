@@ -61,7 +61,7 @@ public:
     bool isReplaced(qint64 nOffset,qint32 nSize);
     void goToAddress(XADDR nAddress,bool bShort=false);
     void goToOffset(qint64 nOffset);
-    void setSelectionAddress(XADDR nAddress, qint64 nSize);
+    void setSelectionAddress(XADDR nAddress,qint64 nSize);
     bool isEdited();
     bool saveBackup();
     void setReadonly(bool bState);
