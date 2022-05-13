@@ -80,12 +80,15 @@ protected slots:
     void _goToOffsetSlot();
     void _dumpToFileSlot();
     void _hexSignatureSlot();
-    void _findSlot();
+    void _findStringSlot();
+    void _findSignatureSlot();
+    void _findValueSlot();
+    void _findSlot(DialogSearch::SEARCHMODE mode);
     void _findNextSlot();
     void _selectAllSlot();
-    void _copyAsHexSlot();
-    void _copyCursorAddressSlot();
-    void _copyCursorOffsetSlot();
+    void _copyHexSlot();
+    void _copyAddressSlot();
+    void _copyOffsetSlot();
     void _setEdited();
 
 private:

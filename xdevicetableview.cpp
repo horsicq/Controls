@@ -331,7 +331,22 @@ void XDeviceTableView::_hexSignatureSlot()
     dhs.exec();
 }
 
-void XDeviceTableView::_findSlot()
+void XDeviceTableView::_findStringSlot()
+{
+    _findSlot(DialogSearch::SEARCHMODE_STRING);
+}
+
+void XDeviceTableView::_findSignatureSlot()
+{
+    _findSlot(DialogSearch::SEARCHMODE_SIGNATURE);
+}
+
+void XDeviceTableView::_findValueSlot()
+{
+    _findSlot(DialogSearch::SEARCHMODE_VALUE);
+}
+
+void XDeviceTableView::_findSlot(DialogSearch::SEARCHMODE mode)
 {
     STATE state=getState();
 
@@ -339,7 +354,7 @@ void XDeviceTableView::_findSlot()
     g_searchData.nResultOffset=-1;
     g_searchData.nCurrentOffset=state.nCursorOffset;
 
-    DialogSearch dialogSearch(this,getDevice(),&g_searchData);
+    DialogSearch dialogSearch(this,getDevice(),&g_searchData,mode);
 
     if(dialogSearch.exec()==QDialog::Accepted)
     {
@@ -382,7 +397,7 @@ void XDeviceTableView::_selectAllSlot()
     setSelection(0,getDevice()->size());
 }
 
-void XDeviceTableView::_copyAsHexSlot()
+void XDeviceTableView::_copyHexSlot()
 {
     STATE state=getState();
 
@@ -393,7 +408,7 @@ void XDeviceTableView::_copyAsHexSlot()
     QApplication::clipboard()->setText(baData.toHex());
 }
 
-void XDeviceTableView::_copyCursorAddressSlot()
+void XDeviceTableView::_copyAddressSlot()
 {
     STATE state=getState();
 
@@ -411,7 +426,7 @@ void XDeviceTableView::_copyCursorAddressSlot()
     QApplication::clipboard()->setText(XBinary::valueToHex(XBinary::MODE_UNKNOWN,nAddress));
 }
 
-void XDeviceTableView::_copyCursorOffsetSlot()
+void XDeviceTableView::_copyOffsetSlot()
 {
     STATE state=getState();
 
