@@ -691,7 +691,7 @@ QFont XAbstractTableView::getMonoFont(qint32 nFontSize)
     fontResult=QFont("Courier",nFontSize);
 #endif
 #ifdef Q_OS_LINUX
-    fontResult=QFont("Monospace",nFontSize);
+    fontResult=QFont("DejaVu Sans Mono",nFontSize);
 #endif
 #ifdef Q_OS_OSX
     fontResult=QFont("Menlo",nFontSize);
