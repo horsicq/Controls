@@ -76,6 +76,7 @@ protected:
     void setMemoryReplaces(QList<XBinary::MEMORY_REPLACE> listReplaces);
 
 protected slots:
+    // TODO got Rel Address
     void _goToAddressSlot();
     void _goToOffsetSlot();
     void _dumpToFileSlot();
