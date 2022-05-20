@@ -247,6 +247,8 @@ void XDeviceTableView::setEdited()
 //    }
 
     updateData();
+
+    viewport()->update();
 }
 
 void XDeviceTableView::setReadonly(bool bState)
