@@ -248,7 +248,12 @@ void XDeviceTableView::setEdited()
 
     updateData();
 
-    viewport()->update();
+    if(g_pXInfoDB)
+    {
+        g_pXInfoDB->reload(false);
+    }
+
+//    viewport()->update();
 }
 
 void XDeviceTableView::setReadonly(bool bState)
