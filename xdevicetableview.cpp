@@ -419,16 +419,16 @@ void XDeviceTableView::_copyAddressSlot()
 {
     STATE state=getState();
 
-    XADDR nAddress=0;
+    XADDR nAddress=XBinary::offsetToAddress(getMemoryMap(),state.nCursorOffset);
 
-    if(g_addressMode==MODE_ADDRESS)
-    {
-        nAddress=XBinary::offsetToAddress(getMemoryMap(),state.nCursorOffset);
-    }
-    else if(g_addressMode==MODE_RELADDRESS)
-    {
-        nAddress=XBinary::offsetToRelAddress(getMemoryMap(),state.nCursorOffset);
-    }
+    QApplication::clipboard()->setText(XBinary::valueToHex(XBinary::MODE_UNKNOWN,nAddress));
+}
+
+void XDeviceTableView::_copyRelAddressSlot()
+{
+    STATE state=getState();
+
+    XADDR nAddress=XBinary::offsetToRelAddress(getMemoryMap(),state.nCursorOffset);
 
     QApplication::clipboard()->setText(XBinary::valueToHex(XBinary::MODE_UNKNOWN,nAddress));
 }
