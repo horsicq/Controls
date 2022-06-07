@@ -614,6 +614,11 @@ qint64 XAbstractTableView::getRecordSize(qint64 nOffset)
     return 1;
 }
 
+qint64 XAbstractTableView::getFixOffset(qint64 nOffset)
+{
+    return nOffset;
+}
+
 void XAbstractTableView::setCursorData(QRect rectSquare,QRect rectText,QString sText,qint32 nDelta)
 {
     g_rectCursorSquare=rectSquare;
@@ -1003,12 +1008,17 @@ void XAbstractTableView::endPainting(QPainter *pPainter)
     Q_UNUSED(pPainter)
 }
 
-bool XAbstractTableView::_goToOffset(qint64 nOffset,bool bSaveCursor,bool bShort)
+bool XAbstractTableView::_goToOffset(qint64 nOffset, bool bSaveCursor, bool bShort, bool bAprox)
 {
     bool bResult=false;
 
     if(isOffsetValid(nOffset))
     {
+        if(bAprox)
+        {
+            nOffset=getFixOffset(nOffset);
+        }
+
         qint64 nCursorOffset=0;
 
         if(bSaveCursor)

@@ -38,6 +38,8 @@ XLineEditHEX::XLineEditHEX(QWidget *pParent): QLineEdit(pParent)
     // mb TODO 10/16
     setContextMenuPolicy(Qt::CustomContextMenu);
     connect(this,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(customContextMenu(QPoint)));
+
+    installEventFilter(this);
 }
 
 void XLineEditHEX::setOptions(XLineEditHEX::OPTIONS options)
@@ -352,6 +354,20 @@ qint32 XLineEditHEX::getSymbolWidth(QWidget *pWidget)
 void XLineEditHEX::setColon(bool bIsColon)
 {
     g_bIsColon=bIsColon;
+}
+
+bool XLineEditHEX::eventFilter(QObject *pObject,QEvent *pEvent)
+{
+    if(pEvent->type()==QEvent::FocusIn)
+    {
+        emit focused(true);
+    }
+    else if(pEvent->type()==QEvent::FocusOut)
+    {
+        emit focused(false);
+    }
+
+    return QLineEdit::eventFilter(pObject,pEvent);;
 }
 
 //void XLineEditHEX::keyPressEvent(QKeyEvent *keyEvent)

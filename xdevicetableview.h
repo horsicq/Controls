@@ -59,7 +59,7 @@ public:
     qint64 write_array(qint64 nOffset,char *pData,qint64 nDataSize);
     QByteArray read_array(qint64 nOffset,qint32 nSize);
     bool isReplaced(qint64 nOffset,qint32 nSize);
-    void goToAddress(XADDR nAddress,bool bShort=false);
+    void goToAddress(XADDR nAddress,bool bShort=false,bool bAprox=false);
     void goToOffset(qint64 nOffset);
     void setSelectionAddress(XADDR nAddress,qint64 nSize);
     bool isEdited();

@@ -82,6 +82,7 @@ public:
 
 protected:
 //    void keyPressEvent(QKeyEvent* keyEvent);
+    bool eventFilter(QObject *pObject,QEvent *pEvent);
 
 private slots:
     void _setText(QString sText);
@@ -93,6 +94,7 @@ private slots:
 signals:
     void valueChanged(quint64 nValue);
     void valueChanged(QString sValue);
+    void focused(bool bState);
 
 private:
     QVariant g_vValue;

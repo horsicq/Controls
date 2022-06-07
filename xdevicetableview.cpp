@@ -194,10 +194,10 @@ bool XDeviceTableView::isReplaced(qint64 nOffset,qint32 nSize)
     return XBinary::_isReplaced(nOffset,nSize,&g_listReplaces);
 }
 
-void XDeviceTableView::goToAddress(XADDR nAddress,bool bShort)
+void XDeviceTableView::goToAddress(XADDR nAddress, bool bShort, bool bAprox)
 {
     qint64 nOffset=XBinary::addressToOffset(getMemoryMap(),nAddress);
-    _goToOffset(nOffset,false,bShort); // TODO Check
+    _goToOffset(nOffset,false,bShort,bAprox); // TODO Check
     // mb TODO reload
 }
 
