@@ -789,15 +789,16 @@ void XAbstractTableView::mouseMoveEvent(QMouseEvent *pEvent)
 
             if(os.nOffset!=-1)
             {
-                g_state.nCursorOffset=os.nOffset;
-                g_state.varCursorExtraInfo=os.varData;
-                g_state.cursorPosition=cursorPosition;
+//                g_state.nCursorOffset=os.nOffset;
+//                g_state.varCursorExtraInfo=os.varData;
+//                g_state.cursorPosition=cursorPosition;
+
+//                emit cursorChanged(os.nOffset);
+
                 _setSelection(os.nOffset,os.nSize);
 
                 adjust();
                 viewport()->update();
-
-                emit cursorChanged(os.nOffset);
             }
         }
         else if(g_bMouseResizeColumn)
@@ -1008,7 +1009,7 @@ void XAbstractTableView::endPainting(QPainter *pPainter)
     Q_UNUSED(pPainter)
 }
 
-bool XAbstractTableView::_goToOffset(qint64 nOffset, bool bSaveCursor, bool bShort, bool bAprox)
+bool XAbstractTableView::_goToOffset(qint64 nOffset,bool bSaveCursor,bool bShort,bool bAprox)
 {
     bool bResult=false;
 
