@@ -23,6 +23,7 @@
 XLineEditHEX::XLineEditHEX(QWidget *pParent): QLineEdit(pParent)
 {
     g_bIsColon=false;
+    g_bIsFocused=false;
     g_options={};
 
     updateFont();
@@ -356,14 +357,23 @@ void XLineEditHEX::setColon(bool bIsColon)
     g_bIsColon=bIsColon;
 }
 
+bool XLineEditHEX::isFocused()
+{
+    return g_bIsFocused;
+}
+
 bool XLineEditHEX::eventFilter(QObject *pObject,QEvent *pEvent)
 {
     if(pEvent->type()==QEvent::FocusIn)
     {
+        g_bIsFocused=true;
+
         emit focused(true);
     }
     else if(pEvent->type()==QEvent::FocusOut)
     {
+        g_bIsFocused=false;
+
         emit focused(false);
     }
 

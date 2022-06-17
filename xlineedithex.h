@@ -79,6 +79,7 @@ public:
     static qint32 getWidthFromMode(QWidget *pWidget,MODE mode);
     static qint32 getSymbolWidth(QWidget *pWidget);
     void setColon(bool bIsColon);
+    bool isFocused();
 
 protected:
 //    void keyPressEvent(QKeyEvent* keyEvent);
@@ -101,6 +102,7 @@ private:
     HEXValidator g_validator;
     OPTIONS g_options;
     bool g_bIsColon;
+    bool g_bIsFocused;
 };
 
 #define PXLineEditHEX XLineEditHEX *
