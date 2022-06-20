@@ -293,7 +293,8 @@ void XDeviceTableView::_goToAddressSlot()
     }
 
     DialogGoToAddress da(this,getMemoryMap(),type);
-    if(da.exec()==QDialog::Accepted)
+
+    if(da.exec()==QDialog::Accepted) // TODO use status
     {
         goToAddress(da.getValue());
         setFocus();
@@ -304,7 +305,8 @@ void XDeviceTableView::_goToAddressSlot()
 void XDeviceTableView::_goToOffsetSlot()
 {
     DialogGoToAddress da(this,getMemoryMap(),DialogGoToAddress::TYPE_OFFSET);
-    if(da.exec()==QDialog::Accepted)
+
+    if(da.exec()==QDialog::Accepted) // TODO use status
     {
         goToOffset(da.getValue());
         setFocus();
@@ -363,7 +365,7 @@ void XDeviceTableView::_findSlot(DialogSearch::SEARCHMODE mode)
 
     DialogSearch dialogSearch(this,getDevice(),&g_searchData,mode);
 
-    if(dialogSearch.exec()==QDialog::Accepted)
+    if(dialogSearch.exec()==QDialog::Accepted) // TODO use status
     {
         _goToOffset(g_searchData.nResultOffset);
         setSelection(g_searchData.nResultOffset,g_searchData.nResultSize);
@@ -385,7 +387,7 @@ void XDeviceTableView::_findNextSlot()
 
         DialogSearchProcess dialogSearch(this,getDevice(),&g_searchData);
 
-        if(dialogSearch.exec()==QDialog::Accepted)
+        if(dialogSearch.exec()==QDialog::Accepted) // TODO use status
         {
             _goToOffset(g_searchData.nResultOffset);
             setSelection(g_searchData.nResultOffset,g_searchData.nResultSize);
