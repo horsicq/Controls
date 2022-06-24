@@ -325,7 +325,7 @@ void XDeviceTableView::_dumpToFileSlot()
 
         DialogDumpProcess dd(this,getDevice(),state.nSelectionOffset,state.nSelectionSize,sFileName,DumpProcess::DT_OFFSET);
 
-        dd.exec();
+        dd.showDialogDelay(1000);
     }
 }
 
@@ -387,7 +387,9 @@ void XDeviceTableView::_findNextSlot()
 
         DialogSearchProcess dialogSearch(this,getDevice(),&g_searchData);
 
-        if(dialogSearch.exec()==QDialog::Accepted) // TODO use status
+        dialogSearch.showDialogDelay(1000);
+
+        if(dialogSearch.isSuccess()) // TODO use status
         {
             _goToOffset(g_searchData.nResultOffset);
             setSelection(g_searchData.nResultOffset,g_searchData.nResultSize);
