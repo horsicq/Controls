@@ -685,7 +685,7 @@ QFont XAbstractTableView::getMonoFont(qint32 nFontSize)
 
     if(nFontSize==-1)
     {
-    #ifdef Q_OS_OSX
+    #ifdef Q_OS_MACOS
         nFontSize=12;
     #else
         nFontSize=10;
@@ -698,7 +698,7 @@ QFont XAbstractTableView::getMonoFont(qint32 nFontSize)
 #ifdef Q_OS_LINUX
     fontResult=QFont("DejaVu Sans Mono",nFontSize);
 #endif
-#ifdef Q_OS_OSX
+#ifdef Q_OS_MACOS
     fontResult=QFont("Menlo",nFontSize);
 #endif
 
