@@ -106,6 +106,7 @@ public:
     quint64 getTotalLineCount();
 
     void setLineDelta(qint32 nValue);
+    void setSideDelta(qint32 nValue);
     qint32 getLinesProPage();
 
     void setViewStart(qint64 nValue);
@@ -119,6 +120,7 @@ public:
     QPainter *getBoldTextPointer();
 
     qint32 getLineDelta();
+    qint32 getSideDelta();
     STATE getState();
     qint64 getCursorOffset();
     void setCursorOffset(qint64 nOffset,qint32 nColumn=-1,QVariant varCursorExtraInfo=QVariant());
@@ -210,6 +212,7 @@ private:
     qint32 g_nTableWidth;
 
     qint32 g_nLineDelta;
+    qint32 g_nSideDelta;
 
     STATE g_state;
     bool g_bMouseSelection;

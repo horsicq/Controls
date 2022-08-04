@@ -41,6 +41,7 @@ XAbstractTableView::XAbstractTableView(QWidget *pParent) : XShortcutstScrollArea
     g_nXOffset=0;
     g_nHeaderHeight=20; // TODO Set/Get function !!!
     g_nLineDelta=0; // TODO Check
+    g_nSideDelta=0; // TODO Check
     g_state={};
     g_bBlink=false;
     g_bLastColumnStretch=false;
@@ -64,7 +65,8 @@ XAbstractTableView::XAbstractTableView(QWidget *pParent) : XShortcutstScrollArea
     setHeaderVisible(true);
     setColumnFixed(false);
     setVerticalLinesVisible(true);
-    setLineDelta(4);
+    setLineDelta(0);
+    setSideDelta(0);
     // TODO Cursor off default
 
     installEventFilter(this); // mb TODO move to setActive
@@ -292,7 +294,7 @@ void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
                 font.setBold(true);
                 pPainter->setFont(font);
 
-                pPainter->drawText(g_rectCursorText.x(),g_rectCursorText.y()+g_nLineHeight-g_nLineDelta,g_sCursorText);
+                pPainter->drawText(g_rectCursorText,g_sCursorText);
 
                 pPainter->restore();
             }
@@ -354,6 +356,11 @@ quint64 XAbstractTableView::getTotalLineCount()
 void XAbstractTableView::setLineDelta(qint32 nValue)
 {
     g_nLineDelta=nValue;
+}
+
+void XAbstractTableView::setSideDelta(qint32 nValue)
+{
+    g_nSideDelta=nValue;
 }
 
 qint32 XAbstractTableView::getLinesProPage()
@@ -447,6 +454,11 @@ bool XAbstractTableView::isOffsetSelected(qint64 nOffset)
 qint32 XAbstractTableView::getLineDelta()
 {
     return g_nLineDelta;
+}
+
+qint32 XAbstractTableView::getSideDelta()
+{
+    return g_nSideDelta;
 }
 
 XAbstractTableView::STATE XAbstractTableView::getState()
@@ -803,7 +815,7 @@ void XAbstractTableView::mouseMoveEvent(QMouseEvent *pEvent)
         }
         else if(g_bMouseResizeColumn)
         {
-            qint32 nColumnWidth=qMax(g_nLineDelta,cursorPosition.nX-g_listColumns.at(g_nResizeColumnNumber).nLeft);
+            qint32 nColumnWidth=qMax(g_nSideDelta,cursorPosition.nX-g_listColumns.at(g_nResizeColumnNumber).nLeft);
 
             g_listColumns[g_nResizeColumnNumber].nWidth=nColumnWidth;
 
