@@ -66,7 +66,7 @@ XAbstractTableView::XAbstractTableView(QWidget *pParent) : XShortcutstScrollArea
     setColumnFixed(false);
     setVerticalLinesVisible(true);
     setLineDelta(0);
-    setSideDelta(0);
+    setSideDelta(3);
     // TODO Cursor off default
 
     installEventFilter(this); // mb TODO move to setActive
