@@ -416,7 +416,7 @@ XAbstractTableView::CURSOR_POSITION XAbstractTableView::getCursorPosition(QPoint
                     result.nCellLeft=result.nX-nCurrentOffset;
                 }
 
-                if(result.nX>=(nCurrentOffset+g_listColumns.at(i).nWidth-g_nLineDelta))
+                if(result.nX>=(nCurrentOffset+g_listColumns.at(i).nWidth-g_nSideDelta))
                 {
                     if(!g_bColumnFixed)
                     {
