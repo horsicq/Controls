@@ -37,22 +37,20 @@ HEXValidator::MODE HEXValidator::getMode()
     return g_mode;
 }
 
-QValidator::State HEXValidator::validate(QString &nInput,int &nPos) const
+QValidator::State HEXValidator::validate(QString &sInput,int &nPos) const
 {
     Q_UNUSED(nPos)
 
     QValidator::State result=Acceptable;
 
-    if(!nInput.isEmpty())
+    if(!sInput.isEmpty())
     {
         if(g_mode==MODE_HEX)
         {
             result=Invalid;
 
             bool bSuccess=false;
-            quint64 nValue=0;
-
-            nValue=nInput.toULongLong(&bSuccess,16);
+            quint64 nValue=sInput.toULongLong(&bSuccess,16);
 
             if(bSuccess&&(nValue<=g_nMax))
             {
@@ -64,13 +62,52 @@ QValidator::State HEXValidator::validate(QString &nInput,int &nPos) const
             result=Invalid;
 
             bool bSuccess=false;
-            quint64 nValue=0;
-
-            nValue=nInput.toULongLong(&bSuccess,10);
+            quint64 nValue=sInput.toULongLong(&bSuccess,10);
 
             if(bSuccess&&(nValue<=g_nMax))
             {
                 result=Acceptable;
+            }
+        }
+        else if(g_mode==MODE_SIGN_DEC)
+        {
+            qint64 nMax=0;
+            qint64 nMin=0;
+
+            // TODO optimize!
+            if(g_nMax==0xFF)
+            {
+                nMax=128;
+                nMin=-127;
+            }
+            else if(g_nMax==0xFFFF)
+            {
+                nMax=32767;
+                nMin=-32768;
+            }
+            else if(g_nMax==0xFFFFFFFF)
+            {
+                nMax=2147483647;
+                nMin=-2147483648;
+            }
+            else if(g_nMax==0xFFFFFFFFFFFFFFFF)
+            {
+                nMax=9223372036854775807;
+                nMin=-9223372036854775808;
+            }
+
+            result=Invalid;
+
+            bool bSuccess=false;
+            qint64 nValue=sInput.toLongLong(&bSuccess,10);
+
+            if(bSuccess&&(nValue<=nMax)&&(nValue>=nMin))
+            {
+                result=Acceptable;
+            }
+            else if(sInput=="-")
+            {
+                result=Intermediate;
             }
         }
         // TODO validate UUID !!!

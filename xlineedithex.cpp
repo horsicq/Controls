@@ -62,6 +62,10 @@ void XLineEditHEX::setValue(quint8 nValue,HEXValidator::MODE validatorMode)
     {
          sText=QString("%1").arg(nValue);
     }
+    else if(validatorMode==HEXValidator::MODE_SIGN_DEC)
+    {
+         sText=QString("%1").arg((qint8)nValue);
+    }
 
     setText(sText);
 }
@@ -84,6 +88,10 @@ void XLineEditHEX::setValue(quint16 nValue,HEXValidator::MODE validatorMode)
     else if(validatorMode==HEXValidator::MODE_DEC)
     {
          sText=QString("%1").arg(nValue);
+    }
+    else if(validatorMode==HEXValidator::MODE_SIGN_DEC)
+    {
+         sText=QString("%1").arg((qint16)nValue);
     }
 
     setText(sText);
@@ -119,6 +127,10 @@ void XLineEditHEX::setValue(quint32 nValue,HEXValidator::MODE validatorMode)
     {
         sText=QString("%1").arg(nValue);
     }
+    else if(validatorMode==HEXValidator::MODE_SIGN_DEC)
+    {
+         sText=QString("%1").arg((qint32)nValue);
+    }
 
     setText(sText);
 }
@@ -152,6 +164,10 @@ void XLineEditHEX::setValue(quint64 nValue,HEXValidator::MODE validatorMode)
     else if(validatorMode==HEXValidator::MODE_DEC)
     {
         sText=QString("%1").arg(nValue);
+    }
+    else if(validatorMode==HEXValidator::MODE_SIGN_DEC)
+    {
+         sText=QString("%1").arg((qint64)nValue);
     }
 
     setText(sText);
@@ -420,6 +436,19 @@ void XLineEditHEX::_setText(QString sText)
             emit valueChanged(nCurrentValue);
         }
     }
+    else if(g_validator.getMode()==HEXValidator::MODE_SIGN_DEC)
+    {
+        qint64 nCurrentValue=sText.toLongLong(nullptr,10);
+        qint64 _nValue=g_vValue.toLongLong();
+
+        if(_nValue!=nCurrentValue)
+        {
+            g_vValue=nCurrentValue;
+            updateFont();
+
+            emit valueChanged(nCurrentValue);
+        }
+    }
 
     QLineEdit::setText(sText);
 }
@@ -447,7 +476,15 @@ void XLineEditHEX::updateFont()
 {
     QFont _font=font();
 
-    _font.setBold(g_vValue.toULongLong()!=0); // TODO another modes
+    if(g_validator.getMode()==HEXValidator::MODE_SIGN_DEC)
+    {
+        _font.setBold(g_vValue.toLongLong()!=0);
+    }
+    else
+    {
+        _font.setBold(g_vValue.toULongLong()!=0);
+    }
+     // TODO another modes
 
     setFont(_font);
 }

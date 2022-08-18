@@ -21,7 +21,7 @@
 #ifndef HEXVALIDATOR_H
 #define HEXVALIDATOR_H
 
-#include <QValidator>
+#include <QIntValidator>
 
 class HEXValidator : public QValidator
 {
@@ -32,6 +32,7 @@ public:
     {
         MODE_TEXT=0,
         MODE_DEC,
+        MODE_SIGN_DEC,
         MODE_HEX,
         MODE_UUID
     };
@@ -40,7 +41,7 @@ public:
 
     void setData(MODE mode,quint64 nMax);
     MODE getMode();
-    virtual State validate(QString &nInput,int &nPos) const;
+    virtual State validate(QString &sInput,int &nPos) const;
 
 private:
     MODE g_mode;

@@ -473,8 +473,6 @@ qint64 XAbstractTableView::getCursorOffset()
 
 void XAbstractTableView::setCursorOffset(qint64 nOffset,qint32 nColumn,QVariant varCursorExtraInfo)
 {
-    g_state.nCursorOffset=nOffset;
-
     if(nColumn!=-1)
     {
         g_state.cursorPosition.nColumn=nColumn;
@@ -482,7 +480,12 @@ void XAbstractTableView::setCursorOffset(qint64 nOffset,qint32 nColumn,QVariant 
 
     g_state.varCursorExtraInfo=varCursorExtraInfo;
 
-    emit cursorChanged(nOffset);
+    if(g_state.nCursorOffset!=nOffset)
+    {
+        g_state.nCursorOffset=nOffset;
+
+        emit cursorChanged(nOffset);
+    }
 }
 
 void XAbstractTableView::_initSelection(qint64 nOffset,qint64 nSize)
