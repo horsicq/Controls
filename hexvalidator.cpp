@@ -45,6 +45,37 @@ QValidator::State HEXValidator::validate(QString &sInput,int &nPos) const
 
     if(!sInput.isEmpty())
     {
+        qint64 nSignMax=0;
+        qint64 nSignMin=0;
+        qint32 nHexLenght=0;
+        // TODO DecLenght
+
+        // TODO optimize!
+        if(g_nMax==0xFF)
+        {
+            nSignMax=128;
+            nSignMin=-127;
+            nHexLenght=2;
+        }
+        else if(g_nMax==0xFFFF)
+        {
+            nSignMax=32767;
+            nSignMin=-32768;
+            nHexLenght=4;
+        }
+        else if(g_nMax==0xFFFFFFFF)
+        {
+            nSignMax=2147483647;
+            nSignMin=-2147483648;
+            nHexLenght=8;
+        }
+        else if(g_nMax==0xFFFFFFFFFFFFFFFF)
+        {
+            nSignMax=9223372036854775807;
+            nSignMin=-9223372036854775808;
+            nHexLenght=16;
+        }
+
         if(g_mode==MODE_HEX)
         {
             result=Invalid;
@@ -52,7 +83,7 @@ QValidator::State HEXValidator::validate(QString &sInput,int &nPos) const
             bool bSuccess=false;
             quint64 nValue=sInput.toULongLong(&bSuccess,16);
 
-            if(bSuccess&&(nValue<=g_nMax))
+            if(bSuccess&&(nValue<=g_nMax)&&(sInput.length()<=nHexLenght))
             {
                 result=Acceptable;
             }
@@ -71,37 +102,12 @@ QValidator::State HEXValidator::validate(QString &sInput,int &nPos) const
         }
         else if(g_mode==MODE_SIGN_DEC)
         {
-            qint64 nMax=0;
-            qint64 nMin=0;
-
-            // TODO optimize!
-            if(g_nMax==0xFF)
-            {
-                nMax=128;
-                nMin=-127;
-            }
-            else if(g_nMax==0xFFFF)
-            {
-                nMax=32767;
-                nMin=-32768;
-            }
-            else if(g_nMax==0xFFFFFFFF)
-            {
-                nMax=2147483647;
-                nMin=-2147483648;
-            }
-            else if(g_nMax==0xFFFFFFFFFFFFFFFF)
-            {
-                nMax=9223372036854775807;
-                nMin=-9223372036854775808;
-            }
-
             result=Invalid;
 
             bool bSuccess=false;
             qint64 nValue=sInput.toLongLong(&bSuccess,10);
 
-            if(bSuccess&&(nValue<=nMax)&&(nValue>=nMin))
+            if(bSuccess&&(nValue<=nSignMax)&&(nValue>=nSignMin))
             {
                 result=Acceptable;
             }
