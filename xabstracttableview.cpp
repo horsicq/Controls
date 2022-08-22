@@ -23,6 +23,7 @@
 XAbstractTableView::XAbstractTableView(QWidget *pParent) : XShortcutstScrollArea(pParent)
 {
     g_bIsActive=false;
+    g_bIsBlinkingCursorEnable=false;
     g_bMouseResizeColumn=false;
     g_bMouseSelection=false;
     g_nViewStart=0;
@@ -95,10 +96,6 @@ void XAbstractTableView::setActive(bool bIsActive)
             connect(this,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(_customContextMenu(QPoint)));
             connect(verticalScrollBar(),SIGNAL(valueChanged(int)),this,SLOT(verticalScroll()));
             connect(horizontalScrollBar(),SIGNAL(valueChanged(int)),this,SLOT(horisontalScroll()));
-            connect(&g_timerCursor,SIGNAL(timeout()),this,SLOT(updateBlink()));
-
-            g_timerCursor.setInterval(500); // TODO Consts
-            g_timerCursor.start();
         }
         else
         {
@@ -106,12 +103,14 @@ void XAbstractTableView::setActive(bool bIsActive)
             disconnect(this,SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(_customContextMenu(QPoint)));
             disconnect(verticalScrollBar(),SIGNAL(valueChanged(int)),this,SLOT(verticalScroll()));
             disconnect(horizontalScrollBar(),SIGNAL(valueChanged(int)),this,SLOT(horisontalScroll()));
-            disconnect(&g_timerCursor,SIGNAL(timeout()),this,SLOT(updateBlink()));
-
-            g_timerCursor.stop();
 
             verticalScrollBar()->setRange(0,0);
             horizontalScrollBar()->setRange(0,0);
+        }
+
+        if(g_bIsBlinkingCursorEnable)
+        {
+            setBlinkingCursor(bIsActive);
         }
 
         setMouseTracking(bIsActive); // Important
@@ -759,6 +758,43 @@ qint32 XAbstractTableView::getHeaderHeight()
 void XAbstractTableView::setSelectionEnable(bool bState)
 {
     g_bIsSelectionEnable=bState;
+}
+
+void XAbstractTableView::setBlinkingCursor(bool bState)
+{
+    if(bState)
+    {
+        connect(&g_timerCursor,SIGNAL(timeout()),this,SLOT(updateBlink()));
+        g_timerCursor.setInterval(500); // TODO Consts
+        g_timerCursor.start();
+    }
+    else
+    {
+        g_bBlink=true;
+
+        disconnect(&g_timerCursor,SIGNAL(timeout()),this,SLOT(updateBlink()));
+        g_timerCursor.stop();
+    }
+}
+
+void XAbstractTableView::setBlinkingCursorEnable(bool bState)
+{
+    if(g_bIsBlinkingCursorEnable!=bState)
+    {
+        g_bIsBlinkingCursorEnable=bState;
+
+        if(bState)
+        {
+            if(isActive())
+            {
+                setBlinkingCursor(true);
+            }
+        }
+        else
+        {
+            setBlinkingCursor(false);
+        }
+    }
 }
 
 void XAbstractTableView::_customContextMenu(const QPoint &pos)

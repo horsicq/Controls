@@ -146,6 +146,8 @@ public:
     qint32 getLineHeight();
     qint32 getHeaderHeight();
     void setSelectionEnable(bool bState);
+    void setBlinkingCursor(bool bState);
+    void setBlinkingCursorEnable(bool bState);
 
 signals:
     void cursorChanged(qint64 nOffset);
@@ -195,6 +197,7 @@ protected:
 
 private:
     bool g_bIsActive;
+    bool g_bIsBlinkingCursorEnable;
     qint64 g_nNumberOfRows;
     QList<COLUMN> g_listColumns;
     qint32 g_nHeaderHeight;
