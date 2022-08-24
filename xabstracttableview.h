@@ -146,6 +146,8 @@ public:
     qint32 getLineHeight();
     qint32 getHeaderHeight();
     void setSelectionEnable(bool bState);
+    void setContextMenuEnable(bool bState);
+    bool isContextMenuEnable();
     void setBlinkingCursor(bool bState);
     void setBlinkingCursorEnable(bool bState);
 
@@ -242,6 +244,7 @@ private:
     qint64 g_nCurrentBlockSize;
 
     bool g_bIsSelectionEnable;
+    bool g_bIsContextMenuEnable;
 };
 
 #endif // XABSTRACTTABLEVIEW_H

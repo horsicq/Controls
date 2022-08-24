@@ -60,6 +60,7 @@ XAbstractTableView::XAbstractTableView(QWidget *pParent) : XShortcutstScrollArea
     g_nCurrentBlockSize=0;
 
     g_bIsSelectionEnable=true;
+    g_bIsContextMenuEnable=true;
 
     setContextMenuPolicy(Qt::CustomContextMenu);
 
@@ -758,6 +759,16 @@ qint32 XAbstractTableView::getHeaderHeight()
 void XAbstractTableView::setSelectionEnable(bool bState)
 {
     g_bIsSelectionEnable=bState;
+}
+
+void XAbstractTableView::setContextMenuEnable(bool bState)
+{
+    g_bIsContextMenuEnable=bState;
+}
+
+bool XAbstractTableView::isContextMenuEnable()
+{
+    return g_bIsContextMenuEnable;
 }
 
 void XAbstractTableView::setBlinkingCursor(bool bState)
