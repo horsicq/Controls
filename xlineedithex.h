@@ -42,6 +42,7 @@ public:
         MODE_32,
         MODE_64
         // TODO 128
+        // mb TODO String
     };
 
     struct OPTIONS
