@@ -41,7 +41,7 @@ public:
     quint64 getValue();
 
 private slots:
-    void _setDateTime(const QDateTime &dt);
+    void _setDateTime(const QDateTime &dtValue);
 
 signals:
     void valueChanged(quint64 nValue);

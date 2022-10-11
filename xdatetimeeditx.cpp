@@ -65,13 +65,13 @@ quint64 XDateTimeEditX::getValue()
     return g_nValue;
 }
 
-void XDateTimeEditX::_setDateTime(const QDateTime &dt)
+void XDateTimeEditX::_setDateTime(const QDateTime &dtValue)
 {
     quint64 nCurrentValue=0;
 
     if(g_dtType==DT_TYPE_POSIX)
     {
-        nCurrentValue=(quint64)dt.toMSecsSinceEpoch()/1000;
+        nCurrentValue=(quint64)dtValue.toMSecsSinceEpoch()/1000;
     }
 
     if(g_nValue!=nCurrentValue)
