@@ -40,6 +40,7 @@ void XDateTimeEditX::setType(XDateTimeEditX::DT_TYPE dtType)
         setMinimumDateTime(QDateTime(dt));
         setDateTime(dt);
     }
+    // TODO more
 }
 
 void XDateTimeEditX::setValue(quint64 nValue)
