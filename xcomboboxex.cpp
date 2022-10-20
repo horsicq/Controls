@@ -35,8 +35,9 @@ XComboBoxEx::XComboBoxEx(QWidget *pParent): QComboBox(pParent)
 
 void XComboBoxEx::setData(QMap<quint64,QString> mapData,CBTYPE cbtype,quint64 nMask)
 {
-    this->g_cbtype=cbtype;
-    this->g_nMask=nMask;
+    g_cbtype=cbtype;
+    g_nMask=nMask;
+    g_mapData=mapData;
 
     g_model.clear();
     g_model.setColumnCount(1);
@@ -169,6 +170,39 @@ void XComboBoxEx::setReadOnly(bool bIsReadOnly)
             }
         }
     }
+}
+
+QString XComboBoxEx::getDescription()
+{
+    QString sResult;
+
+    if(g_cbtype==CBTYPE_LIST)
+    {
+        sResult=g_mapData.value(g_nValue);
+    }
+    else if(g_cbtype==CBTYPE_ELIST)
+    {
+        sResult=g_mapData.value(g_nValue);
+    }
+    if(g_cbtype==CBTYPE_FLAGS)
+    {
+        qint32 nNumberOfItems=g_model.rowCount();
+
+        for(qint32 i=1;i<nNumberOfItems;i++)
+        {
+            if(g_model.item(i,0)->data(Qt::CheckStateRole).toInt()==Qt::Checked)
+            {
+                if(sResult!="")
+                {
+                    sResult+="|";
+                }
+
+                sResult+=g_mapData.value(g_model.item(i,0)->data(Qt::UserRole).toULongLong());
+            }
+        }
+    }
+
+    return sResult;
 }
 
 void XComboBoxEx::currentIndexChangedSlot(int nIndex)

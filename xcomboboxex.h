@@ -45,6 +45,7 @@ public:
     void setValue(quint64 nValue);
     quint64 getValue();
     void setReadOnly(bool bIsReadOnly);
+    QString getDescription();
 
 private slots:
     void currentIndexChangedSlot(int nIndex);
@@ -59,6 +60,7 @@ private:
     QStandardItemModel g_model;
     CBTYPE g_cbtype;
     quint64 g_nMask;
+    QMap<quint64,QString> g_mapData;
 };
 
 #define PXComboBoxEx XComboBoxEx *
