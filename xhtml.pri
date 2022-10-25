@@ -6,3 +6,6 @@ HEADERS += \
 
 SOURCES += \
     $$PWD/xhtml.cpp
+
+DISTFILES += \
+    $$PWD/xhtml.cmake
