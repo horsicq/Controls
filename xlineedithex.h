@@ -43,6 +43,7 @@ public:
         MODE_64
         // TODO 128
         // mb TODO String
+        // mb TODO GUID
     };
 
     struct OPTIONS
