@@ -32,7 +32,7 @@ public:
     {
         DT_TYPE_UNKNOWN=0,
         DT_TYPE_POSIX
-        // TODO More
+        // TODO Check More
     };
 
     XDateTimeEditX(QWidget *pParent=nullptr);
