@@ -36,7 +36,8 @@ public:
     {
         CBTYPE_LIST=0,
         CBTYPE_FLAGS,
-        CBTYPE_ELIST        // Extended list
+        CBTYPE_ELIST,        // Extended list
+        CBTYPE_CUSTOM_FLAGS
     };
 
     explicit XComboBoxEx(QWidget *pParent=nullptr);
@@ -46,6 +47,10 @@ public:
     quint64 getValue();
     void setReadOnly(bool bIsReadOnly);
     QString getDescription();
+
+    void clearModel();
+    void addCustomFlag(quint64 nValue,QString sString,bool bChecked);
+    QList<quint64> getCustomFlags();
 
 private slots:
     void currentIndexChangedSlot(int nIndex);
