@@ -40,6 +40,13 @@ public:
         CBTYPE_CUSTOM_FLAGS
     };
 
+    struct CUSTOM_FLAG
+    {
+        quint64 nValue;
+        QString sString;
+        bool bChecked;
+    };
+
     explicit XComboBoxEx(QWidget *pParent=nullptr);
 
     void setData(QMap<quint64,QString> mapData,CBTYPE cbtype=CBTYPE_LIST,quint64 nMask=0);
@@ -48,9 +55,11 @@ public:
     void setReadOnly(bool bIsReadOnly);
     QString getDescription();
 
-    void clearModel();
-    void addCustomFlag(quint64 nValue,QString sString,bool bChecked);
+    void addCustomFlags(QList<CUSTOM_FLAG> listCustomFlags);
+    void setCustomFlag(quint64 nValue);
     QList<quint64> getCustomFlags();
+
+    static void addCustomFlag(QList<CUSTOM_FLAG> *pListCustomFlags,quint64 nValue,QString sString,bool bChecked);
 
 private slots:
     void currentIndexChangedSlot(int nIndex);
