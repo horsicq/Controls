@@ -54,11 +54,9 @@ public:
     quint64 getValue();
     void setReadOnly(bool bIsReadOnly);
     QString getDescription();
-
     void addCustomFlags(QList<CUSTOM_FLAG> listCustomFlags);
     void setCustomFlag(quint64 nValue);
     QList<quint64> getCustomFlags();
-
     static void addCustomFlag(QList<CUSTOM_FLAG> *pListCustomFlags,quint64 nValue,QString sString,bool bChecked);
 
 private slots:
