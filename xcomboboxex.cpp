@@ -270,7 +270,7 @@ QList<quint64> XComboBoxEx::getCustomFlags()
     return listResult;
 }
 
-void XComboBoxEx::addCustomFlag(QList<CUSTOM_FLAG> *pListCustomFlags, quint64 nValue, QString sString, bool bChecked)
+void XComboBoxEx::addCustomFlag(QList<CUSTOM_FLAG> *pListCustomFlags,quint64 nValue,QString sString,bool bChecked)
 {
     CUSTOM_FLAG record={};
 
