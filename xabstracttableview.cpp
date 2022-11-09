@@ -328,6 +328,25 @@ QFont XAbstractTableView::getTextFont()
     return g_fontText;
 }
 
+bool XAbstractTableView::setTextFontFromOptions(XOptions::ID id)
+{
+    bool bResult=false;
+
+    QFont _font;
+    QString sFont=getGlobalOptions()->getValue(id).toString();
+
+    if((sFont!="")&&_font.fromString(sFont))
+    {
+        setTextFont(_font);
+
+        bResult=true;
+    }
+    // mb TODO errorString signal if invalid font
+    // TODO Check
+
+    return bResult;
+}
+
 void XAbstractTableView::setTotalLineCount(qint64 nValue)
 {
     qint32 nScrollValue=0;

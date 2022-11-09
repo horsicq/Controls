@@ -36,6 +36,7 @@ public:
     };
 
     XDateTimeEditX(QWidget *pParent=nullptr);
+
     void setType(DT_TYPE dtType);
     void setValue(quint64 nValue);
     quint64 getValue();
