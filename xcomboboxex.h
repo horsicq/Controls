@@ -57,7 +57,7 @@ public:
     void addCustomFlags(QList<CUSTOM_FLAG> listCustomFlags);
     void setCustomFlag(quint64 nValue);
     QList<quint64> getCustomFlags();
-    static void addCustomFlag(QList<CUSTOM_FLAG> *pListCustomFlags,quint64 nValue,QString sString,bool bChecked);
+    static void _addCustomFlag(QList<CUSTOM_FLAG> *pListCustomFlags,quint64 nValue,QString sString,bool bChecked);
 
 private slots:
     void currentIndexChangedSlot(int nIndex);
