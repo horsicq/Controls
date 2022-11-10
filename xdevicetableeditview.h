@@ -7,8 +7,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -24,22 +24,21 @@
 #include "dialoghexedit.h"
 #include "xdevicetableview.h"
 
-class XDeviceTableEditView : public XDeviceTableView
-{
+class XDeviceTableEditView : public XDeviceTableView {
     Q_OBJECT
 
-public:
-    XDeviceTableEditView(QWidget *pParent=nullptr);
+   public:
+    XDeviceTableEditView(QWidget *pParent = nullptr);
     quint64 getStateOffset();
 
-protected slots:
+   protected slots:
     void _editHex();
     void _followInDisasmSlot();
     void _followInHexSlot();
 
-signals:
+   signals:
     void followInDisasm(XADDR nAddress);
     void followInHex(XADDR nAddress);
 };
 
-#endif // XDEVICETABLEEDITVIEW_H
+#endif  // XDEVICETABLEEDITVIEW_H

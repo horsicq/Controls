@@ -7,8 +7,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -30,20 +30,13 @@
 #include "xformats.h"
 #include "xinfodb.h"
 
-class XDeviceTableView : public XAbstractTableView
-{
+class XDeviceTableView : public XAbstractTableView {
     Q_OBJECT
 
-public:
-    enum MODE
-    {
-        MODE_ADDRESS=0,
-        MODE_OFFSET,
-        MODE_RELADDRESS,
-        MODE_THIS
-    };
+   public:
+    enum MODE { MODE_ADDRESS = 0, MODE_OFFSET, MODE_RELADDRESS, MODE_THIS };
 
-    XDeviceTableView(QWidget *pParent=nullptr);
+    XDeviceTableView(QWidget *pParent = nullptr);
 
     void setXInfoDB(XInfoDB *pXInfoDB);
     XInfoDB *getXInfoDB();
@@ -56,26 +49,26 @@ public:
     XBinary::_MEMORY_MAP *getMemoryMap();
     void setAddressMode(MODE addressMode);
     MODE getAddressMode();
-    qint64 write_array(qint64 nOffset,char *pData,qint64 nDataSize);
-    QByteArray read_array(qint64 nOffset,qint32 nSize);
-    bool isReplaced(qint64 nOffset,qint32 nSize);
-    void goToAddress(XADDR nAddress,bool bShort=false,bool bAprox=false);
+    qint64 write_array(qint64 nOffset, char *pData, qint64 nDataSize);
+    QByteArray read_array(qint64 nOffset, qint32 nSize);
+    bool isReplaced(qint64 nOffset, qint32 nSize);
+    void goToAddress(XADDR nAddress, bool bShort = false, bool bAprox = false);
     void goToOffset(qint64 nOffset);
-    void setSelectionAddress(XADDR nAddress,qint64 nSize);
+    void setSelectionAddress(XADDR nAddress, qint64 nSize);
     bool isEdited();
     bool saveBackup();
     void setReadonly(bool bState);
     bool isReadonly();
 
-public slots:
+   public slots:
     void setEdited();
 
-protected:
+   protected:
     virtual bool isOffsetValid(qint64 nOffset);
     virtual bool isEnd(qint64 nOffset);
     void setMemoryReplaces(QList<XBinary::MEMORY_REPLACE> listReplaces);
 
-protected slots:
+   protected slots:
     void _goToAddressSlot();
     void _goToOffsetSlot();
     void _dumpToFileSlot();
@@ -92,16 +85,17 @@ protected slots:
     void _copyOffsetSlot();
     void _setEdited();
 
-private:
+   private:
     XInfoDB *g_pXInfoDB;
     QIODevice *g_pDevice;
     QIODevice *g_pBackupDevice;
     qint64 g_nDataSize;
     XBinary::_MEMORY_MAP g_memoryMap;
     SearchProcess::SEARCHDATA g_searchData;
-    QList<XBinary::MEMORY_REPLACE> g_listReplaces; // TODO move to g_pXInfoDB !!!
+    QList<XBinary::MEMORY_REPLACE>
+        g_listReplaces;  // TODO move to g_pXInfoDB !!!
     MODE g_addressMode;
     bool g_bIsReadonly;
 };
 
-#endif // XDEVICETABLEVIEW_H
+#endif  // XDEVICETABLEVIEW_H

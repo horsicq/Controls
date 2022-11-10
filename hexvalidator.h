@@ -7,8 +7,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -23,29 +23,21 @@
 
 #include <QIntValidator>
 
-class HEXValidator : public QValidator
-{
+class HEXValidator : public QValidator {
     Q_OBJECT
 
-public:
-    enum MODE
-    {
-        MODE_TEXT=0,
-        MODE_DEC,
-        MODE_SIGN_DEC,
-        MODE_HEX,
-        MODE_UUID
-    };
+   public:
+    enum MODE { MODE_TEXT = 0, MODE_DEC, MODE_SIGN_DEC, MODE_HEX, MODE_UUID };
 
-    explicit HEXValidator(QObject *pParent=nullptr);
+    explicit HEXValidator(QObject *pParent = nullptr);
 
-    void setData(MODE mode,quint64 nMax);
+    void setData(MODE mode, quint64 nMax);
     MODE getMode();
-    virtual State validate(QString &sInput,int &nPos) const;
+    virtual State validate(QString &sInput, int &nPos) const;
 
-private:
+   private:
     MODE g_mode;
     quint64 g_nMax;
 };
 
-#endif // HEXVALIDATOR_H
+#endif  // HEXVALIDATOR_H

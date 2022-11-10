@@ -7,8 +7,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -32,15 +32,14 @@
 #include <QShortcut>
 #include <QStyleOptionButton>
 #include <QTimer>
+
 #include "xshortcutstscrollarea.h"
 
-class XAbstractTableView : public XShortcutstScrollArea
-{
+class XAbstractTableView : public XShortcutstScrollArea {
     Q_OBJECT
 
-public:
-    struct COLUMN
-    {
+   public:
+    struct COLUMN {
         bool bEnable;
         qint32 nLeft;
         qint32 nWidth;
@@ -48,15 +47,13 @@ public:
         bool bClickable;
     };
 
-    enum PT
-    {
-        PT_UNKNOWN=0,
+    enum PT {
+        PT_UNKNOWN = 0,
         PT_HEADER,
         PT_CELL,
     };
 
-    struct CURSOR_POSITION
-    {
+    struct CURSOR_POSITION {
         bool bIsValid;
         PT ptype;
         qint32 nY;
@@ -68,8 +65,7 @@ public:
         bool bResizeColumn;
     };
 
-    struct STATE
-    {
+    struct STATE {
         qint64 nCursorOffset;
         QVariant varCursorExtraInfo;
         qint64 nSelectionOffset;
@@ -77,27 +73,27 @@ public:
         CURSOR_POSITION cursorPosition;
     };
 
-    struct OS
-    {
+    struct OS {
         qint64 nOffset;
         qint64 nSize;
         QVariant varData;
     };
 
-    explicit XAbstractTableView(QWidget *pParent=nullptr);
+    explicit XAbstractTableView(QWidget *pParent = nullptr);
     ~XAbstractTableView();
 
     void setActive(bool bIsActive);
     bool isActive();
-//    void setEnabled(bool bEnabled);
+    //    void setEnabled(bool bEnabled);
     void clear();
 
-    void addColumn(QString sTitle,qint32 nWidth=0,bool bClickable=false,bool bEnable=true);
-    void setColumnTitle(qint32 nNumber,QString sTitle);
-    void setColumnEnabled(qint32 nNumber,bool bState);
-    void setColumnWidth(qint32 nNumber,qint32 nWidth);
+    void addColumn(QString sTitle, qint32 nWidth = 0, bool bClickable = false,
+                   bool bEnable = true);
+    void setColumnTitle(qint32 nNumber, QString sTitle);
+    void setColumnEnabled(qint32 nNumber, bool bState);
+    void setColumnWidth(qint32 nNumber, qint32 nWidth);
 
-    void reload(bool bUpdateData=false);
+    void reload(bool bUpdateData = false);
 
     void setTextFont(const QFont &font);
     QFont getTextFont();
@@ -125,14 +121,16 @@ public:
     qint32 getSideDelta();
     STATE getState();
     qint64 getCursorOffset();
-    void setCursorOffset(qint64 nOffset,qint32 nColumn=-1,QVariant varCursorExtraInfo=QVariant());
-    void adjust(bool bUpdateData=false);
+    void setCursorOffset(qint64 nOffset, qint32 nColumn = -1,
+                         QVariant varCursorExtraInfo = QVariant());
+    void adjust(bool bUpdateData = false);
 
-    void setCursorData(QRect rectSquare,QRect rectText,QString sText,qint32 nDelta);
+    void setCursorData(QRect rectSquare, QRect rectText, QString sText,
+                       qint32 nDelta);
     void resetCursorData();
 
     qint32 getCursorDelta();
-    void setSelection(qint64 nOffset,qint64 nSize);
+    void setSelection(qint64 nOffset, qint64 nSize);
 
     qint64 getMaxScrollValue();
     void setLastColumnStretch(bool bState);
@@ -141,9 +139,9 @@ public:
     void setVerticalLinesVisible(bool bState);
     void setHorisontalLinesVisible(bool bState);
 
-    static QFont getMonoFont(qint32 nFontSize=-1);
+    static QFont getMonoFont(qint32 nFontSize = -1);
     qint64 getSelectionInitOffset();
-    void setCurrentBlock(qint64 nOffset,qint64 nSize);
+    void setCurrentBlock(qint64 nOffset, qint64 nSize);
     bool isOffsetInCurrentBlock(qint64 nOffset);
     qint32 getLineHeight();
     qint32 getHeaderHeight();
@@ -153,27 +151,27 @@ public:
     void setBlinkingCursor(bool bState);
     void setBlinkingCursorEnable(bool bState);
 
-signals:
+   signals:
     void cursorChanged(qint64 nOffset);
     void selectionChanged();
     void errorMessage(QString sText);
     void infoMessage(QString sText);
     void dataChanged();
     void headerClicked(qint32 nNumber);
-    void cellDoubleClicked(qint32 nRow,qint32 nColumn);
+    void cellDoubleClicked(qint32 nRow, qint32 nColumn);
 
-private:
-    void _initSelection(qint64 nOffset,qint64 nSize);
-    void _setSelection(qint64 nOffset,qint64 nSize);
+   private:
+    void _initSelection(qint64 nOffset, qint64 nSize);
+    void _setSelection(qint64 nOffset, qint64 nSize);
 
-private slots:
+   private slots:
     void verticalScroll();
     void horisontalScroll();
     void _customContextMenu(const QPoint &pos);
     void updateBlink();
 
-protected:
-    virtual void paintEvent(QPaintEvent* pEvent) override;
+   protected:
+    virtual void paintEvent(QPaintEvent *pEvent) override;
     virtual void resizeEvent(QResizeEvent *pEvent) override;
     virtual void mouseMoveEvent(QMouseEvent *pEvent) override;
     virtual void mousePressEvent(QMouseEvent *pEvent) override;
@@ -186,20 +184,24 @@ protected:
     virtual OS cursorPositionToOS(CURSOR_POSITION cursorPosition);
     virtual void updateData();
     virtual void startPainting(QPainter *pPainter);
-    virtual void paintColumn(QPainter *pPainter,qint32 nColumn,qint32 nLeft,qint32 nTop,qint32 nWidth,qint32 nHeight);
-    virtual void paintCell(QPainter *pPainter,qint32 nRow,qint32 nColumn,qint32 nLeft,qint32 nTop,qint32 nWidth,qint32 nHeight);
+    virtual void paintColumn(QPainter *pPainter, qint32 nColumn, qint32 nLeft,
+                             qint32 nTop, qint32 nWidth, qint32 nHeight);
+    virtual void paintCell(QPainter *pPainter, qint32 nRow, qint32 nColumn,
+                           qint32 nLeft, qint32 nTop, qint32 nWidth,
+                           qint32 nHeight);
     virtual void endPainting(QPainter *pPainter);
-    virtual bool _goToOffset(qint64 nOffset,bool bSaveCursor=false,bool bShort=false,bool bAprox=false);
+    virtual bool _goToOffset(qint64 nOffset, bool bSaveCursor = false,
+                             bool bShort = false, bool bAprox = false);
     virtual void contextMenu(const QPoint &pos);
     virtual qint64 getScrollValue();
     virtual void setScrollValue(qint64 nOffset);
     virtual void adjustColumns();
     virtual void _headerClicked(qint32 nNumber);
-    virtual void _cellDoubleClicked(qint32 nRow,qint32 nColumn);
+    virtual void _cellDoubleClicked(qint32 nRow, qint32 nColumn);
     virtual qint64 getRecordSize(qint64 nOffset);
     virtual qint64 getFixOffset(qint64 nOffset);
 
-private:
+   private:
     bool g_bIsActive;
     bool g_bIsBlinkingCursorEnable;
     qint64 g_nNumberOfRows;
@@ -249,4 +251,4 @@ private:
     bool g_bIsContextMenuEnable;
 };
 
-#endif // XABSTRACTTABLEVIEW_H
+#endif  // XABSTRACTTABLEVIEW_H

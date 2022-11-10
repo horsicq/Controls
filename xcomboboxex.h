@@ -7,8 +7,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,31 +25,30 @@
 #include <QHash>
 #include <QStandardItemModel>
 #include <QVariant>
+
 #include "subclassofqstyleditemdelegate.h"
 
-class XComboBoxEx : public QComboBox
-{
+class XComboBoxEx : public QComboBox {
     Q_OBJECT
 
-public:
-    enum CBTYPE
-    {
-        CBTYPE_LIST=0,
+   public:
+    enum CBTYPE {
+        CBTYPE_LIST = 0,
         CBTYPE_FLAGS,
-        CBTYPE_ELIST,        // Extended list
+        CBTYPE_ELIST,  // Extended list
         CBTYPE_CUSTOM_FLAGS
     };
 
-    struct CUSTOM_FLAG
-    {
+    struct CUSTOM_FLAG {
         quint64 nValue;
         QString sString;
         bool bChecked;
     };
 
-    explicit XComboBoxEx(QWidget *pParent=nullptr);
+    explicit XComboBoxEx(QWidget *pParent = nullptr);
 
-    void setData(QMap<quint64,QString> mapData,CBTYPE cbtype=CBTYPE_LIST,quint64 nMask=0);
+    void setData(QMap<quint64, QString> mapData, CBTYPE cbtype = CBTYPE_LIST,
+                 quint64 nMask = 0);
     void setValue(quint64 nValue);
     quint64 getValue();
     void setReadOnly(bool bIsReadOnly);
@@ -57,24 +56,25 @@ public:
     void addCustomFlags(QList<CUSTOM_FLAG> listCustomFlags);
     void setCustomFlag(quint64 nValue);
     QList<quint64> getCustomFlags();
-    static void _addCustomFlag(QList<CUSTOM_FLAG> *pListCustomFlags,quint64 nValue,QString sString,bool bChecked);
+    static void _addCustomFlag(QList<CUSTOM_FLAG> *pListCustomFlags,
+                               quint64 nValue, QString sString, bool bChecked);
 
-private slots:
+   private slots:
     void currentIndexChangedSlot(int nIndex);
     void itemChangedSlot(QStandardItem *pItem);
 
-signals:
+   signals:
     void valueChanged(quint64 nValue);
 
-private:
+   private:
     quint64 g_nValue;
     bool g_bIsReadOnly;
     QStandardItemModel g_model;
     CBTYPE g_cbtype;
     quint64 g_nMask;
-    QMap<quint64,QString> g_mapData;
+    QMap<quint64, QString> g_mapData;
 };
 
 #define PXComboBoxEx XComboBoxEx *
 
-#endif // XCOMBOBOXEX_H
+#endif  // XCOMBOBOXEX_H

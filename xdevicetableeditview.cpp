@@ -7,8 +7,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -20,46 +20,39 @@
  */
 #include "xdevicetableeditview.h"
 
-XDeviceTableEditView::XDeviceTableEditView(QWidget *pParent) : XDeviceTableView(pParent)
-{
+XDeviceTableEditView::XDeviceTableEditView(QWidget *pParent)
+    : XDeviceTableView(pParent) {}
 
-}
+quint64 XDeviceTableEditView::getStateOffset() {
+    quint64 nResult = -1;
 
-quint64 XDeviceTableEditView::getStateOffset()
-{
-    quint64 nResult=-1;
+    STATE state = getState();
 
-    STATE state=getState();
+    nResult = state.nCursorOffset;
 
-    nResult=state.nCursorOffset;
+    XIODevice *pSubDevice = dynamic_cast<XIODevice *>(getDevice());
 
-    XIODevice *pSubDevice=dynamic_cast<XIODevice *>(getDevice());
-
-    if(pSubDevice)
-    {
-        nResult+=pSubDevice->getInitOffset();
+    if (pSubDevice) {
+        nResult += pSubDevice->getInitOffset();
     }
 
     return nResult;
 }
 
-void XDeviceTableEditView::_editHex()
-{
-    if(!isReadonly())
-    {
-        STATE state=getState();
+void XDeviceTableEditView::_editHex() {
+    if (!isReadonly()) {
+        STATE state = getState();
 
-        SubDevice sd(getDevice(),state.nSelectionOffset,state.nSelectionSize);
+        SubDevice sd(getDevice(), state.nSelectionOffset, state.nSelectionSize);
 
-        if(sd.open(QIODevice::ReadWrite))
-        {
+        if (sd.open(QIODevice::ReadWrite)) {
             DialogHexEdit dialogHexEdit(this);
 
-            dialogHexEdit.setGlobal(getShortcuts(),getGlobalOptions());
+            dialogHexEdit.setGlobal(getShortcuts(), getGlobalOptions());
 
-    //        connect(&dialogHexEdit,SIGNAL(changed()),this,SLOT(_setEdited()));
+            //        connect(&dialogHexEdit,SIGNAL(changed()),this,SLOT(_setEdited()));
 
-            dialogHexEdit.setData(&sd,state.nSelectionOffset);
+            dialogHexEdit.setData(&sd, state.nSelectionOffset);
             dialogHexEdit.setBackupDevice(getBackupDevice());
 
             dialogHexEdit.exec();
@@ -71,19 +64,18 @@ void XDeviceTableEditView::_editHex()
     }
 }
 
-void XDeviceTableEditView::_followInDisasmSlot()
-{
-    qint64 nOffset=getStateOffset();
-//    XADDR nAddress=XBinary::offsetToAddress(getMemoryMap(),nOffset);
+void XDeviceTableEditView::_followInDisasmSlot() {
+    qint64 nOffset = getStateOffset();
+    //    XADDR nAddress=XBinary::offsetToAddress(getMemoryMap(),nOffset);
 
     emit followInDisasm(nOffset);
 }
 
-void XDeviceTableEditView::_followInHexSlot()
-{
-//    emit followInHex(XBinary::offsetToAddress(getMemoryMap(),getStateOffset()));
-    qint64 nOffset=getStateOffset();
-//    XADDR nAddress=XBinary::offsetToAddress(getMemoryMap(),nOffset);
+void XDeviceTableEditView::_followInHexSlot() {
+    //    emit
+    //    followInHex(XBinary::offsetToAddress(getMemoryMap(),getStateOffset()));
+    qint64 nOffset = getStateOffset();
+    //    XADDR nAddress=XBinary::offsetToAddress(getMemoryMap(),nOffset);
 
     emit followInHex(nOffset);
 }

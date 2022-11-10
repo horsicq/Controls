@@ -7,8 +7,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -23,33 +23,31 @@
 
 #include <QDateTimeEdit>
 
-class XDateTimeEditX : public QDateTimeEdit
-{
+class XDateTimeEditX : public QDateTimeEdit {
     Q_OBJECT
 
-public:
-    enum DT_TYPE
-    {
-        DT_TYPE_UNKNOWN=0,
+   public:
+    enum DT_TYPE {
+        DT_TYPE_UNKNOWN = 0,
         DT_TYPE_POSIX
         // TODO Check More
     };
 
-    XDateTimeEditX(QWidget *pParent=nullptr);
+    XDateTimeEditX(QWidget *pParent = nullptr);
 
     void setType(DT_TYPE dtType);
     void setValue(quint64 nValue);
     quint64 getValue();
 
-private slots:
+   private slots:
     void _setDateTime(const QDateTime &dtValue);
 
-signals:
+   signals:
     void valueChanged(quint64 nValue);
 
-private:
+   private:
     quint64 g_nValue;
     DT_TYPE g_dtType;
 };
 
-#endif // XDATETIMEEDITX_H
+#endif  // XDATETIMEEDITX_H

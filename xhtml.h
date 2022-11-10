@@ -7,8 +7,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -21,32 +21,30 @@
 #ifndef XHTML_H
 #define XHTML_H
 
-#include <QString>
 #include <QObject>
+#include <QString>
 
-class XHtml : public QObject
-{
+class XHtml : public QObject {
     Q_OBJECT
 
-public:
-    struct TABLECELL
-    {
+   public:
+    struct TABLECELL {
         QString sText;
         bool bBold;
         Qt::AlignmentFlag alignmentFlag;
     };
 
-    explicit XHtml(QObject *pParent=nullptr);
+    explicit XHtml(QObject *pParent = nullptr);
 
     void appendText(QString sText);
     void addTableBegin();
     void addTableRow(QList<TABLECELL> listTableCells);
     void addTableEnd();
     QString toString();
-    static QString makeLink(QString sText,QString sLink);
+    static QString makeLink(QString sText, QString sLink);
 
-private:
+   private:
     QString g_sString;
 };
 
-#endif // XHTML_H
+#endif  // XHTML_H

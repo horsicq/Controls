@@ -7,8 +7,8 @@
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -20,15 +20,17 @@
  */
 #include "subclassofqstyleditemdelegate.h"
 
-SubclassOfQStyledItemDelegate::SubclassOfQStyledItemDelegate(QWidget *pParent): QStyledItemDelegate(pParent)
-{
-}
+SubclassOfQStyledItemDelegate::SubclassOfQStyledItemDelegate(QWidget *pParent)
+    : QStyledItemDelegate(pParent) {}
 
-void SubclassOfQStyledItemDelegate::paint(QPainter *pPainter,const QStyleOptionViewItem &styleOptionViewItem,const QModelIndex &modelIndex) const
-{
-    QStyleOptionViewItem & refToNonConstOption=const_cast<QStyleOptionViewItem &>(styleOptionViewItem);
-    refToNonConstOption.showDecorationSelected=false;
-    //refToNonConstOption.state &= ~QStyle::State_HasFocus & ~QStyle::State_MouseOver;
+void SubclassOfQStyledItemDelegate::paint(
+    QPainter *pPainter, const QStyleOptionViewItem &styleOptionViewItem,
+    const QModelIndex &modelIndex) const {
+    QStyleOptionViewItem &refToNonConstOption =
+        const_cast<QStyleOptionViewItem &>(styleOptionViewItem);
+    refToNonConstOption.showDecorationSelected = false;
+    // refToNonConstOption.state &= ~QStyle::State_HasFocus &
+    // ~QStyle::State_MouseOver;
 
-    QStyledItemDelegate::paint(pPainter,refToNonConstOption,modelIndex);
+    QStyledItemDelegate::paint(pPainter, refToNonConstOption, modelIndex);
 }
