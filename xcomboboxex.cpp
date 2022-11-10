@@ -25,18 +25,14 @@ XComboBoxEx::XComboBoxEx(QWidget *pParent) : QComboBox(pParent) {
     g_bIsReadOnly = false;
     g_cbtype = CBTYPE_LIST;
 
-    SubclassOfQStyledItemDelegate *pDelegate =
-        new SubclassOfQStyledItemDelegate(this);
+    SubclassOfQStyledItemDelegate *pDelegate = new SubclassOfQStyledItemDelegate(this);
     setItemDelegate(pDelegate);
 
-    connect(this, SIGNAL(currentIndexChanged(int)), this,
-            SLOT(currentIndexChangedSlot(int)));
-    connect(&g_model, SIGNAL(itemChanged(QStandardItem *)), this,
-            SLOT(itemChangedSlot(QStandardItem *)));
+    connect(this, SIGNAL(currentIndexChanged(int)), this, SLOT(currentIndexChangedSlot(int)));
+    connect(&g_model, SIGNAL(itemChanged(QStandardItem *)), this, SLOT(itemChangedSlot(QStandardItem *)));
 }
 
-void XComboBoxEx::setData(QMap<quint64, QString> mapData, CBTYPE cbtype,
-                          quint64 nMask) {
+void XComboBoxEx::setData(QMap<quint64, QString> mapData, CBTYPE cbtype, quint64 nMask) {
     g_cbtype = cbtype;
     g_nMask = nMask;
     g_mapData = mapData;
@@ -84,8 +80,7 @@ void XComboBoxEx::setValue(quint64 nValue) {
         bool bFound = false;
 
         for (qint32 i = 1; i < nNumberOfItems; i++) {
-            quint64 _nValue =
-                g_model.item(i, 0)->data(Qt::UserRole).toULongLong();
+            quint64 _nValue = g_model.item(i, 0)->data(Qt::UserRole).toULongLong();
 
             if (_nValue == nValue) {
                 setCurrentIndex(i);
@@ -101,8 +96,7 @@ void XComboBoxEx::setValue(quint64 nValue) {
         bool bFound = false;
 
         for (qint32 i = 1; i < nNumberOfItems; i++) {
-            quint64 _nValue =
-                g_model.item(i, 0)->data(Qt::UserRole).toULongLong();
+            quint64 _nValue = g_model.item(i, 0)->data(Qt::UserRole).toULongLong();
             nValue &= g_nMask;
 
             if (_nValue == nValue) {
@@ -117,8 +111,7 @@ void XComboBoxEx::setValue(quint64 nValue) {
         }
     } else if (g_cbtype == CBTYPE_FLAGS) {
         for (qint32 i = 1; i < nNumberOfItems; i++) {
-            quint64 _nValue =
-                g_model.item(i, 0)->data(Qt::UserRole).toULongLong();
+            quint64 _nValue = g_model.item(i, 0)->data(Qt::UserRole).toULongLong();
 
             if (_nValue & nValue) {
                 g_model.item(i, 0)->setData(Qt::Checked, Qt::CheckStateRole);
@@ -129,7 +122,9 @@ void XComboBoxEx::setValue(quint64 nValue) {
     }
 }
 
-quint64 XComboBoxEx::getValue() { return g_nValue; }
+quint64 XComboBoxEx::getValue() {
+    return g_nValue;
+}
 
 void XComboBoxEx::setReadOnly(bool bIsReadOnly) {
     this->g_bIsReadOnly = bIsReadOnly;
@@ -141,8 +136,7 @@ void XComboBoxEx::setReadOnly(bool bIsReadOnly) {
             if (bIsReadOnly) {
                 g_model.item(i, 0)->setFlags(Qt::ItemIsEnabled);
             } else {
-                g_model.item(i, 0)->setFlags(Qt::ItemIsUserCheckable |
-                                             Qt::ItemIsEnabled);
+                g_model.item(i, 0)->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
             }
         }
     }
@@ -160,14 +154,12 @@ QString XComboBoxEx::getDescription() {
         qint32 nNumberOfItems = g_model.rowCount();
 
         for (qint32 i = 1; i < nNumberOfItems; i++) {
-            if (g_model.item(i, 0)->data(Qt::CheckStateRole).toInt() ==
-                Qt::Checked) {
+            if (g_model.item(i, 0)->data(Qt::CheckStateRole).toInt() == Qt::Checked) {
                 if (sResult != "") {
                     sResult += "|";
                 }
 
-                sResult += g_mapData.value(
-                    g_model.item(i, 0)->data(Qt::UserRole).toULongLong());
+                sResult += g_mapData.value(g_model.item(i, 0)->data(Qt::UserRole).toULongLong());
             }
         }
     }
@@ -229,9 +221,7 @@ QList<quint64> XComboBoxEx::getCustomFlags() {
     return listResult;
 }
 
-void XComboBoxEx::_addCustomFlag(QList<CUSTOM_FLAG> *pListCustomFlags,
-                                 quint64 nValue, QString sString,
-                                 bool bChecked) {
+void XComboBoxEx::_addCustomFlag(QList<CUSTOM_FLAG> *pListCustomFlags, quint64 nValue, QString sString, bool bChecked) {
     CUSTOM_FLAG record = {};
 
     record.nValue = nValue;
@@ -292,14 +282,10 @@ void XComboBoxEx::itemChangedSlot(QStandardItem *pItem) {
         qint32 nNumberOfItems = g_model.rowCount();
 
         for (qint32 i = 1; i < nNumberOfItems; i++) {
-            if (g_model.item(i, 0)->data(Qt::CheckStateRole).toInt() ==
-                Qt::Checked) {
-                nCurrentValue |=
-                    g_model.item(i, 0)->data(Qt::UserRole).toULongLong();
+            if (g_model.item(i, 0)->data(Qt::CheckStateRole).toInt() == Qt::Checked) {
+                nCurrentValue |= g_model.item(i, 0)->data(Qt::UserRole).toULongLong();
             } else {
-                nCurrentValue &=
-                    (0xFFFFFFFFFFFFFFFF ^
-                     g_model.item(i, 0)->data(Qt::UserRole).toULongLong());
+                nCurrentValue &= (0xFFFFFFFFFFFFFFFF ^ g_model.item(i, 0)->data(Qt::UserRole).toULongLong());
             }
         }
 

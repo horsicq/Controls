@@ -38,7 +38,7 @@
 class XAbstractTableView : public XShortcutstScrollArea {
     Q_OBJECT
 
-   public:
+public:
     struct COLUMN {
         bool bEnable;
         qint32 nLeft;
@@ -87,8 +87,7 @@ class XAbstractTableView : public XShortcutstScrollArea {
     //    void setEnabled(bool bEnabled);
     void clear();
 
-    void addColumn(QString sTitle, qint32 nWidth = 0, bool bClickable = false,
-                   bool bEnable = true);
+    void addColumn(QString sTitle, qint32 nWidth = 0, bool bClickable = false, bool bEnable = true);
     void setColumnTitle(qint32 nNumber, QString sTitle);
     void setColumnEnabled(qint32 nNumber, bool bState);
     void setColumnWidth(qint32 nNumber, qint32 nWidth);
@@ -121,12 +120,10 @@ class XAbstractTableView : public XShortcutstScrollArea {
     qint32 getSideDelta();
     STATE getState();
     qint64 getCursorOffset();
-    void setCursorOffset(qint64 nOffset, qint32 nColumn = -1,
-                         QVariant varCursorExtraInfo = QVariant());
+    void setCursorOffset(qint64 nOffset, qint32 nColumn = -1, QVariant varCursorExtraInfo = QVariant());
     void adjust(bool bUpdateData = false);
 
-    void setCursorData(QRect rectSquare, QRect rectText, QString sText,
-                       qint32 nDelta);
+    void setCursorData(QRect rectSquare, QRect rectText, QString sText, qint32 nDelta);
     void resetCursorData();
 
     qint32 getCursorDelta();
@@ -151,7 +148,7 @@ class XAbstractTableView : public XShortcutstScrollArea {
     void setBlinkingCursor(bool bState);
     void setBlinkingCursorEnable(bool bState);
 
-   signals:
+signals:
     void cursorChanged(qint64 nOffset);
     void selectionChanged();
     void errorMessage(QString sText);
@@ -160,17 +157,17 @@ class XAbstractTableView : public XShortcutstScrollArea {
     void headerClicked(qint32 nNumber);
     void cellDoubleClicked(qint32 nRow, qint32 nColumn);
 
-   private:
+private:
     void _initSelection(qint64 nOffset, qint64 nSize);
     void _setSelection(qint64 nOffset, qint64 nSize);
 
-   private slots:
+private slots:
     void verticalScroll();
     void horisontalScroll();
     void _customContextMenu(const QPoint &pos);
     void updateBlink();
 
-   protected:
+protected:
     virtual void paintEvent(QPaintEvent *pEvent) override;
     virtual void resizeEvent(QResizeEvent *pEvent) override;
     virtual void mouseMoveEvent(QMouseEvent *pEvent) override;
@@ -184,14 +181,10 @@ class XAbstractTableView : public XShortcutstScrollArea {
     virtual OS cursorPositionToOS(CURSOR_POSITION cursorPosition);
     virtual void updateData();
     virtual void startPainting(QPainter *pPainter);
-    virtual void paintColumn(QPainter *pPainter, qint32 nColumn, qint32 nLeft,
-                             qint32 nTop, qint32 nWidth, qint32 nHeight);
-    virtual void paintCell(QPainter *pPainter, qint32 nRow, qint32 nColumn,
-                           qint32 nLeft, qint32 nTop, qint32 nWidth,
-                           qint32 nHeight);
+    virtual void paintColumn(QPainter *pPainter, qint32 nColumn, qint32 nLeft, qint32 nTop, qint32 nWidth, qint32 nHeight);
+    virtual void paintCell(QPainter *pPainter, qint32 nRow, qint32 nColumn, qint32 nLeft, qint32 nTop, qint32 nWidth, qint32 nHeight);
     virtual void endPainting(QPainter *pPainter);
-    virtual bool _goToOffset(qint64 nOffset, bool bSaveCursor = false,
-                             bool bShort = false, bool bAprox = false);
+    virtual bool _goToOffset(qint64 nOffset, bool bSaveCursor = false, bool bShort = false, bool bAprox = false);
     virtual void contextMenu(const QPoint &pos);
     virtual qint64 getScrollValue();
     virtual void setScrollValue(qint64 nOffset);
@@ -201,7 +194,7 @@ class XAbstractTableView : public XShortcutstScrollArea {
     virtual qint64 getRecordSize(qint64 nOffset);
     virtual qint64 getFixOffset(qint64 nOffset);
 
-   private:
+private:
     bool g_bIsActive;
     bool g_bIsBlinkingCursorEnable;
     qint64 g_nNumberOfRows;

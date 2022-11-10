@@ -33,7 +33,7 @@
 class XDeviceTableView : public XAbstractTableView {
     Q_OBJECT
 
-   public:
+public:
     enum MODE { MODE_ADDRESS = 0, MODE_OFFSET, MODE_RELADDRESS, MODE_THIS };
 
     XDeviceTableView(QWidget *pParent = nullptr);
@@ -60,15 +60,15 @@ class XDeviceTableView : public XAbstractTableView {
     void setReadonly(bool bState);
     bool isReadonly();
 
-   public slots:
+public slots:
     void setEdited();
 
-   protected:
+protected:
     virtual bool isOffsetValid(qint64 nOffset);
     virtual bool isEnd(qint64 nOffset);
     void setMemoryReplaces(QList<XBinary::MEMORY_REPLACE> listReplaces);
 
-   protected slots:
+protected slots:
     void _goToAddressSlot();
     void _goToOffsetSlot();
     void _dumpToFileSlot();
@@ -85,15 +85,14 @@ class XDeviceTableView : public XAbstractTableView {
     void _copyOffsetSlot();
     void _setEdited();
 
-   private:
+private:
     XInfoDB *g_pXInfoDB;
     QIODevice *g_pDevice;
     QIODevice *g_pBackupDevice;
     qint64 g_nDataSize;
     XBinary::_MEMORY_MAP g_memoryMap;
     SearchProcess::SEARCHDATA g_searchData;
-    QList<XBinary::MEMORY_REPLACE>
-        g_listReplaces;  // TODO move to g_pXInfoDB !!!
+    QList<XBinary::MEMORY_REPLACE> g_listReplaces;  // TODO move to g_pXInfoDB !!!
     MODE g_addressMode;
     bool g_bIsReadonly;
 };

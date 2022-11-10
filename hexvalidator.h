@@ -26,7 +26,7 @@
 class HEXValidator : public QValidator {
     Q_OBJECT
 
-   public:
+public:
     enum MODE { MODE_TEXT = 0, MODE_DEC, MODE_SIGN_DEC, MODE_HEX, MODE_UUID };
 
     explicit HEXValidator(QObject *pParent = nullptr);
@@ -35,7 +35,7 @@ class HEXValidator : public QValidator {
     MODE getMode();
     virtual State validate(QString &sInput, int &nPos) const;
 
-   private:
+private:
     MODE g_mode;
     quint64 g_nMax;
 };

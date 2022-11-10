@@ -20,14 +20,11 @@
  */
 #include "subclassofqstyleditemdelegate.h"
 
-SubclassOfQStyledItemDelegate::SubclassOfQStyledItemDelegate(QWidget *pParent)
-    : QStyledItemDelegate(pParent) {}
+SubclassOfQStyledItemDelegate::SubclassOfQStyledItemDelegate(QWidget *pParent) : QStyledItemDelegate(pParent) {
+}
 
-void SubclassOfQStyledItemDelegate::paint(
-    QPainter *pPainter, const QStyleOptionViewItem &styleOptionViewItem,
-    const QModelIndex &modelIndex) const {
-    QStyleOptionViewItem &refToNonConstOption =
-        const_cast<QStyleOptionViewItem &>(styleOptionViewItem);
+void SubclassOfQStyledItemDelegate::paint(QPainter *pPainter, const QStyleOptionViewItem &styleOptionViewItem, const QModelIndex &modelIndex) const {
+    QStyleOptionViewItem &refToNonConstOption = const_cast<QStyleOptionViewItem &>(styleOptionViewItem);
     refToNonConstOption.showDecorationSelected = false;
     // refToNonConstOption.state &= ~QStyle::State_HasFocus &
     // ~QStyle::State_MouseOver;

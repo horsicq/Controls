@@ -30,7 +30,9 @@ void HEXValidator::setData(HEXValidator::MODE mode, quint64 nMax) {
     g_nMax = nMax;
 }
 
-HEXValidator::MODE HEXValidator::getMode() { return g_mode; }
+HEXValidator::MODE HEXValidator::getMode() {
+    return g_mode;
+}
 
 QValidator::State HEXValidator::validate(QString &sInput, int &nPos) const {
     Q_UNUSED(nPos)
@@ -68,8 +70,7 @@ QValidator::State HEXValidator::validate(QString &sInput, int &nPos) const {
             bool bSuccess = false;
             quint64 nValue = sInput.toULongLong(&bSuccess, 16);
 
-            if (bSuccess && (nValue <= g_nMax) &&
-                (sInput.length() <= nHexLenght)) {
+            if (bSuccess && (nValue <= g_nMax) && (sInput.length() <= nHexLenght)) {
                 result = Acceptable;
             }
         } else if (g_mode == MODE_DEC) {

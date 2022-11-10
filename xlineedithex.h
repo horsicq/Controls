@@ -34,7 +34,7 @@
 class XLineEditHEX : public QLineEdit {
     Q_OBJECT
 
-   public:
+public:
     enum MODE {
         MODE_8,
         MODE_16,
@@ -58,29 +58,17 @@ class XLineEditHEX : public QLineEdit {
     explicit XLineEditHEX(QWidget *pParent = nullptr);
 
     void setOptions(OPTIONS options);
-    void setValue(quint8 nValue,
-                  HEXValidator::MODE validatorMode = HEXValidator::MODE_HEX);
-    void setValue(qint8 nValue,
-                  HEXValidator::MODE validatorMode = HEXValidator::MODE_HEX);
-    void setValue(quint16 nValue,
-                  HEXValidator::MODE validatorMode = HEXValidator::MODE_HEX);
-    void setValue(qint16 nValue,
-                  HEXValidator::MODE validatorMode = HEXValidator::MODE_HEX);
-    void setValue(quint32 nValue,
-                  HEXValidator::MODE validatorMode = HEXValidator::MODE_HEX);
-    void setValue(qint32 nValue,
-                  HEXValidator::MODE validatorMode = HEXValidator::MODE_HEX);
-    void setValue(quint64 nValue,
-                  HEXValidator::MODE validatorMode = HEXValidator::MODE_HEX);
-    void setValue(qint64 nValue,
-                  HEXValidator::MODE validatorMode = HEXValidator::MODE_HEX);
-    void setValueOS(quint64 nValue,
-                    HEXValidator::MODE validatorMode = HEXValidator::MODE_HEX);
-    void setValue32_64(quint64 nValue, HEXValidator::MODE validatorMode =
-                                           HEXValidator::MODE_HEX);
-    void setModeValue(
-        MODE mode, quint64 nValue,
-        HEXValidator::MODE validatorMode = HEXValidator::MODE_HEX);
+    void setValue(quint8 nValue, HEXValidator::MODE validatorMode = HEXValidator::MODE_HEX);
+    void setValue(qint8 nValue, HEXValidator::MODE validatorMode = HEXValidator::MODE_HEX);
+    void setValue(quint16 nValue, HEXValidator::MODE validatorMode = HEXValidator::MODE_HEX);
+    void setValue(qint16 nValue, HEXValidator::MODE validatorMode = HEXValidator::MODE_HEX);
+    void setValue(quint32 nValue, HEXValidator::MODE validatorMode = HEXValidator::MODE_HEX);
+    void setValue(qint32 nValue, HEXValidator::MODE validatorMode = HEXValidator::MODE_HEX);
+    void setValue(quint64 nValue, HEXValidator::MODE validatorMode = HEXValidator::MODE_HEX);
+    void setValue(qint64 nValue, HEXValidator::MODE validatorMode = HEXValidator::MODE_HEX);
+    void setValueOS(quint64 nValue, HEXValidator::MODE validatorMode = HEXValidator::MODE_HEX);
+    void setValue32_64(quint64 nValue, HEXValidator::MODE validatorMode = HEXValidator::MODE_HEX);
+    void setModeValue(MODE mode, quint64 nValue, HEXValidator::MODE validatorMode = HEXValidator::MODE_HEX);
     void setStringValue(QString sText, qint32 nMaxLength = 0);
     void setUUID(QString sText);
     quint64 getValue();
@@ -93,23 +81,23 @@ class XLineEditHEX : public QLineEdit {
     void setColon(bool bIsColon);
     bool isFocused();
 
-   protected:
+protected:
     //    void keyPressEvent(QKeyEvent* keyEvent);
     bool eventFilter(QObject *pObject, QEvent *pEvent);
 
-   private slots:
+private slots:
     void _setText(QString sText);
     void customContextMenu(const QPoint &nPos);
     void updateFont();
     void _copy();
     void _copyValue();
 
-   signals:
+signals:
     void valueChanged(quint64 nValue);
     void valueChanged(QString sValue);
     void focused(bool bState);
 
-   private:
+private:
     QVariant g_vValue;
     HEXValidator g_validator;
     OPTIONS g_options;

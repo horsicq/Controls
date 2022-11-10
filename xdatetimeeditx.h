@@ -26,7 +26,7 @@
 class XDateTimeEditX : public QDateTimeEdit {
     Q_OBJECT
 
-   public:
+public:
     enum DT_TYPE {
         DT_TYPE_UNKNOWN = 0,
         DT_TYPE_POSIX
@@ -39,13 +39,13 @@ class XDateTimeEditX : public QDateTimeEdit {
     void setValue(quint64 nValue);
     quint64 getValue();
 
-   private slots:
+private slots:
     void _setDateTime(const QDateTime &dtValue);
 
-   signals:
+signals:
     void valueChanged(quint64 nValue);
 
-   private:
+private:
     quint64 g_nValue;
     DT_TYPE g_dtType;
 };

@@ -31,7 +31,7 @@
 class XComboBoxEx : public QComboBox {
     Q_OBJECT
 
-   public:
+public:
     enum CBTYPE {
         CBTYPE_LIST = 0,
         CBTYPE_FLAGS,
@@ -47,8 +47,7 @@ class XComboBoxEx : public QComboBox {
 
     explicit XComboBoxEx(QWidget *pParent = nullptr);
 
-    void setData(QMap<quint64, QString> mapData, CBTYPE cbtype = CBTYPE_LIST,
-                 quint64 nMask = 0);
+    void setData(QMap<quint64, QString> mapData, CBTYPE cbtype = CBTYPE_LIST, quint64 nMask = 0);
     void setValue(quint64 nValue);
     quint64 getValue();
     void setReadOnly(bool bIsReadOnly);
@@ -56,17 +55,16 @@ class XComboBoxEx : public QComboBox {
     void addCustomFlags(QList<CUSTOM_FLAG> listCustomFlags);
     void setCustomFlag(quint64 nValue);
     QList<quint64> getCustomFlags();
-    static void _addCustomFlag(QList<CUSTOM_FLAG> *pListCustomFlags,
-                               quint64 nValue, QString sString, bool bChecked);
+    static void _addCustomFlag(QList<CUSTOM_FLAG> *pListCustomFlags, quint64 nValue, QString sString, bool bChecked);
 
-   private slots:
+private slots:
     void currentIndexChangedSlot(int nIndex);
     void itemChangedSlot(QStandardItem *pItem);
 
-   signals:
+signals:
     void valueChanged(quint64 nValue);
 
-   private:
+private:
     quint64 g_nValue;
     bool g_bIsReadOnly;
     QStandardItemModel g_model;

@@ -20,8 +20,8 @@
  */
 #include "xdevicetableeditview.h"
 
-XDeviceTableEditView::XDeviceTableEditView(QWidget *pParent)
-    : XDeviceTableView(pParent) {}
+XDeviceTableEditView::XDeviceTableEditView(QWidget *pParent) : XDeviceTableView(pParent) {
+}
 
 quint64 XDeviceTableEditView::getStateOffset() {
     quint64 nResult = -1;

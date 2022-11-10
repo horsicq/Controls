@@ -27,16 +27,16 @@
 class XDeviceTableEditView : public XDeviceTableView {
     Q_OBJECT
 
-   public:
+public:
     XDeviceTableEditView(QWidget *pParent = nullptr);
     quint64 getStateOffset();
 
-   protected slots:
+protected slots:
     void _editHex();
     void _followInDisasmSlot();
     void _followInHexSlot();
 
-   signals:
+signals:
     void followInDisasm(XADDR nAddress);
     void followInHex(XADDR nAddress);
 };

@@ -24,13 +24,11 @@
 #include <QStyledItemDelegate>
 
 class SubclassOfQStyledItemDelegate : public QStyledItemDelegate {
-   public:
+public:
     explicit SubclassOfQStyledItemDelegate(QWidget *pParent = nullptr);
 
-   protected:
-    virtual void paint(QPainter *pPainter,
-                       const QStyleOptionViewItem &styleOptionViewItem,
-                       const QModelIndex &modelIndex) const override;
+protected:
+    virtual void paint(QPainter *pPainter, const QStyleOptionViewItem &styleOptionViewItem, const QModelIndex &modelIndex) const override;
 };
 
 #endif  // SUBCLASSOFQSTYLEDITEMDELEGATE_H

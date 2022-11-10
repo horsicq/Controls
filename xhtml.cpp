@@ -20,9 +20,12 @@
  */
 #include "xhtml.h"
 
-XHtml::XHtml(QObject *pParent) : QObject(pParent) {}
+XHtml::XHtml(QObject *pParent) : QObject(pParent) {
+}
 
-void XHtml::appendText(QString sText) { g_sString.append(sText); }
+void XHtml::appendText(QString sText) {
+    g_sString.append(sText);
+}
 
 void XHtml::addTableBegin() {
     g_sString.append(
@@ -42,8 +45,7 @@ void XHtml::addTableRow(QList<TABLECELL> listTableCells) {
             QString sCellText;
 
             if (listTableCells.at(i).bBold) {
-                sCellText =
-                    QString("<b>%1</b>").arg(listTableCells.at(i).sText);
+                sCellText = QString("<b>%1</b>").arg(listTableCells.at(i).sText);
             } else {
                 sCellText = listTableCells.at(i).sText;
             }
@@ -56,9 +58,13 @@ void XHtml::addTableRow(QList<TABLECELL> listTableCells) {
     }
 }
 
-void XHtml::addTableEnd() { g_sString.append("</table>"); }
+void XHtml::addTableEnd() {
+    g_sString.append("</table>");
+}
 
-QString XHtml::toString() { return g_sString; }
+QString XHtml::toString() {
+    return g_sString;
+}
 
 QString XHtml::makeLink(QString sText, QString sLink) {
     QString sResult;

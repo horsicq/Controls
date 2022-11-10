@@ -37,8 +37,7 @@ XLineEditHEX::XLineEditHEX(QWidget *pParent) : QLineEdit(pParent) {
     // TODO clear
     // mb TODO 10/16
     setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(this, SIGNAL(customContextMenuRequested(QPoint)), this,
-            SLOT(customContextMenu(QPoint)));
+    connect(this, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(customContextMenu(QPoint)));
 
     installEventFilter(this);
 }
@@ -143,8 +142,7 @@ void XLineEditHEX::setValue(qint64 nValue, HEXValidator::MODE validatorMode) {
     setValue((quint64)nValue, validatorMode);
 }
 
-void XLineEditHEX::setValueOS(quint64 nValue,
-                              HEXValidator::MODE validatorMode) {
+void XLineEditHEX::setValueOS(quint64 nValue, HEXValidator::MODE validatorMode) {
     MODE mode = MODE_32;
 
     if (sizeof(void *) == 8) {
@@ -154,8 +152,7 @@ void XLineEditHEX::setValueOS(quint64 nValue,
     setModeValue(mode, nValue, validatorMode);
 }
 
-void XLineEditHEX::setValue32_64(quint64 nValue,
-                                 HEXValidator::MODE validatorMode) {
+void XLineEditHEX::setValue32_64(quint64 nValue, HEXValidator::MODE validatorMode) {
     if (nValue >= 0xFFFFFFFF) {
         setValue((quint64)nValue, validatorMode);
     } else {
@@ -163,8 +160,7 @@ void XLineEditHEX::setValue32_64(quint64 nValue,
     }
 }
 
-void XLineEditHEX::setModeValue(XLineEditHEX::MODE mode, quint64 nValue,
-                                HEXValidator::MODE validatorMode) {
+void XLineEditHEX::setModeValue(XLineEditHEX::MODE mode, quint64 nValue, HEXValidator::MODE validatorMode) {
     if (mode == MODE_8) {
         setValue((quint8)nValue, validatorMode);
     } else if (mode == MODE_16) {
@@ -214,9 +210,13 @@ quint64 XLineEditHEX::getValue() {
     return nResult;
 }
 
-QVariant XLineEditHEX::_getValue() { return g_vValue; }
+QVariant XLineEditHEX::_getValue() {
+    return g_vValue;
+}
 
-void XLineEditHEX::setText(QString sText) { _setText(sText); }
+void XLineEditHEX::setText(QString sText) {
+    _setText(sText);
+}
 
 XLineEditHEX::MODE XLineEditHEX::getModeFromValue(quint64 nValue) {
     MODE result = MODE_64;
@@ -258,8 +258,7 @@ QString XLineEditHEX::getFormatString(XLineEditHEX::MODE mode, qint64 nValue) {
     return sResult;
 }
 
-qint32 XLineEditHEX::getWidthFromMode(QWidget *pWidget,
-                                      XLineEditHEX::MODE mode) {
+qint32 XLineEditHEX::getWidthFromMode(QWidget *pWidget, XLineEditHEX::MODE mode) {
     qint32 nSymbolWidth = getSymbolWidth(pWidget);
     qint32 nResult = nSymbolWidth * 8;
 
@@ -283,9 +282,13 @@ qint32 XLineEditHEX::getSymbolWidth(QWidget *pWidget) {
     return fm.boundingRect("W").width();  // TODO Check
 }
 
-void XLineEditHEX::setColon(bool bIsColon) { g_bIsColon = bIsColon; }
+void XLineEditHEX::setColon(bool bIsColon) {
+    g_bIsColon = bIsColon;
+}
 
-bool XLineEditHEX::isFocused() { return g_bIsFocused; }
+bool XLineEditHEX::isFocused() {
+    return g_bIsFocused;
+}
 
 bool XLineEditHEX::eventFilter(QObject *pObject, QEvent *pEvent) {
     if (pEvent->type() == QEvent::FocusIn) {
@@ -353,9 +356,7 @@ void XLineEditHEX::customContextMenu(const QPoint &nPos) {
     connect(&actionCopy, SIGNAL(triggered()), this, SLOT(_copy()));
     contextMenu.addAction(&actionCopy);
 
-    QAction actionCopyValue(
-        QString("%1: \"%2\"").arg(tr("Copy"), QString::number(getValue())),
-        this);
+    QAction actionCopyValue(QString("%1: \"%2\"").arg(tr("Copy"), QString::number(getValue())), this);
     connect(&actionCopyValue, SIGNAL(triggered()), this, SLOT(_copyValue()));
 
     if (g_validator.getMode() != HEXValidator::MODE_TEXT) {
@@ -378,7 +379,9 @@ void XLineEditHEX::updateFont() {
     setFont(_font);
 }
 
-void XLineEditHEX::_copy() { QApplication::clipboard()->setText(text()); }
+void XLineEditHEX::_copy() {
+    QApplication::clipboard()->setText(text());
+}
 
 void XLineEditHEX::_copyValue() {
     QApplication::clipboard()->setText(QString::number(getValue()));

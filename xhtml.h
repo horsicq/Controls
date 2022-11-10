@@ -27,7 +27,7 @@
 class XHtml : public QObject {
     Q_OBJECT
 
-   public:
+public:
     struct TABLECELL {
         QString sText;
         bool bBold;
@@ -43,7 +43,7 @@ class XHtml : public QObject {
     QString toString();
     static QString makeLink(QString sText, QString sLink);
 
-   private:
+private:
     QString g_sString;
 };
 
