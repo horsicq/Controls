@@ -27,7 +27,13 @@ class HEXValidator : public QValidator {
     Q_OBJECT
 
 public:
-    enum MODE { MODE_TEXT = 0, MODE_DEC, MODE_SIGN_DEC, MODE_HEX, MODE_UUID };
+    enum MODE {
+        MODE_TEXT = 0,
+        MODE_DEC,
+        MODE_SIGN_DEC,
+        MODE_HEX,
+        MODE_UUID
+    };
 
     explicit HEXValidator(QObject *pParent = nullptr);
 

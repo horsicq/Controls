@@ -34,7 +34,12 @@ class XDeviceTableView : public XAbstractTableView {
     Q_OBJECT
 
 public:
-    enum MODE { MODE_ADDRESS = 0, MODE_OFFSET, MODE_RELADDRESS, MODE_THIS };
+    enum MODE {
+        MODE_ADDRESS = 0,
+        MODE_OFFSET,
+        MODE_RELADDRESS,
+        MODE_THIS
+    };
 
     XDeviceTableView(QWidget *pParent = nullptr);
 
