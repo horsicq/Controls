@@ -20,10 +20,12 @@
  */
 #include "xdevicetableeditview.h"
 
-XDeviceTableEditView::XDeviceTableEditView(QWidget *pParent) : XDeviceTableView(pParent) {
+XDeviceTableEditView::XDeviceTableEditView(QWidget *pParent) : XDeviceTableView(pParent)
+{
 }
 
-quint64 XDeviceTableEditView::getStateOffset() {
+quint64 XDeviceTableEditView::getStateOffset()
+{
     quint64 nResult = -1;
 
     STATE state = getState();
@@ -39,7 +41,8 @@ quint64 XDeviceTableEditView::getStateOffset() {
     return nResult;
 }
 
-void XDeviceTableEditView::_editHex() {
+void XDeviceTableEditView::_editHex()
+{
     if (!isReadonly()) {
         STATE state = getState();
 
@@ -64,14 +67,16 @@ void XDeviceTableEditView::_editHex() {
     }
 }
 
-void XDeviceTableEditView::_followInDisasmSlot() {
+void XDeviceTableEditView::_followInDisasmSlot()
+{
     qint64 nOffset = getStateOffset();
     //    XADDR nAddress=XBinary::offsetToAddress(getMemoryMap(),nOffset);
 
     emit followInDisasm(nOffset);
 }
 
-void XDeviceTableEditView::_followInHexSlot() {
+void XDeviceTableEditView::_followInHexSlot()
+{
     //    emit
     //    followInHex(XBinary::offsetToAddress(getMemoryMap(),getStateOffset()));
     qint64 nOffset = getStateOffset();

@@ -20,20 +20,24 @@
  */
 #include "xhtml.h"
 
-XHtml::XHtml(QObject *pParent) : QObject(pParent) {
+XHtml::XHtml(QObject *pParent) : QObject(pParent)
+{
 }
 
-void XHtml::appendText(QString sText) {
+void XHtml::appendText(QString sText)
+{
     g_sString.append(sText);
 }
 
-void XHtml::addTableBegin() {
+void XHtml::addTableBegin()
+{
     g_sString.append(
         "<table border=\"1\" style=\"border-style:solid;\" cellspacing=\"-1\" "
         "cellpadding=\"5\">");  // TODO cellpadding consts
 }
 
-void XHtml::addTableRow(QList<TABLECELL> listTableCells) {
+void XHtml::addTableRow(QList<TABLECELL> listTableCells)
+{
     qint32 nNumbersOfCell = listTableCells.count();
 
     if (nNumbersOfCell) {
@@ -58,15 +62,18 @@ void XHtml::addTableRow(QList<TABLECELL> listTableCells) {
     }
 }
 
-void XHtml::addTableEnd() {
+void XHtml::addTableEnd()
+{
     g_sString.append("</table>");
 }
 
-QString XHtml::toString() {
+QString XHtml::toString()
+{
     return g_sString;
 }
 
-QString XHtml::makeLink(QString sText, QString sLink) {
+QString XHtml::makeLink(QString sText, QString sLink)
+{
     QString sResult;
 
     if (sLink != "") {

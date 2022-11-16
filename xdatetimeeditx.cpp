@@ -20,14 +20,16 @@
  */
 #include "xdatetimeeditx.h"
 
-XDateTimeEditX::XDateTimeEditX(QWidget *pParent) : QDateTimeEdit(pParent) {
+XDateTimeEditX::XDateTimeEditX(QWidget *pParent) : QDateTimeEdit(pParent)
+{
     g_nValue = 0;
     g_dtType = DT_TYPE_UNKNOWN;
 
     connect(this, SIGNAL(dateTimeChanged(QDateTime)), this, SLOT(_setDateTime(QDateTime)));
 }
 
-void XDateTimeEditX::setType(XDateTimeEditX::DT_TYPE dtType) {
+void XDateTimeEditX::setType(XDateTimeEditX::DT_TYPE dtType)
+{
     this->g_dtType = dtType;
 
     if (dtType == DT_TYPE_POSIX) {
@@ -40,7 +42,8 @@ void XDateTimeEditX::setType(XDateTimeEditX::DT_TYPE dtType) {
     // TODO more
 }
 
-void XDateTimeEditX::setValue(quint64 nValue) {
+void XDateTimeEditX::setValue(quint64 nValue)
+{
     if (this->g_nValue != nValue) {
         this->g_nValue = nValue;
 
@@ -55,11 +58,13 @@ void XDateTimeEditX::setValue(quint64 nValue) {
     }
 }
 
-quint64 XDateTimeEditX::getValue() {
+quint64 XDateTimeEditX::getValue()
+{
     return g_nValue;
 }
 
-void XDateTimeEditX::_setDateTime(const QDateTime &dtValue) {
+void XDateTimeEditX::_setDateTime(const QDateTime &dtValue)
+{
     quint64 nCurrentValue = 0;
 
     if (g_dtType == DT_TYPE_POSIX) {

@@ -20,7 +20,8 @@
  */
 #include "xdevicetableview.h"
 
-XDeviceTableView::XDeviceTableView(QWidget *pParent) : XAbstractTableView(pParent) {
+XDeviceTableView::XDeviceTableView(QWidget *pParent) : XAbstractTableView(pParent)
+{
     g_pXInfoDB = nullptr;
     g_pDevice = nullptr;
     g_pBackupDevice = nullptr;
@@ -30,15 +31,18 @@ XDeviceTableView::XDeviceTableView(QWidget *pParent) : XAbstractTableView(pParen
     g_bIsReadonly = true;
 }
 
-void XDeviceTableView::setXInfoDB(XInfoDB *pXInfoDB) {
+void XDeviceTableView::setXInfoDB(XInfoDB *pXInfoDB)
+{
     g_pXInfoDB = pXInfoDB;
 }
 
-XInfoDB *XDeviceTableView::getXInfoDB() {
+XInfoDB *XDeviceTableView::getXInfoDB()
+{
     return g_pXInfoDB;
 }
 
-void XDeviceTableView::setDevice(QIODevice *pDevice) {
+void XDeviceTableView::setDevice(QIODevice *pDevice)
+{
     g_pDevice = pDevice;
 
     if (pDevice) {
@@ -50,15 +54,18 @@ void XDeviceTableView::setDevice(QIODevice *pDevice) {
     }
 }
 
-void XDeviceTableView::setBackupDevice(QIODevice *pDevice) {
+void XDeviceTableView::setBackupDevice(QIODevice *pDevice)
+{
     g_pBackupDevice = pDevice;
 }
 
-QIODevice *XDeviceTableView::getDevice() {
+QIODevice *XDeviceTableView::getDevice()
+{
     return g_pDevice;
 }
 
-QIODevice *XDeviceTableView::getBackupDevice() {
+QIODevice *XDeviceTableView::getBackupDevice()
+{
     QIODevice *pResult = nullptr;
 
     if (g_pBackupDevice) {
@@ -70,11 +77,13 @@ QIODevice *XDeviceTableView::getBackupDevice() {
     return pResult;
 }
 
-qint64 XDeviceTableView::getDataSize() {
+qint64 XDeviceTableView::getDataSize()
+{
     return g_nDataSize;
 }
 
-void XDeviceTableView::setMemoryMap(XBinary::_MEMORY_MAP memoryMap) {
+void XDeviceTableView::setMemoryMap(XBinary::_MEMORY_MAP memoryMap)
+{
     if (memoryMap.fileType == XBinary::FT_UNKNOWN) {
         XBinary binary(getDevice());
         memoryMap = binary.getMemoryMap();
@@ -83,19 +92,23 @@ void XDeviceTableView::setMemoryMap(XBinary::_MEMORY_MAP memoryMap) {
     g_memoryMap = memoryMap;
 }
 
-XBinary::_MEMORY_MAP *XDeviceTableView::getMemoryMap() {
+XBinary::_MEMORY_MAP *XDeviceTableView::getMemoryMap()
+{
     return &g_memoryMap;
 }
 
-void XDeviceTableView::setAddressMode(XDeviceTableView::MODE addressMode) {
+void XDeviceTableView::setAddressMode(XDeviceTableView::MODE addressMode)
+{
     g_addressMode = addressMode;
 }
 
-XDeviceTableView::MODE XDeviceTableView::getAddressMode() {
+XDeviceTableView::MODE XDeviceTableView::getAddressMode()
+{
     return g_addressMode;
 }
 
-void XDeviceTableView::setMemoryReplaces(QList<XBinary::MEMORY_REPLACE> listReplaces) {
+void XDeviceTableView::setMemoryReplaces(QList<XBinary::MEMORY_REPLACE> listReplaces)
+{
     qint32 nNumberOfRecords = listReplaces.count();
 
     for (qint32 i = 0; i < nNumberOfRecords; i++) {
@@ -105,7 +118,8 @@ void XDeviceTableView::setMemoryReplaces(QList<XBinary::MEMORY_REPLACE> listRepl
     g_listReplaces = listReplaces;
 }
 
-qint64 XDeviceTableView::write_array(qint64 nOffset, char *pData, qint64 nDataSize) {
+qint64 XDeviceTableView::write_array(qint64 nOffset, char *pData, qint64 nDataSize)
+{
     qint64 nResult = 0;
 
     if (getDevice()) {
@@ -147,7 +161,8 @@ qint64 XDeviceTableView::write_array(qint64 nOffset, char *pData, qint64 nDataSi
     return nResult;
 }
 
-QByteArray XDeviceTableView::read_array(qint64 nOffset, qint32 nSize) {
+QByteArray XDeviceTableView::read_array(qint64 nOffset, qint32 nSize)
+{
     QByteArray baResult;
 
     if (getDevice()) {
@@ -165,22 +180,26 @@ QByteArray XDeviceTableView::read_array(qint64 nOffset, qint32 nSize) {
     return baResult;
 }
 
-bool XDeviceTableView::isReplaced(qint64 nOffset, qint32 nSize) {
+bool XDeviceTableView::isReplaced(qint64 nOffset, qint32 nSize)
+{
     return XBinary::_isReplaced(nOffset, nSize, &g_listReplaces);
 }
 
-void XDeviceTableView::goToAddress(XADDR nAddress, bool bShort, bool bAprox) {
+void XDeviceTableView::goToAddress(XADDR nAddress, bool bShort, bool bAprox)
+{
     qint64 nOffset = XBinary::addressToOffset(getMemoryMap(), nAddress);
     _goToOffset(nOffset, false, bShort, bAprox);  // TODO Check
     // mb TODO reload
 }
 
-void XDeviceTableView::goToOffset(qint64 nOffset) {
+void XDeviceTableView::goToOffset(qint64 nOffset)
+{
     _goToOffset(nOffset);
     // mb TODO reload
 }
 
-void XDeviceTableView::setSelectionAddress(XADDR nAddress, qint64 nSize) {
+void XDeviceTableView::setSelectionAddress(XADDR nAddress, qint64 nSize)
+{
     qint64 nOffset = XBinary::addressToOffset(getMemoryMap(), nAddress);
 
     if (nOffset != -1) {
@@ -188,13 +207,15 @@ void XDeviceTableView::setSelectionAddress(XADDR nAddress, qint64 nSize) {
     }
 }
 
-bool XDeviceTableView::isEdited() {
+bool XDeviceTableView::isEdited()
+{
     bool bResult = XBinary::isBackupPresent(getBackupDevice());
 
     return bResult;
 }
 
-bool XDeviceTableView::saveBackup() {
+bool XDeviceTableView::saveBackup()
+{
     bool bResult = true;
 
     if ((getGlobalOptions()->isSaveBackup()) && (!isEdited())) {
@@ -205,7 +226,8 @@ bool XDeviceTableView::saveBackup() {
     return bResult;
 }
 
-void XDeviceTableView::setEdited() {
+void XDeviceTableView::setEdited()
+{
     //    QFile *pFile=dynamic_cast<QFile *>(getDevice());
 
     //    if(pFile)
@@ -222,15 +244,18 @@ void XDeviceTableView::setEdited() {
     //    viewport()->update();
 }
 
-void XDeviceTableView::setReadonly(bool bState) {
+void XDeviceTableView::setReadonly(bool bState)
+{
     g_bIsReadonly = bState;
 }
 
-bool XDeviceTableView::isReadonly() {
+bool XDeviceTableView::isReadonly()
+{
     return g_bIsReadonly;
 }
 
-bool XDeviceTableView::isOffsetValid(qint64 nOffset) {
+bool XDeviceTableView::isOffsetValid(qint64 nOffset)
+{
     bool bResult = false;
 
     if ((nOffset >= 0) && (nOffset < g_nDataSize)) {
@@ -240,11 +265,13 @@ bool XDeviceTableView::isOffsetValid(qint64 nOffset) {
     return bResult;
 }
 
-bool XDeviceTableView::isEnd(qint64 nOffset) {
+bool XDeviceTableView::isEnd(qint64 nOffset)
+{
     return (nOffset == g_nDataSize);
 }
 
-void XDeviceTableView::_goToAddressSlot() {
+void XDeviceTableView::_goToAddressSlot()
+{
     DialogGoToAddress::TYPE type = DialogGoToAddress::TYPE_VIRTUALADDRESS;
 
     if (g_addressMode == MODE_RELADDRESS) {
@@ -261,7 +288,8 @@ void XDeviceTableView::_goToAddressSlot() {
     }
 }
 
-void XDeviceTableView::_goToOffsetSlot() {
+void XDeviceTableView::_goToOffsetSlot()
+{
     DialogGoToAddress da(this, getMemoryMap(), DialogGoToAddress::TYPE_OFFSET);
 
     if (da.exec() == QDialog::Accepted)  // TODO use status
@@ -272,7 +300,8 @@ void XDeviceTableView::_goToOffsetSlot() {
     }
 }
 
-void XDeviceTableView::_dumpToFileSlot() {
+void XDeviceTableView::_dumpToFileSlot()
+{
     QString sSaveFileName = XBinary::getResultFileName(getDevice(), QString("%1.bin").arg(tr("Dump")));
     QString sFileName = QFileDialog::getSaveFileName(this, tr("Save dump"), sSaveFileName, QString("%1 (*.bin)").arg(tr("Raw data")));
 
@@ -285,7 +314,8 @@ void XDeviceTableView::_dumpToFileSlot() {
     }
 }
 
-void XDeviceTableView::_hexSignatureSlot() {
+void XDeviceTableView::_hexSignatureSlot()
+{
     STATE state = getState();
 
     DialogHexSignature dhs(this, getDevice(), state.nSelectionOffset, state.nSelectionSize);
@@ -295,19 +325,23 @@ void XDeviceTableView::_hexSignatureSlot() {
     dhs.exec();
 }
 
-void XDeviceTableView::_findStringSlot() {
+void XDeviceTableView::_findStringSlot()
+{
     _findSlot(DialogSearch::SEARCHMODE_STRING);
 }
 
-void XDeviceTableView::_findSignatureSlot() {
+void XDeviceTableView::_findSignatureSlot()
+{
     _findSlot(DialogSearch::SEARCHMODE_SIGNATURE);
 }
 
-void XDeviceTableView::_findValueSlot() {
+void XDeviceTableView::_findValueSlot()
+{
     _findSlot(DialogSearch::SEARCHMODE_VALUE);
 }
 
-void XDeviceTableView::_findSlot(DialogSearch::SEARCHMODE mode) {
+void XDeviceTableView::_findSlot(DialogSearch::SEARCHMODE mode)
+{
     STATE state = getState();
 
     g_searchData = {};
@@ -327,7 +361,8 @@ void XDeviceTableView::_findSlot(DialogSearch::SEARCHMODE mode) {
     }
 }
 
-void XDeviceTableView::_findNextSlot() {
+void XDeviceTableView::_findNextSlot()
+{
     if (g_searchData.bInit) {
         g_searchData.nCurrentOffset = g_searchData.nResultOffset + 1;
         g_searchData.startFrom = SearchProcess::SF_CURRENTOFFSET;
@@ -348,11 +383,13 @@ void XDeviceTableView::_findNextSlot() {
     }
 }
 
-void XDeviceTableView::_selectAllSlot() {
+void XDeviceTableView::_selectAllSlot()
+{
     setSelection(0, getDevice()->size());
 }
 
-void XDeviceTableView::_copyHexSlot() {
+void XDeviceTableView::_copyHexSlot()
+{
     STATE state = getState();
 
     qint64 nSize = qMin(state.nSelectionSize, (qint64)0x10000);
@@ -362,7 +399,8 @@ void XDeviceTableView::_copyHexSlot() {
     QApplication::clipboard()->setText(baData.toHex());
 }
 
-void XDeviceTableView::_copyAddressSlot() {
+void XDeviceTableView::_copyAddressSlot()
+{
     STATE state = getState();
 
     XADDR nAddress = XBinary::offsetToAddress(getMemoryMap(), state.nCursorOffset);
@@ -370,7 +408,8 @@ void XDeviceTableView::_copyAddressSlot() {
     QApplication::clipboard()->setText(XBinary::valueToHex(XBinary::MODE_UNKNOWN, nAddress));
 }
 
-void XDeviceTableView::_copyRelAddressSlot() {
+void XDeviceTableView::_copyRelAddressSlot()
+{
     STATE state = getState();
 
     XADDR nAddress = XBinary::offsetToRelAddress(getMemoryMap(), state.nCursorOffset);
@@ -378,13 +417,15 @@ void XDeviceTableView::_copyRelAddressSlot() {
     QApplication::clipboard()->setText(XBinary::valueToHex(XBinary::MODE_UNKNOWN, nAddress));
 }
 
-void XDeviceTableView::_copyOffsetSlot() {
+void XDeviceTableView::_copyOffsetSlot()
+{
     STATE state = getState();
 
     QApplication::clipboard()->setText(XBinary::valueToHex(XBinary::MODE_UNKNOWN, state.nCursorOffset));
 }
 
-void XDeviceTableView::_setEdited() {
+void XDeviceTableView::_setEdited()
+{
     setEdited();
 
     emit dataChanged();

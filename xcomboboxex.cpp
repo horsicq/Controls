@@ -20,7 +20,8 @@
  */
 #include "xcomboboxex.h"
 
-XComboBoxEx::XComboBoxEx(QWidget *pParent) : QComboBox(pParent) {
+XComboBoxEx::XComboBoxEx(QWidget *pParent) : QComboBox(pParent)
+{
     g_nValue = 0;
     g_bIsReadOnly = false;
     g_cbtype = CBTYPE_LIST;
@@ -32,7 +33,8 @@ XComboBoxEx::XComboBoxEx(QWidget *pParent) : QComboBox(pParent) {
     connect(&g_model, SIGNAL(itemChanged(QStandardItem *)), this, SLOT(itemChangedSlot(QStandardItem *)));
 }
 
-void XComboBoxEx::setData(QMap<quint64, QString> mapData, CBTYPE cbtype, quint64 nMask) {
+void XComboBoxEx::setData(QMap<quint64, QString> mapData, CBTYPE cbtype, quint64 nMask)
+{
     g_cbtype = cbtype;
     g_nMask = nMask;
     g_mapData = mapData;
@@ -71,7 +73,8 @@ void XComboBoxEx::setData(QMap<quint64, QString> mapData, CBTYPE cbtype, quint64
     setModel(&g_model);
 }
 
-void XComboBoxEx::setValue(quint64 nValue) {
+void XComboBoxEx::setValue(quint64 nValue)
+{
     this->g_nValue = nValue;
 
     qint32 nNumberOfItems = g_model.rowCount();
@@ -122,11 +125,13 @@ void XComboBoxEx::setValue(quint64 nValue) {
     }
 }
 
-quint64 XComboBoxEx::getValue() {
+quint64 XComboBoxEx::getValue()
+{
     return g_nValue;
 }
 
-void XComboBoxEx::setReadOnly(bool bIsReadOnly) {
+void XComboBoxEx::setReadOnly(bool bIsReadOnly)
+{
     this->g_bIsReadOnly = bIsReadOnly;
 
     qint32 nNumberOfItems = g_model.rowCount();
@@ -142,7 +147,8 @@ void XComboBoxEx::setReadOnly(bool bIsReadOnly) {
     }
 }
 
-QString XComboBoxEx::getDescription() {
+QString XComboBoxEx::getDescription()
+{
     QString sResult;
 
     if (g_cbtype == CBTYPE_LIST) {
@@ -167,7 +173,8 @@ QString XComboBoxEx::getDescription() {
     return sResult;
 }
 
-void XComboBoxEx::addCustomFlags(QList<CUSTOM_FLAG> listCustomFlags) {
+void XComboBoxEx::addCustomFlags(QList<CUSTOM_FLAG> listCustomFlags)
+{
     g_model.clear();
 
     g_cbtype = CBTYPE_CUSTOM_FLAGS;
@@ -195,7 +202,8 @@ void XComboBoxEx::addCustomFlags(QList<CUSTOM_FLAG> listCustomFlags) {
     setModel(&g_model);
 }
 
-void XComboBoxEx::setCustomFlag(quint64 nValue) {
+void XComboBoxEx::setCustomFlag(quint64 nValue)
+{
     qint64 nNumberOfRecords = g_model.rowCount();
 
     for (qint32 i = 1; i < nNumberOfRecords; i++) {
@@ -205,7 +213,8 @@ void XComboBoxEx::setCustomFlag(quint64 nValue) {
     }
 }
 
-QList<quint64> XComboBoxEx::getCustomFlags() {
+QList<quint64> XComboBoxEx::getCustomFlags()
+{
     QList<quint64> listResult;
 
     qint32 nNumberOfRecords = g_model.rowCount();
@@ -221,7 +230,8 @@ QList<quint64> XComboBoxEx::getCustomFlags() {
     return listResult;
 }
 
-void XComboBoxEx::_addCustomFlag(QList<CUSTOM_FLAG> *pListCustomFlags, quint64 nValue, QString sString, bool bChecked) {
+void XComboBoxEx::_addCustomFlag(QList<CUSTOM_FLAG> *pListCustomFlags, quint64 nValue, QString sString, bool bChecked)
+{
     CUSTOM_FLAG record = {};
 
     record.nValue = nValue;
@@ -231,7 +241,8 @@ void XComboBoxEx::_addCustomFlag(QList<CUSTOM_FLAG> *pListCustomFlags, quint64 n
     pListCustomFlags->append(record);
 }
 
-void XComboBoxEx::currentIndexChangedSlot(int nIndex) {
+void XComboBoxEx::currentIndexChangedSlot(int nIndex)
+{
     if (g_cbtype == CBTYPE_FLAGS) {
         if (nIndex) {
             setCurrentIndex(0);
@@ -273,7 +284,8 @@ void XComboBoxEx::currentIndexChangedSlot(int nIndex) {
     }
 }
 
-void XComboBoxEx::itemChangedSlot(QStandardItem *pItem) {
+void XComboBoxEx::itemChangedSlot(QStandardItem *pItem)
+{
     Q_UNUSED(pItem)
 
     if ((g_cbtype == CBTYPE_FLAGS) && count()) {

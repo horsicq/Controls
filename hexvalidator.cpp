@@ -20,21 +20,25 @@
  */
 #include "hexvalidator.h"
 
-HEXValidator::HEXValidator(QObject *pParent) : QValidator(pParent) {
+HEXValidator::HEXValidator(QObject *pParent) : QValidator(pParent)
+{
     g_mode = MODE_HEX;
     g_nMax = 0xFFFFFFFFFFFFFFFF;
 }
 
-void HEXValidator::setData(HEXValidator::MODE mode, quint64 nMax) {
+void HEXValidator::setData(HEXValidator::MODE mode, quint64 nMax)
+{
     g_mode = mode;
     g_nMax = nMax;
 }
 
-HEXValidator::MODE HEXValidator::getMode() {
+HEXValidator::MODE HEXValidator::getMode()
+{
     return g_mode;
 }
 
-QValidator::State HEXValidator::validate(QString &sInput, int &nPos) const {
+QValidator::State HEXValidator::validate(QString &sInput, int &nPos) const
+{
     Q_UNUSED(nPos)
 
     QValidator::State result = Acceptable;
