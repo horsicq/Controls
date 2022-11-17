@@ -173,14 +173,14 @@ QString XComboBoxEx::getDescription()
     return sResult;
 }
 
-void XComboBoxEx::addCustomFlags(QList<CUSTOM_FLAG> listCustomFlags)
+void XComboBoxEx::addCustomFlags(QString sTitle, QList<CUSTOM_FLAG> listCustomFlags)
 {
     g_model.clear();
 
     g_cbtype = CBTYPE_CUSTOM_FLAGS;
 
     g_model.setColumnCount(1);
-    g_model.setItem(0, 0, new QStandardItem(tr("Flags")));
+    g_model.setItem(0, 0, new QStandardItem(sTitle));
 
     qint32 nNumberOfRecords = listCustomFlags.count();
 
