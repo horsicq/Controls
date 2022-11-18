@@ -20,7 +20,8 @@
  */
 #include "xdevicetableview.h"
 
-XDeviceTableView::XDeviceTableView(QWidget *pParent) : XAbstractTableView(pParent)
+XDeviceTableView::XDeviceTableView(QWidget *pParent)
+    : XAbstractTableView(pParent)
 {
     g_pXInfoDB = nullptr;
     g_pDevice = nullptr;

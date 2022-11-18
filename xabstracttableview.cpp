@@ -20,7 +20,8 @@
  */
 #include "xabstracttableview.h"
 
-XAbstractTableView::XAbstractTableView(QWidget *pParent) : XShortcutstScrollArea(pParent)
+XAbstractTableView::XAbstractTableView(QWidget *pParent)
+    : XShortcutstScrollArea(pParent)
 {
     g_bIsActive = false;
     g_bIsBlinkingCursorEnable = false;

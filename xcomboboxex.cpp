@@ -20,7 +20,8 @@
  */
 #include "xcomboboxex.h"
 
-XComboBoxEx::XComboBoxEx(QWidget *pParent) : QComboBox(pParent)
+XComboBoxEx::XComboBoxEx(QWidget *pParent)
+    : QComboBox(pParent)
 {
     g_nValue = 0;
     g_bIsReadOnly = false;

@@ -20,7 +20,8 @@
  */
 #include "xdatetimeeditx.h"
 
-XDateTimeEditX::XDateTimeEditX(QWidget *pParent) : QDateTimeEdit(pParent)
+XDateTimeEditX::XDateTimeEditX(QWidget *pParent)
+    : QDateTimeEdit(pParent)
 {
     g_nValue = 0;
     g_dtType = DT_TYPE_UNKNOWN;

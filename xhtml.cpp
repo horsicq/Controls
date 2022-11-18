@@ -20,7 +20,8 @@
  */
 #include "xhtml.h"
 
-XHtml::XHtml(QObject *pParent) : QObject(pParent)
+XHtml::XHtml(QObject *pParent)
+    : QObject(pParent)
 {
 }
 
