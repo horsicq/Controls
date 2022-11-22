@@ -20,8 +20,7 @@
  */
 #include "xdevicetableeditview.h"
 
-XDeviceTableEditView::XDeviceTableEditView(QWidget *pParent)
-    : XDeviceTableView(pParent)
+XDeviceTableEditView::XDeviceTableEditView(QWidget *pParent) : XDeviceTableView(pParent)
 {
 }
 

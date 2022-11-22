@@ -20,8 +20,7 @@
  */
 #include "xabstracttableview.h"
 
-XAbstractTableView::XAbstractTableView(QWidget *pParent)
-    : XShortcutstScrollArea(pParent)
+XAbstractTableView::XAbstractTableView(QWidget *pParent) : XShortcutstScrollArea(pParent)
 {
     g_bIsActive = false;
     g_bIsBlinkingCursorEnable = false;
@@ -237,8 +236,7 @@ void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
 
                         if (g_bHorisontalLinesVisible) {
                             for (qint32 j = 0; j < g_nLinesProPage; j++) {
-                                pPainter->drawLine(nX, nTopLeftY + nHeaderHeight + ((j + 1) * g_nLineHeight), nX + nColumnWidth,
-                                                   nTopLeftY + nHeaderHeight + (j + 1) * g_nLineHeight);
+                                pPainter->drawLine(nX, nTopLeftY + nHeaderHeight + ((j + 1) * g_nLineHeight), nX + nColumnWidth, nTopLeftY + nHeaderHeight + (j + 1) * g_nLineHeight);
                             }
                         }
 

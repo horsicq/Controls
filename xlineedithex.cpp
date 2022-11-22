@@ -20,8 +20,7 @@
  */
 #include "xlineedithex.h"
 
-XLineEditHEX::XLineEditHEX(QWidget *pParent)
-    : QLineEdit(pParent)
+XLineEditHEX::XLineEditHEX(QWidget *pParent) : QLineEdit(pParent)
 {
     g_bIsColon = false;
     g_bIsFocused = false;
