@@ -236,7 +236,8 @@ void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
 
                         if (g_bHorisontalLinesVisible) {
                             for (qint32 j = 0; j < g_nLinesProPage; j++) {
-                                pPainter->drawLine(nX, nTopLeftY + nHeaderHeight + ((j + 1) * g_nLineHeight), nX + nColumnWidth, nTopLeftY + nHeaderHeight + (j + 1) * g_nLineHeight);
+                                pPainter->drawLine(nX, nTopLeftY + nHeaderHeight + ((j + 1) * g_nLineHeight), nX + nColumnWidth,
+                                                   nTopLeftY + nHeaderHeight + (j + 1) * g_nLineHeight);
                             }
                         }
 
