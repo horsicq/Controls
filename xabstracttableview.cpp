@@ -755,6 +755,11 @@ void XAbstractTableView::setBlinkingCursorEnable(bool bState)
     }
 }
 
+void XAbstractTableView::_verticalScroll()
+{
+    verticalScroll();
+}
+
 void XAbstractTableView::_customContextMenu(const QPoint &pos)
 {
     contextMenu(mapToGlobal(pos));

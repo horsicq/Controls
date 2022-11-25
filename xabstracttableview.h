@@ -147,6 +147,7 @@ public:
     bool isContextMenuEnable();
     void setBlinkingCursor(bool bState);
     void setBlinkingCursorEnable(bool bState);
+    void _verticalScroll();
 
 signals:
     void cursorChanged(qint64 nOffset);
