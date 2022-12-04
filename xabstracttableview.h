@@ -115,7 +115,6 @@ public:
 
     bool isOffsetSelected(qint64 nOffset);
     QPainter *getBoldTextPointer();
-
     qint32 getLineDelta();
     qint32 getSideDelta();
     STATE getState();
