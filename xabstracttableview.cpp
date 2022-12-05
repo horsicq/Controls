@@ -225,9 +225,7 @@ void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
 
                             g_pushButtonHeader.style()->drawControl(QStyle::CE_PushButton, &styleOptionButton, pPainter, &g_pushButtonHeader);
 
-                            QRect rect = QRect(nX + 4, nTopLeftY, nColumnWidth - 8, nHeaderHeight);
-                            pPainter->drawText(rect, Qt::AlignVCenter | Qt::AlignLeft,
-                                               g_listColumns.at(i).sTitle);  // TODO alignment
+                            paintTitle(pPainter,i,nX,nTopLeftY,nColumnWidth,nHeaderHeight,g_listColumns.at(i).sTitle);
                         }
 
                         if (g_bVerticalLinesVisible) {
@@ -980,6 +978,14 @@ void XAbstractTableView::paintCell(QPainter *pPainter, qint32 nRow, qint32 nColu
     Q_UNUSED(nTop)
     Q_UNUSED(nWidth)
     Q_UNUSED(nHeight)
+}
+
+void XAbstractTableView::paintTitle(QPainter *pPainter, qint32 nColumn, qint32 nLeft, qint32 nTop, qint32 nWidth, qint32 nHeight, QString sTitle)
+{
+    Q_UNUSED(nColumn)
+
+    QRect rect = QRect(nLeft + 4, nTop, nWidth - 8, nHeight);
+    pPainter->drawText(rect, Qt::AlignVCenter | Qt::AlignLeft, sTitle);  // TODO alignment
 }
 
 void XAbstractTableView::endPainting(QPainter *pPainter)
