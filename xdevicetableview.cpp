@@ -300,6 +300,35 @@ void XDeviceTableView::_goToOffsetSlot()
     }
 }
 
+void XDeviceTableView::_goToSelectionStart()
+{
+    STATE state = getState();
+
+    if (state.nSelectionSize) {
+        goToOffset(state.nSelectionOffset);
+        setFocus();
+        viewport()->update();
+    }
+}
+
+void XDeviceTableView::_goToSelectionEnd()
+{
+    STATE state = getState();
+
+    if (state.nSelectionSize) {
+        qint64 nOffset = state.nSelectionOffset+state.nSelectionSize;
+
+        if (isEnd(nOffset)) {
+            nOffset --;
+        }
+
+        // mb TODO go to end alignment
+        goToOffset(nOffset);
+        setFocus();
+        viewport()->update();
+    }
+}
+
 void XDeviceTableView::_dumpToFileSlot()
 {
     QString sSaveFileName = XBinary::getResultFileName(getDevice(), QString("%1.bin").arg(tr("Dump")));

@@ -79,6 +79,11 @@ public:
         QVariant varData;
     };
 
+    enum XCOLOR {
+        XCOLOR_NORMALTEXT = 0,
+        XCOLOR_NORMALTEXTBACKGROUND
+    };
+
     explicit XAbstractTableView(QWidget *pParent = nullptr);
     ~XAbstractTableView();
 
@@ -243,6 +248,8 @@ private:
 
     bool g_bIsSelectionEnable;
     bool g_bIsContextMenuEnable;
+
+    QMap<quint32, QColor> g_colorSchema;
 };
 
 #endif  // XABSTRACTTABLEVIEW_H

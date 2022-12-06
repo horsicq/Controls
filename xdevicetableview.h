@@ -76,6 +76,8 @@ protected:
 protected slots:
     void _goToAddressSlot();
     void _goToOffsetSlot();
+    void _goToSelectionStart();
+    void _goToSelectionEnd();
     void _dumpToFileSlot();
     void _hexSignatureSlot();
     void _findStringSlot();
