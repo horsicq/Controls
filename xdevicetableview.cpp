@@ -316,10 +316,10 @@ void XDeviceTableView::_goToSelectionEnd()
     STATE state = getState();
 
     if (state.nSelectionSize) {
-        qint64 nOffset = state.nSelectionOffset+state.nSelectionSize;
+        qint64 nOffset = state.nSelectionOffset + state.nSelectionSize;
 
         if (isEnd(nOffset)) {
-            nOffset --;
+            nOffset--;
         }
 
         // mb TODO go to end alignment

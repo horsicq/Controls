@@ -225,7 +225,7 @@ void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
 
                             g_pushButtonHeader.style()->drawControl(QStyle::CE_PushButton, &styleOptionButton, pPainter, &g_pushButtonHeader);
 
-                            paintTitle(pPainter,i,nX,nTopLeftY,nColumnWidth,nHeaderHeight,g_listColumns.at(i).sTitle);
+                            paintTitle(pPainter, i, nX, nTopLeftY, nColumnWidth, nHeaderHeight, g_listColumns.at(i).sTitle);
                         }
 
                         if (g_bVerticalLinesVisible) {
