@@ -98,7 +98,7 @@ private:
     QIODevice *g_pBackupDevice;
     qint64 g_nDataSize;
     XBinary::_MEMORY_MAP g_memoryMap;
-    SearchProcess::SEARCHDATA g_searchData;
+    XBinary::SEARCHDATA g_searchData;
     QList<XBinary::MEMORY_REPLACE> g_listReplaces;  // TODO move to g_pXInfoDB !!!
     MODE g_addressMode;
     bool g_bIsReadonly;

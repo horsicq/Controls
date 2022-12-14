@@ -381,12 +381,19 @@ void XDeviceTableView::_findSlot(DialogSearch::SEARCHMODE mode)
 
     if (dialogSearch.exec() == QDialog::Accepted)  // TODO use status
     {
-        _goToOffset(g_searchData.nResultOffset);
-        setSelection(g_searchData.nResultOffset, g_searchData.nResultSize);
-        setFocus();
-        viewport()->update();
-    } else if (g_searchData.type != SearchProcess::TYPE_UNKNOWN) {
-        emit errorMessage(tr("Nothing found"));
+        DialogSearchProcess dsp(this, getDevice(), &g_searchData);
+
+        dsp.showDialogDelay(1000);
+
+        if (g_searchData.nResultOffset != -1) {
+            _goToOffset(g_searchData.nResultOffset);
+            setSelection(g_searchData.nResultOffset, g_searchData.nResultSize);
+            setFocus();
+            viewport()->update();
+
+        } else {
+            emit errorMessage(tr("Nothing found"));
+        }
     }
 }
 
@@ -394,7 +401,7 @@ void XDeviceTableView::_findNextSlot()
 {
     if (g_searchData.bInit) {
         g_searchData.nCurrentOffset = g_searchData.nResultOffset + 1;
-        g_searchData.startFrom = SearchProcess::SF_CURRENTOFFSET;
+        g_searchData.startFrom = XBinary::SF_CURRENTOFFSET;
 
         DialogSearchProcess dialogSearch(this, getDevice(), &g_searchData);
 
@@ -406,7 +413,7 @@ void XDeviceTableView::_findNextSlot()
             setSelection(g_searchData.nResultOffset, g_searchData.nResultSize);
             setFocus();
             viewport()->update();
-        } else if (g_searchData.type != SearchProcess::TYPE_UNKNOWN) {
+        } else if (g_searchData.valueType != XBinary::VT_UNKNOWN) {
             emit errorMessage(tr("Nothing found"));
         }
     }
