@@ -377,7 +377,10 @@ void XDeviceTableView::_findSlot(DialogSearch::SEARCHMODE mode)
     g_searchData.nResultOffset = -1;
     g_searchData.nCurrentOffset = state.nCursorOffset;
 
-    DialogSearch dialogSearch(this, getDevice(), &g_searchData, mode);
+    DialogSearch::OPTIONS options = {};
+    options.bShowBegin = true;
+
+    DialogSearch dialogSearch(this, getDevice(), &g_searchData, mode, options);
 
     if (dialogSearch.exec() == QDialog::Accepted)  // TODO use status
     {
