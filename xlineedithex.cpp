@@ -314,6 +314,11 @@ bool XLineEditHEX::isFocused()
     return g_bIsFocused;
 }
 
+void XLineEditHEX::setValidatorMode(HEXValidator::MODE validatorMode)
+{
+    g_validator.setData(validatorMode, 0);
+}
+
 bool XLineEditHEX::eventFilter(QObject *pObject, QEvent *pEvent)
 {
     if (pEvent->type() == QEvent::FocusIn) {
@@ -327,7 +332,6 @@ bool XLineEditHEX::eventFilter(QObject *pObject, QEvent *pEvent)
     }
 
     return QLineEdit::eventFilter(pObject, pEvent);
-    ;
 }
 
 // void XLineEditHEX::keyPressEvent(QKeyEvent *keyEvent)

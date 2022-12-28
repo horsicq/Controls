@@ -80,6 +80,7 @@ public:
     static qint32 getSymbolWidth(QWidget *pWidget);
     void setColon(bool bIsColon);
     bool isFocused();
+    void setValidatorMode(HEXValidator::MODE validatorMode);
 
 protected:
     //    void keyPressEvent(QKeyEvent* keyEvent);
