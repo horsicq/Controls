@@ -1,4 +1,4 @@
-/* Copyright (c) 2020-2022 hors<horsicq@gmail.com>
+/* Copyright (c) 2020-2023 hors<horsicq@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -427,15 +427,13 @@ void XDeviceTableView::_selectAllSlot()
     setSelection(0, getDevice()->size());
 }
 
-void XDeviceTableView::_copyHexSlot()
+void XDeviceTableView::_copyDataSlot()
 {
     STATE state = getState();
 
-    qint64 nSize = qMin(state.nSelectionSize, (qint64)0x10000);
+    DialogShowData dialogShowData(this, getDevice(), state.nSelectionOffset, state.nSelectionSize);
 
-    QByteArray baData = read_array(state.nSelectionOffset, nSize);
-
-    QApplication::clipboard()->setText(baData.toHex());
+    dialogShowData.exec();
 }
 
 void XDeviceTableView::_copyAddressSlot()

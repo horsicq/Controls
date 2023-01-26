@@ -25,6 +25,7 @@
 #include "dialoggotoaddress.h"
 #include "dialoghexsignature.h"
 #include "dialogsearch.h"
+#include "dialogshowdata.h"
 #include "dialogsearchprocess.h"
 #include "xabstracttableview.h"
 #include "xformats.h"
@@ -86,7 +87,7 @@ protected slots:
     void _findSlot(DialogSearch::SEARCHMODE mode);
     void _findNextSlot();
     void _selectAllSlot();
-    void _copyHexSlot();
+    void _copyDataSlot();
     void _copyAddressSlot();
     void _copyRelAddressSlot();
     void _copyOffsetSlot();
