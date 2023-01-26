@@ -72,7 +72,7 @@ public slots:
 protected:
     virtual bool isOffsetValid(qint64 nOffset);
     virtual bool isEnd(qint64 nOffset);
-    void setMemoryReplaces(QList<XBinary::MEMORY_REPLACE> listReplaces);
+    void setMemoryReplaces(QList<XBinary::MEMORY_REPLACE> listReplaces); // TODO Check
 
 protected slots:
     void _goToAddressSlot();

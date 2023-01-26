@@ -776,6 +776,18 @@ void XAbstractTableView::updateBlink()
     }
 }
 
+void XAbstractTableView::_copyValueSlot()
+{
+    QAction *pAction = qobject_cast<QAction *>(sender());
+
+    if (pAction) {
+        QString sValue = pAction->property("VALUE").toString();
+
+        QClipboard *pClipboard = QApplication::clipboard();
+        pClipboard->setText(sValue);
+    }
+}
+
 void XAbstractTableView::resizeEvent(QResizeEvent *pEvent)
 {
     if (isActive()) {

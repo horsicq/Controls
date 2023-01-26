@@ -172,6 +172,9 @@ private slots:
     void _customContextMenu(const QPoint &pos);
     void updateBlink();
 
+protected slots:
+    void _copyValueSlot();
+
 protected:
     virtual void paintEvent(QPaintEvent *pEvent) override;
     virtual void resizeEvent(QResizeEvent *pEvent) override;
