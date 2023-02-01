@@ -128,6 +128,11 @@ void XDeviceTableView::adjustLineCount()
 
 }
 
+void XDeviceTableView::adjustViewSize()
+{
+
+}
+
 qint64 XDeviceTableView::write_array(qint64 nOffset, char *pData, qint64 nDataSize)
 {
     qint64 nResult = 0;
@@ -278,6 +283,9 @@ bool XDeviceTableView::isAnalyzed()
 void XDeviceTableView::adjustAfterAnalysis()
 {
     adjustLineCount();
+    adjustViewSize();
+
+    reload(true);
 }
 
 bool XDeviceTableView::isViewOffsetValid(qint64 nOffset)

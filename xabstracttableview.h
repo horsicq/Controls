@@ -143,7 +143,7 @@ public:
     static QFont getMonoFont(qint32 nFontSize = -1);
     qint64 getSelectionInitOffset();
     void setCurrentBlock(qint64 nOffset, qint64 nSize);
-    bool isOffsetInCurrentBlock(qint64 nOffset);
+    bool isViewOffsetInCurrentBlock(qint64 nOffset);
     qint32 getLineHeight();
     qint32 getHeaderHeight();
     void setSelectionEnable(bool bState);
@@ -154,7 +154,7 @@ public:
     void _verticalScroll();
 
 signals:
-    void cursorViewChanged(qint64 nOffset);
+    void cursorViewOffsetChanged(qint64 nOffset);
     void selectionChanged();
     void errorMessage(QString sText);
     void infoMessage(QString sText);

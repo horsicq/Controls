@@ -77,6 +77,7 @@ protected:
     virtual bool isEnd(qint64 nOffset);
     void setMemoryReplaces(QList<XBinary::MEMORY_REPLACE> listReplaces); // TODO Check
     virtual void adjustLineCount();
+    virtual void adjustViewSize();
 
 protected slots:
     void _goToAddressSlot();

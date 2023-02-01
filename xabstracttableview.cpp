@@ -458,7 +458,7 @@ void XAbstractTableView::setCursorViewOffset(qint64 nViewOffset, qint32 nColumn,
     if (g_state.nCursorViewOffset != nViewOffset) {
         g_state.nCursorViewOffset = nViewOffset;
 
-        emit cursorViewChanged(nViewOffset);
+        emit cursorViewOffsetChanged(nViewOffset);
     }
 }
 
@@ -686,7 +686,7 @@ void XAbstractTableView::setCurrentBlock(qint64 nOffset, qint64 nSize)
     g_nCurrentBlockSize = nSize;
 }
 
-bool XAbstractTableView::isOffsetInCurrentBlock(qint64 nOffset)
+bool XAbstractTableView::isViewOffsetInCurrentBlock(qint64 nOffset)
 {
     bool bResult = false;
 
@@ -866,7 +866,7 @@ void XAbstractTableView::mousePressEvent(QMouseEvent *pEvent)
                     g_bMouseSelection = true;
                 }
 
-                emit cursorViewChanged(os.nViewOffset);
+                emit cursorViewOffsetChanged(os.nViewOffset);
             }
 
             adjust();
@@ -1024,7 +1024,7 @@ bool XAbstractTableView::_goToViewOffset(qint64 nOffset, bool bSaveCursor, bool 
 
         bool bScroll = true;
 
-        if (bShort && isOffsetInCurrentBlock(nOffset)) {
+        if (bShort && isViewOffsetInCurrentBlock(nOffset)) {
             bScroll = false;
         }
 
