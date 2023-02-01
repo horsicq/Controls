@@ -30,7 +30,7 @@ quint64 XDeviceTableEditView::getStateOffset()
 
     STATE state = getState();
 
-    nResult = state.nCursorOffset;
+    nResult = state.nCursorViewOffset;
 
     XIODevice *pSubDevice = dynamic_cast<XIODevice *>(getDevice());
 
@@ -46,7 +46,7 @@ void XDeviceTableEditView::_editHex()
     if (!isReadonly()) {
         STATE state = getState();
 
-        SubDevice sd(getDevice(), state.nSelectionOffset, state.nSelectionSize);
+        SubDevice sd(getDevice(), state.nSelectionViewOffset, state.nSelectionViewSize);
 
         if (sd.open(QIODevice::ReadWrite)) {
             DialogHexEdit dialogHexEdit(this);
@@ -55,7 +55,7 @@ void XDeviceTableEditView::_editHex()
 
             //        connect(&dialogHexEdit,SIGNAL(changed()),this,SLOT(_setEdited()));
 
-            dialogHexEdit.setData(&sd, state.nSelectionOffset);
+            dialogHexEdit.setData(&sd, state.nSelectionViewOffset);
             dialogHexEdit.setBackupDevice(getBackupDevice());
 
             dialogHexEdit.exec();

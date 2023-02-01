@@ -26,7 +26,7 @@ XAbstractTableView::XAbstractTableView(QWidget *pParent) : XShortcutstScrollArea
     g_bIsBlinkingCursorEnable = false;
     g_bMouseResizeColumn = false;
     g_bMouseSelection = false;
-    g_nViewStart = 0;
+    g_nViewOffsetStart = 0;
     g_nCharWidth = 0;
     g_nCharHeight = 0;
     g_nLinesProPage = 0;
@@ -39,7 +39,7 @@ XAbstractTableView::XAbstractTableView(QWidget *pParent) : XShortcutstScrollArea
     g_nSelectionInitSize = 0;
     g_nNumberOfRows = 0;
     g_nCursorDelta = 0;
-    g_nXOffset = 0;
+    g_nXViewOffset = 0;
     g_nHeaderHeight = 20;  // TODO Set/Get function !!!
     g_nLineDelta = 0;      // TODO Check
     g_nSideDelta = 0;      // TODO Check
@@ -56,7 +56,7 @@ XAbstractTableView::XAbstractTableView(QWidget *pParent) : XShortcutstScrollArea
     g_bHeaderClickButton = false;
     g_nHeaderClickColumnNumber = 0;
 
-    g_nCurrentBlockOffset = 0;
+    g_nCurrentBlockViewOffset = 0;
     g_nCurrentBlockSize = 0;
 
     g_bIsSelectionEnable = true;
@@ -177,7 +177,7 @@ void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
 
             if (nNumberOfColumns) {
                 qint32 nTopLeftY = pEvent->rect().topLeft().y();
-                qint32 nTopLeftX = pEvent->rect().topLeft().x() - g_nXOffset;
+                qint32 nTopLeftX = pEvent->rect().topLeft().x() - g_nXViewOffset;
                 qint32 nScreenWidth = pEvent->rect().width();
 
                 qint32 nHeight = pEvent->rect().height();
@@ -354,14 +354,14 @@ qint32 XAbstractTableView::getLinesProPage()
     return g_nLinesProPage;
 }
 
-void XAbstractTableView::setViewStart(qint64 nValue)
+void XAbstractTableView::setViewOffsetStart(qint64 nValue)
 {
-    g_nViewStart = nValue;
+    g_nViewOffsetStart = nValue;
 }
 
-qint64 XAbstractTableView::getViewStart()
+qint64 XAbstractTableView::getViewOffsetStart()
 {
-    return g_nViewStart;
+    return g_nViewOffsetStart;
 }
 
 qint32 XAbstractTableView::getCharWidth()
@@ -374,7 +374,7 @@ XAbstractTableView::CURSOR_POSITION XAbstractTableView::getCursorPosition(QPoint
     CURSOR_POSITION result = {};
 
     result.nY = pos.y();
-    result.nX = pos.x() + g_nXOffset;
+    result.nX = pos.x() + g_nXViewOffset;
 
     qint32 nHeaderHeight = (g_bHeaderVisible) ? (g_nHeaderHeight) : (0);
 
@@ -416,11 +416,11 @@ XAbstractTableView::CURSOR_POSITION XAbstractTableView::getCursorPosition(QPoint
     return result;
 }
 
-bool XAbstractTableView::isOffsetSelected(qint64 nOffset)
+bool XAbstractTableView::isViewOffsetSelected(qint64 nViewOffset)
 {
     bool bResult = false;
 
-    if ((nOffset >= g_state.nSelectionOffset) && (nOffset < (g_state.nSelectionOffset + g_state.nSelectionSize))) {
+    if ((nViewOffset >= g_state.nSelectionViewOffset) && (nViewOffset < (g_state.nSelectionViewOffset + g_state.nSelectionViewSize))) {
         bResult = true;
     }
 
@@ -442,12 +442,12 @@ XAbstractTableView::STATE XAbstractTableView::getState()
     return g_state;
 }
 
-qint64 XAbstractTableView::getCursorOffset()
+qint64 XAbstractTableView::getCursorViewOffset()
 {
-    return g_state.nCursorOffset;
+    return g_state.nCursorViewOffset;
 }
 
-void XAbstractTableView::setCursorOffset(qint64 nOffset, qint32 nColumn, QVariant varCursorExtraInfo)
+void XAbstractTableView::setCursorViewOffset(qint64 nViewOffset, qint32 nColumn, QVariant varCursorExtraInfo)
 {
     if (nColumn != -1) {
         g_state.cursorPosition.nColumn = nColumn;
@@ -455,32 +455,32 @@ void XAbstractTableView::setCursorOffset(qint64 nOffset, qint32 nColumn, QVarian
 
     g_state.varCursorExtraInfo = varCursorExtraInfo;
 
-    if (g_state.nCursorOffset != nOffset) {
-        g_state.nCursorOffset = nOffset;
+    if (g_state.nCursorViewOffset != nViewOffset) {
+        g_state.nCursorViewOffset = nViewOffset;
 
-        emit cursorChanged(nOffset);
+        emit cursorViewChanged(nViewOffset);
     }
 }
 
-void XAbstractTableView::_initSelection(qint64 nOffset, qint64 nSize)
+void XAbstractTableView::_initSelection(qint64 nViewOffset, qint64 nSize)
 {
-    if (isOffsetValid(nOffset) || isEnd(nOffset)) {
-        g_nSelectionInitOffset = nOffset;
+    if (isViewOffsetValid(nViewOffset) || isEnd(nViewOffset)) {
+        g_nSelectionInitOffset = nViewOffset;
         g_nSelectionInitSize = nSize;
-        g_state.nSelectionOffset = nOffset;
-        g_state.nSelectionSize = 0;
+        g_state.nSelectionViewOffset = nViewOffset;
+        g_state.nSelectionViewSize = 0;
     }
 }
 
-void XAbstractTableView::_setSelection(qint64 nOffset, qint64 nSize)
+void XAbstractTableView::_setSelection(qint64 nViewOffset, qint64 nSize)
 {
-    if (isOffsetValid(nOffset) || isEnd(nOffset)) {
-        if (nOffset > g_nSelectionInitOffset) {
-            g_state.nSelectionOffset = g_nSelectionInitOffset;
-            g_state.nSelectionSize = nOffset - g_nSelectionInitOffset + nSize;
+    if (isViewOffsetValid(nViewOffset) || isEnd(nViewOffset)) {
+        if (nViewOffset > g_nSelectionInitOffset) {
+            g_state.nSelectionViewOffset = g_nSelectionInitOffset;
+            g_state.nSelectionViewSize = nViewOffset - g_nSelectionInitOffset + nSize;
         } else {
-            g_state.nSelectionOffset = nOffset;
-            g_state.nSelectionSize = g_nSelectionInitOffset - nOffset + g_nSelectionInitSize;
+            g_state.nSelectionViewOffset = nViewOffset;
+            g_state.nSelectionViewSize = g_nSelectionInitOffset - nViewOffset + g_nSelectionInitSize;
         }
 
         emit selectionChanged();
@@ -489,7 +489,7 @@ void XAbstractTableView::_setSelection(qint64 nOffset, qint64 nSize)
 
 void XAbstractTableView::verticalScroll()
 {
-    g_nViewStart = getScrollValue();
+    g_nViewOffsetStart = getCurrentLineFromScroll();
 
     adjust(true);
 }
@@ -553,7 +553,7 @@ void XAbstractTableView::adjust(bool bUpdateData)
         horizontalScrollBar()->setRange(0, nDelta);
         horizontalScrollBar()->setPageStep(g_nViewWidth);
 
-        g_nXOffset = horizontalScrollBar()->value();
+        g_nXViewOffset = horizontalScrollBar()->value();
 
         if (bUpdateData) {
             updateData();
@@ -579,16 +579,16 @@ void XAbstractTableView::_cellDoubleClicked(qint32 nRow, qint32 nColumn)
     emit cellDoubleClicked(nRow, nColumn);
 }
 
-qint64 XAbstractTableView::getRecordSize(qint64 nOffset)
+qint64 XAbstractTableView::getRecordSize(qint64 nViewOffset)
 {
-    Q_UNUSED(nOffset)
+    Q_UNUSED(nViewOffset)
 
     return 1;
 }
 
-qint64 XAbstractTableView::getFixOffset(qint64 nOffset)
+qint64 XAbstractTableView::getFixViewOffset(qint64 nViewOffset)
 {
-    return nOffset;
+    return nViewOffset;
 }
 
 void XAbstractTableView::setCursorData(QRect rectSquare, QRect rectText, QString sText, qint32 nDelta)
@@ -609,11 +609,11 @@ qint32 XAbstractTableView::getCursorDelta()
     return g_nCursorDelta;
 }
 
-void XAbstractTableView::setSelection(qint64 nOffset, qint64 nSize)
+void XAbstractTableView::setSelection(qint64 nViewOffset, qint64 nSize)
 {
     if (g_bIsSelectionEnable) {
-        _initSelection(nOffset, nSize);
-        _setSelection(nOffset, nSize);
+        _initSelection(nViewOffset, nSize);
+        _setSelection(nViewOffset, nSize);
 
         adjust();
         viewport()->update();
@@ -682,7 +682,7 @@ qint64 XAbstractTableView::getSelectionInitOffset()
 
 void XAbstractTableView::setCurrentBlock(qint64 nOffset, qint64 nSize)
 {
-    g_nCurrentBlockOffset = nOffset;
+    g_nCurrentBlockViewOffset = nOffset;
     g_nCurrentBlockSize = nSize;
 }
 
@@ -691,7 +691,7 @@ bool XAbstractTableView::isOffsetInCurrentBlock(qint64 nOffset)
     bool bResult = false;
 
     if (g_nCurrentBlockSize) {
-        if ((g_nCurrentBlockOffset <= nOffset) && (nOffset < (g_nCurrentBlockOffset + g_nCurrentBlockSize))) {
+        if ((g_nCurrentBlockViewOffset <= nOffset) && (nOffset < (g_nCurrentBlockViewOffset + g_nCurrentBlockSize))) {
             bResult = true;
         }
     }
@@ -804,14 +804,14 @@ void XAbstractTableView::mouseMoveEvent(QMouseEvent *pEvent)
         if (g_bIsSelectionEnable && g_bMouseSelection) {
             OS os = cursorPositionToOS(cursorPosition);
 
-            if (os.nOffset != -1) {
+            if (os.nViewOffset != -1) {
                 //                g_state.nCursorOffset=os.nOffset;
                 //                g_state.varCursorExtraInfo=os.varData;
                 //                g_state.cursorPosition=cursorPosition;
 
                 //                emit cursorChanged(os.nOffset);
 
-                _setSelection(os.nOffset, os.nSize);
+                _setSelection(os.nViewOffset, os.nSize);
 
                 adjust();
                 viewport()->update();
@@ -856,17 +856,17 @@ void XAbstractTableView::mousePressEvent(QMouseEvent *pEvent)
             } else if ((cursorPosition.ptype == PT_HEADER) && (g_listColumns.at(cursorPosition.nColumn).bClickable)) {
                 g_bHeaderClickButton = true;
                 g_nHeaderClickColumnNumber = cursorPosition.nColumn;
-            } else if (os.nOffset != -1) {
-                g_state.nCursorOffset = os.nOffset;
+            } else if (os.nViewOffset != -1) {
+                g_state.nCursorViewOffset = os.nViewOffset;
                 g_state.varCursorExtraInfo = os.varData;
                 g_state.cursorPosition = cursorPosition;
 
                 if (g_bIsSelectionEnable) {
-                    _initSelection(os.nOffset, os.nSize);
+                    _initSelection(os.nViewOffset, os.nSize);
                     g_bMouseSelection = true;
                 }
 
-                emit cursorChanged(os.nOffset);
+                emit cursorViewChanged(os.nViewOffset);
             }
 
             adjust();
@@ -887,7 +887,7 @@ void XAbstractTableView::mouseReleaseEvent(QMouseEvent *pEvent)
                 CURSOR_POSITION cursorPosition = getCursorPosition(pEvent->pos());
                 OS os = cursorPositionToOS(cursorPosition);
 
-                _setSelection(os.nOffset, os.nSize);
+                _setSelection(os.nViewOffset, os.nSize);
 
                 //            if(g_state.nCursorOffset==os.nOffset)
                 //            {
@@ -917,7 +917,7 @@ void XAbstractTableView::mouseDoubleClickEvent(QMouseEvent *pEvent)
 
             if ((cursorPosition.ptype == PT_HEADER) && (g_listColumns.at(cursorPosition.nColumn).bClickable)) {
                 // TODO
-            } else if (os.nOffset != -1) {
+            } else if (os.nViewOffset != -1) {
                 _cellDoubleClicked(cursorPosition.nRow, cursorPosition.nColumn);
             }
 
@@ -939,16 +939,16 @@ void XAbstractTableView::wheelEvent(QWheelEvent *pEvent)
     QAbstractScrollArea::wheelEvent(pEvent);
 }
 
-bool XAbstractTableView::isOffsetValid(qint64 nOffset)
+bool XAbstractTableView::isViewOffsetValid(qint64 nViewOffset)
 {
-    Q_UNUSED(nOffset)
+    Q_UNUSED(nViewOffset)
 
     return false;
 }
 
-bool XAbstractTableView::isEnd(qint64 nOffset)
+bool XAbstractTableView::isEnd(qint64 nViewOffset)
 {
-    Q_UNUSED(nOffset)
+    Q_UNUSED(nViewOffset)
 
     return false;
 }
@@ -1005,19 +1005,19 @@ void XAbstractTableView::endPainting(QPainter *pPainter)
     Q_UNUSED(pPainter)
 }
 
-bool XAbstractTableView::_goToOffset(qint64 nOffset, bool bSaveCursor, bool bShort, bool bAprox)
+bool XAbstractTableView::_goToViewOffset(qint64 nOffset, bool bSaveCursor, bool bShort, bool bAprox)
 {
     bool bResult = false;
 
-    if (isOffsetValid(nOffset)) {
+    if (isViewOffsetValid(nOffset)) {
         if (bAprox) {
-            nOffset = getFixOffset(nOffset);
+            nOffset = getFixViewOffset(nOffset);
         }
 
         qint64 nCursorOffset = 0;
 
         if (bSaveCursor) {
-            nCursorOffset = getCursorOffset();
+            nCursorOffset = getCursorViewOffset();
         } else {
             nCursorOffset = nOffset;
         }
@@ -1029,10 +1029,10 @@ bool XAbstractTableView::_goToOffset(qint64 nOffset, bool bSaveCursor, bool bSho
         }
 
         if (bScroll) {
-            setScrollValue(nOffset);
+            setCurrentViewOffsetToScroll(nOffset);
         }
 
-        setCursorOffset(nCursorOffset);
+        setCursorViewOffset(nCursorOffset);
 
         bResult = true;
     }
@@ -1045,14 +1045,14 @@ void XAbstractTableView::contextMenu(const QPoint &pos)
     Q_UNUSED(pos)
 }
 
-qint64 XAbstractTableView::getScrollValue()
+qint64 XAbstractTableView::getCurrentLineFromScroll()
 {
     return verticalScrollBar()->value();
 }
 
-void XAbstractTableView::setScrollValue(qint64 nOffset)
+void XAbstractTableView::setCurrentViewOffsetToScroll(qint64 nViewOffset)
 {
-    setViewStart(nOffset);
-    verticalScrollBar()->setValue((qint32)nOffset);
+    setViewOffsetStart(nViewOffset);
+    verticalScrollBar()->setValue((qint32)nViewOffset); // TODO large files
     adjust(true);
 }

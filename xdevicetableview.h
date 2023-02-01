@@ -1,4 +1,4 @@
-/* Copyright (c) 2020-2022 hors<horsicq@gmail.com>
+/* Copyright (c) 2020-2023 hors<horsicq@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -50,7 +50,8 @@ public:
     void setBackupDevice(QIODevice *pDevice);
     QIODevice *getDevice();
     QIODevice *getBackupDevice();
-    qint64 getDataSize();
+    void setViewSize(qint64 nViewSize);
+    qint64 getViewSize();
     void setMemoryMap(XBinary::_MEMORY_MAP memoryMap);
     XBinary::_MEMORY_MAP *getMemoryMap();
     void setAddressMode(MODE addressMode);
@@ -65,14 +66,17 @@ public:
     bool saveBackup();
     void setReadonly(bool bState);
     bool isReadonly();
+    bool isAnalyzed();
+    void adjustAfterAnalysis();
 
 public slots:
     void setEdited();
 
 protected:
-    virtual bool isOffsetValid(qint64 nOffset);
+    virtual bool isViewOffsetValid(qint64 nOffset);
     virtual bool isEnd(qint64 nOffset);
     void setMemoryReplaces(QList<XBinary::MEMORY_REPLACE> listReplaces); // TODO Check
+    virtual void adjustLineCount();
 
 protected slots:
     void _goToAddressSlot();
@@ -97,7 +101,7 @@ private:
     XInfoDB *g_pXInfoDB;
     QIODevice *g_pDevice;
     QIODevice *g_pBackupDevice;
-    qint64 g_nDataSize;
+    qint64 g_nViewSize;
     XBinary::_MEMORY_MAP g_memoryMap;
     XBinary::SEARCHDATA g_searchData;
     QList<XBinary::MEMORY_REPLACE> g_listReplaces;  // TODO move to g_pXInfoDB !!!
