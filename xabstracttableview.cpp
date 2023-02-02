@@ -57,7 +57,7 @@ XAbstractTableView::XAbstractTableView(QWidget *pParent) : XShortcutstScrollArea
     g_nHeaderClickColumnNumber = 0;
 
     g_nCurrentBlockViewOffset = 0;
-    g_nCurrentBlockSize = 0;
+    g_nCurrentBlockViewSize = 0;
 
     g_bIsSelectionEnable = true;
     g_bIsContextMenuEnable = true;
@@ -609,17 +609,6 @@ qint32 XAbstractTableView::getCursorDelta()
     return g_nCursorDelta;
 }
 
-void XAbstractTableView::setSelection(qint64 nViewOffset, qint64 nSize)
-{
-    if (g_bIsSelectionEnable) {
-        _initSelection(nViewOffset, nSize);
-        _setSelection(nViewOffset, nSize);
-
-        adjust();
-        viewport()->update();
-    }
-}
-
 qint64 XAbstractTableView::getMaxScrollValue()
 {
     return 0x7FFFFFFF;
@@ -680,18 +669,18 @@ qint64 XAbstractTableView::getSelectionInitOffset()
     return g_nSelectionInitOffset;
 }
 
-void XAbstractTableView::setCurrentBlock(qint64 nOffset, qint64 nSize)
+void XAbstractTableView::setCurrentBlock(qint64 nViewOffset, qint64 nSize)
 {
-    g_nCurrentBlockViewOffset = nOffset;
-    g_nCurrentBlockSize = nSize;
+    g_nCurrentBlockViewOffset = nViewOffset;
+    g_nCurrentBlockViewSize = nSize;
 }
 
-bool XAbstractTableView::isViewOffsetInCurrentBlock(qint64 nOffset)
+bool XAbstractTableView::isViewOffsetInCurrentBlock(qint64 nViewOffset)
 {
     bool bResult = false;
 
-    if (g_nCurrentBlockSize) {
-        if ((g_nCurrentBlockViewOffset <= nOffset) && (nOffset < (g_nCurrentBlockViewOffset + g_nCurrentBlockSize))) {
+    if (g_nCurrentBlockViewSize) {
+        if ((g_nCurrentBlockViewOffset <= nViewOffset) && (nViewOffset < (g_nCurrentBlockViewOffset + g_nCurrentBlockViewSize))) {
             bResult = true;
         }
     }
@@ -756,6 +745,11 @@ void XAbstractTableView::setBlinkingCursorEnable(bool bState)
 void XAbstractTableView::_verticalScroll()
 {
     verticalScroll();
+}
+
+bool XAbstractTableView::isSelectionEnable()
+{
+    return g_bIsSelectionEnable;
 }
 
 void XAbstractTableView::_customContextMenu(const QPoint &pos)
@@ -1005,13 +999,13 @@ void XAbstractTableView::endPainting(QPainter *pPainter)
     Q_UNUSED(pPainter)
 }
 
-bool XAbstractTableView::_goToViewOffset(qint64 nOffset, bool bSaveCursor, bool bShort, bool bAprox)
+bool XAbstractTableView::_goToViewOffset(qint64 nViewOffset, bool bSaveCursor, bool bShort, bool bAprox)
 {
     bool bResult = false;
 
-    if (isViewOffsetValid(nOffset)) {
+    if (isViewOffsetValid(nViewOffset)) {
         if (bAprox) {
-            nOffset = getFixViewOffset(nOffset);
+            nViewOffset = getFixViewOffset(nViewOffset);
         }
 
         qint64 nCursorOffset = 0;
@@ -1019,17 +1013,17 @@ bool XAbstractTableView::_goToViewOffset(qint64 nOffset, bool bSaveCursor, bool 
         if (bSaveCursor) {
             nCursorOffset = getCursorViewOffset();
         } else {
-            nCursorOffset = nOffset;
+            nCursorOffset = nViewOffset;
         }
 
         bool bScroll = true;
 
-        if (bShort && isViewOffsetInCurrentBlock(nOffset)) {
+        if (bShort && isViewOffsetInCurrentBlock(nViewOffset)) {
             bScroll = false;
         }
 
         if (bScroll) {
-            setCurrentViewOffsetToScroll(nOffset);
+            setCurrentViewOffsetToScroll(nViewOffset);
         }
 
         setCursorViewOffset(nCursorOffset);

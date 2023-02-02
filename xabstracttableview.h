@@ -131,7 +131,6 @@ public:
     void resetCursorData();
 
     qint32 getCursorDelta();
-    void setSelection(qint64 nViewOffset, qint64 nSize);
 
     qint64 getMaxScrollValue();
     void setLastColumnStretch(bool bState);
@@ -142,8 +141,8 @@ public:
 
     static QFont getMonoFont(qint32 nFontSize = -1);
     qint64 getSelectionInitOffset();
-    void setCurrentBlock(qint64 nOffset, qint64 nSize);
-    bool isViewOffsetInCurrentBlock(qint64 nOffset);
+    void setCurrentBlock(qint64 nViewOffset, qint64 nSize);
+    bool isViewOffsetInCurrentBlock(qint64 nViewOffset);
     qint32 getLineHeight();
     qint32 getHeaderHeight();
     void setSelectionEnable(bool bState);
@@ -152,9 +151,10 @@ public:
     void setBlinkingCursor(bool bState);
     void setBlinkingCursorEnable(bool bState);
     void _verticalScroll();
+    bool isSelectionEnable();
 
 signals:
-    void cursorViewOffsetChanged(qint64 nOffset);
+    void cursorViewOffsetChanged(qint64 nViewOffset);
     void selectionChanged();
     void errorMessage(QString sText);
     void infoMessage(QString sText);
@@ -162,7 +162,7 @@ signals:
     void headerClicked(qint32 nNumber);
     void cellDoubleClicked(qint32 nRow, qint32 nColumn);
 
-private:
+protected:
     void _initSelection(qint64 nViewOffset, qint64 nSize);
     void _setSelection(qint64 nViewOffset, qint64 nSize);
 
@@ -193,7 +193,7 @@ protected:
     virtual void paintCell(QPainter *pPainter, qint32 nRow, qint32 nColumn, qint32 nLeft, qint32 nTop, qint32 nWidth, qint32 nHeight);
     virtual void paintTitle(QPainter *pPainter, qint32 nColumn, qint32 nLeft, qint32 nTop, qint32 nWidth, qint32 nHeight, QString sTitle);
     virtual void endPainting(QPainter *pPainter);
-    virtual bool _goToViewOffset(qint64 nOffset, bool bSaveCursor = false, bool bShort = false, bool bAprox = false);
+    virtual bool _goToViewOffset(qint64 nViewOffset, bool bSaveCursor = false, bool bShort = false, bool bAprox = false);
     virtual void contextMenu(const QPoint &pos);
     virtual qint64 getCurrentLineFromScroll();
     virtual void setCurrentViewOffsetToScroll(qint64 nViewOffset);
@@ -221,7 +221,6 @@ private:
     qint32 g_nViewWidth;
     qint32 g_nViewHeight;
     qint32 g_nTableWidth;
-
     qint32 g_nLineDelta;
     qint32 g_nSideDelta;
 
@@ -247,7 +246,7 @@ private:
     bool g_bHorisontalLinesVisible;
 
     qint64 g_nCurrentBlockViewOffset;
-    qint64 g_nCurrentBlockSize;
+    qint64 g_nCurrentBlockViewSize;
 
     bool g_bIsSelectionEnable;
     bool g_bIsContextMenuEnable;

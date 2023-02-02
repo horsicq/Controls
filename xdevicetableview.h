@@ -42,6 +42,12 @@ public:
         MODE_THIS
     };
 
+    struct DEVICESTATE {
+        qint64 nSelectionOffset;
+        qint64 nSelectionSize;
+        qint64 nCursorOffset;
+    };
+
     XDeviceTableView(QWidget *pParent = nullptr);
 
     void setXInfoDB(XInfoDB *pXInfoDB);
@@ -68,6 +74,9 @@ public:
     bool isReadonly();
     bool isAnalyzed();
     void adjustAfterAnalysis();
+    virtual DEVICESTATE getDeviceState(bool bGlobalOffset = false);
+    virtual qint64 deviceOffsetToViewOffset(qint64 nOffset, bool bGlobalOffset = false);
+    void setDeviceSelection(qint64 nOffset, qint64 nSize);
 
 public slots:
     void setEdited();

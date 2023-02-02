@@ -24,29 +24,12 @@ XDeviceTableEditView::XDeviceTableEditView(QWidget *pParent) : XDeviceTableView(
 {
 }
 
-quint64 XDeviceTableEditView::getStateOffset()
-{
-    quint64 nResult = -1;
-
-    STATE state = getState();
-
-    nResult = state.nCursorViewOffset;
-
-    XIODevice *pSubDevice = dynamic_cast<XIODevice *>(getDevice());
-
-    if (pSubDevice) {
-        nResult += pSubDevice->getInitOffset();
-    }
-
-    return nResult;
-}
-
 void XDeviceTableEditView::_editHex()
 {
     if (!isReadonly()) {
-        STATE state = getState();
+        DEVICESTATE state = getDeviceState();
 
-        SubDevice sd(getDevice(), state.nSelectionViewOffset, state.nSelectionViewSize);
+        SubDevice sd(getDevice(), state.nSelectionOffset, state.nSelectionSize);
 
         if (sd.open(QIODevice::ReadWrite)) {
             DialogHexEdit dialogHexEdit(this);
@@ -55,7 +38,7 @@ void XDeviceTableEditView::_editHex()
 
             //        connect(&dialogHexEdit,SIGNAL(changed()),this,SLOT(_setEdited()));
 
-            dialogHexEdit.setData(&sd, state.nSelectionViewOffset);
+            dialogHexEdit.setData(&sd, state.nSelectionOffset);
             dialogHexEdit.setBackupDevice(getBackupDevice());
 
             dialogHexEdit.exec();
@@ -69,7 +52,7 @@ void XDeviceTableEditView::_editHex()
 
 void XDeviceTableEditView::_followInDisasmSlot()
 {
-    qint64 nOffset = getStateOffset();
+    qint64 nOffset = getDeviceState(true).nCursorOffset;
     //    XADDR nAddress=XBinary::offsetToAddress(getMemoryMap(),nOffset);
 
     emit followInDisasm(nOffset);
@@ -79,7 +62,7 @@ void XDeviceTableEditView::_followInHexSlot()
 {
     //    emit
     //    followInHex(XBinary::offsetToAddress(getMemoryMap(),getStateOffset()));
-    qint64 nOffset = getStateOffset();
+    qint64 nOffset = getDeviceState(true).nCursorOffset;
     //    XADDR nAddress=XBinary::offsetToAddress(getMemoryMap(),nOffset);
 
     emit followInHex(nOffset);

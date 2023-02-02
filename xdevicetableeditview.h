@@ -29,7 +29,6 @@ class XDeviceTableEditView : public XDeviceTableView {
 
 public:
     XDeviceTableEditView(QWidget *pParent = nullptr);
-    quint64 getStateOffset();
 
 protected slots:
     void _editHex();
