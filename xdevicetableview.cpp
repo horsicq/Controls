@@ -141,6 +141,7 @@ XDeviceTableView::DEVICESTATE XDeviceTableView::getDeviceState(bool bGlobalOffse
     result.nSelectionOffset = state.nSelectionViewOffset;
     result.nCursorOffset = state.nCursorViewOffset;
     result.nSelectionSize = state.nSelectionViewSize;
+    result.nShowOffset = getViewOffsetStart();
 
     if (bGlobalOffset) {
         XIODevice *pSubDevice = dynamic_cast<XIODevice *>(getDevice());
@@ -149,10 +150,33 @@ XDeviceTableView::DEVICESTATE XDeviceTableView::getDeviceState(bool bGlobalOffse
             qint64 nInitOffset = pSubDevice->getInitOffset();
             result.nSelectionOffset += nInitOffset;
             result.nCursorOffset += nInitOffset;
+            result.nShowOffset += nInitOffset;
         }
     }
 
     return result;
+}
+
+void XDeviceTableView::setDeviceState(DEVICESTATE deviceState, bool bGlobalOffset)
+{
+    if (bGlobalOffset) {
+        XIODevice *pSubDevice = dynamic_cast<XIODevice *>(getDevice());
+
+        if (pSubDevice) {
+            qint64 nInitOffset = pSubDevice->getInitOffset();
+            deviceState.nSelectionOffset -= nInitOffset;
+            deviceState.nCursorOffset -= nInitOffset;
+            deviceState.nShowOffset -= nInitOffset;
+        }
+    }
+
+    _goToViewOffset(deviceState.nShowOffset);
+    _initSelection(deviceState.nSelectionOffset, deviceState.nSelectionSize);
+    _setSelection(deviceState.nSelectionOffset, deviceState.nSelectionSize);
+    setCursorViewOffset(deviceState.nCursorOffset);
+
+    adjust();
+    viewport()->update();
 }
 
 qint64 XDeviceTableView::deviceOffsetToViewOffset(qint64 nOffset, bool bGlobalOffset)
@@ -253,10 +277,12 @@ bool XDeviceTableView::isReplaced(qint64 nOffset, qint32 nSize)
 
 void XDeviceTableView::goToAddress(XADDR nAddress, bool bShort, bool bAprox)
 {
-    qint64 nOffset = XBinary::addressToOffset(getMemoryMap(), nAddress);
-    qint64 nViewOffset = deviceOffsetToViewOffset(nOffset);
-    _goToViewOffset(nViewOffset, false, bShort, bAprox);  // TODO Check
-    // mb TODO reload
+    if (nAddress != (XADDR)-1) {
+        qint64 nOffset = XBinary::addressToOffset(getMemoryMap(), nAddress);
+        qint64 nViewOffset = deviceOffsetToViewOffset(nOffset);
+        _goToViewOffset(nViewOffset, false, bShort, bAprox);  // TODO Check
+        // mb TODO reload
+    }
 }
 
 void XDeviceTableView::goToOffset(qint64 nOffset)
@@ -337,8 +363,8 @@ bool XDeviceTableView::isAnalyzed()
 
 void XDeviceTableView::adjustAfterAnalysis()
 {
-    adjustLineCount();
     adjustViewSize();
+    adjustLineCount();
 
     reload(true);
 }

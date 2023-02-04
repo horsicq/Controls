@@ -46,6 +46,7 @@ public:
         qint64 nSelectionOffset;
         qint64 nSelectionSize;
         qint64 nCursorOffset;
+        qint64 nShowOffset;
     };
 
     XDeviceTableView(QWidget *pParent = nullptr);
@@ -75,6 +76,7 @@ public:
     bool isAnalyzed();
     void adjustAfterAnalysis();
     virtual DEVICESTATE getDeviceState(bool bGlobalOffset = false);
+    virtual void setDeviceState(DEVICESTATE deviceState, bool bGlobalOffset = false);
     virtual qint64 deviceOffsetToViewOffset(qint64 nOffset, bool bGlobalOffset = false);
     void setDeviceSelection(qint64 nOffset, qint64 nSize);
 
