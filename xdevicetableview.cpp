@@ -195,6 +195,16 @@ qint64 XDeviceTableView::deviceOffsetToViewOffset(qint64 nOffset, bool bGlobalOf
     return nResult;
 }
 
+qint64 XDeviceTableView::deviceSizeToViewSize(qint64 nOffset, qint64 nSize, bool bGlobalOffset)
+{
+    Q_UNUSED(nOffset)
+    Q_UNUSED(bGlobalOffset)
+
+    qint64 nResult = nSize;
+
+    return nResult;
+}
+
 void XDeviceTableView::setDeviceSelection(qint64 nOffset, qint64 nSize)
 {
     if (isSelectionEnable()) {
@@ -253,6 +263,8 @@ qint64 XDeviceTableView::write_array(qint64 nOffset, char *pData, qint64 nDataSi
 
 QByteArray XDeviceTableView::read_array(qint64 nOffset, qint32 nSize)
 {
+    // TODO if device ->
+    // TODO if XInfoDB ->
     QByteArray baResult;
 
     if (getDevice()) {
@@ -322,7 +334,7 @@ bool XDeviceTableView::saveBackup()
     return bResult;
 }
 
-void XDeviceTableView::setEdited()
+void XDeviceTableView::setEdited(qint64 nDeviceOffset, qint64 nDeviceSize)
 {
     //    QFile *pFile=dynamic_cast<QFile *>(getDevice());
 
@@ -334,7 +346,7 @@ void XDeviceTableView::setEdited()
     updateData();
 
     if (g_pXInfoDB) {
-        g_pXInfoDB->reload(false);
+        g_pXInfoDB->setEdited(nDeviceOffset, nDeviceSize);
     }
 
     //    viewport()->update();
@@ -504,8 +516,11 @@ void XDeviceTableView::_findSlot(DialogSearch::SEARCHMODE mode)
         dsp.showDialogDelay(1000);
 
         if (g_searchData.nResultOffset != -1) {
-            _goToViewOffset(g_searchData.nResultOffset);
-            _setSelection(g_searchData.nResultOffset, g_searchData.nResultSize);
+            qint64 nViewOffset = deviceOffsetToViewOffset(g_searchData.nResultOffset);
+            qint64 nViewSize = deviceSizeToViewSize(g_searchData.nResultOffset, g_searchData.nResultSize);
+
+            _goToViewOffset(nViewOffset);
+            _setSelection(nViewOffset, nViewSize);
             setFocus();
             viewport()->update();
 
@@ -527,8 +542,11 @@ void XDeviceTableView::_findNextSlot()
 
         if (dialogSearch.isSuccess())  // TODO use status
         {
-            _goToViewOffset(g_searchData.nResultOffset);
-            _setSelection(g_searchData.nResultOffset, g_searchData.nResultSize);
+            qint64 nViewOffset = deviceOffsetToViewOffset(g_searchData.nResultOffset);
+            qint64 nViewSize = deviceSizeToViewSize(g_searchData.nResultOffset, g_searchData.nResultSize);
+
+            _goToViewOffset(nViewOffset);
+            _setSelection(nViewOffset, nViewSize);
             setFocus();
             viewport()->update();
         } else if (g_searchData.valueType != XBinary::VT_UNKNOWN) {
@@ -539,7 +557,7 @@ void XDeviceTableView::_findNextSlot()
 
 void XDeviceTableView::_selectAllSlot()
 {
-    _setSelection(0, getDevice()->size());
+    _setSelection(0, deviceSizeToViewSize(0,getDevice()->size()));
     viewport()->update();
 }
 
@@ -577,9 +595,9 @@ void XDeviceTableView::_copyOffsetSlot()
     QApplication::clipboard()->setText(XBinary::valueToHex(XBinary::MODE_UNKNOWN, state.nCursorOffset));
 }
 
-void XDeviceTableView::_setEdited()
+void XDeviceTableView::_setEdited(qint64 nDeviceOffset, qint64 nDeviceSize)
 {
-    setEdited();
+    setEdited(nDeviceOffset, nDeviceSize);
 
-    emit dataChanged();
+    emit dataChanged(nDeviceOffset, nDeviceSize);
 }

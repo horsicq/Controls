@@ -43,7 +43,7 @@ void XDeviceTableEditView::_editHex()
 
             dialogHexEdit.exec();
 
-            _setEdited();
+            _setEdited(state.nSelectionOffset, state.nSelectionSize);
 
             sd.close();
         }

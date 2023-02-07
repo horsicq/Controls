@@ -158,7 +158,7 @@ signals:
     void selectionChanged();
     void errorMessage(QString sText);
     void infoMessage(QString sText);
-    void dataChanged();
+    void dataChanged(qint64 nDeviceOffset, qint64 nDeviceSize);
     void headerClicked(qint32 nNumber);
     void cellDoubleClicked(qint32 nRow, qint32 nColumn);
 

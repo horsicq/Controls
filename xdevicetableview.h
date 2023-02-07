@@ -78,10 +78,11 @@ public:
     virtual DEVICESTATE getDeviceState(bool bGlobalOffset = false);
     virtual void setDeviceState(DEVICESTATE deviceState, bool bGlobalOffset = false);
     virtual qint64 deviceOffsetToViewOffset(qint64 nOffset, bool bGlobalOffset = false);
+    virtual qint64 deviceSizeToViewSize(qint64 nOffset, qint64 nSize, bool bGlobalOffset = false);
     void setDeviceSelection(qint64 nOffset, qint64 nSize);
 
 public slots:
-    void setEdited();
+    void setEdited(qint64 nDeviceOffset, qint64 nDeviceSize);
 
 protected:
     virtual bool isViewOffsetValid(qint64 nOffset);
@@ -107,7 +108,7 @@ protected slots:
     void _copyAddressSlot();
     void _copyRelAddressSlot();
     void _copyOffsetSlot();
-    void _setEdited();
+    void _setEdited(qint64 nDeviceOffset, qint64 nDeviceSize);
 
 private:
     XInfoDB *g_pXInfoDB;
