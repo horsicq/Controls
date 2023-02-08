@@ -87,7 +87,6 @@ public slots:
 protected:
     virtual bool isViewOffsetValid(qint64 nOffset);
     virtual bool isEnd(qint64 nOffset);
-    void setMemoryReplaces(QList<XBinary::MEMORY_REPLACE> listReplaces); // TODO Check
     virtual void adjustLineCount();
     virtual void adjustViewSize();
 
@@ -117,7 +116,6 @@ private:
     qint64 g_nViewSize;
     XBinary::_MEMORY_MAP g_memoryMap;
     XBinary::SEARCHDATA g_searchData;
-    QList<XBinary::MEMORY_REPLACE> g_listReplaces;  // TODO move to g_pXInfoDB !!!
     MODE g_addressMode;
     bool g_bIsReadonly;
 };

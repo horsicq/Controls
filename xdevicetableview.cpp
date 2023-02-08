@@ -112,17 +112,6 @@ XDeviceTableView::MODE XDeviceTableView::getAddressMode()
     return g_addressMode;
 }
 
-void XDeviceTableView::setMemoryReplaces(QList<XBinary::MEMORY_REPLACE> listReplaces)
-{
-    qint32 nNumberOfRecords = listReplaces.count();
-
-    for (qint32 i = 0; i < nNumberOfRecords; i++) {
-        listReplaces[i].nOffset = XBinary::addressToOffset(&g_memoryMap, listReplaces.at(i).nAddress);
-    }
-
-    g_listReplaces = listReplaces;
-}
-
 void XDeviceTableView::adjustLineCount()
 {
 
@@ -220,41 +209,51 @@ void XDeviceTableView::setDeviceSelection(qint64 nOffset, qint64 nSize)
 
 qint64 XDeviceTableView::write_array(qint64 nOffset, char *pData, qint64 nDataSize)
 {
+//    // TODO define if XPROCESS -> use Addresses
+//    qint64 nResult = 0;
+
+//    if (getDevice()) {
+//        char *_pBuffer = nullptr;
+//        bool bReplaced = false;
+
+////        if (XBinary::_updateReplaces(nOffset, pData, nDataSize,
+////                                     &g_listReplaces))  // TODO optimize
+////        {
+////            bReplaced = true;
+////#ifdef QT_DEBUG
+////            qDebug("Replaced write present");
+////#endif
+////            _pBuffer = new char[nDataSize];
+
+////            XBinary::_copyMemory(_pBuffer, pData, nDataSize);
+
+////            if (XBinary::_replaceMemory(nOffset, _pBuffer, nDataSize,
+////                                        &g_listReplaces))  // TODO optimize
+////            {
+////#ifdef QT_DEBUG
+////                qDebug("Replace write");
+////#endif
+////            }
+////        }
+
+//        _pBuffer = pData;
+
+//        if (saveBackup()) {
+//            nResult = XBinary::write_array(getDevice(), nOffset, _pBuffer, nDataSize);
+//        }
+//        // mb TODO error message if fails !!!
+
+//        if (bReplaced) {
+//            delete[] _pBuffer;
+//        }
+//    }
+
+//    return nResult;
     qint64 nResult = 0;
 
     if (getDevice()) {
-        char *_pBuffer = nullptr;
-        bool bReplaced = false;
-
-        if (XBinary::_updateReplaces(nOffset, pData, nDataSize,
-                                     &g_listReplaces))  // TODO optimize
-        {
-            bReplaced = true;
-#ifdef QT_DEBUG
-            qDebug("Replaced write present");
-#endif
-            _pBuffer = new char[nDataSize];
-
-            XBinary::_copyMemory(_pBuffer, pData, nDataSize);
-
-            if (XBinary::_replaceMemory(nOffset, _pBuffer, nDataSize,
-                                        &g_listReplaces))  // TODO optimize
-            {
-#ifdef QT_DEBUG
-                qDebug("Replace write");
-#endif
-            }
-        }
-
-        _pBuffer = pData;
-
         if (saveBackup()) {
-            nResult = XBinary::write_array(getDevice(), nOffset, _pBuffer, nDataSize);
-        }
-        // mb TODO error message if fails !!!
-
-        if (bReplaced) {
-            delete[] _pBuffer;
+            nResult = XBinary::write_array(getDevice(), nOffset, pData, nDataSize);
         }
     }
 
@@ -263,20 +262,27 @@ qint64 XDeviceTableView::write_array(qint64 nOffset, char *pData, qint64 nDataSi
 
 QByteArray XDeviceTableView::read_array(qint64 nOffset, qint32 nSize)
 {
-    // TODO if device ->
-    // TODO if XInfoDB ->
+//    // TODO if device ->
+//    // TODO if XInfoDB ->
+//    QByteArray baResult;
+
+//    if (getDevice()) {
+//        baResult = XBinary::read_array(getDevice(), nOffset, nSize);
+
+////        if (XBinary::_replaceMemory(nOffset, baResult.data(), nSize,
+////                                    &g_listReplaces))  // TODO optimize
+////        {
+////#ifdef QT_DEBUG
+////            qDebug("Replaced read present");
+////#endif
+////        }
+//    }
+
+//    return baResult;
     QByteArray baResult;
 
     if (getDevice()) {
         baResult = XBinary::read_array(getDevice(), nOffset, nSize);
-
-        if (XBinary::_replaceMemory(nOffset, baResult.data(), nSize,
-                                    &g_listReplaces))  // TODO optimize
-        {
-#ifdef QT_DEBUG
-            qDebug("Replaced read present");
-#endif
-        }
     }
 
     return baResult;
@@ -284,7 +290,9 @@ QByteArray XDeviceTableView::read_array(qint64 nOffset, qint32 nSize)
 
 bool XDeviceTableView::isReplaced(qint64 nOffset, qint32 nSize)
 {
-    return XBinary::_isReplaced(nOffset, nSize, &g_listReplaces);
+    //return XBinary::_isReplaced(nOffset, nSize, &g_listReplaces);
+    return false;
+    // TODO
 }
 
 void XDeviceTableView::goToAddress(XADDR nAddress, bool bShort, bool bAprox)
