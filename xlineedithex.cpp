@@ -394,6 +394,15 @@ void XLineEditHEX::customContextMenu(const QPoint &nPos)
         contextMenu.addAction(&actionCopyValue);
     }
 
+    QAction actionClearValue(tr("Clear"), this);
+
+    if (!isReadOnly()) {
+        contextMenu.addSeparator();
+
+        connect(&actionClearValue, SIGNAL(triggered()), this, SLOT(_clearValue()));
+        contextMenu.addAction(&actionClearValue);
+    }
+
     contextMenu.exec(mapToGlobal(nPos));
 }
 
@@ -419,4 +428,16 @@ void XLineEditHEX::_copy()
 void XLineEditHEX::_copyValue()
 {
     QApplication::clipboard()->setText(QString::number(getValue()));
+}
+
+void XLineEditHEX::_clearValue()
+{
+    quint64 nMax = g_validator.getMax();
+    HEXValidator::MODE mode = g_validator.getMode();
+
+    if (mode == HEXValidator::MODE_TEXT) {
+        setStringValue("");
+    } else {
+        setModeValue(getModeFromValue(nMax), 0, mode);
+    }
 }

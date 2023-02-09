@@ -92,6 +92,7 @@ private slots:
     void updateFont();
     void _copy();
     void _copyValue();
+    void _clearValue();
 
 signals:
     void valueChanged(quint64 nValue);

@@ -32,6 +32,11 @@ void HEXValidator::setData(HEXValidator::MODE mode, quint64 nMax)
     g_nMax = nMax;
 }
 
+quint64 HEXValidator::getMax()
+{
+    return g_nMax;
+}
+
 HEXValidator::MODE HEXValidator::getMode()
 {
     return g_mode;
