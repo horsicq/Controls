@@ -136,7 +136,7 @@ XDeviceTableView::DEVICESTATE XDeviceTableView::getDeviceState(bool bGlobalOffse
         XIODevice *pSubDevice = dynamic_cast<XIODevice *>(getDevice());
 
         if (pSubDevice) {
-            qint64 nInitOffset = pSubDevice->getInitOffset();
+            quint64 nInitOffset = pSubDevice->getInitOffset();
             result.nSelectionOffset += nInitOffset;
             result.nCursorOffset += nInitOffset;
             result.nShowOffset += nInitOffset;
@@ -152,7 +152,7 @@ void XDeviceTableView::setDeviceState(DEVICESTATE deviceState, bool bGlobalOffse
         XIODevice *pSubDevice = dynamic_cast<XIODevice *>(getDevice());
 
         if (pSubDevice) {
-            qint64 nInitOffset = pSubDevice->getInitOffset();
+            quint64 nInitOffset = pSubDevice->getInitOffset();
             deviceState.nSelectionOffset -= nInitOffset;
             deviceState.nCursorOffset -= nInitOffset;
             deviceState.nShowOffset -= nInitOffset;
@@ -176,7 +176,7 @@ qint64 XDeviceTableView::deviceOffsetToViewOffset(qint64 nOffset, bool bGlobalOf
         XIODevice *pSubDevice = dynamic_cast<XIODevice *>(getDevice());
 
         if (pSubDevice) {
-            qint64 nInitOffset = pSubDevice->getInitOffset();
+            quint64 nInitOffset = pSubDevice->getInitOffset();
             nResult -= nInitOffset;
         }
     }
@@ -286,13 +286,6 @@ QByteArray XDeviceTableView::read_array(qint64 nOffset, qint32 nSize)
     }
 
     return baResult;
-}
-
-bool XDeviceTableView::isReplaced(qint64 nOffset, qint32 nSize)
-{
-    //return XBinary::_isReplaced(nOffset, nSize, &g_listReplaces);
-    return false;
-    // TODO
 }
 
 void XDeviceTableView::goToAddress(XADDR nAddress, bool bShort, bool bAprox)
