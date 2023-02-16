@@ -45,7 +45,7 @@ public:
     struct DEVICESTATE {
         qint64 nSelectionOffset;
         qint64 nSelectionSize;
-        qint64 nCursorOffset;
+//        qint64 nCursorOffset;
         qint64 nShowOffset;
     };
 
@@ -79,6 +79,7 @@ public:
     virtual qint64 deviceOffsetToViewOffset(qint64 nOffset, bool bGlobalOffset = false);
     virtual qint64 deviceSizeToViewSize(qint64 nOffset, qint64 nSize, bool bGlobalOffset = false);
     void setDeviceSelection(qint64 nOffset, qint64 nSize);
+    virtual qint64 deviceOffsetToGlobal(qint64 nDeviceOffset);
 
 public slots:
     void setEdited(qint64 nDeviceOffset, qint64 nDeviceSize);

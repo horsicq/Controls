@@ -52,7 +52,7 @@ void XDeviceTableEditView::_editHex()
 
 void XDeviceTableEditView::_followInDisasmSlot()
 {
-    qint64 nOffset = getDeviceState(true).nCursorOffset;
+    qint64 nOffset = getDeviceState(true).nSelectionOffset;
     //    XADDR nAddress=XBinary::offsetToAddress(getMemoryMap(),nOffset);
 
     emit followInDisasm(nOffset);
@@ -62,7 +62,7 @@ void XDeviceTableEditView::_followInHexSlot()
 {
     //    emit
     //    followInHex(XBinary::offsetToAddress(getMemoryMap(),getStateOffset()));
-    qint64 nOffset = getDeviceState(true).nCursorOffset;
+    qint64 nOffset = getDeviceState(true).nSelectionOffset;
     //    XADDR nAddress=XBinary::offsetToAddress(getMemoryMap(),nOffset);
 
     emit followInHex(nOffset);
