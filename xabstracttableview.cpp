@@ -324,6 +324,7 @@ void XAbstractTableView::setTotalLineCount(qint64 nValue)
 
     // TODO fix scroll for the large files
     // mb flag for large files
+    // TODO nValue - 1
     if (nValue > getMaxScrollValue()) {
         nScrollValue = (qint32)getMaxScrollValue();
     } else {

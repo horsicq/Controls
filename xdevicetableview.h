@@ -88,7 +88,7 @@ protected:
     virtual bool isViewOffsetValid(qint64 nOffset);
     virtual bool isEnd(qint64 nOffset);
     virtual void adjustLineCount();
-    virtual void adjustViewSize();
+    virtual void adjustViewSize(); // TODO remove
 
 protected slots:
     void _goToAddressSlot();
@@ -113,7 +113,7 @@ private:
     XInfoDB *g_pXInfoDB;
     QIODevice *g_pDevice;
     QIODevice *g_pBackupDevice;
-    qint64 g_nViewSize;
+    qint64 g_nViewSize; // TODO remove, use nTotalLineCount
     XBinary::_MEMORY_MAP g_memoryMap;
     XBinary::SEARCHDATA g_searchData;
     MODE g_addressMode;
