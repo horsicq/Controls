@@ -113,7 +113,7 @@ private:
     XInfoDB *g_pXInfoDB;
     QIODevice *g_pDevice;
     QIODevice *g_pBackupDevice;
-    qint64 g_nViewSize; // TODO remove, use nTotalLineCount
+    qint64 g_nViewSize;
     XBinary::_MEMORY_MAP g_memoryMap;
     XBinary::SEARCHDATA g_searchData;
     MODE g_addressMode;

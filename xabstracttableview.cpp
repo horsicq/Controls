@@ -60,6 +60,7 @@ XAbstractTableView::XAbstractTableView(QWidget *pParent) : XShortcutstScrollArea
     g_nCurrentBlockViewSize = 0;
 
     g_bIsSelectionEnable = true;
+    g_nMaxSelectionViewSize = 0;
     g_bIsContextMenuEnable = true;
 
     setContextMenuPolicy(Qt::CustomContextMenu);
@@ -476,6 +477,10 @@ void XAbstractTableView::_initSelection(qint64 nViewOffset, qint64 nSize)
         g_nSelectionInitSize = nSize;
         g_state.nSelectionViewOffset = nViewOffset;
         g_state.nSelectionViewSize = 0;
+
+        if (g_nMaxSelectionViewSize) {
+            g_nSelectionInitSize = qMin(g_nSelectionInitSize, g_nMaxSelectionViewSize);
+        }
     }
 }
 
@@ -488,6 +493,10 @@ void XAbstractTableView::_setSelection(qint64 nViewOffset, qint64 nSize)
         } else {
             g_state.nSelectionViewOffset = nViewOffset;
             g_state.nSelectionViewSize = g_nSelectionInitOffset - nViewOffset + g_nSelectionInitSize;
+        }
+
+        if (g_nMaxSelectionViewSize) {
+            g_state.nSelectionViewSize = qMin(g_state.nSelectionViewSize, g_nMaxSelectionViewSize);
         }
 
         emit selectionChanged();
@@ -765,6 +774,11 @@ bool XAbstractTableView::isSelectionEnable()
     return g_bIsSelectionEnable;
 }
 
+void XAbstractTableView::setMaxSelectionViewSize(qint64 nMaxSelectionViewSize)
+{
+    g_nMaxSelectionViewSize = nMaxSelectionViewSize;
+}
+
 void XAbstractTableView::_customContextMenu(const QPoint &pos)
 {
     contextMenu(mapToGlobal(pos));
@@ -867,6 +881,7 @@ void XAbstractTableView::mousePressEvent(QMouseEvent *pEvent)
 //                g_state.nCursorViewOffset = os.nViewOffset;
 //                g_state.varCursorExtraInfo = os.varData;
                 g_state.cursorPosition = cursorPosition;
+                g_state.varCursorExtraInfo = os.varData;
 
                 if (g_bIsSelectionEnable) {
                     _initSelection(os.nViewOffset, os.nSize);

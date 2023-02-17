@@ -124,6 +124,7 @@ public:
     qint32 getSideDelta();
     STATE getState();
     void setState(STATE state);
+
 //    qint64 getCursorViewOffset();
 //    void setCursorViewOffset(qint64 nViewOffset, qint32 nColumn = -1, QVariant varCursorExtraInfo = QVariant());
     void adjust(bool bUpdateData = false);
@@ -153,6 +154,7 @@ public:
 //    void setBlinkingCursorEnable(bool bState);
     void _verticalScroll();
     bool isSelectionEnable();
+    void setMaxSelectionViewSize(qint64 nMaxSelectionViewSize);
 
 signals:
     void cursorViewOffsetChanged(qint64 nViewOffset);
@@ -214,7 +216,7 @@ private:
     QPushButton g_pushButtonHeader;
     qint32 g_nXViewOffset;
     qint64 g_nViewOffsetStart; // TODO move to state
-    qint32 g_nCharWidth;
+    qint32 g_nCharWidth; // mb TODO CharWidth for Hex
     qint32 g_nCharHeight;
     qint32 g_nLinesProPage;
     qint32 g_nLineHeight;
@@ -230,6 +232,7 @@ private:
     bool g_bMouseSelection;
     qint64 g_nSelectionInitOffset;
     qint64 g_nSelectionInitSize;
+    qint64 g_nMaxSelectionViewSize;
     bool g_bMouseResizeColumn;
     qint32 g_nResizeColumnNumber;
     bool g_bHeaderClickButton;
