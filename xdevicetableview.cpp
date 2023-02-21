@@ -29,6 +29,7 @@ XDeviceTableView::XDeviceTableView(QWidget *pParent) : XAbstractTableView(pParen
     g_searchData = {};
     g_addressMode = MODE_ADDRESS;
     g_bIsReadonly = true;
+    g_nVisitedIndex = 0;
 }
 
 void XDeviceTableView::setXInfoDB(XInfoDB *pXInfoDB)
@@ -44,6 +45,8 @@ XInfoDB *XDeviceTableView::getXInfoDB()
 void XDeviceTableView::setDevice(QIODevice *pDevice)
 {
     g_pDevice = pDevice;
+
+    g_listVisited.clear();
 
     if (pDevice) {
         g_nViewSize = pDevice->size();
@@ -120,6 +123,11 @@ void XDeviceTableView::adjustLineCount()
 void XDeviceTableView::adjustViewSize()
 {
 
+}
+
+qint64 XDeviceTableView::getViewSizeByOffset(qint64 nViewOffset)
+{
+    return 1;
 }
 
 XDeviceTableView::DEVICESTATE XDeviceTableView::getDeviceState(bool bGlobalOffset)
@@ -219,6 +227,68 @@ qint64 XDeviceTableView::deviceOffsetToGlobal(qint64 nDeviceOffset)
     return nResult;
 }
 
+bool XDeviceTableView::isPrevVisitedAvailable()
+{
+    return g_nVisitedIndex > 0;
+}
+
+bool XDeviceTableView::isNextVisitedAvailable()
+{
+    return g_nVisitedIndex < (g_listVisited.count() - 1);
+}
+
+void XDeviceTableView::goToNextVisited()
+{
+    if (isNextVisitedAvailable()) {
+        g_nVisitedIndex++;
+        qint64 nViewOffset = g_listVisited.at(g_nVisitedIndex);
+
+        if (_goToViewOffset(nViewOffset)) {
+            _initSetSelection(nViewOffset, getViewSizeByOffset(nViewOffset));
+        }
+    }
+
+    emit visitedStateChanged();
+}
+
+void XDeviceTableView::goToPrevVisited()
+{
+    if (isPrevVisitedAvailable()) {
+        g_nVisitedIndex--;
+        qint64 nViewOffset = g_listVisited.at(g_nVisitedIndex);
+
+        if (_goToViewOffset(nViewOffset)) {
+            _initSetSelection(nViewOffset, getViewSizeByOffset(nViewOffset));
+        }
+    }
+
+    emit visitedStateChanged();
+}
+
+void XDeviceTableView::addVisited(qint64 nViewOffset)
+{
+    qint32 nNumberOfVisited = g_listVisited.count();
+
+    for (qint32 i = nNumberOfVisited - 1; i > g_nVisitedIndex; i--) {
+        g_listVisited.removeAt(i);
+    }
+
+    g_listVisited.append(nViewOffset);
+
+    if (g_listVisited.count() > 100) { // TODO const
+        g_listVisited.removeFirst();
+    }
+
+    g_nVisitedIndex = g_listVisited.count() - 1;
+
+    emit visitedStateChanged();
+}
+
+void XDeviceTableView::clearVisited()
+{
+    g_listVisited.clear();
+}
+
 qint64 XDeviceTableView::write_array(qint64 nOffset, char *pData, qint64 nDataSize)
 {
 //    // TODO define if XPROCESS -> use Addresses
@@ -300,20 +370,40 @@ QByteArray XDeviceTableView::read_array(qint64 nOffset, qint32 nSize)
     return baResult;
 }
 
-void XDeviceTableView::goToAddress(XADDR nAddress, bool bShort, bool bAprox)
+void XDeviceTableView::goToAddress(XADDR nAddress, bool bShort, bool bAprox, bool bSaveVisited)
 {
     if (nAddress != (XADDR)-1) {
         qint64 nOffset = XBinary::addressToOffset(getMemoryMap(), nAddress);
         qint64 nViewOffset = deviceOffsetToViewOffset(nOffset);
-        _goToViewOffset(nViewOffset, false, bShort, bAprox);  // TODO Check
+
+        if (bSaveVisited) {
+            addVisited(getState().nSelectionViewOffset);
+        }
+
+        if (_goToViewOffset(nViewOffset, false, bShort, bAprox)) {
+            if (bSaveVisited) {
+                addVisited(nViewOffset);
+            }
+
+            _initSetSelection(nViewOffset, getViewSizeByOffset(nViewOffset));
+            // TODO
+        }
         // mb TODO reload
     }
 }
 
-void XDeviceTableView::goToOffset(qint64 nOffset)
+void XDeviceTableView::goToOffset(qint64 nOffset, bool bSaveVisited)
 {
     qint64 nViewOffset = deviceOffsetToViewOffset(nOffset);
-    _goToViewOffset(nViewOffset);
+
+    if (bSaveVisited) {
+        addVisited(getViewOffsetStart());
+    }
+
+    if (_goToViewOffset(nViewOffset)) {
+        _initSetSelection(nViewOffset, getViewSizeByOffset(nViewOffset));
+        // TODO
+    }
     // mb TODO reload
 }
 
@@ -391,15 +481,16 @@ void XDeviceTableView::adjustAfterAnalysis()
 {
     adjustViewSize();
     adjustLineCount();
+    clearVisited();
 
     reload(true);
 }
 
-bool XDeviceTableView::isViewOffsetValid(qint64 nOffset)
+bool XDeviceTableView::isViewOffsetValid(qint64 nViewOffset)
 {
     bool bResult = false;
 
-    if ((nOffset >= 0) && (nOffset < g_nViewSize)) {
+    if ((nViewOffset >= 0) && (nViewOffset < g_nViewSize)) {
         bResult = true;
     }
 
@@ -423,7 +514,7 @@ void XDeviceTableView::_goToAddressSlot()
 
     if (da.exec() == QDialog::Accepted)  // TODO use status
     {
-        goToAddress(da.getValue());
+        goToAddress(da.getValue(), false, false, true);
         setFocus();
         viewport()->update();
     }
@@ -435,7 +526,7 @@ void XDeviceTableView::_goToOffsetSlot()
 
     if (da.exec() == QDialog::Accepted)  // TODO use status
     {
-        goToOffset(da.getValue());
+        goToOffset(da.getValue(), true);
         setFocus();
         viewport()->update();
     }
@@ -446,7 +537,7 @@ void XDeviceTableView::_goToSelectionStart()
     DEVICESTATE state = getDeviceState();
 
     if (state.nSelectionSize) {
-        goToOffset(state.nSelectionOffset);
+        goToOffset(state.nSelectionOffset, true);
         setFocus();
         viewport()->update();
     }
@@ -464,7 +555,7 @@ void XDeviceTableView::_goToSelectionEnd()
         }
 
         // mb TODO go to end alignment
-        goToOffset(nOffset);
+        goToOffset(nOffset, true);
         setFocus();
         viewport()->update();
     }

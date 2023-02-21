@@ -204,7 +204,6 @@ protected:
     virtual void adjustColumns();
     virtual void _headerClicked(qint32 nNumber);
     virtual void _cellDoubleClicked(qint32 nRow, qint32 nColumn);
-    virtual qint64 getRecordSize(qint64 nViewOffset);
     virtual qint64 getFixViewOffset(qint64 nViewOffset);
 
 private:

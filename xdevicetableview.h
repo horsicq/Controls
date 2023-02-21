@@ -65,8 +65,8 @@ public:
     MODE getAddressMode();
     qint64 write_array(qint64 nOffset, char *pData, qint64 nDataSize);
     QByteArray read_array(qint64 nOffset, qint32 nSize);
-    void goToAddress(XADDR nAddress, bool bShort = false, bool bAprox = false);
-    void goToOffset(qint64 nOffset);
+    void goToAddress(XADDR nAddress, bool bShort = false, bool bAprox = false, bool bSaveVisited = false);
+    void goToOffset(qint64 nOffset, bool bSaveVisited = false);
     void setSelectionAddress(XADDR nAddress, qint64 nSize);
     bool isEdited();
     bool saveBackup();
@@ -81,14 +81,25 @@ public:
     void setDeviceSelection(qint64 nOffset, qint64 nSize);
     virtual qint64 deviceOffsetToGlobal(qint64 nDeviceOffset);
 
+    bool isPrevVisitedAvailable();
+    bool isNextVisitedAvailable();
+    void goToNextVisited();
+    void goToPrevVisited();
+    void addVisited(qint64 nViewOffset);
+    void clearVisited();
+
 public slots:
     void setEdited(qint64 nDeviceOffset, qint64 nDeviceSize);
 
 protected:
-    virtual bool isViewOffsetValid(qint64 nOffset);
+    virtual bool isViewOffsetValid(qint64 nViewOffset);
     virtual bool isEnd(qint64 nOffset);
     virtual void adjustLineCount();
-    virtual void adjustViewSize(); // TODO remove
+    virtual void adjustViewSize();
+    virtual qint64 getViewSizeByOffset(qint64 nViewOffset);
+
+signals:
+    void visitedStateChanged();
 
 protected slots:
     void _goToAddressSlot();
@@ -118,6 +129,8 @@ private:
     XBinary::SEARCHDATA g_searchData;
     MODE g_addressMode;
     bool g_bIsReadonly;
+    QList<qint64> g_listVisited;
+    qint32 g_nVisitedIndex;
 };
 
 #endif  // XDEVICETABLEVIEW_H

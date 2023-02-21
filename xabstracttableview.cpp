@@ -601,13 +601,6 @@ void XAbstractTableView::_cellDoubleClicked(qint32 nRow, qint32 nColumn)
     emit cellDoubleClicked(nRow, nColumn);
 }
 
-qint64 XAbstractTableView::getRecordSize(qint64 nViewOffset)
-{
-    Q_UNUSED(nViewOffset)
-
-    return 1;
-}
-
 qint64 XAbstractTableView::getFixViewOffset(qint64 nViewOffset)
 {
     return nViewOffset;
