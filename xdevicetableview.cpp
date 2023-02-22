@@ -130,6 +130,17 @@ qint64 XDeviceTableView::getViewSizeByOffset(qint64 nViewOffset)
     return 1;
 }
 
+qint64 XDeviceTableView::addressToViewOffset(XADDR nAddress)
+{
+    qint64 nResult = 0;
+
+    qint64 nOffset = XBinary::addressToOffset(getMemoryMap(), nAddress);
+
+    nResult = deviceOffsetToViewOffset(nOffset);
+
+    return nResult;
+}
+
 XDeviceTableView::DEVICESTATE XDeviceTableView::getDeviceState(bool bGlobalOffset)
 {
     DEVICESTATE result = {};
@@ -373,8 +384,7 @@ QByteArray XDeviceTableView::read_array(qint64 nOffset, qint32 nSize)
 void XDeviceTableView::goToAddress(XADDR nAddress, bool bShort, bool bAprox, bool bSaveVisited)
 {
     if (nAddress != (XADDR)-1) {
-        qint64 nOffset = XBinary::addressToOffset(getMemoryMap(), nAddress);
-        qint64 nViewOffset = deviceOffsetToViewOffset(nOffset);
+        qint64 nViewOffset = addressToViewOffset(nAddress); // deviceAddressToViewOffset
 
         if (bSaveVisited) {
             addVisited(getState().nSelectionViewOffset);
@@ -397,10 +407,14 @@ void XDeviceTableView::goToOffset(qint64 nOffset, bool bSaveVisited)
     qint64 nViewOffset = deviceOffsetToViewOffset(nOffset);
 
     if (bSaveVisited) {
-        addVisited(getViewOffsetStart());
+        addVisited(getState().nSelectionViewOffset);
     }
 
     if (_goToViewOffset(nViewOffset)) {
+        if (bSaveVisited) {
+            addVisited(nViewOffset);
+        }
+
         _initSetSelection(nViewOffset, getViewSizeByOffset(nViewOffset));
         // TODO
     }

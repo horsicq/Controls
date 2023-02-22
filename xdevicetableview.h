@@ -97,6 +97,7 @@ protected:
     virtual void adjustLineCount();
     virtual void adjustViewSize();
     virtual qint64 getViewSizeByOffset(qint64 nViewOffset);
+    virtual qint64 addressToViewOffset(XADDR nAddress);
 
 signals:
     void visitedStateChanged();
