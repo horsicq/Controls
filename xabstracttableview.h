@@ -66,7 +66,7 @@ public:
     };
 
     struct STATE {
-//        qint64 nCursorViewOffset;
+        //        qint64 nCursorViewOffset;
         QVariant varCursorExtraInfo;
         qint64 nSelectionViewOffset;
         qint64 nSelectionViewSize;
@@ -125,14 +125,14 @@ public:
     STATE getState();
     void setState(STATE state);
 
-//    qint64 getCursorViewOffset();
-//    void setCursorViewOffset(qint64 nViewOffset, qint32 nColumn = -1, QVariant varCursorExtraInfo = QVariant());
+    //    qint64 getCursorViewOffset();
+    //    void setCursorViewOffset(qint64 nViewOffset, qint32 nColumn = -1, QVariant varCursorExtraInfo = QVariant());
     void adjust(bool bUpdateData = false);
 
-//    void setCursorData(QRect rectSquare, QRect rectText, QString sText, qint32 nDelta);
-//    void resetCursorData();
+    //    void setCursorData(QRect rectSquare, QRect rectText, QString sText, qint32 nDelta);
+    //    void resetCursorData();
 
-//    qint32 getCursorDelta();
+    //    qint32 getCursorDelta();
 
     qint64 getMaxScrollValue();
     void setLastColumnStretch(bool bState);
@@ -150,8 +150,8 @@ public:
     void setSelectionEnable(bool bState);
     void setContextMenuEnable(bool bState);
     bool isContextMenuEnable();
-//    void setBlinkingCursor(bool bState);
-//    void setBlinkingCursorEnable(bool bState);
+    //    void setBlinkingCursor(bool bState);
+    //    void setBlinkingCursorEnable(bool bState);
     void _verticalScroll();
     bool isSelectionEnable();
     void setMaxSelectionViewSize(qint64 nMaxSelectionViewSize);
@@ -174,7 +174,7 @@ private slots:
     void verticalScroll();
     void horisontalScroll();
     void _customContextMenu(const QPoint &pos);
-//    void updateBlink();
+    //    void updateBlink();
 
 protected slots:
     void _copyValueSlot();
@@ -208,14 +208,14 @@ protected:
 
 private:
     bool g_bIsActive;
-//    bool g_bIsBlinkingCursorEnable;
+    //    bool g_bIsBlinkingCursorEnable;
     qint64 g_nNumberOfRows;
     QList<COLUMN> g_listColumns;
     qint32 g_nHeaderHeight;
     QPushButton g_pushButtonHeader;
     qint32 g_nXViewOffset;
-    qint64 g_nViewOffsetStart; // TODO move to state
-    qint32 g_nCharWidth; // mb TODO CharWidth for Hex
+    qint64 g_nViewOffsetStart;  // TODO move to state
+    qint32 g_nCharWidth;        // mb TODO CharWidth for Hex
     qint32 g_nCharHeight;
     qint32 g_nLinesProPage;
     qint32 g_nLineHeight;
@@ -237,11 +237,11 @@ private:
     bool g_bHeaderClickButton;
     qint32 g_nHeaderClickColumnNumber;
 
-//    QTimer g_timerCursor;
-//    QRect g_rectCursorSquare;
-//    QRect g_rectCursorText;
-//    QString g_sCursorText;
-//    qint32 g_nCursorDelta;
+    //    QTimer g_timerCursor;
+    //    QRect g_rectCursorSquare;
+    //    QRect g_rectCursorText;
+    //    QString g_sCursorText;
+    //    qint32 g_nCursorDelta;
     bool g_bBlink;
     bool g_bLastColumnStretch;
     bool g_bHeaderVisible;

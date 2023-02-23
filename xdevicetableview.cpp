@@ -117,12 +117,10 @@ XDeviceTableView::MODE XDeviceTableView::getAddressMode()
 
 void XDeviceTableView::adjustLineCount()
 {
-
 }
 
 void XDeviceTableView::adjustViewSize()
 {
-
 }
 
 qint64 XDeviceTableView::getViewSizeByOffset(qint64 nViewOffset)
@@ -147,7 +145,7 @@ XDeviceTableView::DEVICESTATE XDeviceTableView::getDeviceState(bool bGlobalOffse
     STATE state = getState();
 
     result.nSelectionOffset = state.nSelectionViewOffset;
-//    result.nCursorOffset = state.nCursorViewOffset;
+    //    result.nCursorOffset = state.nCursorViewOffset;
     result.nSelectionSize = state.nSelectionViewSize;
     result.nShowOffset = getViewOffsetStart();
 
@@ -157,7 +155,7 @@ XDeviceTableView::DEVICESTATE XDeviceTableView::getDeviceState(bool bGlobalOffse
         if (pSubDevice) {
             quint64 nInitOffset = pSubDevice->getInitOffset();
             result.nSelectionOffset += nInitOffset;
-//            result.nCursorOffset += nInitOffset;
+            //            result.nCursorOffset += nInitOffset;
             result.nShowOffset += nInitOffset;
         }
     }
@@ -173,14 +171,14 @@ void XDeviceTableView::setDeviceState(DEVICESTATE deviceState, bool bGlobalOffse
         if (pSubDevice) {
             quint64 nInitOffset = pSubDevice->getInitOffset();
             deviceState.nSelectionOffset -= nInitOffset;
-//            deviceState.nCursorOffset -= nInitOffset;
+            //            deviceState.nCursorOffset -= nInitOffset;
             deviceState.nShowOffset -= nInitOffset;
         }
     }
 
     _goToViewOffset(deviceState.nShowOffset);
     _initSetSelection(deviceState.nSelectionOffset, deviceState.nSelectionSize);
-//    setCursorViewOffset(deviceState.nCursorOffset);
+    //    setCursorViewOffset(deviceState.nCursorOffset);
 
     adjust();
     viewport()->update();
@@ -286,7 +284,7 @@ void XDeviceTableView::addVisited(qint64 nViewOffset)
 
     g_listVisited.append(nViewOffset);
 
-    if (g_listVisited.count() > 100) { // TODO const
+    if (g_listVisited.count() > 100) {  // TODO const
         g_listVisited.removeFirst();
     }
 
@@ -302,46 +300,46 @@ void XDeviceTableView::clearVisited()
 
 qint64 XDeviceTableView::write_array(qint64 nOffset, char *pData, qint64 nDataSize)
 {
-//    // TODO define if XPROCESS -> use Addresses
-//    qint64 nResult = 0;
+    //    // TODO define if XPROCESS -> use Addresses
+    //    qint64 nResult = 0;
 
-//    if (getDevice()) {
-//        char *_pBuffer = nullptr;
-//        bool bReplaced = false;
+    //    if (getDevice()) {
+    //        char *_pBuffer = nullptr;
+    //        bool bReplaced = false;
 
-////        if (XBinary::_updateReplaces(nOffset, pData, nDataSize,
-////                                     &g_listReplaces))  // TODO optimize
-////        {
-////            bReplaced = true;
-////#ifdef QT_DEBUG
-////            qDebug("Replaced write present");
-////#endif
-////            _pBuffer = new char[nDataSize];
+    ////        if (XBinary::_updateReplaces(nOffset, pData, nDataSize,
+    ////                                     &g_listReplaces))  // TODO optimize
+    ////        {
+    ////            bReplaced = true;
+    ////#ifdef QT_DEBUG
+    ////            qDebug("Replaced write present");
+    ////#endif
+    ////            _pBuffer = new char[nDataSize];
 
-////            XBinary::_copyMemory(_pBuffer, pData, nDataSize);
+    ////            XBinary::_copyMemory(_pBuffer, pData, nDataSize);
 
-////            if (XBinary::_replaceMemory(nOffset, _pBuffer, nDataSize,
-////                                        &g_listReplaces))  // TODO optimize
-////            {
-////#ifdef QT_DEBUG
-////                qDebug("Replace write");
-////#endif
-////            }
-////        }
+    ////            if (XBinary::_replaceMemory(nOffset, _pBuffer, nDataSize,
+    ////                                        &g_listReplaces))  // TODO optimize
+    ////            {
+    ////#ifdef QT_DEBUG
+    ////                qDebug("Replace write");
+    ////#endif
+    ////            }
+    ////        }
 
-//        _pBuffer = pData;
+    //        _pBuffer = pData;
 
-//        if (saveBackup()) {
-//            nResult = XBinary::write_array(getDevice(), nOffset, _pBuffer, nDataSize);
-//        }
-//        // mb TODO error message if fails !!!
+    //        if (saveBackup()) {
+    //            nResult = XBinary::write_array(getDevice(), nOffset, _pBuffer, nDataSize);
+    //        }
+    //        // mb TODO error message if fails !!!
 
-//        if (bReplaced) {
-//            delete[] _pBuffer;
-//        }
-//    }
+    //        if (bReplaced) {
+    //            delete[] _pBuffer;
+    //        }
+    //    }
 
-//    return nResult;
+    //    return nResult;
     qint64 nResult = 0;
 
     if (getDevice()) {
@@ -355,23 +353,23 @@ qint64 XDeviceTableView::write_array(qint64 nOffset, char *pData, qint64 nDataSi
 
 QByteArray XDeviceTableView::read_array(qint64 nOffset, qint32 nSize)
 {
-//    // TODO if device ->
-//    // TODO if XInfoDB ->
-//    QByteArray baResult;
+    //    // TODO if device ->
+    //    // TODO if XInfoDB ->
+    //    QByteArray baResult;
 
-//    if (getDevice()) {
-//        baResult = XBinary::read_array(getDevice(), nOffset, nSize);
+    //    if (getDevice()) {
+    //        baResult = XBinary::read_array(getDevice(), nOffset, nSize);
 
-////        if (XBinary::_replaceMemory(nOffset, baResult.data(), nSize,
-////                                    &g_listReplaces))  // TODO optimize
-////        {
-////#ifdef QT_DEBUG
-////            qDebug("Replaced read present");
-////#endif
-////        }
-//    }
+    ////        if (XBinary::_replaceMemory(nOffset, baResult.data(), nSize,
+    ////                                    &g_listReplaces))  // TODO optimize
+    ////        {
+    ////#ifdef QT_DEBUG
+    ////            qDebug("Replaced read present");
+    ////#endif
+    ////        }
+    //    }
 
-//    return baResult;
+    //    return baResult;
     QByteArray baResult;
 
     if (getDevice()) {
@@ -384,7 +382,7 @@ QByteArray XDeviceTableView::read_array(qint64 nOffset, qint32 nSize)
 void XDeviceTableView::goToAddress(XADDR nAddress, bool bShort, bool bAprox, bool bSaveVisited)
 {
     if (nAddress != (XADDR)-1) {
-        qint64 nViewOffset = addressToViewOffset(nAddress); // deviceAddressToViewOffset
+        qint64 nViewOffset = addressToViewOffset(nAddress);  // deviceAddressToViewOffset
 
         if (bSaveVisited) {
             addVisited(getState().nSelectionViewOffset);
@@ -429,7 +427,7 @@ void XDeviceTableView::setSelectionAddress(XADDR nAddress, qint64 nSize)
         qint64 nViewOffset = deviceOffsetToViewOffset(nOffset);
 
         _initSetSelection(nViewOffset, nSize);
-        viewport()->update(); // TODO Check
+        viewport()->update();  // TODO Check
     }
 }
 
@@ -676,7 +674,7 @@ void XDeviceTableView::_findNextSlot()
 
 void XDeviceTableView::_selectAllSlot()
 {
-    _initSetSelection(0, deviceSizeToViewSize(0,getDevice()->size()));
+    _initSetSelection(0, deviceSizeToViewSize(0, getDevice()->size()));
     viewport()->update();
 }
 

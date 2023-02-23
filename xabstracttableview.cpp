@@ -23,7 +23,7 @@
 XAbstractTableView::XAbstractTableView(QWidget *pParent) : XShortcutstScrollArea(pParent)
 {
     g_bIsActive = false;
-//    g_bIsBlinkingCursorEnable = false;
+    //    g_bIsBlinkingCursorEnable = false;
     g_bMouseResizeColumn = false;
     g_bMouseSelection = false;
     g_nViewOffsetStart = 0;
@@ -38,7 +38,7 @@ XAbstractTableView::XAbstractTableView(QWidget *pParent) : XShortcutstScrollArea
     g_nSelectionInitOffset = -1;
     g_nSelectionInitSize = 0;
     g_nNumberOfRows = 0;
-//    g_nCursorDelta = 0;
+    //    g_nCursorDelta = 0;
     g_nXViewOffset = 0;
     g_nHeaderHeight = 20;  // TODO Set/Get function !!!
     g_nLineDelta = 0;      // TODO Check
@@ -83,12 +83,12 @@ void XAbstractTableView::setActive(bool bIsActive)
 {
     bool bChanged = (g_bIsActive != bIsActive);
 
-    //#ifdef QT_DEBUG
-    //    if(g_bIsActive==bIsActive)
-    //    {
-    //        qDebug("Double set!!!");
-    //    }
-    //#endif
+    // #ifdef QT_DEBUG
+    //     if(g_bIsActive==bIsActive)
+    //     {
+    //         qDebug("Double set!!!");
+    //     }
+    // #endif
 
     if (bChanged) {
         if (bIsActive) {
@@ -105,9 +105,9 @@ void XAbstractTableView::setActive(bool bIsActive)
             horizontalScrollBar()->setRange(0, 0);
         }
 
-//        if (g_bIsBlinkingCursorEnable) {
-//            setBlinkingCursor(bIsActive);
-//        }
+        //        if (g_bIsBlinkingCursorEnable) {
+        //            setBlinkingCursor(bIsActive);
+        //        }
 
         setMouseTracking(bIsActive);  // Important
 
@@ -171,7 +171,7 @@ void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
     pPainter->setBackgroundMode(Qt::TransparentMode);
 
     if (isActive()) {
-//        if (g_rectCursorSquare != pEvent->rect())
+        //        if (g_rectCursorSquare != pEvent->rect())
         {
             startPainting(pPainter);
 
@@ -249,29 +249,29 @@ void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
             endPainting(pPainter);
         }
 
-//        // Draw cursor
-//        // TODO Cursor off
-//        if (g_rectCursorSquare.width() && g_rectCursorSquare.height()) {
-//            if (g_bBlink) {
-//                pPainter->setPen(viewport()->palette().color(QPalette::Highlight));
-//                pPainter->fillRect(g_rectCursorSquare, this->palette().color(QPalette::WindowText));
-//            } else {
-//                pPainter->setPen(viewport()->palette().color(QPalette::WindowText));
-//                pPainter->fillRect(g_rectCursorSquare, this->palette().color(QPalette::Base));
-//            }
+        //        // Draw cursor
+        //        // TODO Cursor off
+        //        if (g_rectCursorSquare.width() && g_rectCursorSquare.height()) {
+        //            if (g_bBlink) {
+        //                pPainter->setPen(viewport()->palette().color(QPalette::Highlight));
+        //                pPainter->fillRect(g_rectCursorSquare, this->palette().color(QPalette::WindowText));
+        //            } else {
+        //                pPainter->setPen(viewport()->palette().color(QPalette::WindowText));
+        //                pPainter->fillRect(g_rectCursorSquare, this->palette().color(QPalette::Base));
+        //            }
 
-//            if (g_rectCursorText.width() && g_rectCursorText.height()) {
-//                pPainter->save();
+        //            if (g_rectCursorText.width() && g_rectCursorText.height()) {
+        //                pPainter->save();
 
-//                QFont font = pPainter->font();
-//                font.setBold(true);
-//                pPainter->setFont(font);
+        //                QFont font = pPainter->font();
+        //                font.setBold(true);
+        //                pPainter->setFont(font);
 
-//                pPainter->drawText(g_rectCursorText, g_sCursorText);
+        //                pPainter->drawText(g_rectCursorText, g_sCursorText);
 
-//                pPainter->restore();
-//            }
-//        }
+        //                pPainter->restore();
+        //            }
+        //        }
     }
 
     delete pPainter;
@@ -450,16 +450,16 @@ void XAbstractTableView::setState(STATE state)
     g_state = state;
 }
 
-//qint64 XAbstractTableView::getCursorViewOffset()
+// qint64 XAbstractTableView::getCursorViewOffset()
 //{
-//    return g_state.nCursorViewOffset;
-//}
+//     return g_state.nCursorViewOffset;
+// }
 
-//void XAbstractTableView::setCursorViewOffset(qint64 nViewOffset, qint32 nColumn, QVariant varCursorExtraInfo)
+// void XAbstractTableView::setCursorViewOffset(qint64 nViewOffset, qint32 nColumn, QVariant varCursorExtraInfo)
 //{
-//    if (nColumn != -1) {
-//        g_state.cursorPosition.nColumn = nColumn;
-//    }
+//     if (nColumn != -1) {
+//         g_state.cursorPosition.nColumn = nColumn;
+//     }
 
 //    g_state.varCursorExtraInfo = varCursorExtraInfo;
 
@@ -606,23 +606,23 @@ qint64 XAbstractTableView::getFixViewOffset(qint64 nViewOffset)
     return nViewOffset;
 }
 
-//void XAbstractTableView::setCursorData(QRect rectSquare, QRect rectText, QString sText, qint32 nDelta)
+// void XAbstractTableView::setCursorData(QRect rectSquare, QRect rectText, QString sText, qint32 nDelta)
 //{
-//    g_rectCursorSquare = rectSquare;
-//    g_rectCursorText = rectText;
-//    g_sCursorText = sText;
-//    g_nCursorDelta = nDelta;
-//}
+//     g_rectCursorSquare = rectSquare;
+//     g_rectCursorText = rectText;
+//     g_sCursorText = sText;
+//     g_nCursorDelta = nDelta;
+// }
 
-//void XAbstractTableView::resetCursorData()
+// void XAbstractTableView::resetCursorData()
 //{
-//    setCursorData(QRect(), QRect(), "", 0);
-//}
+//     setCursorData(QRect(), QRect(), "", 0);
+// }
 
-//qint32 XAbstractTableView::getCursorDelta()
+// qint32 XAbstractTableView::getCursorDelta()
 //{
-//    return g_nCursorDelta;
-//}
+//     return g_nCursorDelta;
+// }
 
 qint64 XAbstractTableView::getMaxScrollValue()
 {
@@ -728,24 +728,24 @@ bool XAbstractTableView::isContextMenuEnable()
     return g_bIsContextMenuEnable;
 }
 
-//void XAbstractTableView::setBlinkingCursor(bool bState)
+// void XAbstractTableView::setBlinkingCursor(bool bState)
 //{
-//    if (bState) {
-//        connect(&g_timerCursor, SIGNAL(timeout()), this, SLOT(updateBlink()));
-//        g_timerCursor.setInterval(500);  // TODO Consts
-//        g_timerCursor.start();
-//    } else {
-//        g_bBlink = true;
+//     if (bState) {
+//         connect(&g_timerCursor, SIGNAL(timeout()), this, SLOT(updateBlink()));
+//         g_timerCursor.setInterval(500);  // TODO Consts
+//         g_timerCursor.start();
+//     } else {
+//         g_bBlink = true;
 
 //        disconnect(&g_timerCursor, SIGNAL(timeout()), this, SLOT(updateBlink()));
 //        g_timerCursor.stop();
 //    }
 //}
 
-//void XAbstractTableView::setBlinkingCursorEnable(bool bState)
+// void XAbstractTableView::setBlinkingCursorEnable(bool bState)
 //{
-//    if (g_bIsBlinkingCursorEnable != bState) {
-//        g_bIsBlinkingCursorEnable = bState;
+//     if (g_bIsBlinkingCursorEnable != bState) {
+//         g_bIsBlinkingCursorEnable = bState;
 
 //        if (bState) {
 //            if (isActive()) {
@@ -777,18 +777,18 @@ void XAbstractTableView::_customContextMenu(const QPoint &pos)
     contextMenu(mapToGlobal(pos));
 }
 
-//void XAbstractTableView::updateBlink()
+// void XAbstractTableView::updateBlink()
 //{
-//    if (isFocused()) {
-//        g_bBlink = (bool)(!g_bBlink);
-//        viewport()->update(g_rectCursorSquare);
-//    } else {
-//        if (!g_bBlink) {
-//            g_bBlink = true;
-//            viewport()->update(g_rectCursorSquare);
-//        }
-//    }
-//}
+//     if (isFocused()) {
+//         g_bBlink = (bool)(!g_bBlink);
+//         viewport()->update(g_rectCursorSquare);
+//     } else {
+//         if (!g_bBlink) {
+//             g_bBlink = true;
+//             viewport()->update(g_rectCursorSquare);
+//         }
+//     }
+// }
 
 void XAbstractTableView::_copyValueSlot()
 {
@@ -871,8 +871,8 @@ void XAbstractTableView::mousePressEvent(QMouseEvent *pEvent)
                 g_bHeaderClickButton = true;
                 g_nHeaderClickColumnNumber = cursorPosition.nColumn;
             } else if (os.nViewOffset != -1) {
-//                g_state.nCursorViewOffset = os.nViewOffset;
-//                g_state.varCursorExtraInfo = os.varData;
+                //                g_state.nCursorViewOffset = os.nViewOffset;
+                //                g_state.varCursorExtraInfo = os.varData;
                 g_state.cursorPosition = cursorPosition;
                 g_state.varCursorExtraInfo = os.varData;
 
@@ -1029,13 +1029,13 @@ bool XAbstractTableView::_goToViewOffset(qint64 nViewOffset, bool bSaveCursor, b
             nViewOffset = getFixViewOffset(nViewOffset);
         }
 
-//        qint64 nCursorOffset = 0;
+        //        qint64 nCursorOffset = 0;
 
-//        if (bSaveCursor) {
-//            nCursorOffset = getCursorViewOffset();
-//        } else {
-//            nCursorOffset = nViewOffset;
-//        }
+        //        if (bSaveCursor) {
+        //            nCursorOffset = getCursorViewOffset();
+        //        } else {
+        //            nCursorOffset = nViewOffset;
+        //        }
 
         bool bScroll = true;
 
@@ -1047,7 +1047,7 @@ bool XAbstractTableView::_goToViewOffset(qint64 nViewOffset, bool bSaveCursor, b
             setCurrentViewOffsetToScroll(nViewOffset);
         }
 
-//        setCursorViewOffset(nCursorOffset);
+        //        setCursorViewOffset(nCursorOffset);
 
         bResult = true;
     }
@@ -1068,6 +1068,6 @@ qint64 XAbstractTableView::getCurrentLineFromScroll()
 void XAbstractTableView::setCurrentViewOffsetToScroll(qint64 nViewOffset)
 {
     setViewOffsetStart(nViewOffset);
-    verticalScrollBar()->setValue((qint32)nViewOffset); // TODO large files
+    verticalScrollBar()->setValue((qint32)nViewOffset);  // TODO large files
     adjust(true);
 }
