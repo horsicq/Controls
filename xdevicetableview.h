@@ -36,8 +36,8 @@ class XDeviceTableView : public XAbstractTableView {
 
 public:
     enum MODE {
-        MODE_ADDRESS = 0,
-        MODE_OFFSET,
+        MODE_OFFSET = 0,
+        MODE_ADDRESS,
         MODE_RELADDRESS,
         MODE_THIS
     };

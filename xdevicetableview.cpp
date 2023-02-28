@@ -276,21 +276,27 @@ void XDeviceTableView::goToPrevVisited()
 
 void XDeviceTableView::addVisited(qint64 nViewOffset)
 {
-    qint32 nNumberOfVisited = g_listVisited.count();
+//#ifdef QT_DEBUG
+//    qDebug("Add visited %s", XBinary::valueToHex(nViewOffset).toLatin1().data());
+//#endif
 
-    for (qint32 i = nNumberOfVisited - 1; i > g_nVisitedIndex; i--) {
-        g_listVisited.removeAt(i);
+    if ((g_listVisited.empty()) || (g_listVisited.last() != nViewOffset)) {
+        qint32 nNumberOfVisited = g_listVisited.count();
+
+        for (qint32 i = nNumberOfVisited - 1; i > g_nVisitedIndex; i--) {
+            g_listVisited.removeAt(i);
+        }
+
+        g_listVisited.append(nViewOffset);
+
+        if (g_listVisited.count() > 100) {  // TODO const
+            g_listVisited.removeFirst();
+        }
+
+        g_nVisitedIndex = g_listVisited.count() - 1;
+
+        emit visitedStateChanged();
     }
-
-    g_listVisited.append(nViewOffset);
-
-    if (g_listVisited.count() > 100) {  // TODO const
-        g_listVisited.removeFirst();
-    }
-
-    g_nVisitedIndex = g_listVisited.count() - 1;
-
-    emit visitedStateChanged();
 }
 
 void XDeviceTableView::clearVisited()
