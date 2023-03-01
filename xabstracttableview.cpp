@@ -448,6 +448,8 @@ XAbstractTableView::STATE XAbstractTableView::getState()
 void XAbstractTableView::setState(STATE state)
 {
     g_state = state;
+
+    emit selectionChanged();
 }
 
 // qint64 XAbstractTableView::getCursorViewOffset()

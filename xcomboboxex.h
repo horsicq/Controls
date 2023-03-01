@@ -62,7 +62,7 @@ private slots:
     void itemChangedSlot(QStandardItem *pItem);
 
 signals:
-    void valueChanged(quint64 nValue);
+    void valueChanged(quint64 nValue); // TODO mb QVariant
 
 private:
     quint64 g_nValue;

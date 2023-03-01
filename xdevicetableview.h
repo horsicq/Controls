@@ -101,6 +101,7 @@ protected:
 
 signals:
     void visitedStateChanged();
+    void dataChanged(qint64 nDeviceOffset, qint64 nDeviceSize);
 
 protected slots:
     void _goToAddressSlot();

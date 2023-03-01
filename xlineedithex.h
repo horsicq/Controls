@@ -95,8 +95,7 @@ private slots:
     void _clearValue();
 
 signals:
-    void valueChanged(quint64 nValue);
-    void valueChanged(QString sValue);
+    void valueChanged(QVariant varValue);
     void focused(bool bState);
 
 private:
