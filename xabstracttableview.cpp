@@ -498,7 +498,11 @@ void XAbstractTableView::_setSelection(qint64 nViewOffset, qint64 nSize)
         }
 
         if (g_nMaxSelectionViewSize) {
-            g_state.nSelectionViewSize = qMin(g_state.nSelectionViewSize, g_nMaxSelectionViewSize);
+            g_state.nSelectionViewSize = qMin(g_state.nSelectionViewSize, g_nMaxSelectionViewSize - g_state.nSelectionViewOffset);
+        }
+
+        if (g_state.nSelectionViewSize == 0) {
+            g_state.nSelectionViewSize = 1;
         }
 
         emit selectionChanged();
