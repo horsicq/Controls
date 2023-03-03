@@ -201,6 +201,7 @@ protected:
     virtual qint64 getCurrentLineFromScroll();
     virtual void setCurrentViewOffsetToScroll(qint64 nViewOffset);
     virtual void adjustColumns();
+    virtual void adjustHeader();
     virtual void _headerClicked(qint32 nNumber);
     virtual void _cellDoubleClicked(qint32 nRow, qint32 nColumn);
     virtual qint64 getFixViewOffset(qint64 nViewOffset);

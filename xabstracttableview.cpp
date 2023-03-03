@@ -597,8 +597,15 @@ void XAbstractTableView::adjustColumns()
     // TODO
 }
 
+void XAbstractTableView::adjustHeader()
+{
+
+}
+
 void XAbstractTableView::_headerClicked(qint32 nNumber)
 {
+    adjustHeader();
+
     emit headerClicked(nNumber);
 }
 
