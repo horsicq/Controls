@@ -276,9 +276,9 @@ void XDeviceTableView::goToPrevVisited()
 
 void XDeviceTableView::addVisited(qint64 nViewOffset)
 {
-//#ifdef QT_DEBUG
-//    qDebug("Add visited %s", XBinary::valueToHex(nViewOffset).toLatin1().data());
-//#endif
+    // #ifdef QT_DEBUG
+    //     qDebug("Add visited %s", XBinary::valueToHex(nViewOffset).toLatin1().data());
+    // #endif
 
     if ((g_listVisited.empty()) || (g_listVisited.last() != nViewOffset)) {
         qint32 nNumberOfVisited = g_listVisited.count();
