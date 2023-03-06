@@ -589,7 +589,7 @@ void XDeviceTableView::_dumpToFileSlot()
 
         DialogDumpProcess dd(this, getDevice(), state.nSelectionOffset, state.nSelectionSize, sFileName, DumpProcess::DT_OFFSET);
 
-        dd.showDialogDelay(1000);
+        dd.showDialogDelay();
     }
 }
 
@@ -636,7 +636,7 @@ void XDeviceTableView::_findSlot(DialogSearch::SEARCHMODE mode)
     {
         DialogSearchProcess dsp(this, getDevice(), &g_searchData);
 
-        dsp.showDialogDelay(1000);
+        dsp.showDialogDelay();
 
         if (g_searchData.nResultOffset != -1) {
             qint64 nViewOffset = deviceOffsetToViewOffset(g_searchData.nResultOffset);
@@ -661,7 +661,7 @@ void XDeviceTableView::_findNextSlot()
 
         DialogSearchProcess dialogSearch(this, getDevice(), &g_searchData);
 
-        dialogSearch.showDialogDelay(1000);
+        dialogSearch.showDialogDelay();
 
         if (dialogSearch.isSuccess())  // TODO use status
         {
