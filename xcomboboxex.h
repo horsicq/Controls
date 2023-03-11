@@ -65,7 +65,7 @@ signals:
     void valueChanged(quint64 nValue);  // TODO mb QVariant
 
 private:
-    quint64 g_nValue; // mb TODO QVariant
+    quint64 g_nValue;  // mb TODO QVariant
     bool g_bIsReadOnly;
     QStandardItemModel g_model;
     CBTYPE g_cbtype;
