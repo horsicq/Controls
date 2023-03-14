@@ -1034,6 +1034,8 @@ void XAbstractTableView::endPainting(QPainter *pPainter)
 
 bool XAbstractTableView::_goToViewOffset(qint64 nViewOffset, bool bSaveCursor, bool bShort, bool bAprox)
 {
+    Q_UNUSED(bSaveCursor)
+
     bool bResult = false;
 
     if (isViewOffsetValid(nViewOffset)) {

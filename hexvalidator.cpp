@@ -56,20 +56,20 @@ QValidator::State HEXValidator::validate(QString &sInput, int &nPos) const
 
         // TODO optimize!
         if (g_nMax == 0xFF) {
-            nSignMax = 128;
-            nSignMin = -127;
+            nSignMax = SCHAR_MAX;
+            nSignMin = SCHAR_MIN;
             nHexLenght = 2;
         } else if (g_nMax == 0xFFFF) {
-            nSignMax = 32767;
-            nSignMin = -32768;
+            nSignMax = SHRT_MAX;
+            nSignMin = SHRT_MIN;
             nHexLenght = 4;
         } else if (g_nMax == 0xFFFFFFFF) {
-            nSignMax = 2147483647;
-            nSignMin = -2147483648;
+            nSignMax = INT_MAX;
+            nSignMin =INT_MIN;
             nHexLenght = 8;
         } else if (g_nMax == 0xFFFFFFFFFFFFFFFF) {
-            nSignMax = 9223372036854775807;
-            nSignMin = -9223372036854775808;
+            nSignMax = _I64_MAX;
+            nSignMin = _I64_MIN;
             nHexLenght = 16;
         }
 
