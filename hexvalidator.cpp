@@ -65,7 +65,7 @@ QValidator::State HEXValidator::validate(QString &sInput, int &nPos) const
             nHexLenght = 4;
         } else if (g_nMax == 0xFFFFFFFF) {
             nSignMax = INT_MAX;
-            nSignMin =INT_MIN;
+            nSignMin = INT_MIN;
             nHexLenght = 8;
         } else if (g_nMax == 0xFFFFFFFFFFFFFFFF) {
             nSignMax = LONG_LONG_MAX;
