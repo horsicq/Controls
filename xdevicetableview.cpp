@@ -471,7 +471,7 @@ void XDeviceTableView::setEdited(qint64 nDeviceOffset, qint64 nDeviceSize)
         g_pXInfoDB->setEdited(nDeviceOffset, nDeviceSize);
     }
 
-    //    viewport()->update();
+    viewport()->update();
 }
 
 void XDeviceTableView::setReadonly(bool bState)
