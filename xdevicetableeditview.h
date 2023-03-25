@@ -34,6 +34,9 @@ protected slots:
     void _editHex();
     void _followInDisasmSlot();
     void _followInHexSlot();
+#ifdef QT_SQL_LIB
+    void _bookmarkNew();
+#endif
 
 signals:
     void followInDisasm(XADDR nAddress);

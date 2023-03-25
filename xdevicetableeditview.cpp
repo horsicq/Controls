@@ -67,3 +67,9 @@ void XDeviceTableEditView::_followInHexSlot()
 
     emit followInHex(nOffset);
 }
+#ifdef QT_SQL_LIB
+void XDeviceTableEditView::_bookmarkNew()
+{
+    // TODO
+}
+#endif
