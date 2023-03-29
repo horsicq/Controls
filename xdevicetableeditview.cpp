@@ -70,6 +70,9 @@ void XDeviceTableEditView::_followInHexSlot()
 #ifdef QT_SQL_LIB
 void XDeviceTableEditView::_bookmarkNew()
 {
-    // TODO
+    if (getXInfoDB()) {
+        // TODO
+        // TODO CHeck if table present
+    }
 }
 #endif
