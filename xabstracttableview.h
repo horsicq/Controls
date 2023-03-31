@@ -103,7 +103,6 @@ public:
     QFont getTextFont();
 
     bool setTextFontFromOptions(XOptions::ID id);
-
     void setTotalLineCount(qint64 nValue);
     quint64 getTotalLineCount();
 
