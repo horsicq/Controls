@@ -62,10 +62,10 @@ private slots:
     void itemChangedSlot(QStandardItem *pItem);
 
 signals:
-    void valueChanged(quint64 nValue);  // TODO mb QVariant
+    void valueChanged(quint64 nValue);  // TODO QVariant
 
 private:
-    quint64 g_nValue;  // mb TODO QVariant
+    quint64 g_nValue;  // TODO QVariant
     bool g_bIsReadOnly;
     QStandardItemModel g_model;
     CBTYPE g_cbtype;
