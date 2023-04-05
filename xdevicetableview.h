@@ -43,7 +43,7 @@ public:
     };
 
     struct DEVICESTATE {
-        qint64 nSelectionOffset;
+        quint64 nSelectionLocation;
         qint64 nSelectionSize;
         //        qint64 nCursorOffset;
         qint64 nShowOffset;

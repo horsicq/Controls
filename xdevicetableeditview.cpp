@@ -29,7 +29,7 @@ void XDeviceTableEditView::_editHex()
     if (!isReadonly()) {
         DEVICESTATE state = getDeviceState();
 
-        SubDevice sd(getDevice(), state.nSelectionOffset, state.nSelectionSize);
+        SubDevice sd(getDevice(), state.nSelectionLocation, state.nSelectionSize);
 
         if (sd.open(QIODevice::ReadWrite)) {
             DialogHexEdit dialogHexEdit(this);
@@ -38,12 +38,12 @@ void XDeviceTableEditView::_editHex()
 
             //        connect(&dialogHexEdit,SIGNAL(changed()),this,SLOT(_setEdited()));
 
-            dialogHexEdit.setData(&sd, state.nSelectionOffset);
+            dialogHexEdit.setData(&sd, state.nSelectionLocation);
             dialogHexEdit.setBackupDevice(getBackupDevice());
 
             dialogHexEdit.exec();
 
-            _setEdited(state.nSelectionOffset, state.nSelectionSize);
+            _setEdited(state.nSelectionLocation, state.nSelectionSize);
 
             sd.close();
         }
@@ -52,7 +52,7 @@ void XDeviceTableEditView::_editHex()
 
 void XDeviceTableEditView::_followInDisasmSlot()
 {
-    qint64 nOffset = getDeviceState(true).nSelectionOffset;
+    quint64 nOffset = getDeviceState(true).nSelectionLocation;
     //    XADDR nAddress=XBinary::offsetToAddress(getMemoryMap(),nOffset);
 
     emit followInDisasm(nOffset);
@@ -62,7 +62,7 @@ void XDeviceTableEditView::_followInHexSlot()
 {
     //    emit
     //    followInHex(XBinary::offsetToAddress(getMemoryMap(),getStateOffset()));
-    qint64 nOffset = getDeviceState(true).nSelectionOffset;
+    quint64 nOffset = getDeviceState(true).nSelectionLocation;
     //    XADDR nAddress=XBinary::offsetToAddress(getMemoryMap(),nOffset);
 
     emit followInHex(nOffset);
@@ -71,8 +71,11 @@ void XDeviceTableEditView::_followInHexSlot()
 void XDeviceTableEditView::_bookmarkNew()
 {
     if (getXInfoDB()) {
-        // TODO
-        // TODO CHeck if table present
+        DEVICESTATE state = getDeviceState(true);
+
+        QString sName = QString("%1 - %2").arg(QString::number(state.nSelectionLocation,16), QString::number(state.nSelectionLocation + state.nSelectionSize,16));
+
+        getXInfoDB()->_addBookmark(state.nSelectionLocation, state.nSelectionSize, QColor(Qt::red), QColor(Qt::yellow), sName, "");
     }
 }
 #endif

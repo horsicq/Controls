@@ -784,6 +784,17 @@ void XAbstractTableView::setMaxSelectionViewSize(qint64 nMaxSelectionViewSize)
     g_nMaxSelectionViewSize = nMaxSelectionViewSize;
 }
 
+QColor XAbstractTableView::getColorSelected(QColor color)
+{
+    return color.darker(120);
+}
+
+QColor XAbstractTableView::getColorSelected(QWidget *pWidget)
+{
+    QColor colorBackground = pWidget->palette().background().color();
+    return getColorSelected(colorBackground);
+}
+
 void XAbstractTableView::_customContextMenu(const QPoint &pos)
 {
     contextMenu(mapToGlobal(pos));

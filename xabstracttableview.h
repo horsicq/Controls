@@ -155,6 +155,9 @@ public:
     bool isSelectionEnable();
     void setMaxSelectionViewSize(qint64 nMaxSelectionViewSize);
 
+    static QColor getColorSelected(QColor color);
+    static QColor getColorSelected(QWidget *pWidget);
+
 signals:
     void cursorViewOffsetChanged(qint64 nViewOffset);
     void selectionChanged();
