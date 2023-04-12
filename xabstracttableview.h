@@ -157,6 +157,7 @@ public:
 
     static QColor getColorSelected(QColor color);
     static QColor getColorSelected(QWidget *pWidget);
+    QColor getColorSelected();
 
 signals:
     void cursorViewOffsetChanged(qint64 nViewOffset);
@@ -258,6 +259,7 @@ private:
     bool g_bIsContextMenuEnable;
 
     QMap<quint32, QColor> g_colorSchema;
+    QColor g_colorSelected;
 };
 
 #endif  // XABSTRACTTABLEVIEW_H
