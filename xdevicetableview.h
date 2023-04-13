@@ -49,6 +49,17 @@ public:
         qint64 nShowOffset;
     };
 
+    struct HIGHLIGHTREGION {
+        bool bIsValid;
+        quint64 nLocation;
+        qint64 nSize;
+        QColor colText;
+        QColor colBackground;
+        QColor colBackgroundSelected;
+        QString sName;
+        QString sComment;
+    };
+
     XDeviceTableView(QWidget *pParent = nullptr);
 
     void setXInfoDB(XInfoDB *pXInfoDB);
@@ -87,6 +98,9 @@ public:
     void goToPrevVisited();
     void addVisited(qint64 nViewOffset);
     void clearVisited();
+
+    static QList<HIGHLIGHTREGION> _convertBookmarksToHighlightRegion(QList<XInfoDB::BOOKMARKRECORD> *pList);
+    static QList<HIGHLIGHTREGION> getHighlightRegion(QList<HIGHLIGHTREGION> *pList, quint64 nLocation);
 
 public slots:
     void setEdited(qint64 nDeviceOffset, qint64 nDeviceSize);

@@ -310,6 +310,44 @@ void XDeviceTableView::clearVisited()
     g_listVisited.clear();
 }
 
+QList<XDeviceTableView::HIGHLIGHTREGION> XDeviceTableView::_convertBookmarksToHighlightRegion(QList<XInfoDB::BOOKMARKRECORD> *pList)
+{
+    QList<HIGHLIGHTREGION> listResult;
+
+    qint32 nNumberOfRecords = pList->count();
+
+    for (qint32 i = 0; i < nNumberOfRecords; i++) {
+        HIGHLIGHTREGION record = {};
+        record.bIsValid = true;
+        record.nLocation = pList->at(i).nLocation;
+        record.nSize = pList->at(i).nSize;
+        record.colText = pList->at(i).colText;
+        record.colBackground = pList->at(i).colBackground;
+        record.colBackgroundSelected = getColorSelected(record.colBackground);
+        record.sName = pList->at(i).sName;
+        record.sComment = pList->at(i).sComment;
+
+        listResult.append(record);
+    }
+
+    return listResult;
+}
+
+QList<XDeviceTableView::HIGHLIGHTREGION> XDeviceTableView::getHighlightRegion(QList<HIGHLIGHTREGION> *pList, quint64 nLocation)
+{
+    QList<HIGHLIGHTREGION> listResult;
+
+    qint32 nNumberOfRecords = pList->count();
+
+    for (qint32 i = 0; i < nNumberOfRecords; i++) {
+        if ((nLocation >= pList->at(i).nLocation) && (nLocation < (pList->at(i).nLocation + pList->at(i).nSize))) {
+            listResult.append(pList->at(i));
+        }
+    }
+
+    return listResult;
+}
+
 qint64 XDeviceTableView::write_array(qint64 nOffset, char *pData, qint64 nDataSize)
 {
     //    // TODO define if XPROCESS -> use Addresses
