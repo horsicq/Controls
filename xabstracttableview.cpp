@@ -1042,7 +1042,7 @@ void XAbstractTableView::paintTitle(QPainter *pPainter, qint32 nColumn, qint32 n
     Q_UNUSED(nColumn)
 
     QRect rect = QRect(nLeft + 4, nTop, nWidth - 8, nHeight);
-    pPainter->drawText(rect, Qt::AlignVCenter | Qt::AlignLeft, sTitle);  // TODO alignment
+    pPainter->drawText(rect, Qt::AlignVCenter | Qt::AlignLeft, sTitle);  // TODO alignment settings
 }
 
 void XAbstractTableView::endPainting(QPainter *pPainter)
@@ -1100,6 +1100,6 @@ qint64 XAbstractTableView::getCurrentLineFromScroll()
 void XAbstractTableView::setCurrentViewOffsetToScroll(qint64 nViewOffset)
 {
     setViewOffsetStart(nViewOffset);
-    verticalScrollBar()->setValue((qint32)nViewOffset);  // TODO large files
+    verticalScrollBar()->setValue((qint32)nViewOffset);  // TODO Check large files
     adjust(true);
 }
