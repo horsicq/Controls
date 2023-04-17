@@ -76,6 +76,10 @@ void XDeviceTableEditView::_bookmarkNew()
         QString sName = QString("%1 - %2").arg(QString::number(state.nSelectionLocation, 16), QString::number(state.nSelectionLocation + state.nSelectionSize, 16));
 
         getXInfoDB()->_addBookmarkRecord(state.nSelectionLocation, state.nSelectionSize, QColor(Qt::red), QColor(Qt::yellow), sName, ""); // mb TODO Colors
+
+        updateData();
+
+        viewport()->update();
     }
 }
 #endif

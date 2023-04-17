@@ -129,7 +129,7 @@ void XAbstractTableView::clear()
 #endif
     setActive(false);
     // TODO
-    update();
+    update(); // Check viewport()->update();
 }
 
 void XAbstractTableView::addColumn(QString sTitle, qint32 nWidth, bool bClickable, bool bEnable)
