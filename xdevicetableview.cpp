@@ -39,6 +39,7 @@ void XDeviceTableView::setXInfoDB(XInfoDB *pXInfoDB)
 #ifdef QT_SQL_LIB
     if (pXInfoDB) {
         g_pXInfoDB->initDb();
+        connect(g_pXInfoDB, SIGNAL(reloadViewSignal()), this, SLOT(reloadView()));
     }
 #endif
 }
@@ -767,4 +768,14 @@ void XDeviceTableView::_setEdited(qint64 nDeviceOffset, qint64 nDeviceSize)
     setEdited(nDeviceOffset, nDeviceSize);
 
     emit dataChanged(nDeviceOffset, nDeviceSize);
+}
+
+void XDeviceTableView::reloadView()
+{
+#ifdef QT_DEBUG
+    qDebug("void XDeviceTableView::reloadView()");
+#endif
+    updateData();
+
+    viewport()->update();
 }

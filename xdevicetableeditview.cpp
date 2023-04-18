@@ -77,9 +77,7 @@ void XDeviceTableEditView::_bookmarkNew()
 
         getXInfoDB()->_addBookmarkRecord(state.nSelectionLocation, state.nSelectionSize, QColor(Qt::red), QColor(Qt::yellow), sName, ""); // mb TODO Colors
 
-        updateData();
-
-        viewport()->update();
+        getXInfoDB()->reloadView();
     }
 }
 #endif
