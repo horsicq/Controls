@@ -698,6 +698,11 @@ qint64 XAbstractTableView::getSelectionInitOffset()
     return g_nSelectionInitOffset;
 }
 
+qint64 XAbstractTableView::getSelectionInitSize()
+{
+    return g_nSelectionInitSize;
+}
+
 void XAbstractTableView::setCurrentBlock(qint64 nViewOffset, qint64 nSize)
 {
     g_nCurrentBlockViewOffset = nViewOffset;

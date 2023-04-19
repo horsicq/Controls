@@ -142,6 +142,7 @@ public:
 
     static QFont getMonoFont(qint32 nFontSize = -1);
     qint64 getSelectionInitOffset();
+    qint64 getSelectionInitSize();
     void setCurrentBlock(qint64 nViewOffset, qint64 nSize);
     bool isViewOffsetInCurrentBlock(qint64 nViewOffset);
     qint32 getLineHeight();

@@ -772,9 +772,6 @@ void XDeviceTableView::_setEdited(qint64 nDeviceOffset, qint64 nDeviceSize)
 
 void XDeviceTableView::reloadView()
 {
-#ifdef QT_DEBUG
-    qDebug("void XDeviceTableView::reloadView()");
-#endif
     updateData();
 
     viewport()->update();
