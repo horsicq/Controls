@@ -132,6 +132,8 @@ void XDeviceTableView::adjustViewSize()
 
 qint64 XDeviceTableView::getViewSizeByOffset(qint64 nViewOffset)
 {
+    Q_UNUSED(nViewOffset)
+
     return 1;
 }
 

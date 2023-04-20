@@ -798,7 +798,7 @@ QColor XAbstractTableView::getColorSelected(QColor color)
 
 QColor XAbstractTableView::getColorSelected(QWidget *pWidget)
 {
-    QColor colorBackground = pWidget->palette().background().color();
+    QColor colorBackground = pWidget->palette().window().color();
     return getColorSelected(colorBackground);
 }
 
