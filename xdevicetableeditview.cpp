@@ -68,6 +68,28 @@ void XDeviceTableEditView::_followInHexSlot()
     emit followInHex(nOffset);
 }
 #ifdef QT_SQL_LIB
+void XDeviceTableEditView::_bookmarkList()
+{
+    if (getXInfoDB()) {
+        quint64 nLocation = 0;
+        XIODevice *pSubDevice = dynamic_cast<XIODevice *>(getDevice());
+
+        if (pSubDevice) {
+            nLocation = pSubDevice->getInitLocation();
+        }
+
+        DialogBookmarks dialogBookmarks(this);
+
+        dialogBookmarks.setData(getXInfoDB(), nLocation, getDevice()->size());
+
+        //connect(&dialogSymbols, SIGNAL(currentSymbolChanged(XADDR, qint64)), this, SLOT(goToAddressSlot(XADDR, qint64)));
+
+        XOptions::_adjustStayOnTop(&dialogBookmarks, true);
+        dialogBookmarks.exec();
+    }
+}
+#endif
+#ifdef QT_SQL_LIB
 void XDeviceTableEditView::_bookmarkNew()
 {
     if (getXInfoDB()) {
@@ -75,7 +97,7 @@ void XDeviceTableEditView::_bookmarkNew()
 
         QString sName = QString("%1 - %2").arg(QString::number(state.nSelectionLocation, 16), QString::number(state.nSelectionLocation + state.nSelectionSize, 16));
 
-        getXInfoDB()->_addBookmarkRecord(state.nSelectionLocation, state.nSelectionSize, QColor(Qt::red), QColor(Qt::yellow), sName, ""); // mb TODO Colors
+        getXInfoDB()->_addBookmarkRecord(state.nSelectionLocation, state.nSelectionSize, QColor(Qt::yellow), sName, ""); // mb TODO Colors
 
         getXInfoDB()->reloadView();
     }

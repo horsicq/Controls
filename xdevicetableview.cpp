@@ -38,7 +38,7 @@ void XDeviceTableView::setXInfoDB(XInfoDB *pXInfoDB)
 
 #ifdef QT_SQL_LIB
     if (pXInfoDB) {
-        g_pXInfoDB->initDb();
+        g_pXInfoDB->initHexDb();
         connect(g_pXInfoDB, SIGNAL(reloadViewSignal()), this, SLOT(reloadView()));
     }
 #endif
@@ -324,7 +324,6 @@ QList<XDeviceTableView::HIGHLIGHTREGION> XDeviceTableView::_convertBookmarksToHi
         record.bIsValid = true;
         record.nLocation = pList->at(i).nLocation;
         record.nSize = pList->at(i).nSize;
-        record.colText = pList->at(i).colText;
         record.colBackground = pList->at(i).colBackground;
         record.colBackgroundSelected = getColorSelected(record.colBackground);
         record.sName = pList->at(i).sName;
