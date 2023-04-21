@@ -32,6 +32,7 @@
 #include <QShortcut>
 #include <QStyleOptionButton>
 #include <QTimer>
+#include <QElapsedTimer>
 
 #include "xshortcutstscrollarea.h"
 

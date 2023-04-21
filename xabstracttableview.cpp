@@ -167,6 +167,10 @@ void XAbstractTableView::setColumnWidth(qint32 nNumber, qint32 nWidth)
 
 void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
 {
+#ifdef QT_DEBUG
+    QElapsedTimer timer;
+    timer.start();
+#endif
     QPainter *pPainter = new QPainter(this->viewport());
     pPainter->setFont(g_fontText);
     pPainter->setPen(viewport()->palette().color(QPalette::WindowText));
@@ -277,6 +281,10 @@ void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
     }
 
     delete pPainter;
+
+#ifdef QT_DEBUG
+    qDebug("Elapsed XAbstractTableView::paintEvent %lld",timer.elapsed());
+#endif
 }
 
 void XAbstractTableView::reload(bool bUpdateData)
@@ -793,7 +801,10 @@ void XAbstractTableView::setMaxSelectionViewSize(qint64 nMaxSelectionViewSize)
 
 QColor XAbstractTableView::getColorSelected(QColor color)
 {
-    return color.darker(120);
+    color.setAlpha(50);
+    color = color.darker(100);
+
+    return color;
 }
 
 QColor XAbstractTableView::getColorSelected(QWidget *pWidget)
