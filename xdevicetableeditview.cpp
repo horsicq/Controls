@@ -82,7 +82,7 @@ void XDeviceTableEditView::_bookmarkList()
 
         dialogBookmarks.setData(getXInfoDB(), nLocation, getDevice()->size());
 
-        //connect(&dialogSymbols, SIGNAL(currentSymbolChanged(XADDR, qint64)), this, SLOT(goToAddressSlot(XADDR, qint64)));
+        // connect(&dialogSymbols, SIGNAL(currentSymbolChanged(XADDR, qint64)), this, SLOT(goToAddressSlot(XADDR, qint64)));
 
         XOptions::_adjustStayOnTop(&dialogBookmarks, true);
         dialogBookmarks.exec();
@@ -97,7 +97,7 @@ void XDeviceTableEditView::_bookmarkNew()
 
         QString sName = QString("%1 - %2").arg(QString::number(state.nSelectionLocation, 16), QString::number(state.nSelectionLocation + state.nSelectionSize, 16));
 
-        getXInfoDB()->_addBookmarkRecord(state.nSelectionLocation, state.nSelectionSize, QColor(Qt::yellow), sName, ""); // mb TODO Colors
+        getXInfoDB()->_addBookmarkRecord(state.nSelectionLocation, state.nSelectionSize, QColor(Qt::yellow), sName, "");  // mb TODO Colors
 
         getXInfoDB()->reloadView();
     }

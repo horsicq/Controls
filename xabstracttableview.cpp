@@ -129,7 +129,7 @@ void XAbstractTableView::clear()
 #endif
     setActive(false);
     // TODO
-    update(); // Check viewport()->update();
+    update();  // Check viewport()->update();
 }
 
 void XAbstractTableView::addColumn(QString sTitle, qint32 nWidth, bool bClickable, bool bEnable)
@@ -283,7 +283,7 @@ void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
     delete pPainter;
 
 #ifdef QT_DEBUG
-    qDebug("Elapsed XAbstractTableView::paintEvent %lld",timer.elapsed());
+    qDebug("Elapsed XAbstractTableView::paintEvent %lld", timer.elapsed());
 #endif
 }
 
