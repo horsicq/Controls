@@ -534,9 +534,9 @@ bool XDeviceTableView::isAnalyzed()
 {
     bool bResult = false;
 
-    if (g_pXInfoDB) {
-        bResult = g_pXInfoDB->isAnalyzed();
-    }
+//    if (g_pXInfoDB) {
+//        bResult = g_pXInfoDB->isAnalyzed();
+//    }
 
     return bResult;
 }
