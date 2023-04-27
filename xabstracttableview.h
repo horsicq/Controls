@@ -104,8 +104,8 @@ public:
     QFont getTextFont();
 
     bool setTextFontFromOptions(XOptions::ID id);
-    void setTotalLineCount(qint64 nValue);
-    quint64 getTotalLineCount();
+    void setTotalScrollCount(qint64 nValue);
+    quint64 getTotalScrollCount();
 
     void setLineDelta(qint32 nValue);
     void setSideDelta(qint32 nValue);
@@ -203,7 +203,7 @@ protected:
     virtual void endPainting(QPainter *pPainter);
     virtual bool _goToViewOffset(qint64 nViewOffset, bool bSaveCursor = false, bool bShort = false, bool bAprox = false);
     virtual void contextMenu(const QPoint &pos);
-    virtual qint64 getCurrentLineFromScroll();
+    virtual qint64 getCurrentViewOffsetFromScroll();
     virtual void setCurrentViewOffsetToScroll(qint64 nViewOffset);
     virtual void adjustColumns();
     virtual void adjustHeader();
@@ -225,7 +225,7 @@ private:
     qint32 g_nLinesProPage;
     qint32 g_nLineHeight;
     QFont g_fontText;
-    qint64 g_nTotalLineCount;
+    qint64 g_nTotalScrollCount;
     qint32 g_nViewWidth;
     qint32 g_nViewHeight;
     qint32 g_nTableWidth;

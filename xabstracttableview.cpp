@@ -31,7 +31,7 @@ XAbstractTableView::XAbstractTableView(QWidget *pParent) : XShortcutstScrollArea
     g_nCharHeight = 0;
     g_nLinesProPage = 0;
     g_nLineHeight = 0;
-    g_nTotalLineCount = 0;
+    g_nTotalScrollCount = 0;
     g_nViewWidth = 0;
     g_nViewHeight = 0;
     g_nTableWidth = 0;
@@ -329,7 +329,7 @@ bool XAbstractTableView::setTextFontFromOptions(XOptions::ID id)
     return bResult;
 }
 
-void XAbstractTableView::setTotalLineCount(qint64 nValue)
+void XAbstractTableView::setTotalScrollCount(qint64 nValue)
 {
     qint32 nScrollValue = 0;
 
@@ -344,12 +344,12 @@ void XAbstractTableView::setTotalLineCount(qint64 nValue)
 
     verticalScrollBar()->setRange(0, nScrollValue);
 
-    g_nTotalLineCount = nValue;
+    g_nTotalScrollCount = nValue;
 }
 
-quint64 XAbstractTableView::getTotalLineCount()
+quint64 XAbstractTableView::getTotalScrollCount()
 {
-    return g_nTotalLineCount;
+    return g_nTotalScrollCount;
 }
 
 void XAbstractTableView::setLineDelta(qint32 nValue)
@@ -527,7 +527,7 @@ void XAbstractTableView::_initSetSelection(qint64 nViewOffset, qint64 nSize)
 
 void XAbstractTableView::verticalScroll()
 {
-    g_nViewOffsetStart = getCurrentLineFromScroll();
+    g_nViewOffsetStart = getCurrentViewOffsetFromScroll();
 
     adjust(true);
 }
@@ -802,7 +802,7 @@ void XAbstractTableView::setMaxSelectionViewSize(qint64 nMaxSelectionViewSize)
 QColor XAbstractTableView::getColorSelected(QColor color)
 {
     color.setAlpha(50);
-    color = color.darker(100);
+    color = color.darker(150);
 
     return color;
 }
@@ -1108,7 +1108,7 @@ void XAbstractTableView::contextMenu(const QPoint &pos)
     Q_UNUSED(pos)
 }
 
-qint64 XAbstractTableView::getCurrentLineFromScroll()
+qint64 XAbstractTableView::getCurrentViewOffsetFromScroll()
 {
     return verticalScrollBar()->value();
 }

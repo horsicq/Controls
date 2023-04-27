@@ -108,9 +108,8 @@ public slots:
 protected:
     virtual bool isViewOffsetValid(qint64 nViewOffset);
     virtual bool isEnd(qint64 nOffset);
-    virtual void adjustLineCount();
-    virtual void adjustViewSize();
-    virtual qint64 getViewSizeByOffset(qint64 nViewOffset);
+    virtual void adjustScrollCount();
+    virtual qint64 getViewSizeByViewOffset(qint64 nViewOffset);
     virtual qint64 addressToViewOffset(XADDR nAddress);
 
 signals:

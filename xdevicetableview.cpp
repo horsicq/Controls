@@ -122,15 +122,11 @@ XDeviceTableView::MODE XDeviceTableView::getAddressMode()
     return g_addressMode;
 }
 
-void XDeviceTableView::adjustLineCount()
+void XDeviceTableView::adjustScrollCount()
 {
 }
 
-void XDeviceTableView::adjustViewSize()
-{
-}
-
-qint64 XDeviceTableView::getViewSizeByOffset(qint64 nViewOffset)
+qint64 XDeviceTableView::getViewSizeByViewOffset(qint64 nViewOffset)
 {
     Q_UNUSED(nViewOffset)
 
@@ -262,7 +258,7 @@ void XDeviceTableView::goToNextVisited()
         qint64 nViewOffset = g_listVisited.at(g_nVisitedIndex);
 
         if (_goToViewOffset(nViewOffset)) {
-            _initSetSelection(nViewOffset, getViewSizeByOffset(nViewOffset));
+            _initSetSelection(nViewOffset, getViewSizeByViewOffset(nViewOffset));
         }
     }
 
@@ -276,7 +272,7 @@ void XDeviceTableView::goToPrevVisited()
         qint64 nViewOffset = g_listVisited.at(g_nVisitedIndex);
 
         if (_goToViewOffset(nViewOffset)) {
-            _initSetSelection(nViewOffset, getViewSizeByOffset(nViewOffset));
+            _initSetSelection(nViewOffset, getViewSizeByViewOffset(nViewOffset));
         }
     }
 
@@ -445,7 +441,7 @@ void XDeviceTableView::goToAddress(XADDR nAddress, bool bShort, bool bAprox, boo
                 addVisited(nViewOffset);
             }
 
-            _initSetSelection(nViewOffset, getViewSizeByOffset(nViewOffset));
+            _initSetSelection(nViewOffset, getViewSizeByViewOffset(nViewOffset));
             // TODO
         }
         // mb TODO reload
@@ -465,7 +461,7 @@ void XDeviceTableView::goToOffset(qint64 nOffset, bool bSaveVisited)
             addVisited(nViewOffset);
         }
 
-        _initSetSelection(nViewOffset, getViewSizeByOffset(nViewOffset));
+        _initSetSelection(nViewOffset, getViewSizeByViewOffset(nViewOffset));
         // TODO
     }
     // mb TODO reload
@@ -543,8 +539,7 @@ bool XDeviceTableView::isAnalyzed()
 
 void XDeviceTableView::adjustAfterAnalysis()
 {
-    adjustViewSize();
-    adjustLineCount();
+    adjustScrollCount();
     clearVisited();
 
     reload(true);
