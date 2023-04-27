@@ -594,7 +594,14 @@ void XAbstractTableView::adjust(bool bUpdateData)
         g_nXViewOffset = horizontalScrollBar()->value();
 
         if (bUpdateData) {
+#ifdef QT_DEBUG
+            QElapsedTimer timer;
+            timer.start();
+#endif
             updateData();
+#ifdef QT_DEBUG
+            qDebug("updateData %lld", timer.elapsed());
+#endif
         }
 
         //    resetCursor(); // TODO Check

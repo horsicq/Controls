@@ -38,7 +38,6 @@ void XDeviceTableView::setXInfoDB(XInfoDB *pXInfoDB)
 
 #ifdef QT_SQL_LIB
     if (pXInfoDB) {
-        g_pXInfoDB->initHexDb();
         connect(g_pXInfoDB, SIGNAL(reloadViewSignal()), this, SLOT(reloadView()));
     }
 #endif
@@ -524,17 +523,6 @@ void XDeviceTableView::setReadonly(bool bState)
 bool XDeviceTableView::isReadonly()
 {
     return g_bIsReadonly;
-}
-
-bool XDeviceTableView::isAnalyzed()
-{
-    bool bResult = false;
-
-//    if (g_pXInfoDB) {
-//        bResult = g_pXInfoDB->isAnalyzed();
-//    }
-
-    return bResult;
 }
 
 void XDeviceTableView::adjustAfterAnalysis()

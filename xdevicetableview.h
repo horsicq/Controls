@@ -83,7 +83,6 @@ public:
     bool saveBackup();
     void setReadonly(bool bState);
     bool isReadonly();
-    bool isAnalyzed();
     void adjustAfterAnalysis();
     virtual DEVICESTATE getDeviceState(bool bGlobalOffset = false);
     virtual void setDeviceState(DEVICESTATE deviceState, bool bGlobalOffset = false);
