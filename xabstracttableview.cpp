@@ -72,7 +72,7 @@ XAbstractTableView::XAbstractTableView(QWidget *pParent) : XShortcutstScrollArea
     setVerticalLinesVisible(true);
     setLineDelta(0);
     setSideDelta(3);
-    // TODO Cursor off default !!!
+    // TODO Cursor off default !!! // TODO Check
 
     installEventFilter(this);  // mb TODO move to setActive
 }
