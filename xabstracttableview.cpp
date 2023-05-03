@@ -1060,7 +1060,7 @@ void XAbstractTableView::paintCell(QPainter *pPainter, qint32 nRow, qint32 nColu
     Q_UNUSED(nHeight)
 }
 
-void XAbstractTableView::paintTitle(QPainter *pPainter, qint32 nColumn, qint32 nLeft, qint32 nTop, qint32 nWidth, qint32 nHeight, QString sTitle)
+void XAbstractTableView::paintTitle(QPainter *pPainter, qint32 nColumn, qint32 nLeft, qint32 nTop, qint32 nWidth, qint32 nHeight, const QString &sTitle)
 {
     Q_UNUSED(nColumn)
 
