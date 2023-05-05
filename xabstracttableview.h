@@ -94,7 +94,7 @@ public:
     void clear();
 
     void addColumn(const QString &sTitle, qint32 nWidth = 0, bool bClickable = false, bool bEnable = true);
-    void setColumnTitle(qint32 nNumber, QString sTitle);
+    void setColumnTitle(qint32 nNumber, const QString &sTitle);
     void setColumnEnabled(qint32 nNumber, bool bState);
     void setColumnWidth(qint32 nNumber, qint32 nWidth);
 

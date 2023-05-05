@@ -144,7 +144,7 @@ void XAbstractTableView::addColumn(const QString &sTitle, qint32 nWidth, bool bC
     g_listColumns.append(column);
 }
 
-void XAbstractTableView::setColumnTitle(qint32 nNumber, QString sTitle)
+void XAbstractTableView::setColumnTitle(qint32 nNumber, const QString &sTitle)
 {
     if (nNumber < g_listColumns.count()) {
         g_listColumns[nNumber].sTitle = sTitle;
