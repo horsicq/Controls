@@ -70,7 +70,7 @@ public:
     void setValue32_64(quint64 nValue, HEXValidator::MODE validatorMode = HEXValidator::MODE_HEX);
     void setModeValue(MODE mode, quint64 nValue, HEXValidator::MODE validatorMode = HEXValidator::MODE_HEX);
     void setStringValue(QString sText, qint32 nMaxLength = 0);
-    void setUUID(QString sText);
+    void setUUID(const QString &sText);
     quint64 getValue();
     QVariant _getValue();
     void setText(QString sText);

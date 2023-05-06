@@ -196,7 +196,7 @@ void XLineEditHEX::setStringValue(QString sText, qint32 nMaxLength)
     setText(sText);
 }
 
-void XLineEditHEX::setUUID(QString sText)
+void XLineEditHEX::setUUID(const QString &sText)
 {
     g_validator.setData(HEXValidator::MODE_UUID, 0);
 
