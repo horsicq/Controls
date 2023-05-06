@@ -82,7 +82,7 @@ void XDeviceTableEditView::_bookmarkList()
 
         dialogBookmarks.setData(getXInfoDB(), nLocation, getDevice()->size());
 
-        // connect(&dialogSymbols, SIGNAL(currentSymbolChanged(XADDR, qint64)), this, SLOT(goToAddressSlot(XADDR, qint64)));
+        connect(&dialogBookmarks, SIGNAL(currentBookmarkChanged(XADDR, qint64)), this, SLOT(goToAddressSlot(XADDR, qint64)));
 
         XOptions::_adjustStayOnTop(&dialogBookmarks, true);
         dialogBookmarks.exec();
