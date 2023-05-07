@@ -87,7 +87,7 @@ protected:
     bool eventFilter(QObject *pObject, QEvent *pEvent);
 
 private slots:
-    void _setText(QString sText);
+    void _setText(const QString &sText);
     void customContextMenu(const QPoint &nPos);
     void updateFont();
     void _copy();

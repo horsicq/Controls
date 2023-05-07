@@ -339,7 +339,7 @@ bool XLineEditHEX::eventFilter(QObject *pObject, QEvent *pEvent)
 //     qDebug("void XLineEditHEX::keyPressEvent(QKeyEvent *keyEvent)");
 // }
 
-void XLineEditHEX::_setText(QString sText)
+void XLineEditHEX::_setText(const QString &sText)
 {
     // TODO fix strings like 00011111111
     if (g_validator.getMode() == HEXValidator::MODE_TEXT) {
