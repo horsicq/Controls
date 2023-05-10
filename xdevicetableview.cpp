@@ -151,7 +151,7 @@ XDeviceTableView::DEVICESTATE XDeviceTableView::getDeviceState(bool bGlobalOffse
     result.nSelectionLocation = state.nSelectionViewOffset;
     //    result.nCursorOffset = state.nCursorViewOffset;
     result.nSelectionSize = state.nSelectionViewSize;
-    result.nShowOffset = getViewOffsetStart();
+    result.nShowLocation = getViewOffsetStart();
 
     if (bGlobalOffset) {
         XIODevice *pSubDevice = dynamic_cast<XIODevice *>(getDevice());
@@ -160,7 +160,7 @@ XDeviceTableView::DEVICESTATE XDeviceTableView::getDeviceState(bool bGlobalOffse
             quint64 nInitOffset = pSubDevice->getInitLocation();
             result.nSelectionLocation += nInitOffset;
             //            result.nCursorOffset += nInitOffset;
-            result.nShowOffset += nInitOffset;
+            result.nShowLocation += nInitOffset;
         }
     }
 
@@ -176,11 +176,11 @@ void XDeviceTableView::setDeviceState(DEVICESTATE deviceState, bool bGlobalOffse
             quint64 nInitOffset = pSubDevice->getInitLocation();
             deviceState.nSelectionLocation -= nInitOffset;
             //            deviceState.nCursorOffset -= nInitOffset;
-            deviceState.nShowOffset -= nInitOffset;
+            deviceState.nShowLocation -= nInitOffset;
         }
     }
 
-    _goToViewOffset(deviceState.nShowOffset);
+    _goToViewOffset(deviceState.nShowLocation);
     _initSetSelection(deviceState.nSelectionLocation, deviceState.nSelectionSize);
     //    setCursorViewOffset(deviceState.nCursorOffset);
 
@@ -210,6 +210,22 @@ qint64 XDeviceTableView::deviceSizeToViewSize(qint64 nOffset, qint64 nSize, bool
     Q_UNUSED(bGlobalOffset)
 
     qint64 nResult = nSize;
+
+    return nResult;
+}
+
+qint64 XDeviceTableView::viewOffsetToDeviceOffset(qint64 nViewOffset, bool bGlobalOffset)
+{
+    qint64 nResult = nViewOffset;
+
+    if (bGlobalOffset) {
+        XIODevice *pSubDevice = dynamic_cast<XIODevice *>(getDevice());
+
+        if (pSubDevice) {
+            quint64 nInitOffset = pSubDevice->getInitLocation();
+            nResult += nInitOffset;
+        }
+    }
 
     return nResult;
 }

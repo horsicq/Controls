@@ -159,7 +159,15 @@ public:
 
     static QColor getColorSelected(QColor color);
     static QColor getColorSelected(QWidget *pWidget);
-    QColor getColorSelected();
+
+    enum TCLOLOR {
+        TCLOLOR_SELECTED = 0,
+        TCLOLOR_BREAKPOINT,
+        TCLOLOR_ANALYSED,
+        TCLOLOR_SIZE
+    };
+
+    QColor getColor(TCLOLOR tcolor);
 
 signals:
     void cursorViewOffsetChanged(qint64 nViewOffset);
@@ -261,7 +269,7 @@ private:
     bool g_bIsContextMenuEnable;
 
     QMap<quint32, QColor> g_colorSchema;
-    QColor g_colorSelected;
+    QColor g_color[TCLOLOR_SIZE];
 };
 
 #endif  // XABSTRACTTABLEVIEW_H
