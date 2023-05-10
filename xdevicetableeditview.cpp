@@ -29,7 +29,7 @@ void XDeviceTableEditView::_editHex()
     if (!isReadonly()) {
         DEVICESTATE state = getDeviceState();
 
-        SubDevice sd(getDevice(), state.nSelectionLocation, state.nSelectionSize);
+        SubDevice sd(getDevice(), state.nSelectionDeviceOffset, state.nSelectionSize);
 
         if (sd.open(QIODevice::ReadWrite)) {
             DialogHexEdit dialogHexEdit(this);
@@ -38,12 +38,12 @@ void XDeviceTableEditView::_editHex()
 
             //        connect(&dialogHexEdit,SIGNAL(changed()),this,SLOT(_setEdited()));
 
-            dialogHexEdit.setData(&sd, state.nSelectionLocation);
+            dialogHexEdit.setData(&sd, state.nSelectionDeviceOffset);
             dialogHexEdit.setBackupDevice(getBackupDevice());
 
             dialogHexEdit.exec();
 
-            _setEdited(state.nSelectionLocation, state.nSelectionSize);
+            _setEdited(state.nSelectionDeviceOffset, state.nSelectionSize);
 
             sd.close();
         }
@@ -52,7 +52,7 @@ void XDeviceTableEditView::_editHex()
 
 void XDeviceTableEditView::_followInDisasmSlot()
 {
-    quint64 nOffset = getDeviceState(true).nSelectionLocation;
+    quint64 nOffset = getDeviceState(true).nSelectionDeviceOffset;
     //    XADDR nAddress=XBinary::offsetToAddress(getMemoryMap(),nOffset);
 
     emit followInDisasm(nOffset);
@@ -62,7 +62,7 @@ void XDeviceTableEditView::_followInHexSlot()
 {
     //    emit
     //    followInHex(XBinary::offsetToAddress(getMemoryMap(),getStateOffset()));
-    quint64 nOffset = getDeviceState(true).nSelectionLocation;
+    quint64 nOffset = getDeviceState(true).nSelectionDeviceOffset;
     //    XADDR nAddress=XBinary::offsetToAddress(getMemoryMap(),nOffset);
 
     emit followInHex(nOffset);
@@ -95,9 +95,9 @@ void XDeviceTableEditView::_bookmarkNew()
     if (getXInfoDB()) {
         DEVICESTATE state = getDeviceState(true);
 
-        QString sName = QString("%1 - %2").arg(QString::number(state.nSelectionLocation, 16), QString::number(state.nSelectionLocation + state.nSelectionSize, 16));
+        QString sName = QString("%1 - %2").arg(QString::number(state.nSelectionDeviceOffset, 16), QString::number(state.nSelectionDeviceOffset + state.nSelectionSize, 16));
 
-        getXInfoDB()->_addBookmarkRecord(state.nSelectionLocation, state.nSelectionSize, QColor(Qt::yellow), sName, "");  // mb TODO Colors
+        getXInfoDB()->_addBookmarkRecord(state.nSelectionDeviceOffset, state.nSelectionSize, QColor(Qt::yellow), sName, "");  // mb TODO Colors
 
         getXInfoDB()->reloadView();
     }

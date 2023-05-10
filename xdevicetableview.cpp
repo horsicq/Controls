@@ -148,19 +148,19 @@ XDeviceTableView::DEVICESTATE XDeviceTableView::getDeviceState(bool bGlobalOffse
     DEVICESTATE result = {};
     STATE state = getState();
 
-    result.nSelectionLocation = state.nSelectionViewOffset;
+    result.nSelectionDeviceOffset = state.nSelectionViewOffset;
     //    result.nCursorOffset = state.nCursorViewOffset;
     result.nSelectionSize = state.nSelectionViewSize;
-    result.nShowLocation = getViewOffsetStart();
+    result.nStartDeviceOffset = getViewOffsetStart();
 
     if (bGlobalOffset) {
         XIODevice *pSubDevice = dynamic_cast<XIODevice *>(getDevice());
 
         if (pSubDevice) {
             quint64 nInitOffset = pSubDevice->getInitLocation();
-            result.nSelectionLocation += nInitOffset;
+            result.nSelectionDeviceOffset += nInitOffset;
             //            result.nCursorOffset += nInitOffset;
-            result.nShowLocation += nInitOffset;
+            result.nStartDeviceOffset += nInitOffset;
         }
     }
 
@@ -174,14 +174,14 @@ void XDeviceTableView::setDeviceState(DEVICESTATE deviceState, bool bGlobalOffse
 
         if (pSubDevice) {
             quint64 nInitOffset = pSubDevice->getInitLocation();
-            deviceState.nSelectionLocation -= nInitOffset;
+            deviceState.nSelectionDeviceOffset -= nInitOffset;
             //            deviceState.nCursorOffset -= nInitOffset;
-            deviceState.nShowLocation -= nInitOffset;
+            deviceState.nStartDeviceOffset -= nInitOffset;
         }
     }
 
-    _goToViewOffset(deviceState.nShowLocation);
-    _initSetSelection(deviceState.nSelectionLocation, deviceState.nSelectionSize);
+    _goToViewOffset(deviceState.nStartDeviceOffset);
+    _initSetSelection(deviceState.nSelectionDeviceOffset, deviceState.nSelectionSize);
     //    setCursorViewOffset(deviceState.nCursorOffset);
 
     adjust();
@@ -600,7 +600,7 @@ void XDeviceTableView::_goToSelectionStart()
     DEVICESTATE state = getDeviceState();
 
     if (state.nSelectionSize) {
-        goToOffset(state.nSelectionLocation, true);
+        goToOffset(state.nSelectionDeviceOffset, true);
         setFocus();
         viewport()->update();
     }
@@ -611,7 +611,7 @@ void XDeviceTableView::_goToSelectionEnd()
     DEVICESTATE state = getDeviceState();
 
     if (state.nSelectionSize) {
-        qint64 nOffset = state.nSelectionLocation + state.nSelectionSize;
+        qint64 nOffset = state.nSelectionDeviceOffset + state.nSelectionSize;
 
         if (isEnd(nOffset)) {
             nOffset--;
@@ -632,7 +632,7 @@ void XDeviceTableView::_dumpToFileSlot()
     if (!sFileName.isEmpty()) {
         DEVICESTATE state = getDeviceState();
 
-        DialogDumpProcess dd(this, getDevice(), state.nSelectionLocation, state.nSelectionSize, sFileName, DumpProcess::DT_OFFSET);
+        DialogDumpProcess dd(this, getDevice(), state.nSelectionDeviceOffset, state.nSelectionSize, sFileName, DumpProcess::DT_OFFSET);
 
         dd.showDialogDelay();
     }
@@ -642,7 +642,7 @@ void XDeviceTableView::_hexSignatureSlot()
 {
     DEVICESTATE state = getDeviceState();
 
-    DialogHexSignature dhs(this, getDevice(), state.nSelectionLocation, state.nSelectionSize);
+    DialogHexSignature dhs(this, getDevice(), state.nSelectionDeviceOffset, state.nSelectionSize);
 
     dhs.setGlobal(getShortcuts(), getGlobalOptions());
 
@@ -670,7 +670,7 @@ void XDeviceTableView::_findSlot(DialogSearch::SEARCHMODE mode)
 
     g_searchData = {};
     g_searchData.nResultOffset = -1;
-    g_searchData.nCurrentOffset = state.nSelectionLocation;
+    g_searchData.nCurrentOffset = state.nSelectionDeviceOffset;
 
     DialogSearch::OPTIONS options = {};
     options.bShowBegin = true;
@@ -733,7 +733,7 @@ void XDeviceTableView::_copyDataSlot()
 {
     DEVICESTATE state = getDeviceState();
 
-    DialogShowData dialogShowData(this, getDevice(), state.nSelectionLocation, state.nSelectionSize);
+    DialogShowData dialogShowData(this, getDevice(), state.nSelectionDeviceOffset, state.nSelectionSize);
 
     dialogShowData.exec();
 }
@@ -742,7 +742,7 @@ void XDeviceTableView::_copyAddressSlot()
 {
     DEVICESTATE state = getDeviceState();
 
-    XADDR nAddress = XBinary::offsetToAddress(getMemoryMap(), state.nSelectionLocation);
+    XADDR nAddress = XBinary::offsetToAddress(getMemoryMap(), state.nSelectionDeviceOffset);
 
     QApplication::clipboard()->setText(XBinary::valueToHex(XBinary::MODE_UNKNOWN, nAddress));
 }
@@ -751,7 +751,7 @@ void XDeviceTableView::_copyRelAddressSlot()
 {
     DEVICESTATE state = getDeviceState();
 
-    XADDR nAddress = XBinary::offsetToRelAddress(getMemoryMap(), state.nSelectionLocation);
+    XADDR nAddress = XBinary::offsetToRelAddress(getMemoryMap(), state.nSelectionDeviceOffset);
 
     QApplication::clipboard()->setText(XBinary::valueToHex(XBinary::MODE_UNKNOWN, nAddress));
 }
@@ -760,7 +760,7 @@ void XDeviceTableView::_copyOffsetSlot()
 {
     DEVICESTATE state = getDeviceState();
 
-    QApplication::clipboard()->setText(XBinary::valueToHex(XBinary::MODE_UNKNOWN, state.nSelectionLocation));
+    QApplication::clipboard()->setText(XBinary::valueToHex(XBinary::MODE_UNKNOWN, state.nSelectionDeviceOffset));
 }
 
 void XDeviceTableView::_setEdited(qint64 nDeviceOffset, qint64 nDeviceSize)

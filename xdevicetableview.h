@@ -43,10 +43,10 @@ public:
     };
 
     struct DEVICESTATE {
-        quint64 nSelectionLocation;
+        quint64 nSelectionDeviceOffset;
         qint64 nSelectionSize;
         //        qint64 nCursorOffset;
-        qint64 nShowLocation;
+        qint64 nStartDeviceOffset;
     };
 
     struct HIGHLIGHTREGION {

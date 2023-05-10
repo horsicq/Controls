@@ -231,7 +231,7 @@ QVariant XLineEditHEX::_getValue()
     return g_vValue;
 }
 
-void XLineEditHEX::setText(QString sText)
+void XLineEditHEX::setText(const QString &sText)
 {
     _setText(sText);
 }
