@@ -95,7 +95,8 @@ void XDeviceTableEditView::_bookmarkNew()
     if (getXInfoDB()) {
         DEVICESTATE state = getDeviceState(true);
 
-        QString sName = QString("%1 - %2").arg(QString::number(state.nSelectionDeviceOffset, 16), QString::number(state.nSelectionDeviceOffset + state.nSelectionSize, 16));
+        QString sName =
+            QString("%1 - %2").arg(QString::number(state.nSelectionDeviceOffset, 16), QString::number(state.nSelectionDeviceOffset + state.nSelectionSize, 16));
 
         getXInfoDB()->_addBookmarkRecord(state.nSelectionDeviceOffset, state.nSelectionSize, QColor(Qt::yellow), sName, "");  // mb TODO Colors
 

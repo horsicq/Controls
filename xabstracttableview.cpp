@@ -64,8 +64,8 @@ XAbstractTableView::XAbstractTableView(QWidget *pParent) : XShortcutstScrollArea
     g_bIsContextMenuEnable = true;
 
     g_color[TCLOLOR_SELECTED] = getColorSelected(viewport());
-    g_color[TCLOLOR_BREAKPOINT] = Qt::red; // mb TODO
-    g_color[TCLOLOR_ANALYSED] = QColor(100, 0, 0, 10); // TODO
+    g_color[TCLOLOR_BREAKPOINT] = Qt::red;              // mb TODO
+    g_color[TCLOLOR_ANALYSED] = QColor(100, 0, 0, 10);  // TODO
 
     setContextMenuPolicy(Qt::CustomContextMenu);
 

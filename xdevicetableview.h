@@ -83,11 +83,11 @@ public:
     bool saveBackup();
     void setReadonly(bool bState);
     bool isReadonly();
-    void adjustAfterAnalysis(); // TODO Check mb remove
+    void adjustAfterAnalysis();  // TODO Check mb remove
     virtual DEVICESTATE getDeviceState(bool bGlobalOffset = false);
     virtual void setDeviceState(DEVICESTATE deviceState, bool bGlobalOffset = false);
     virtual qint64 deviceOffsetToViewOffset(qint64 nOffset, bool bGlobalOffset = false);
-    virtual qint64 deviceSizeToViewSize(qint64 nOffset, qint64 nSize, bool bGlobalOffset = false); // TODO mb remove
+    virtual qint64 deviceSizeToViewSize(qint64 nOffset, qint64 nSize, bool bGlobalOffset = false);  // TODO mb remove
     virtual qint64 viewOffsetToDeviceOffset(qint64 nViewOffset, bool bGlobalOffset = false);
     void setDeviceSelection(qint64 nOffset, qint64 nSize);
     virtual qint64 deviceOffsetToGlobal(qint64 nDeviceOffset);
