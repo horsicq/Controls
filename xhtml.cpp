@@ -24,7 +24,7 @@ XHtml::XHtml(QObject *pParent) : QObject(pParent)
 {
 }
 
-void XHtml::appendText(QString sText)
+void XHtml::appendText(const QString &sText)
 {
     g_sString.append(sText);
 }

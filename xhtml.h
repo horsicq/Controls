@@ -36,7 +36,7 @@ public:
 
     explicit XHtml(QObject *pParent = nullptr);
 
-    void appendText(QString sText);
+    void appendText(const QString &sText);
     void addTableBegin();
     void addTableRow(QList<TABLECELL> listTableCells);
     void addTableEnd();
