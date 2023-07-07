@@ -30,6 +30,8 @@ XDeviceTableView::XDeviceTableView(QWidget *pParent) : XAbstractTableView(pParen
     g_addressMode = MODE_ADDRESS;
     g_bIsReadonly = true;
     g_nVisitedIndex = 0;
+
+    connect(this, SIGNAL(selectionChanged()), this, SLOT(selectionChangedSlot()));
 }
 
 void XDeviceTableView::setXInfoDB(XInfoDB *pXInfoDB)
@@ -359,6 +361,27 @@ QList<XDeviceTableView::HIGHLIGHTREGION> XDeviceTableView::getHighlightRegion(QL
     }
 
     return listResult;
+}
+
+QSet<XDeviceTableView::VIEWWIDGET> *XDeviceTableView::getViewWidgetState()
+{
+    return &g_stViewWidgetState;
+}
+
+void XDeviceTableView::setViewWidgetState(VIEWWIDGET viewWidget, bool bState)
+{
+    if (bState) {
+        g_stViewWidgetState.insert(viewWidget);
+    } else {
+        g_stViewWidgetState.remove(viewWidget);
+    }
+
+    emit viewWidgetsStateChanged();
+}
+
+bool XDeviceTableView::getViewWidgetState(VIEWWIDGET viewWidget)
+{
+    return g_stViewWidgetState.contains(viewWidget);
 }
 
 qint64 XDeviceTableView::write_array(qint64 nOffset, char *pData, qint64 nDataSize)
@@ -783,4 +806,31 @@ void XDeviceTableView::reloadView()
     updateData();
 
     viewport()->update();
+}
+
+void XDeviceTableView::selectionChangedSlot()
+{
+    XDeviceTableView::DEVICESTATE deviceState = getDeviceState();
+
+    emit deviceSelectionChanged(deviceState.nSelectionDeviceOffset, deviceState.nSelectionSize);
+}
+
+void XDeviceTableView::_showDataInspector()
+{
+    setViewWidgetState(VIEWWIDGET_DATAINSPECTOR, true);
+
+    XDeviceTableView::DEVICESTATE deviceState = getDeviceState();
+
+    DialogDataInspector dialogDataInspector(this, getDevice(), deviceState.nSelectionDeviceOffset, deviceState.nSelectionSize);
+    dialogDataInspector.setGlobal(getShortcuts(), getGlobalOptions());
+
+    connect(this, SIGNAL(deviceSelectionChanged(qint64, qint64)), &dialogDataInspector, SLOT(selectionChangedSlot(qint64, qint64)));
+    connect(this, SIGNAL(dataChanged(qint64, qint64)), &dialogDataInspector, SLOT(dataChangedSlot(qint64, qint64)));
+    connect(&dialogDataInspector, SIGNAL(dataChanged(qint64, qint64)), this, SLOT(_setEdited(qint64, qint64)));
+
+    XOptions::_adjustStayOnTop(&dialogDataInspector, true);
+
+    dialogDataInspector.exec();
+
+    setViewWidgetState(VIEWWIDGET_DATAINSPECTOR, false);
 }

@@ -21,6 +21,7 @@
 #ifndef XDEVICETABLEVIEW_H
 #define XDEVICETABLEVIEW_H
 
+#include "dialogdatainspector.h"
 #include "dialogdumpprocess.h"
 #include "dialoggotoaddress.h"
 #include "dialoghexsignature.h"
@@ -58,6 +59,10 @@ public:
         QColor colBackgroundSelected;
         QString sName;
         QString sComment;
+    };
+
+    enum VIEWWIDGET {
+        VIEWWIDGET_DATAINSPECTOR
     };
 
     XDeviceTableView(QWidget *pParent = nullptr);
@@ -102,6 +107,10 @@ public:
     static QList<HIGHLIGHTREGION> _convertBookmarksToHighlightRegion(QList<XInfoDB::BOOKMARKRECORD> *pList);
     static QList<HIGHLIGHTREGION> getHighlightRegion(QList<HIGHLIGHTREGION> *pList, quint64 nLocation);
 
+    QSet<VIEWWIDGET> *getViewWidgetState();
+    void setViewWidgetState(VIEWWIDGET viewWidget, bool bState);
+    bool getViewWidgetState(VIEWWIDGET viewWidget);
+
 public slots:
     void setEdited(qint64 nDeviceOffset, qint64 nDeviceSize);
 
@@ -115,6 +124,8 @@ protected:
 signals:
     void visitedStateChanged();
     void dataChanged(qint64 nDeviceOffset, qint64 nDeviceSize);
+    void deviceSelectionChanged(qint64 nDeviceOffset, qint64 nDeviceSize);
+    void viewWidgetsStateChanged();
 
 protected slots:
     void _goToAddressSlot();
@@ -136,6 +147,10 @@ protected slots:
     void _setEdited(qint64 nDeviceOffset, qint64 nDeviceSize);
     void goToAddressSlot(XADDR nAddress, qint64 nSize);
     void reloadView();
+    void selectionChangedSlot();
+
+public slots:
+    void _showDataInspector();
 
 private:
     XInfoDB *g_pXInfoDB;
@@ -148,6 +163,7 @@ private:
     bool g_bIsReadonly;
     QList<qint64> g_listVisited;
     qint32 g_nVisitedIndex;
+    QSet<VIEWWIDGET> g_stViewWidgetState;
 };
 
 #endif  // XDEVICETABLEVIEW_H

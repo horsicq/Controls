@@ -31,6 +31,7 @@
 
 #include "hexvalidator.h"
 
+// TODO setMode
 class XLineEditHEX : public QLineEdit {
     Q_OBJECT
 
