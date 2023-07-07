@@ -666,7 +666,6 @@ void XDeviceTableView::_hexSignatureSlot()
     DEVICESTATE state = getDeviceState();
 
     DialogHexSignature dhs(this, getDevice(), state.nSelectionDeviceOffset, state.nSelectionSize);
-
     dhs.setGlobal(getShortcuts(), getGlobalOptions());
 
     dhs.exec();

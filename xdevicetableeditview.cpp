@@ -33,7 +33,6 @@ void XDeviceTableEditView::_editHex()
 
         if (sd.open(QIODevice::ReadWrite)) {
             DialogHexEdit dialogHexEdit(this);
-
             dialogHexEdit.setGlobal(getShortcuts(), getGlobalOptions());
 
             //        connect(&dialogHexEdit,SIGNAL(changed()),this,SLOT(_setEdited()));

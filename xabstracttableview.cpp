@@ -170,6 +170,7 @@ void XAbstractTableView::setColumnWidth(qint32 nNumber, qint32 nWidth)
 void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
 {
 #ifdef QT_DEBUG
+    qDebug("XAbstractTableView::paintEvent");
     QElapsedTimer timer;
     timer.start();
 #endif
@@ -542,72 +543,74 @@ void XAbstractTableView::horisontalScroll()
 void XAbstractTableView::adjust(bool bUpdateData)
 {
     if (isActive()) {
-        g_nViewWidth = viewport()->width();
-        g_nViewHeight = viewport()->height();
+        {
+            g_nViewWidth = viewport()->width();
+            g_nViewHeight = viewport()->height();
 
-        g_nLineHeight = g_nCharHeight + g_nLineDelta;
+            g_nLineHeight = g_nCharHeight + g_nLineDelta;
 
-        qint32 nHeaderHeight = (g_bHeaderVisible) ? (g_nHeaderHeight) : (0);
+            qint32 nHeaderHeight = (g_bHeaderVisible) ? (g_nHeaderHeight) : (0);
 
-        qint32 nLinesProPage = (g_nViewHeight - nHeaderHeight) / g_nLineHeight;
+            qint32 nLinesProPage = (g_nViewHeight - nHeaderHeight) / g_nLineHeight;
 
-        if (nLinesProPage < 0) {
-            nLinesProPage = 0;
-        }
-
-        if (g_nLinesProPage != nLinesProPage) {
-            bUpdateData = true;
-            g_nLinesProPage = nLinesProPage;
-        }
-
-        g_nTableWidth = 0;
-        qint32 nNumberOfColumns = g_listColumns.count();
-
-        if (g_bLastColumnStretch) {
-            if (nNumberOfColumns) {
-                nNumberOfColumns--;
+            if (nLinesProPage < 0) {
+                nLinesProPage = 0;
             }
-        }
 
-        for (qint32 i = 0; i < nNumberOfColumns; i++) {
-            if (g_listColumns.at(i).bEnable) {
-                g_listColumns[i].nLeft = g_nTableWidth;
-                g_nTableWidth += g_listColumns.at(i).nWidth;
+            if (g_nLinesProPage != nLinesProPage) {
+                bUpdateData = true;
+                g_nLinesProPage = nLinesProPage;
             }
-        }
 
-        qint32 nDelta = g_nTableWidth - g_nViewWidth;
+            g_nTableWidth = 0;
+            qint32 nNumberOfColumns = g_listColumns.count();
 
-        if (g_bLastColumnStretch) {
-            //            nDelta+=3; // TODO Check
-            // TODO !!!
-            qint32 _nNumberOfColumns = g_listColumns.count();
-
-            if (nDelta < 0) {
-                g_listColumns[_nNumberOfColumns - 1].nWidth = -(nDelta);
-            } else {
-                g_listColumns[_nNumberOfColumns - 1].nWidth = 0;
+            if (g_bLastColumnStretch) {
+                if (nNumberOfColumns) {
+                    nNumberOfColumns--;
+                }
             }
+
+            for (qint32 i = 0; i < nNumberOfColumns; i++) {
+                if (g_listColumns.at(i).bEnable) {
+                    g_listColumns[i].nLeft = g_nTableWidth;
+                    g_nTableWidth += g_listColumns.at(i).nWidth;
+                }
+            }
+
+            qint32 nDelta = g_nTableWidth - g_nViewWidth;
+
+            if (g_bLastColumnStretch) {
+                //            nDelta+=3; // TODO Check
+                // TODO !!!
+                qint32 _nNumberOfColumns = g_listColumns.count();
+
+                if (nDelta < 0) {
+                    g_listColumns[_nNumberOfColumns - 1].nWidth = -(nDelta);
+                } else {
+                    g_listColumns[_nNumberOfColumns - 1].nWidth = 0;
+                }
+            }
+
+            horizontalScrollBar()->setRange(0, nDelta);
+            horizontalScrollBar()->setPageStep(g_nViewWidth);
+
+            g_nXViewOffset = horizontalScrollBar()->value();
+
+            if (bUpdateData) {
+    #ifdef QT_DEBUG
+                QElapsedTimer timer;
+                timer.start();
+    #endif
+                updateData();
+    #ifdef QT_DEBUG
+                qDebug("updateData %lld", timer.elapsed());
+    #endif
+            }
+
+            //    resetCursor(); // TODO Check
+            // TODO
         }
-
-        horizontalScrollBar()->setRange(0, nDelta);
-        horizontalScrollBar()->setPageStep(g_nViewWidth);
-
-        g_nXViewOffset = horizontalScrollBar()->value();
-
-        if (bUpdateData) {
-#ifdef QT_DEBUG
-            QElapsedTimer timer;
-            timer.start();
-#endif
-            updateData();
-#ifdef QT_DEBUG
-            qDebug("updateData %lld", timer.elapsed());
-#endif
-        }
-
-        //    resetCursor(); // TODO Check
-        // TODO
     }
 }
 
