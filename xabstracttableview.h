@@ -53,6 +53,7 @@ public:
         PT_UNKNOWN = 0,
         PT_HEADER,
         PT_CELL,
+        // TODO Check more
     };
 
     struct CURSOR_POSITION {
