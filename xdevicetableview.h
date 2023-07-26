@@ -40,6 +40,7 @@ public:
         MODE_OFFSET = 0,
         MODE_ADDRESS,
         MODE_RELADDRESS,
+        MODE_LABEL,
         MODE_THIS
     };
 
@@ -57,7 +58,6 @@ public:
         QColor colText;
         QColor colBackground;
         QColor colBackgroundSelected;
-        QString sName;
         QString sComment;
     };
 

@@ -339,7 +339,6 @@ QList<XDeviceTableView::HIGHLIGHTREGION> XDeviceTableView::_convertBookmarksToHi
         record.nSize = pList->at(i).nSize;
         record.colBackground = pList->at(i).colBackground;
         record.colBackgroundSelected = getColorSelected(record.colBackground);
-        record.sName = pList->at(i).sName;
         record.sComment = pList->at(i).sComment;
 
         listResult.append(record);
