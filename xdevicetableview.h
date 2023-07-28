@@ -54,6 +54,7 @@ public:
     struct HIGHLIGHTREGION {
         bool bIsValid;
         quint64 nLocation;
+        XInfoDB::LT locationType;
         qint64 nSize;
         QColor colText;
         QColor colBackground;
@@ -62,7 +63,8 @@ public:
     };
 
     enum VIEWWIDGET {
-        VIEWWIDGET_DATAINSPECTOR
+        VIEWWIDGET_DATAINSPECTOR,
+        VIEWWIDGET_BOOKMARKS
     };
 
     XDeviceTableView(QWidget *pParent = nullptr);
@@ -105,9 +107,8 @@ public:
     void clearVisited();
 
     static QList<HIGHLIGHTREGION> _convertBookmarksToHighlightRegion(QList<XInfoDB::BOOKMARKRECORD> *pList);
-    static QList<HIGHLIGHTREGION> getHighlightRegion(QList<HIGHLIGHTREGION> *pList, quint64 nLocation);
+    static QList<HIGHLIGHTREGION> getHighlightRegion(QList<HIGHLIGHTREGION> *pList, quint64 nLocation, XInfoDB::LT locationType);
 
-    QSet<VIEWWIDGET> *getViewWidgetState();
     void setViewWidgetState(VIEWWIDGET viewWidget, bool bState);
     bool getViewWidgetState(VIEWWIDGET viewWidget);
 
@@ -126,6 +127,7 @@ signals:
     void dataChanged(qint64 nDeviceOffset, qint64 nDeviceSize);
     void deviceSelectionChanged(qint64 nDeviceOffset, qint64 nDeviceSize);
     void viewWidgetsStateChanged();
+    void closeWidget_Bookmarks();
 
 protected slots:
     void _goToAddressSlot();
@@ -163,7 +165,7 @@ private:
     bool g_bIsReadonly;
     QList<qint64> g_listVisited;
     qint32 g_nVisitedIndex;
-    QSet<VIEWWIDGET> g_stViewWidgetState;
+    static QSet<VIEWWIDGET> g_stViewWidgetState;
 };
 
 #endif  // XDEVICETABLEVIEW_H

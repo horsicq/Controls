@@ -70,21 +70,30 @@ void XDeviceTableEditView::_followInHexSlot()
 void XDeviceTableEditView::_bookmarkList()
 {
     if (getXInfoDB()) {
-        quint64 nLocation = 0;
-        XIODevice *pSubDevice = dynamic_cast<XIODevice *>(getDevice());
+        if (!getViewWidgetState(VIEWWIDGET_BOOKMARKS)) {
+            setViewWidgetState(VIEWWIDGET_BOOKMARKS, true);
 
-        if (pSubDevice) {
-            nLocation = pSubDevice->getInitLocation();
+            quint64 nLocation = 0;
+            XIODevice *pSubDevice = dynamic_cast<XIODevice *>(getDevice());
+
+            if (pSubDevice) {
+                nLocation = pSubDevice->getInitLocation();
+            }
+
+            DialogBookmarks dialogBookmarks(this);
+
+            dialogBookmarks.setData(getXInfoDB(), nLocation, -1, getDevice()->size());
+
+            connect(&dialogBookmarks, SIGNAL(currentBookmarkChanged(XADDR, qint64)), this, SLOT(goToAddressSlot(XADDR, qint64)));
+            connect(this, SIGNAL(closeWidget_Bookmarks()), &dialogBookmarks, SLOT(close()));
+
+            XOptions::_adjustStayOnTop(&dialogBookmarks, true);
+            dialogBookmarks.exec();
+
+            setViewWidgetState(VIEWWIDGET_BOOKMARKS, false);
+        } else {
+            emit closeWidget_Bookmarks();
         }
-
-        DialogBookmarks dialogBookmarks(this);
-
-        dialogBookmarks.setData(getXInfoDB(), nLocation, getDevice()->size());
-
-        connect(&dialogBookmarks, SIGNAL(currentBookmarkChanged(XADDR, qint64)), this, SLOT(goToAddressSlot(XADDR, qint64)));
-
-        XOptions::_adjustStayOnTop(&dialogBookmarks, true);
-        dialogBookmarks.exec();
     }
 }
 #endif
@@ -94,10 +103,10 @@ void XDeviceTableEditView::_bookmarkNew()
     if (getXInfoDB()) {
         DEVICESTATE state = getDeviceState(true);
 
-        QString sName =
+        QString sComment =
             QString("%1 - %2").arg(QString::number(state.nSelectionDeviceOffset, 16), QString::number(state.nSelectionDeviceOffset + state.nSelectionSize, 16));
 
-        getXInfoDB()->_addBookmarkRecord(state.nSelectionDeviceOffset, state.nSelectionSize, QColor(Qt::yellow), sName);  // mb TODO Colors
+        getXInfoDB()->_addBookmarkRecord(state.nSelectionDeviceOffset, XInfoDB::LT_OFFSET, state.nSelectionSize, QColor(Qt::yellow), sComment);  // mb TODO Colors TODO locationType
 
         getXInfoDB()->reloadView();
     }
