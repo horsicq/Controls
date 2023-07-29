@@ -106,7 +106,8 @@ void XDeviceTableEditView::_bookmarkNew()
         QString sComment =
             QString("%1 - %2").arg(QString::number(state.nSelectionDeviceOffset, 16), QString::number(state.nSelectionDeviceOffset + state.nSelectionSize, 16));
 
-        getXInfoDB()->_addBookmarkRecord(state.nSelectionDeviceOffset, XInfoDB::LT_OFFSET, state.nSelectionSize, QColor(Qt::yellow), sComment);  // mb TODO Colors TODO locationType
+        getXInfoDB()->_addBookmarkRecord(state.nSelectionDeviceOffset, XInfoDB::LT_OFFSET, state.nSelectionSize, QColor(Qt::yellow),
+                                         sComment);  // mb TODO Colors TODO locationType
 
         getXInfoDB()->reloadView();
     }
