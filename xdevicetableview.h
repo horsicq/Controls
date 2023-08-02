@@ -36,12 +36,12 @@ class XDeviceTableView : public XAbstractTableView {
     Q_OBJECT
 
 public:
-    enum MODE {
-        MODE_OFFSET = 0,
-        MODE_ADDRESS,
-        MODE_RELADDRESS,
-        MODE_LABEL,
-        MODE_THIS
+    enum LOCMODE {
+        LOCMODE_OFFSET = 0,
+        LOCMODE_ADDRESS,
+        LOCMODE_RELADDRESS,
+        LOCMODE_LABEL,
+        LOCMODE_THIS
     };
 
     struct DEVICESTATE {
@@ -79,8 +79,8 @@ public:
     qint64 getViewSize();
     void setMemoryMap(XBinary::_MEMORY_MAP memoryMap);
     XBinary::_MEMORY_MAP *getMemoryMap();
-    void setAddressMode(MODE addressMode);
-    MODE getAddressMode();
+    void setAddressMode(LOCMODE addressMode);
+    LOCMODE getAddressMode();
     qint64 write_array(qint64 nOffset, char *pData, qint64 nDataSize);
     QByteArray read_array(qint64 nOffset, qint32 nSize);
     void goToAddress(XADDR nAddress, bool bShort = false, bool bAprox = false, bool bSaveVisited = false);
@@ -161,7 +161,7 @@ private:
     qint64 g_nViewSize;
     XBinary::_MEMORY_MAP g_memoryMap;
     XBinary::SEARCHDATA g_searchData;
-    MODE g_addressMode;
+    LOCMODE g_addressMode;
     bool g_bIsReadonly;
     QList<qint64> g_listVisited;
     qint32 g_nVisitedIndex;

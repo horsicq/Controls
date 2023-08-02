@@ -29,7 +29,7 @@ XDeviceTableView::XDeviceTableView(QWidget *pParent) : XAbstractTableView(pParen
     g_pBackupDevice = nullptr;
     g_nViewSize = 0;
     g_searchData = {};
-    g_addressMode = MODE_ADDRESS;
+    g_addressMode = LOCMODE_ADDRESS;
     g_bIsReadonly = true;
     g_nVisitedIndex = 0;
 
@@ -115,12 +115,12 @@ XBinary::_MEMORY_MAP *XDeviceTableView::getMemoryMap()
     return &g_memoryMap;
 }
 
-void XDeviceTableView::setAddressMode(XDeviceTableView::MODE addressMode)
+void XDeviceTableView::setAddressMode(XDeviceTableView::LOCMODE addressMode)
 {
     g_addressMode = addressMode;
 }
 
-XDeviceTableView::MODE XDeviceTableView::getAddressMode()
+XDeviceTableView::LOCMODE XDeviceTableView::getAddressMode()
 {
     return g_addressMode;
 }
@@ -591,7 +591,7 @@ void XDeviceTableView::_goToAddressSlot()
 {
     DialogGoToAddress::TYPE type = DialogGoToAddress::TYPE_VIRTUALADDRESS;
 
-    if (g_addressMode == MODE_RELADDRESS) {
+    if (g_addressMode == LOCMODE_RELADDRESS) {
         type = DialogGoToAddress::TYPE_RELVIRTUALADDRESS;
     }
 
