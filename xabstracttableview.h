@@ -174,8 +174,8 @@ public:
 signals:
     void cursorViewOffsetChanged(qint64 nViewOffset);
     void selectionChanged();
-    void errorMessage(QString sText);
-    void infoMessage(QString sText);
+    void errorMessage(const QString &sText);
+    void infoMessage(const QString &sText);
     void headerClicked(qint32 nNumber);
     void cellDoubleClicked(qint32 nRow, qint32 nColumn);
 
