@@ -148,6 +148,7 @@ protected slots:
     void _copyOffsetSlot();
     void _setEdited(qint64 nDeviceOffset, qint64 nDeviceSize);
     void goToAddressSlot(XADDR nAddress, qint64 nSize);
+    void goToAddressSlot(XADDR nAddress);
     void reloadView();
     void selectionChangedSlot();
 

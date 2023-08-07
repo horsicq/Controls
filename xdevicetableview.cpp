@@ -799,6 +799,11 @@ void XDeviceTableView::goToAddressSlot(XADDR nAddress, qint64 nSize)
     reload(true);
 }
 
+void XDeviceTableView::goToAddressSlot(XADDR nAddress)
+{
+    goToAddressSlot(nAddress, 0);
+}
+
 void XDeviceTableView::reloadView()
 {
     updateData();
