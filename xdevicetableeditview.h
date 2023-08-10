@@ -40,6 +40,7 @@ protected slots:
 #ifdef QT_SQL_LIB
     void _bookmarkNew();
     void _bookmarkList();
+    void currentBookmarkChangedSlot(quint64 nLocation, qint32 nLocationType, qint64 nSize);
 #endif
 
 signals:

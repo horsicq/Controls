@@ -84,7 +84,7 @@ void XDeviceTableEditView::_bookmarkList()
 
             dialogBookmarks.setData(getXInfoDB(), nLocation, -1, getDevice()->size());
 
-            connect(&dialogBookmarks, SIGNAL(currentBookmarkChanged(XADDR, qint64)), this, SLOT(goToAddressSlot(XADDR, qint64)));
+            connect(&dialogBookmarks, SIGNAL(currentBookmarkChanged(quint64, qint32, qint64)), this, SLOT(currentBookmarkChangedSlot(quint64, qint32, qint64)));
             connect(this, SIGNAL(closeWidget_Bookmarks()), &dialogBookmarks, SLOT(close()));
 
             XOptions::_adjustStayOnTop(&dialogBookmarks, true);
@@ -94,6 +94,20 @@ void XDeviceTableEditView::_bookmarkList()
         } else {
             emit closeWidget_Bookmarks();
         }
+    }
+}
+#endif
+#ifdef QT_SQL_LIB
+void XDeviceTableEditView::currentBookmarkChangedSlot(quint64 nLocation, qint32 nLocationType, qint64 nSize)
+{
+    Q_UNUSED(nSize)
+
+    if (nLocationType == XInfoDB::LT_ADDRESS) {
+        goToAddressSlot(nLocation);
+        viewport()->update();
+    } else if (nLocationType == XInfoDB::LT_OFFSET) {
+        goToOffset(nLocation);
+        viewport()->update();
     }
 }
 #endif
