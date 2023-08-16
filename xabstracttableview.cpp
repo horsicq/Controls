@@ -63,10 +63,6 @@ XAbstractTableView::XAbstractTableView(QWidget *pParent) : XShortcutstScrollArea
     g_nMaxSelectionViewSize = 0;
     g_bIsContextMenuEnable = true;
 
-    g_color[TCLOLOR_SELECTED] = getColorSelected(viewport());
-    g_color[TCLOLOR_BREAKPOINT] = Qt::red;              // mb TODO
-    g_color[TCLOLOR_ANALYSED] = QColor(100, 0, 0, 10);  // TODO
-
     setContextMenuPolicy(Qt::CustomContextMenu);
 
     setHeaderVisible(true);
@@ -551,7 +547,11 @@ void XAbstractTableView::adjust(bool bUpdateData)
 
             qint32 nHeaderHeight = (g_bHeaderVisible) ? (g_nHeaderHeight) : (0);
 
-            qint32 nLinesProPage = (g_nViewHeight - nHeaderHeight) / g_nLineHeight;
+            qint32 nLinesProPage = 0;
+
+            if (g_nLineHeight) {
+                nLinesProPage = (g_nViewHeight - nHeaderHeight) / g_nLineHeight;
+            }
 
             if (nLinesProPage < 0) {
                 nLinesProPage = 0;
@@ -809,25 +809,6 @@ bool XAbstractTableView::isSelectionEnable()
 void XAbstractTableView::setMaxSelectionViewSize(qint64 nMaxSelectionViewSize)
 {
     g_nMaxSelectionViewSize = nMaxSelectionViewSize;
-}
-
-QColor XAbstractTableView::getColorSelected(QColor color)
-{
-    color.setAlpha(50);
-    color = color.darker(150);
-
-    return color;
-}
-
-QColor XAbstractTableView::getColorSelected(QWidget *pWidget)
-{
-    QColor colorBackground = pWidget->palette().window().color();
-    return getColorSelected(colorBackground);
-}
-
-QColor XAbstractTableView::getColor(TCLOLOR tcolor)
-{
-    return g_color[tcolor];
 }
 
 void XAbstractTableView::_customContextMenu(const QPoint &pos)

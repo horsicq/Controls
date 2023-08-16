@@ -159,18 +159,6 @@ public:
     bool isSelectionEnable();
     void setMaxSelectionViewSize(qint64 nMaxSelectionViewSize);
 
-    static QColor getColorSelected(QColor color);
-    static QColor getColorSelected(QWidget *pWidget);
-
-    enum TCLOLOR {
-        TCLOLOR_SELECTED = 0,
-        TCLOLOR_BREAKPOINT,
-        TCLOLOR_ANALYSED,
-        TCLOLOR_SIZE
-    };
-
-    QColor getColor(TCLOLOR tcolor);
-
 signals:
     void cursorViewOffsetChanged(qint64 nViewOffset);
     void selectionChanged();
@@ -268,10 +256,7 @@ private:
     qint64 g_nCurrentBlockViewSize;
 
     bool g_bIsSelectionEnable;
-    bool g_bIsContextMenuEnable;
-
-    QMap<quint32, QColor> g_colorSchema;
-    QColor g_color[TCLOLOR_SIZE];
+    bool g_bIsContextMenuEnable; 
 };
 
 #endif  // XABSTRACTTABLEVIEW_H
