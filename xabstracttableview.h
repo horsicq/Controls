@@ -256,7 +256,7 @@ private:
     qint64 g_nCurrentBlockViewSize;
 
     bool g_bIsSelectionEnable;
-    bool g_bIsContextMenuEnable; 
+    bool g_bIsContextMenuEnable;
 };
 
 #endif  // XABSTRACTTABLEVIEW_H
