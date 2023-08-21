@@ -31,6 +31,9 @@
 #include "xabstracttableview.h"
 #include "xformats.h"
 #include "xinfodb.h"
+#ifdef QT_SQL_LIB
+#include "dialogbookmarks.h"
+#endif
 
 class XDeviceTableView : public XAbstractTableView {
     Q_OBJECT
@@ -127,7 +130,10 @@ signals:
     void dataChanged(qint64 nDeviceOffset, qint64 nDeviceSize);
     void deviceSelectionChanged(qint64 nDeviceOffset, qint64 nDeviceSize);
     void viewWidgetsStateChanged();
+    void closeWidget_DataInspector();
+#ifdef QT_SQL_LIB
     void closeWidget_Bookmarks();
+#endif
 
 protected slots:
     void _goToAddressSlot();
@@ -151,6 +157,11 @@ protected slots:
     void goToAddressSlot(XADDR nAddress);
     void reloadView();
     void selectionChangedSlot();
+#ifdef QT_SQL_LIB
+    void _bookmarkNew();
+    void _bookmarkList();
+    void currentBookmarkChangedSlot(quint64 nLocation, qint32 nLocationType, qint64 nSize);
+#endif
 
 public slots:
     void _showDataInspector();

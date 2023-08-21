@@ -818,22 +818,89 @@ void XDeviceTableView::selectionChangedSlot()
     emit deviceSelectionChanged(deviceState.nSelectionDeviceOffset, deviceState.nSelectionSize);
 }
 
+#ifdef QT_SQL_LIB
+void XDeviceTableView::_bookmarkList()
+{
+    if (getXInfoDB()) {
+        if (!getViewWidgetState(VIEWWIDGET_BOOKMARKS)) {
+            setViewWidgetState(VIEWWIDGET_BOOKMARKS, true);
+
+            quint64 nLocation = 0;
+            XIODevice *pSubDevice = dynamic_cast<XIODevice *>(getDevice());
+
+            if (pSubDevice) {
+                nLocation = pSubDevice->getInitLocation();
+            }
+
+            DialogBookmarks dialogBookmarks(this);
+
+            dialogBookmarks.setData(getXInfoDB(), nLocation, -1, getDevice()->size());
+
+            connect(&dialogBookmarks, SIGNAL(currentBookmarkChanged(quint64, qint32, qint64)), this, SLOT(currentBookmarkChangedSlot(quint64, qint32, qint64)));
+            connect(this, SIGNAL(closeWidget_Bookmarks()), &dialogBookmarks, SLOT(close()));
+
+            XOptions::_adjustStayOnTop(&dialogBookmarks, true);
+            dialogBookmarks.exec();
+
+            setViewWidgetState(VIEWWIDGET_BOOKMARKS, false);
+        } else {
+            emit closeWidget_Bookmarks();
+        }
+    }
+}
+#endif
+#ifdef QT_SQL_LIB
+void XDeviceTableView::currentBookmarkChangedSlot(quint64 nLocation, qint32 nLocationType, qint64 nSize)
+{
+    Q_UNUSED(nSize)
+
+    if (nLocationType == XInfoDB::LT_ADDRESS) {
+        goToAddressSlot(nLocation);
+        viewport()->update();
+    } else if (nLocationType == XInfoDB::LT_OFFSET) {
+        goToOffset(nLocation);
+        viewport()->update();
+    }
+}
+#endif
+#ifdef QT_SQL_LIB
+void XDeviceTableView::_bookmarkNew()
+{
+    if (getXInfoDB()) {
+        DEVICESTATE state = getDeviceState(true);
+
+        QString sComment =
+            QString("%1 - %2").arg(QString::number(state.nSelectionDeviceOffset, 16), QString::number(state.nSelectionDeviceOffset + state.nSelectionSize, 16));
+
+        getXInfoDB()->_addBookmarkRecord(state.nSelectionDeviceOffset, XInfoDB::LT_OFFSET, state.nSelectionSize, QColor(Qt::yellow),
+                                         sComment);  // mb TODO Colors TODO locationType
+
+        getXInfoDB()->reloadView();
+    }
+}
+#endif
+
 void XDeviceTableView::_showDataInspector()
 {
-    setViewWidgetState(VIEWWIDGET_DATAINSPECTOR, true);
+    if (!getViewWidgetState(VIEWWIDGET_DATAINSPECTOR)) {
+        setViewWidgetState(VIEWWIDGET_DATAINSPECTOR, true);
 
-    XDeviceTableView::DEVICESTATE deviceState = getDeviceState();
+        XDeviceTableView::DEVICESTATE deviceState = getDeviceState();
 
-    DialogDataInspector dialogDataInspector(this, getDevice(), deviceState.nSelectionDeviceOffset, deviceState.nSelectionSize);
-    dialogDataInspector.setGlobal(getShortcuts(), getGlobalOptions());
+        DialogDataInspector dialogDataInspector(this, getDevice(), deviceState.nSelectionDeviceOffset, deviceState.nSelectionSize);
+        dialogDataInspector.setGlobal(getShortcuts(), getGlobalOptions());
 
-    connect(this, SIGNAL(deviceSelectionChanged(qint64, qint64)), &dialogDataInspector, SLOT(selectionChangedSlot(qint64, qint64)));
-    connect(this, SIGNAL(dataChanged(qint64, qint64)), &dialogDataInspector, SLOT(dataChangedSlot(qint64, qint64)));
-    connect(&dialogDataInspector, SIGNAL(dataChanged(qint64, qint64)), this, SLOT(_setEdited(qint64, qint64)));
+        connect(this, SIGNAL(deviceSelectionChanged(qint64, qint64)), &dialogDataInspector, SLOT(selectionChangedSlot(qint64, qint64)));
+        connect(this, SIGNAL(dataChanged(qint64, qint64)), &dialogDataInspector, SLOT(dataChangedSlot(qint64, qint64)));
+        connect(&dialogDataInspector, SIGNAL(dataChanged(qint64, qint64)), this, SLOT(_setEdited(qint64, qint64)));
+        connect(this, SIGNAL(closeWidget_DataInspector()), &dialogDataInspector, SLOT(close()));
 
-    XOptions::_adjustStayOnTop(&dialogDataInspector, true);
+        XOptions::_adjustStayOnTop(&dialogDataInspector, true);
 
-    dialogDataInspector.exec();
+        dialogDataInspector.exec();
 
-    setViewWidgetState(VIEWWIDGET_DATAINSPECTOR, false);
+        setViewWidgetState(VIEWWIDGET_DATAINSPECTOR, false);
+    } else {
+        emit closeWidget_DataInspector();
+    }
 }

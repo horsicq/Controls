@@ -23,9 +23,6 @@
 
 #include "dialoghexedit.h"
 #include "xdevicetableview.h"
-#ifdef QT_SQL_LIB
-#include "dialogbookmarks.h"
-#endif
 
 class XDeviceTableEditView : public XDeviceTableView {
     Q_OBJECT
@@ -37,11 +34,6 @@ protected slots:
     void _editHex();
     void _followInDisasmSlot();
     void _followInHexSlot();
-#ifdef QT_SQL_LIB
-    void _bookmarkNew();
-    void _bookmarkList();
-    void currentBookmarkChangedSlot(quint64 nLocation, qint32 nLocationType, qint64 nSize);
-#endif
 
 signals:
     void followInDisasm(XADDR nAddress);
