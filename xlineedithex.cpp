@@ -43,7 +43,7 @@ XLineEditHEX::XLineEditHEX(QWidget *pParent) : QLineEdit(pParent)
     installEventFilter(this);
 }
 
-void XLineEditHEX::setOptions(XLineEditHEX::OPTIONS options)
+void XLineEditHEX::setOptions(const OPTIONS &options)
 {
     g_options = options;
 }
