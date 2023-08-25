@@ -793,7 +793,9 @@ void XDeviceTableView::_setEdited(qint64 nDeviceOffset, qint64 nDeviceSize)
 
 void XDeviceTableView::goToAddressSlot(XADDR nAddress, qint64 nSize)
 {
-    Q_UNUSED(nSize)
+    if (nSize) {
+        setSelectionAddress(nAddress, nSize);
+    }
 
     goToAddress(nAddress, true, true, true);
     reload(true);
