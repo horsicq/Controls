@@ -66,4 +66,3 @@ void XDeviceTableEditView::_followInHexSlot()
 
     emit followInHex(nOffset);
 }
-
