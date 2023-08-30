@@ -171,21 +171,23 @@ XDeviceTableView::DEVICESTATE XDeviceTableView::getDeviceState(bool bGlobalOffse
     return result;
 }
 
-void XDeviceTableView::setDeviceState(DEVICESTATE deviceState, bool bGlobalOffset)
+void XDeviceTableView::setDeviceState(const DEVICESTATE &deviceState, bool bGlobalOffset)
 {
+    DEVICESTATE _deviceState = deviceState;
+
     if (bGlobalOffset) {
         XIODevice *pSubDevice = dynamic_cast<XIODevice *>(getDevice());
 
         if (pSubDevice) {
             quint64 nInitOffset = pSubDevice->getInitLocation();
-            deviceState.nSelectionDeviceOffset -= nInitOffset;
+            _deviceState.nSelectionDeviceOffset -= nInitOffset;
             //            deviceState.nCursorOffset -= nInitOffset;
-            deviceState.nStartDeviceOffset -= nInitOffset;
+            _deviceState.nStartDeviceOffset -= nInitOffset;
         }
     }
 
-    _goToViewOffset(deviceState.nStartDeviceOffset);
-    _initSetSelection(deviceState.nSelectionDeviceOffset, deviceState.nSelectionSize);
+    _goToViewOffset(_deviceState.nStartDeviceOffset);
+    _initSetSelection(_deviceState.nSelectionDeviceOffset, _deviceState.nSelectionSize);
     //    setCursorViewOffset(deviceState.nCursorOffset);
 
     adjust();
