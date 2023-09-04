@@ -512,8 +512,9 @@ void XDeviceTableView::setSelectionAddress(XADDR nAddress, qint64 nSize)
 
     if (nOffset != -1) {
         qint64 nViewOffset = deviceOffsetToViewOffset(nOffset);
+        qint64 nViewSize = deviceSizeToViewSize(nOffset, nSize);
 
-        _initSetSelection(nViewOffset, nSize);
+        _initSetSelection(nViewOffset, nViewSize);
         viewport()->update();  // TODO Check
     }
 }
@@ -795,11 +796,12 @@ void XDeviceTableView::_setEdited(qint64 nDeviceOffset, qint64 nDeviceSize)
 
 void XDeviceTableView::goToAddressSlot(XADDR nAddress, qint64 nSize)
 {
+    goToAddress(nAddress, true, true, true);
+
     if (nSize) {
         setSelectionAddress(nAddress, nSize);
     }
 
-    goToAddress(nAddress, true, true, true);
     reload(true);
 }
 

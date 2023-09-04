@@ -52,7 +52,7 @@ public:
     quint64 getValue();
     void setReadOnly(bool bIsReadOnly);
     QString getDescription();
-    void addCustomFlags(const QString &sTitle, QList<CUSTOM_FLAG> listCustomFlags);
+    void addCustomFlags(const QString &sTitle, const QList<CUSTOM_FLAG> &listCustomFlags);
     void setCustomFlag(quint64 nValue);
     QList<quint64> getCustomFlags();
     static void _addCustomFlag(QList<CUSTOM_FLAG> *pListCustomFlags, quint64 nValue, const QString &sString, bool bChecked);

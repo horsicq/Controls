@@ -173,7 +173,7 @@ QString XComboBoxEx::getDescription()
     return sResult;
 }
 
-void XComboBoxEx::addCustomFlags(const QString &sTitle, QList<CUSTOM_FLAG> listCustomFlags)
+void XComboBoxEx::addCustomFlags(const QString &sTitle, const QList<CUSTOM_FLAG> &listCustomFlags)
 {
     g_model.clear();
 

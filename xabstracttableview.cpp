@@ -497,6 +497,10 @@ void XAbstractTableView::_initSelection(qint64 nViewOffset, qint64 nSize)
 
 void XAbstractTableView::_setSelection(qint64 nViewOffset, qint64 nSize)
 {
+#ifdef QT_DEBUG
+    qDebug("_setSelection %llx, %llx", nViewOffset, nSize);
+#endif
+
     if (isViewOffsetValid(nViewOffset) || isEnd(nViewOffset)) {
         if (nViewOffset > g_nSelectionInitOffset) {
             g_state.nSelectionViewOffset = g_nSelectionInitOffset;
