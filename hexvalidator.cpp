@@ -22,19 +22,12 @@
 
 HEXValidator::HEXValidator(QObject *pParent) : QValidator(pParent)
 {
-    g_mode = MODE_HEX;
-    g_nMax = 0xFFFFFFFFFFFFFFFF;
+    g_mode = MODE_HEX_32;
 }
 
-void HEXValidator::setData(HEXValidator::MODE mode, quint64 nMax)
+void HEXValidator::setMode(HEXValidator::MODE mode)
 {
     g_mode = mode;
-    g_nMax = nMax;
-}
-
-quint64 HEXValidator::getMax()
-{
-    return g_nMax;
 }
 
 HEXValidator::MODE HEXValidator::getMode()
@@ -49,62 +42,80 @@ QValidator::State HEXValidator::validate(QString &sInput, int &nPos) const
     QValidator::State result = Acceptable;
 
     if (!sInput.isEmpty()) {
-        qint64 nSignMax = 0;
-        qint64 nSignMin = 0;
-        qint32 nHexLenght = 0;
-        // TODO DecLenght
+        qint64 nMax = 0;
+        qint64 nMin = 0;
+        qint32 nLenght = 0;
+        // TODO Dec Lenght !!!
 
         // TODO optimize!
-        if (g_nMax == 0xFF) {
-            nSignMax = SCHAR_MAX;
-            nSignMin = SCHAR_MIN;
-            nHexLenght = 2;
-        } else if (g_nMax == 0xFFFF) {
-            nSignMax = SHRT_MAX;
-            nSignMin = SHRT_MIN;
-            nHexLenght = 4;
-        } else if (g_nMax == 0xFFFFFFFF) {
-            nSignMax = INT_MAX;
-            nSignMin = INT_MIN;
-            nHexLenght = 8;
-        } else if (g_nMax == 0xFFFFFFFFFFFFFFFF) {
+        if ((g_mode == MODE_HEX_8) || (g_mode == MODE_DEC_8)) {
+            nMax = UCHAR_MAX;
+            nMin = 0;
+        } else if (g_mode == MODE_SIGN_DEC_8) {
+            nMax = SCHAR_MAX;
+            nMin = SCHAR_MIN;
+        } else if ((g_mode == MODE_HEX_16) || (g_mode == MODE_DEC_16)) {
+            nMax = USHRT_MAX;
+            nMin = 0;
+        } else if (g_mode == MODE_SIGN_DEC_16) {
+            nMax = SHRT_MAX;
+            nMin = SHRT_MIN;
+        } else if ((g_mode == MODE_HEX_32) || (g_mode == MODE_DEC_32)) {
+            nMax = UINT_MAX;
+            nMin = 0;
+        } else if (g_mode == MODE_SIGN_DEC_32) {
+            nMax = INT_MAX;
+            nMin = INT_MIN;
+        } else if ((g_mode == MODE_HEX_64) || (g_mode == MODE_DEC_64)) {
+            nMax = ULLONG_MAX;
+            nMin = 0;
+        } else if (g_mode == MODE_SIGN_DEC_64) {
             // TODO Check
 #ifdef LLONG_MAX
-            nSignMax = LLONG_MAX;
-            nSignMin = LLONG_MIN;
+            nMax = LLONG_MAX;
+            nMin = LLONG_MIN;
 #endif
 #ifdef LONG_LONG_MAX
-            nSignMax = LONG_LONG_MAX;
-            nSignMin = LONG_LONG_MIN;
+            nMax = LONG_LONG_MAX;
+            nMin = LONG_LONG_MIN;
 #endif
-            nHexLenght = 16;
         }
 
-        if (g_mode == MODE_HEX) {
+        if (g_mode == MODE_HEX_8) {
+            nLenght = 2;
+        } else if (g_mode == MODE_HEX_16) {
+            nLenght = 4;
+        } else if (g_mode == MODE_HEX_32) {
+            nLenght = 8;
+        } else if (g_mode == MODE_HEX_64) {
+            nLenght = 16;
+        }
+
+        if ((g_mode == MODE_HEX_8) || (g_mode == MODE_HEX_16) || (g_mode == MODE_HEX_32) || (g_mode == MODE_HEX_64)) {
             result = Invalid;
 
             bool bSuccess = false;
             quint64 nValue = sInput.toULongLong(&bSuccess, 16);
 
-            if (bSuccess && (nValue <= g_nMax) && (sInput.length() <= nHexLenght)) {
+            if (bSuccess && (nValue <= nMax) && (sInput.length() <= nLenght)) {
                 result = Acceptable;
             }
-        } else if (g_mode == MODE_DEC) {
+        } else if ((g_mode == MODE_DEC_8) || (g_mode == MODE_DEC_16) || (g_mode == MODE_DEC_32) || (g_mode == MODE_DEC_64)) {
             result = Invalid;
 
             bool bSuccess = false;
             quint64 nValue = sInput.toULongLong(&bSuccess, 10);
 
-            if (bSuccess && (nValue <= g_nMax)) {
+            if (bSuccess && (nValue <= nMax)) {
                 result = Acceptable;
             }
-        } else if (g_mode == MODE_SIGN_DEC) {
+        } else if ((g_mode == MODE_SIGN_DEC_8) || (g_mode == MODE_SIGN_DEC_16) || (g_mode == MODE_SIGN_DEC_32) || (g_mode == MODE_SIGN_DEC_64)) {
             result = Invalid;
 
             bool bSuccess = false;
             qint64 nValue = sInput.toLongLong(&bSuccess, 10);
 
-            if (bSuccess && (nValue <= nSignMax) && (nValue >= nSignMin)) {
+            if (bSuccess && (nValue <= nMax) && (nValue >= nMin)) {
                 result = Acceptable;
             } else if (sInput == "-") {
                 result = Intermediate;

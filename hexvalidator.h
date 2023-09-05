@@ -29,22 +29,29 @@ class HEXValidator : public QValidator {
 public:
     enum MODE {
         MODE_TEXT = 0,
-        MODE_DEC,
-        MODE_SIGN_DEC,
-        MODE_HEX,
+        MODE_DEC_8,
+        MODE_DEC_16,
+        MODE_DEC_32,
+        MODE_DEC_64,
+        MODE_SIGN_DEC_8,
+        MODE_SIGN_DEC_16,
+        MODE_SIGN_DEC_32,
+        MODE_SIGN_DEC_64,
+        MODE_HEX_8,
+        MODE_HEX_16,
+        MODE_HEX_32,
+        MODE_HEX_64,
         MODE_UUID
     };
 
     explicit HEXValidator(QObject *pParent = nullptr);
 
-    void setData(MODE mode, quint64 nMax);
-    quint64 getMax();
+    void setMode(MODE mode);
     MODE getMode();
     virtual State validate(QString &sInput, int &nPos) const;
 
 private:
     MODE g_mode;
-    quint64 g_nMax;
 };
 
 #endif  // HEXVALIDATOR_H
