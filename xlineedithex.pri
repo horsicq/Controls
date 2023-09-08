@@ -2,12 +2,12 @@ INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
 
 HEADERS += \
-    $$PWD/hexvalidator.h \
-    $$PWD/xlineedithex.h
+    $$PWD/xlineedithex.h \
+    $$PWD/xlineeditvalidator.h
 
 SOURCES += \
-    $$PWD/hexvalidator.cpp \
-    $$PWD/xlineedithex.cpp
+    $$PWD/xlineedithex.cpp \
+    $$PWD/xlineeditvalidator.cpp
 
 DISTFILES += \
     $$PWD/LICENSE \

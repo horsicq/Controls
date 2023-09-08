@@ -29,7 +29,7 @@
 #include <QShortcut>
 #include <QVariant>
 
-#include "hexvalidator.h"
+#include "xlineeditvalidator.h"
 
 // TODO setMode
 class XLineEditHEX : public QLineEdit {
@@ -66,7 +66,7 @@ public:
     void setValue(qint32 nValue, _MODE mode = _MODE_HEX);
     void setValue(quint64 nValue, _MODE mode = _MODE_HEX);
     void setValue(qint64 nValue, _MODE mode = _MODE_HEX);
-    void setModeValue(HEXValidator::MODE mode, quint64 nValue);
+    void setValidatorModeValue(XLineEditValidator::MODE mode, quint64 nValue);
 //    void setValueOS(quint64 nValue, HEXValidator::MODE validatorMode = HEXValidator::MODE_HEX);
     void setValue32_64(quint64 nValue, _MODE mode = _MODE_HEX);
     void setStringValue(const QString &sText, qint32 nMaxLength = 0);
@@ -76,13 +76,13 @@ public:
     QVariant _getValue();
     void setText(const QString &sText);
 //    static MODE getModeFromValue(quint64 nValue);
-    static QString getFormatString(HEXValidator::MODE mode, qint64 nValue);
-    static qint32 getWidthFromMode(QWidget *pWidget, HEXValidator::MODE mode);
+    static QString getFormatString(XLineEditValidator::MODE mode, qint64 nValue);
+    static qint32 getWidthFromMode(QWidget *pWidget, XLineEditValidator::MODE mode);
     static qint32 getSymbolWidth(QWidget *pWidget);
     void setColon(bool bIsColon);
     bool isFocused();
-    void setValidatorMode(HEXValidator::MODE validatorMode);
-    HEXValidator::MODE getValidatorMode();
+    void setValidatorMode(XLineEditValidator::MODE validatorMode);
+    XLineEditValidator::MODE getValidatorMode();
 
 protected:
     //    void keyPressEvent(QKeyEvent* keyEvent);
@@ -103,7 +103,7 @@ signals:
 
 private:
     QVariant g_vValue;
-    HEXValidator g_validator;
+    XLineEditValidator g_validator;
     OPTIONS g_options;
     bool g_bIsColon;
     bool g_bIsFocused;
