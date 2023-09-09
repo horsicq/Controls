@@ -46,7 +46,6 @@ public:
         bool bShowDisasmRelAddress;  // TODO Check
     };
 
-
     enum _MODE {
         _MODE_TEXT = 0,
         _MODE_UUID,
@@ -67,7 +66,7 @@ public:
     void setValue(quint64 nValue, _MODE mode = _MODE_HEX);
     void setValue(qint64 nValue, _MODE mode = _MODE_HEX);
     void setValidatorModeValue(XLineEditValidator::MODE mode, quint64 nValue);
-//    void setValueOS(quint64 nValue, HEXValidator::MODE validatorMode = HEXValidator::MODE_HEX);
+    //    void setValueOS(quint64 nValue, HEXValidator::MODE validatorMode = HEXValidator::MODE_HEX);
     void setValue32_64(quint64 nValue, _MODE mode = _MODE_HEX);
     void setStringValue(const QString &sText, qint32 nMaxLength = 0);
     void setUUID(const QString &sText);
@@ -75,7 +74,7 @@ public:
     qint64 getSignValue();
     QVariant _getValue();
     void setText(const QString &sText);
-//    static MODE getModeFromValue(quint64 nValue);
+    //    static MODE getModeFromValue(quint64 nValue);
     static QString getFormatString(XLineEditValidator::MODE mode, qint64 nValue);
     static qint32 getWidthFromMode(QWidget *pWidget, XLineEditValidator::MODE mode);
     static qint32 getSymbolWidth(QWidget *pWidget);

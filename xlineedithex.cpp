@@ -175,9 +175,9 @@ void XLineEditHEX::setValidatorModeValue(XLineEditValidator::MODE mode, quint64 
     }
 }
 
-//void XLineEditHEX::setValueOS(quint64 nValue, HEXValidator::MODE validatorMode)
+// void XLineEditHEX::setValueOS(quint64 nValue, HEXValidator::MODE validatorMode)
 //{
-//    MODE mode = MODE_32;
+//     MODE mode = MODE_32;
 
 //    if (sizeof(void *) == 8) {
 //        mode = MODE_64;
@@ -274,9 +274,9 @@ void XLineEditHEX::setText(const QString &sText)
     _setText(sText);
 }
 
-//XLineEditHEX::MODE XLineEditHEX::getModeFromValue(quint64 nValue)
+// XLineEditHEX::MODE XLineEditHEX::getModeFromValue(quint64 nValue)
 //{
-//    MODE result = MODE_64;
+//     MODE result = MODE_64;
 
 //    if (((quint64)nValue) > 0xFFFFFFFF) {
 //        result = MODE_64;
