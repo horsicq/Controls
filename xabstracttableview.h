@@ -251,10 +251,8 @@ private:
     bool g_bColumnFixed;
     bool g_bVerticalLinesVisible;
     bool g_bHorisontalLinesVisible;
-
     qint64 g_nCurrentBlockViewOffset;
     qint64 g_nCurrentBlockViewSize;
-
     bool g_bIsSelectionEnable;
     bool g_bIsContextMenuEnable;
 };
