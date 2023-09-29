@@ -42,6 +42,7 @@ public:
         MODE_HEX_32,
         MODE_HEX_64,
         MODE_UUID
+        // TODO more
     };
 
     explicit XLineEditValidator(QObject *pParent = nullptr);
