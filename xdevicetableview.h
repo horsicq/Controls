@@ -101,7 +101,6 @@ public:
     virtual qint64 viewOffsetToDeviceOffset(qint64 nViewOffset, bool bGlobalOffset = false);
     void setDeviceSelection(qint64 nOffset, qint64 nSize);
     virtual qint64 deviceOffsetToGlobal(qint64 nDeviceOffset);
-
     bool isPrevVisitedAvailable();
     bool isNextVisitedAvailable();
     void goToNextVisited();
