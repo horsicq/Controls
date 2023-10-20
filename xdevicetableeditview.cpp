@@ -66,3 +66,32 @@ void XDeviceTableEditView::_followInHexSlot()
 
     emit followInHex(nOffset);
 }
+
+void XDeviceTableEditView::_strings()
+{
+    if (!getViewWidgetState(VIEWWIDGET_STRINGS)) {
+        setViewWidgetState(VIEWWIDGET_STRINGS, true);
+
+        DialogSearchStrings dialogSearchStrings(this);
+
+        connect(this, SIGNAL(closeWidget_Strings()), &dialogSearchStrings, SLOT(close()));
+
+        dialogSearchStrings.setGlobal(getShortcuts(), getGlobalOptions());
+
+        SearchStringsWidget::OPTIONS stringsOptions = {};
+        stringsOptions.bAnsi = true;
+        stringsOptions.bUTF8 = false;
+        stringsOptions.bUnicode = true;
+        stringsOptions.bCStrings = false;
+
+        dialogSearchStrings.setData(getDevice(), XBinary::FT_REGION, stringsOptions, true);
+
+        XOptions::_adjustStayOnTop(&dialogSearchStrings, true);
+
+        dialogSearchStrings.exec();
+
+        setViewWidgetState(VIEWWIDGET_STRINGS, false);
+    } else {
+        emit closeWidget_Strings();
+    }
+}

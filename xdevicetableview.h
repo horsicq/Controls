@@ -67,7 +67,8 @@ public:
 
     enum VIEWWIDGET {
         VIEWWIDGET_DATAINSPECTOR,
-        VIEWWIDGET_BOOKMARKS
+        VIEWWIDGET_BOOKMARKS,
+        VIEWWIDGET_STRINGS
     };
 
     XDeviceTableView(QWidget *pParent = nullptr);
@@ -130,6 +131,7 @@ signals:
     void deviceSelectionChanged(qint64 nDeviceOffset, qint64 nDeviceSize);
     void viewWidgetsStateChanged();
     void closeWidget_DataInspector();
+    void closeWidget_Strings();
 #ifdef QT_SQL_LIB
     void closeWidget_Bookmarks();
 #endif

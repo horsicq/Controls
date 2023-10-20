@@ -22,6 +22,7 @@
 #define XDEVICETABLEEDITVIEW_H
 
 #include "dialoghexedit.h"
+#include "dialogsearchstrings.h"
 #include "xdevicetableview.h"
 
 class XDeviceTableEditView : public XDeviceTableView {
@@ -34,6 +35,7 @@ protected slots:
     void _editHex();
     void _followInDisasmSlot();
     void _followInHexSlot();
+    void _strings();
 
 signals:
     void followInDisasm(XADDR nAddress);
