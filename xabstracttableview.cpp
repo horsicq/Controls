@@ -166,9 +166,9 @@ void XAbstractTableView::setColumnWidth(qint32 nNumber, qint32 nWidth)
 void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
 {
 #ifdef QT_DEBUG
-    qDebug("XAbstractTableView::paintEvent");
-    QElapsedTimer timer;
-    timer.start();
+//    qDebug("XAbstractTableView::paintEvent");
+//    QElapsedTimer timer;
+//    timer.start();
 #endif
     QPainter *pPainter = new QPainter(this->viewport());
     pPainter->setFont(g_fontText);
@@ -282,7 +282,7 @@ void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
     delete pPainter;
 
 #ifdef QT_DEBUG
-    qDebug("Elapsed XAbstractTableView::paintEvent %lld", timer.elapsed());
+//    qDebug("Elapsed XAbstractTableView::paintEvent %lld", timer.elapsed());
 #endif
 }
 
@@ -498,7 +498,7 @@ void XAbstractTableView::_initSelection(qint64 nViewOffset, qint64 nSize)
 void XAbstractTableView::_setSelection(qint64 nViewOffset, qint64 nSize)
 {
 #ifdef QT_DEBUG
-    qDebug("_setSelection %llx, %llx", nViewOffset, nSize);
+//    qDebug("_setSelection %llx, %llx", nViewOffset, nSize);
 #endif
 
     if (isViewOffsetValid(nViewOffset) || isEnd(nViewOffset)) {
@@ -608,7 +608,7 @@ void XAbstractTableView::adjust(bool bUpdateData)
 #endif
                 updateData();
 #ifdef QT_DEBUG
-                qDebug("updateData %lld", timer.elapsed());
+//                qDebug("updateData %lld", timer.elapsed());
 #endif
             }
 
