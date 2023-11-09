@@ -33,6 +33,8 @@ public:
 
 protected slots:
     void _editHex();
+    void _editRemove();
+    void _editResize();
     void _followInDisasmSlot();
     void _followInHexSlot();
     void _strings();

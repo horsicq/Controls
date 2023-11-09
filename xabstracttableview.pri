@@ -16,6 +16,11 @@ SOURCES += \
     include($$PWD/../FormatDialogs/dialogtextinfo.pri)
 }
 
+!contains(XCONFIG, dialogresize) {
+    XCONFIG += dialogresize
+    include($$PWD/../FormatDialogs/dialogresize.pri)
+}
+
 !contains(XCONFIG, xshortcuts) {
     XCONFIG += xshortcuts
     include($$PWD/../XShortcuts/xshortcuts.pri)

@@ -29,6 +29,7 @@
 #include "dialogshowdata.h"
 #include "dialogsearchprocess.h"
 #include "xabstracttableview.h"
+#include "dialogresize.h"
 #include "xformats.h"
 #include "xinfodb.h"
 #ifdef QT_SQL_LIB
@@ -128,6 +129,7 @@ protected:
 signals:
     void visitedStateChanged();
     void dataChanged(qint64 nDeviceOffset, qint64 nDeviceSize);
+    void deviceSizeChanged(qint64 nOldSize, qint64 nNewSize);
     void deviceSelectionChanged(qint64 nDeviceOffset, qint64 nDeviceSize);
     void viewWidgetsStateChanged();
     void closeWidget_DataInspector();

@@ -1,10 +1,12 @@
 include_directories(${CMAKE_CURRENT_LIST_DIR})
 
 include(${CMAKE_CURRENT_LIST_DIR}/../FormatDialogs/dialogtextinfo.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/../FormatDialogs/dialogresize.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/../XShortcuts/xshortcuts.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/../XInfoDB/xinfodb.cmake)
 
 set(XABSTRACTTABLEVIEW_SOURCES
+    ${DIALOGRESIZE_SOURCES}
     ${XSHORTCUTS_SOURCES}
     ${DIALOGTEXTINFO_SOURCES}
     ${XINFODB_SOURCES}

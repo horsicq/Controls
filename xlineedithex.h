@@ -65,12 +65,13 @@ public:
     void setValue(qint32 nValue, _MODE mode = _MODE_HEX);
     void setValue(quint64 nValue, _MODE mode = _MODE_HEX);
     void setValue(qint64 nValue, _MODE mode = _MODE_HEX);
-    void setValidatorModeValue(XLineEditValidator::MODE mode, quint64 nValue);
+    void setValidatorModeValue(XLineEditValidator::MODE mode, QVariant varValue);
+    void setMode(_MODE mode);
     //    void setValueOS(quint64 nValue, HEXValidator::MODE validatorMode = HEXValidator::MODE_HEX);
     void setValue32_64(quint64 nValue, _MODE mode = _MODE_HEX);
     void setStringValue(const QString &sText, qint32 nMaxLength = 0);
     void setUUID(const QString &sText);
-    quint64 getValue();
+    quint64 getIntValue();
     qint64 getSignValue();
     QVariant _getValue();
     void setText(const QString &sText);

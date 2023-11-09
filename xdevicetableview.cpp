@@ -59,7 +59,7 @@ void XDeviceTableView::setDevice(QIODevice *pDevice)
     g_listVisited.clear();
 
     if (pDevice) {
-        g_nViewSize = pDevice->size();
+        XDeviceTableView::adjustScrollCount();
         //    setReadonly(!(pDevice->isWritable()));
         setActive(true);
     } else {
@@ -127,6 +127,7 @@ XDeviceTableView::LOCMODE XDeviceTableView::getAddressMode()
 
 void XDeviceTableView::adjustScrollCount()
 {
+    setViewSize(g_pDevice->size());
 }
 
 qint64 XDeviceTableView::getViewSizeByViewOffset(qint64 nViewOffset)
