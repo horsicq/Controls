@@ -199,33 +199,45 @@ void XLineEditHEX::setMode(_MODE mode)
     XLineEditValidator::MODE validatorMode = getValidatorMode();
 
     if (mode == _MODE_HEX) {
-        if ((validatorMode == XLineEditValidator::MODE_HEX_8) || (validatorMode == XLineEditValidator::MODE_DEC_8) || (validatorMode == XLineEditValidator::MODE_SIGN_DEC_8)) {
+        if ((validatorMode == XLineEditValidator::MODE_HEX_8) || (validatorMode == XLineEditValidator::MODE_DEC_8) ||
+            (validatorMode == XLineEditValidator::MODE_SIGN_DEC_8)) {
             validatorMode = XLineEditValidator::MODE_HEX_8;
-        } else if ((validatorMode == XLineEditValidator::MODE_HEX_16) || (validatorMode == XLineEditValidator::MODE_DEC_16) || (validatorMode == XLineEditValidator::MODE_SIGN_DEC_16)) {
+        } else if ((validatorMode == XLineEditValidator::MODE_HEX_16) || (validatorMode == XLineEditValidator::MODE_DEC_16) ||
+                   (validatorMode == XLineEditValidator::MODE_SIGN_DEC_16)) {
             validatorMode = XLineEditValidator::MODE_HEX_16;
-        } else if ((validatorMode == XLineEditValidator::MODE_HEX_32) || (validatorMode == XLineEditValidator::MODE_DEC_32) || (validatorMode == XLineEditValidator::MODE_SIGN_DEC_32)) {
+        } else if ((validatorMode == XLineEditValidator::MODE_HEX_32) || (validatorMode == XLineEditValidator::MODE_DEC_32) ||
+                   (validatorMode == XLineEditValidator::MODE_SIGN_DEC_32)) {
             validatorMode = XLineEditValidator::MODE_HEX_32;
-        } else if ((validatorMode == XLineEditValidator::MODE_HEX_64) || (validatorMode == XLineEditValidator::MODE_DEC_64) || (validatorMode == XLineEditValidator::MODE_SIGN_DEC_64)) {
+        } else if ((validatorMode == XLineEditValidator::MODE_HEX_64) || (validatorMode == XLineEditValidator::MODE_DEC_64) ||
+                   (validatorMode == XLineEditValidator::MODE_SIGN_DEC_64)) {
             validatorMode = XLineEditValidator::MODE_HEX_64;
         }
     } else if (mode == _MODE_DEC) {
-        if ((validatorMode == XLineEditValidator::MODE_HEX_8) || (validatorMode == XLineEditValidator::MODE_DEC_8) || (validatorMode == XLineEditValidator::MODE_SIGN_DEC_8)) {
+        if ((validatorMode == XLineEditValidator::MODE_HEX_8) || (validatorMode == XLineEditValidator::MODE_DEC_8) ||
+            (validatorMode == XLineEditValidator::MODE_SIGN_DEC_8)) {
             validatorMode = XLineEditValidator::MODE_DEC_8;
-        } else if ((validatorMode == XLineEditValidator::MODE_HEX_16) || (validatorMode == XLineEditValidator::MODE_DEC_16) || (validatorMode == XLineEditValidator::MODE_SIGN_DEC_16)) {
+        } else if ((validatorMode == XLineEditValidator::MODE_HEX_16) || (validatorMode == XLineEditValidator::MODE_DEC_16) ||
+                   (validatorMode == XLineEditValidator::MODE_SIGN_DEC_16)) {
             validatorMode = XLineEditValidator::MODE_DEC_16;
-        } else if ((validatorMode == XLineEditValidator::MODE_HEX_32) || (validatorMode == XLineEditValidator::MODE_DEC_32) || (validatorMode == XLineEditValidator::MODE_SIGN_DEC_32)) {
+        } else if ((validatorMode == XLineEditValidator::MODE_HEX_32) || (validatorMode == XLineEditValidator::MODE_DEC_32) ||
+                   (validatorMode == XLineEditValidator::MODE_SIGN_DEC_32)) {
             validatorMode = XLineEditValidator::MODE_DEC_32;
-        } else if ((validatorMode == XLineEditValidator::MODE_HEX_64) || (validatorMode == XLineEditValidator::MODE_DEC_64) || (validatorMode == XLineEditValidator::MODE_SIGN_DEC_64)) {
+        } else if ((validatorMode == XLineEditValidator::MODE_HEX_64) || (validatorMode == XLineEditValidator::MODE_DEC_64) ||
+                   (validatorMode == XLineEditValidator::MODE_SIGN_DEC_64)) {
             validatorMode = XLineEditValidator::MODE_DEC_64;
         }
     } else if (mode == _MODE_SIGN_DEC) {
-        if ((validatorMode == XLineEditValidator::MODE_HEX_8) || (validatorMode == XLineEditValidator::MODE_DEC_8) || (validatorMode == XLineEditValidator::MODE_SIGN_DEC_8)) {
+        if ((validatorMode == XLineEditValidator::MODE_HEX_8) || (validatorMode == XLineEditValidator::MODE_DEC_8) ||
+            (validatorMode == XLineEditValidator::MODE_SIGN_DEC_8)) {
             validatorMode = XLineEditValidator::MODE_SIGN_DEC_8;
-        } else if ((validatorMode == XLineEditValidator::MODE_HEX_16) || (validatorMode == XLineEditValidator::MODE_DEC_16) || (validatorMode == XLineEditValidator::MODE_SIGN_DEC_16)) {
+        } else if ((validatorMode == XLineEditValidator::MODE_HEX_16) || (validatorMode == XLineEditValidator::MODE_DEC_16) ||
+                   (validatorMode == XLineEditValidator::MODE_SIGN_DEC_16)) {
             validatorMode = XLineEditValidator::MODE_SIGN_DEC_16;
-        } else if ((validatorMode == XLineEditValidator::MODE_HEX_32) || (validatorMode == XLineEditValidator::MODE_DEC_32) || (validatorMode == XLineEditValidator::MODE_SIGN_DEC_32)) {
+        } else if ((validatorMode == XLineEditValidator::MODE_HEX_32) || (validatorMode == XLineEditValidator::MODE_DEC_32) ||
+                   (validatorMode == XLineEditValidator::MODE_SIGN_DEC_32)) {
             validatorMode = XLineEditValidator::MODE_SIGN_DEC_32;
-        } else if ((validatorMode == XLineEditValidator::MODE_HEX_64) || (validatorMode == XLineEditValidator::MODE_DEC_64) || (validatorMode == XLineEditValidator::MODE_SIGN_DEC_64)) {
+        } else if ((validatorMode == XLineEditValidator::MODE_HEX_64) || (validatorMode == XLineEditValidator::MODE_DEC_64) ||
+                   (validatorMode == XLineEditValidator::MODE_SIGN_DEC_64)) {
             validatorMode = XLineEditValidator::MODE_SIGN_DEC_64;
         }
     }

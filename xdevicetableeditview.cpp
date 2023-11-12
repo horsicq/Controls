@@ -59,7 +59,7 @@ void XDeviceTableEditView::_editRemove()
 
         if (nOldSize != nNewSize) {
             // mb TODO Process move memory
-            if(XBinary::moveMemory(getDevice(), nDeviceOffset + nDeviceSize, nDeviceOffset, nDeviceSize)) {
+            if (XBinary::moveMemory(getDevice(), nDeviceOffset + nDeviceSize, nDeviceOffset, nDeviceSize)) {
                 if (XBinary::resize(getDevice(), nNewSize)) {
                     // mb TODO correct bookmarks
                     adjustScrollCount();
