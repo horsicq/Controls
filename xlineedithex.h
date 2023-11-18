@@ -52,6 +52,7 @@ public:
         _MODE_HEX,
         _MODE_DEC,
         _MODE_SIGN_DEC
+        // TODO more
     };
 
     explicit XLineEditHEX(QWidget *pParent = nullptr);
