@@ -127,7 +127,9 @@ XDeviceTableView::LOCMODE XDeviceTableView::getAddressMode()
 
 void XDeviceTableView::adjustScrollCount()
 {
-    setViewSize(g_pDevice->size());
+    if (g_pDevice) {
+        setViewSize(g_pDevice->size());
+    }
 }
 
 qint64 XDeviceTableView::getViewSizeByViewOffset(qint64 nViewOffset)
