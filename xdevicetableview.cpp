@@ -913,3 +913,18 @@ void XDeviceTableView::_showDataInspector()
         emit closeWidget_DataInspector();
     }
 }
+
+void XDeviceTableView::_showDataConvertor()
+{
+    if (!getViewWidgetState(VIEWWIDGET_DATACONVERTOR)) {
+        setViewWidgetState(VIEWWIDGET_DATACONVERTOR, true);
+
+        XDeviceTableView::DEVICESTATE deviceState = getDeviceState();
+
+        // TODO
+
+        setViewWidgetState(VIEWWIDGET_DATACONVERTOR, false);
+    } else {
+        emit closeWidget_DataConvertor();
+    }
+}

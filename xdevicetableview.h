@@ -68,6 +68,7 @@ public:
 
     enum VIEWWIDGET {
         VIEWWIDGET_DATAINSPECTOR,
+         VIEWWIDGET_DATACONVERTOR,
         VIEWWIDGET_BOOKMARKS,
         VIEWWIDGET_STRINGS
     };
@@ -133,6 +134,7 @@ signals:
     void deviceSelectionChanged(qint64 nDeviceOffset, qint64 nDeviceSize);
     void viewWidgetsStateChanged();
     void closeWidget_DataInspector();
+    void closeWidget_DataConvertor();
     void closeWidget_Strings();
 #ifdef QT_SQL_LIB
     void closeWidget_Bookmarks();
@@ -168,6 +170,7 @@ protected slots:
 
 public slots:
     void _showDataInspector();
+    void _showDataConvertor();
 
 private:
     XInfoDB *g_pXInfoDB;
