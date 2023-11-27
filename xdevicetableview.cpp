@@ -921,9 +921,17 @@ void XDeviceTableView::_showDataConvertor()
 
         XDeviceTableView::DEVICESTATE deviceState = getDeviceState();
 
-        // TODO
+        SubDevice sd(getDevice(), deviceState.nSelectionDeviceOffset, deviceState.nSelectionSize);
 
-        setViewWidgetState(VIEWWIDGET_DATACONVERTOR, false);
+        if (sd.open(QIODevice::ReadOnly)) {
+            DialogXDataConvertor dialogDataConvertor(this);
+            dialogDataConvertor.setData(&sd);
+            dialogDataConvertor.exec();
+
+            setViewWidgetState(VIEWWIDGET_DATACONVERTOR, false);
+
+            sd.close();
+        }
     } else {
         emit closeWidget_DataConvertor();
     }

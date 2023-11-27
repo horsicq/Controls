@@ -22,6 +22,7 @@
 #define XDEVICETABLEVIEW_H
 
 #include "dialogdatainspector.h"
+#include "dialogxdataconvertor.h"
 #include "dialogdumpprocess.h"
 #include "dialoggotoaddress.h"
 #include "dialoghexsignature.h"
