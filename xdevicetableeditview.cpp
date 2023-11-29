@@ -52,20 +52,25 @@ void XDeviceTableEditView::_editHex()
 void XDeviceTableEditView::_editRemove()
 {
     if (XBinary::isResizeEnable(getDevice())) {
-        qint64 nDeviceOffset = 0;
-        qint64 nDeviceSize = 0;
-        qint64 nOldSize = getDevice()->size();
-        qint64 nNewSize = nOldSize - nDeviceSize;
+        DialogRemove::DATA _data = {};
+        _data.nDeviceOffset = 0;
+        _data.nDeviceSize = 0;
+        _data.nOldSize = getDevice()->size();
+        _data.nNewSize = _data.nOldSize - _data.nDeviceSize;
 
-        if (nOldSize != nNewSize) {
-            // mb TODO Process move memory
-            if (XBinary::moveMemory(getDevice(), nDeviceOffset + nDeviceSize, nDeviceOffset, nDeviceSize)) {
-                if (XBinary::resize(getDevice(), nNewSize)) {
-                    // mb TODO correct bookmarks
-                    adjustScrollCount();
-                    reload(true);
-                    emit deviceSizeChanged(nOldSize, nNewSize);
-                    emit dataChanged(nDeviceOffset, (nOldSize - nNewSize) - nDeviceOffset);
+        DialogRemove dialogRemove(this, &_data);
+
+        if (dialogRemove.exec() == QDialog::Accepted) {
+            if (_data.nOldSize != _data.nNewSize) {
+                // mb TODO Process move memory
+                if (XBinary::moveMemory(getDevice(), _data.nDeviceOffset + _data.nDeviceSize, _data.nDeviceOffset, _data.nDeviceSize)) {
+                    if (XBinary::resize(getDevice(), _data.nNewSize)) {
+                        // mb TODO correct bookmarks
+                        adjustScrollCount();
+                        reload(true);
+                        emit deviceSizeChanged(_data.nOldSize, _data.nNewSize);
+                        emit dataChanged(_data.nDeviceOffset, (_data.nOldSize - _data.nNewSize) - _data.nDeviceOffset);
+                    }
                 }
             }
         }

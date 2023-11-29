@@ -31,6 +31,7 @@
 #include "dialogsearchprocess.h"
 #include "xabstracttableview.h"
 #include "dialogresize.h"
+#include "dialogremove.h"
 #include "xformats.h"
 #include "xinfodb.h"
 #ifdef QT_SQL_LIB
