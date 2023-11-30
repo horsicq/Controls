@@ -49,6 +49,7 @@ public:
     enum _MODE {
         _MODE_TEXT = 0,
         _MODE_UUID,
+        _MODE_SIZE, // TODO
         _MODE_HEX,
         _MODE_DEC,
         _MODE_SIGN_DEC
@@ -58,14 +59,24 @@ public:
     explicit XLineEditHEX(QWidget *pParent = nullptr);
 
     void setOptions(const OPTIONS &options);
-    void setValue(quint8 nValue, _MODE mode = _MODE_HEX);
-    void setValue(qint8 nValue, _MODE mode = _MODE_HEX);
-    void setValue(quint16 nValue, _MODE mode = _MODE_HEX);
-    void setValue(qint16 nValue, _MODE mode = _MODE_HEX);
-    void setValue(quint32 nValue, _MODE mode = _MODE_HEX);
-    void setValue(qint32 nValue, _MODE mode = _MODE_HEX);
-    void setValue(quint64 nValue, _MODE mode = _MODE_HEX);
-    void setValue(qint64 nValue, _MODE mode = _MODE_HEX);
+
+    void setValue(quint8 nValue, _MODE mode = _MODE_HEX); // TODO remove
+    void setValue(qint8 nValue, _MODE mode = _MODE_HEX); // TODO remove
+    void setValue(quint16 nValue, _MODE mode = _MODE_HEX); // TODO remove
+    void setValue(qint16 nValue, _MODE mode = _MODE_HEX); // TODO remove
+    void setValue(quint32 nValue, _MODE mode = _MODE_HEX); // TODO remove
+    void setValue(qint32 nValue, _MODE mode = _MODE_HEX); // TODO remove
+    void setValue(quint64 nValue, _MODE mode = _MODE_HEX); // TODO remove
+    void setValue(qint64 nValue, _MODE mode = _MODE_HEX); // TODO remove
+
+    void setValue_uint8(quint8 nValue, _MODE mode = _MODE_HEX);
+    void setValue_int8(qint8 nValue, _MODE mode = _MODE_HEX);
+    void setValue_uint16(quint16 nValue, _MODE mode = _MODE_HEX);
+    void setValue_int16(qint16 nValue, _MODE mode = _MODE_HEX);
+    void setValue_uint32(quint32 nValue, _MODE mode = _MODE_HEX);
+    void setValue_int32(qint32 nValue, _MODE mode = _MODE_HEX);
+    void setValue_uint64(quint64 nValue, _MODE mode = _MODE_HEX);
+    void setValue_int64(qint64 nValue, _MODE mode = _MODE_HEX);
     void setValidatorModeValue(XLineEditValidator::MODE mode, QVariant varValue);
     void setMode(_MODE mode);
     //    void setValueOS(quint64 nValue, HEXValidator::MODE validatorMode = HEXValidator::MODE_HEX);
