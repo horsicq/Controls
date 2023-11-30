@@ -81,12 +81,13 @@ public:
     void setMode(_MODE mode);
     //    void setValueOS(quint64 nValue, HEXValidator::MODE validatorMode = HEXValidator::MODE_HEX);
     void setValue32_64(quint64 nValue, _MODE mode = _MODE_HEX);
-    void setStringValue(const QString &sText, qint32 nMaxLength = 0);
-    void setUUID(const QString &sText);
+    void setValue_String(const QString &sText, qint32 nMaxLength = 0);
+    void setValue_UUID(const QString &sText);
+    void setValue_Variant(const QVariant &variant);
     quint64 getIntValue();
     qint64 getSignValue();
     QVariant _getValue();
-    void setText(const QString &sText);
+    void setText(const QString &sText); // TODO remove
     //    static MODE getModeFromValue(quint64 nValue);
     static QString getFormatString(XLineEditValidator::MODE mode, qint64 nValue);
     static qint32 getWidthFromMode(QWidget *pWidget, XLineEditValidator::MODE mode);

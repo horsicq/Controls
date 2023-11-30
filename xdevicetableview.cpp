@@ -926,6 +926,8 @@ void XDeviceTableView::_showDataConvertor()
         if (sd.open(QIODevice::ReadOnly)) {
             DialogXDataConvertor dialogDataConvertor(this);
             dialogDataConvertor.setData(&sd);
+            connect(this, SIGNAL(closeWidget_DataConvertor()), &dialogDataConvertor, SLOT(close()));
+
             dialogDataConvertor.exec();
 
             setViewWidgetState(VIEWWIDGET_DATACONVERTOR, false);
@@ -934,5 +936,29 @@ void XDeviceTableView::_showDataConvertor()
         }
     } else {
         emit closeWidget_DataConvertor();
+    }
+}
+
+void XDeviceTableView::_showMultisearch()
+{
+    if (!getViewWidgetState(VIEWWIDGET_MULTISEARCH)) {
+        setViewWidgetState(VIEWWIDGET_MULTISEARCH, true);
+
+        SearchValuesWidget::OPTIONS options = {};
+        options.fileType = XBinary::FT_REGION;
+
+        DialogSearchValues dialogSearchValues(this);
+        dialogSearchValues.setData(getDevice(), options);
+
+        connect(&dialogSearchValues, SIGNAL(currentAddressChanged(XADDR, qint64)), this, SLOT(goToAddressSlot(XADDR, qint64)));
+        connect(this, SIGNAL(closeWidget_Multisearch()), &dialogSearchValues, SLOT(close()));
+
+        XOptions::_adjustStayOnTop(&dialogSearchValues, true);
+
+        dialogSearchValues.exec();
+
+        setViewWidgetState(VIEWWIDGET_MULTISEARCH, false);
+    } else {
+        emit closeWidget_Multisearch();
     }
 }

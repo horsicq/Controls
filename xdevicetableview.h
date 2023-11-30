@@ -34,6 +34,7 @@
 #include "dialogremove.h"
 #include "xformats.h"
 #include "xinfodb.h"
+#include "dialogsearchvalues.h"
 #ifdef QT_SQL_LIB
 #include "dialogbookmarks.h"
 #endif
@@ -71,6 +72,7 @@ public:
     enum VIEWWIDGET {
         VIEWWIDGET_DATAINSPECTOR,
         VIEWWIDGET_DATACONVERTOR,
+        VIEWWIDGET_MULTISEARCH,
         VIEWWIDGET_BOOKMARKS,
         VIEWWIDGET_STRINGS
     };
@@ -137,6 +139,7 @@ signals:
     void viewWidgetsStateChanged();
     void closeWidget_DataInspector();
     void closeWidget_DataConvertor();
+    void closeWidget_Multisearch();
     void closeWidget_Strings();
 #ifdef QT_SQL_LIB
     void closeWidget_Bookmarks();
@@ -173,6 +176,7 @@ protected slots:
 public slots:
     void _showDataInspector();
     void _showDataConvertor();
+    void _showMultisearch();
 
 private:
     XInfoDB *g_pXInfoDB;

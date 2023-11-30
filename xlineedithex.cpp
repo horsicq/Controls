@@ -51,118 +51,42 @@ void XLineEditHEX::setOptions(const OPTIONS &options)
 
 void XLineEditHEX::setValue(quint8 nValue, _MODE mode)
 {
-    g_mode = mode;
-
-    QString sText;
-
-    if (mode == _MODE_HEX) {
-        g_validator.setMode(XLineEditValidator::MODE_HEX_8);
-        sText = QString("%1").arg(nValue, 2, 16, QChar('0'));
-    } else if (mode == _MODE_DEC) {
-        g_validator.setMode(XLineEditValidator::MODE_DEC_8);
-        sText = QString("%1").arg(nValue);
-    } else if (mode == _MODE_SIGN_DEC) {
-        g_validator.setMode(XLineEditValidator::MODE_SIGN_DEC_8);
-        sText = QString("%1").arg((qint8)nValue);
-    }
-
-    setText(sText);
+    setValue_uint8(nValue, mode);
 }
 
 void XLineEditHEX::setValue(qint8 nValue, _MODE mode)
 {
-    setValue((quint8)nValue, mode);
+    setValue_int8(nValue, mode);
 }
 
 void XLineEditHEX::setValue(quint16 nValue, _MODE mode)
 {
-    g_mode = mode;
-
-    QString sText;
-
-    if (mode == _MODE_HEX) {
-        g_validator.setMode(XLineEditValidator::MODE_HEX_16);
-        sText = QString("%1").arg(nValue, 4, 16, QChar('0'));
-    } else if (mode == _MODE_DEC) {
-        g_validator.setMode(XLineEditValidator::MODE_DEC_16);
-        sText = QString("%1").arg(nValue);
-    } else if (mode == _MODE_SIGN_DEC) {
-        g_validator.setMode(XLineEditValidator::MODE_SIGN_DEC_16);
-        sText = QString("%1").arg((qint16)nValue);
-    }
-
-    setText(sText);
+    setValue_uint16(nValue, mode);
 }
 
 void XLineEditHEX::setValue(qint16 nValue, _MODE mode)
 {
-    setValue((quint16)nValue, mode);
+    setValue_int16(nValue, mode);
 }
 
 void XLineEditHEX::setValue(quint32 nValue, _MODE mode)
 {
-    g_mode = mode;
-
-    QString sText;
-
-    if (mode == _MODE_HEX) {
-        g_validator.setMode(XLineEditValidator::MODE_HEX_32);
-        if (g_bIsColon) {
-            quint16 nHigh = (quint16)(nValue >> 16);
-            quint16 nLow = (quint16)(nValue);
-            QString sHigh = QString("%1").arg(nHigh, 4, 16, QChar('0'));
-            QString sLow = QString("%1").arg(nLow, 4, 16, QChar('0'));
-            sText = QString("%1:%2").arg(sHigh, sLow);
-        } else {
-            sText = QString("%1").arg(nValue, 8, 16, QChar('0'));
-        }
-    } else if (mode == _MODE_DEC) {
-        g_validator.setMode(XLineEditValidator::MODE_DEC_32);
-        sText = QString("%1").arg(nValue);
-    } else if (mode == _MODE_SIGN_DEC) {
-        g_validator.setMode(XLineEditValidator::MODE_SIGN_DEC_32);
-        sText = QString("%1").arg((qint32)nValue);
-    }
-
-    setText(sText);
+    setValue_uint32(nValue, mode);
 }
 
 void XLineEditHEX::setValue(qint32 nValue, _MODE mode)
 {
-    setValue((quint32)nValue, mode);
+    setValue_int32(nValue, mode);
 }
 
 void XLineEditHEX::setValue(quint64 nValue, _MODE mode)
 {
-    g_mode = mode;
-
-    QString sText;
-
-    if (mode == _MODE_HEX) {
-        g_validator.setMode(XLineEditValidator::MODE_HEX_64);
-        if (g_bIsColon) {
-            quint32 nHigh = (quint32)(nValue >> 32);
-            quint32 nLow = (quint32)(nValue);
-            QString sHigh = QString("%1").arg(nHigh, 8, 16, QChar('0'));
-            QString sLow = QString("%1").arg(nLow, 8, 16, QChar('0'));
-            sText = QString("%1:%2").arg(sHigh, sLow);
-        } else {
-            sText = QString("%1").arg(nValue, 16, 16, QChar('0'));
-        }
-    } else if (mode == _MODE_DEC) {
-        g_validator.setMode(XLineEditValidator::MODE_DEC_64);
-        sText = QString("%1").arg(nValue);
-    } else if (mode == _MODE_SIGN_DEC) {
-        g_validator.setMode(XLineEditValidator::MODE_SIGN_DEC_64);
-        sText = QString("%1").arg((qint64)nValue);
-    }
-
-    setText(sText);
+    setValue_uint64(nValue, mode);
 }
 
 void XLineEditHEX::setValue(qint64 nValue, _MODE mode)
 {
-    setValue((quint64)nValue, mode);
+    setValue_int64(nValue, mode);
 }
 
 void XLineEditHEX::setValue_uint8(quint8 nValue, _MODE mode)
@@ -182,7 +106,8 @@ void XLineEditHEX::setValue_uint8(quint8 nValue, _MODE mode)
         sText = QString("%1").arg((qint8)nValue);
     }
 
-    setText(sText);
+    QLineEdit::setText(sText);
+    setValue_Variant(nValue);
 }
 
 void XLineEditHEX::setValue_int8(qint8 nValue, _MODE mode)
@@ -207,7 +132,8 @@ void XLineEditHEX::setValue_uint16(quint16 nValue, _MODE mode)
         sText = QString("%1").arg((qint16)nValue);
     }
 
-    setText(sText);
+    QLineEdit::setText(sText);
+    setValue_Variant(nValue);
 }
 
 void XLineEditHEX::setValue_int16(qint16 nValue, _MODE mode)
@@ -240,7 +166,8 @@ void XLineEditHEX::setValue_uint32(quint32 nValue, _MODE mode)
         sText = QString("%1").arg((qint32)nValue);
     }
 
-    setText(sText);
+    QLineEdit::setText(sText);
+    setValue_Variant(nValue);
 }
 
 void XLineEditHEX::setValue_int32(qint32 nValue, _MODE mode)
@@ -273,7 +200,8 @@ void XLineEditHEX::setValue_uint64(quint64 nValue, _MODE mode)
         sText = QString("%1").arg((qint64)nValue);
     }
 
-    setText(sText);
+    QLineEdit::setText(sText);
+    setValue_Variant(nValue);
 }
 
 void XLineEditHEX::setValue_int64(qint64 nValue, _MODE mode)
@@ -383,7 +311,7 @@ void XLineEditHEX::setValue32_64(quint64 nValue, _MODE mode)
     }
 }
 
-void XLineEditHEX::setStringValue(const QString &sText, qint32 nMaxLength)
+void XLineEditHEX::setValue_String(const QString &sText, qint32 nMaxLength)
 {
     g_mode = _MODE_TEXT;
     g_validator.setMode(XLineEditValidator::MODE_TEXT);
@@ -392,17 +320,29 @@ void XLineEditHEX::setStringValue(const QString &sText, qint32 nMaxLength)
         setMaxLength(nMaxLength);
     }
 
-    setText(sText);
+    QLineEdit::setText(sText);
+    setValue_Variant(sText);
 }
 
-void XLineEditHEX::setUUID(const QString &sText)
+void XLineEditHEX::setValue_UUID(const QString &sText)
 {
     g_mode = _MODE_UUID;
     g_validator.setMode(XLineEditValidator::MODE_UUID);
 
     setInputMask(">NNNNNNNN-NNNN-NNNN-NNNN-NNNNNNNNNNNN;0");  // TODO Check
 
-    setText(sText);
+    QLineEdit::setText(sText);
+    setValue_Variant(sText);
+}
+
+void XLineEditHEX::setValue_Variant(const QVariant &variant)
+{
+    if (g_vValue != variant) {
+        g_vValue = variant;
+        updateFont();
+
+        emit valueChanged(variant);
+    }
 }
 
 quint64 XLineEditHEX::getIntValue()
@@ -542,8 +482,8 @@ bool XLineEditHEX::isFocused()
 
 void XLineEditHEX::setValidatorMode(XLineEditValidator::MODE validatorMode)
 {
-    g_validator.setMode(validatorMode);
-    //  TODO
+    QVariant variant = _getValue();
+    setValidatorModeValue(validatorMode, variant);
 }
 
 XLineEditValidator::MODE XLineEditHEX::getValidatorMode()
@@ -680,7 +620,7 @@ void XLineEditHEX::_clearValue()
 
     // TODO UUID
     if (mode == XLineEditValidator::MODE_TEXT) {
-        setStringValue("");
+        setValue_String("");
     } else {
         setValidatorModeValue(g_validator.getMode(), 0);
     }
