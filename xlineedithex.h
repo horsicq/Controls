@@ -84,8 +84,8 @@ public:
     void setValue_String(const QString &sText, qint32 nMaxLength = 0);
     void setValue_UUID(const QString &sText);
     void setValue_Variant(const QVariant &variant);
-    quint64 getIntValue();
-    qint64 getSignValue();
+//    quint64 getIntValue();
+//    qint64 getSignValue();
     QVariant _getValue();
     void setText(const QString &sText); // TODO remove
     //    static MODE getModeFromValue(quint64 nValue);

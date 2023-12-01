@@ -345,52 +345,52 @@ void XLineEditHEX::setValue_Variant(const QVariant &variant)
     }
 }
 
-quint64 XLineEditHEX::getIntValue()
-{
-    quint64 nResult = 0;
+//quint64 XLineEditHEX::getIntValue()
+//{
+//    quint64 nResult = 0;
 
-    QString sText = text();
+//    QString sText = text();
 
-    if (g_mode == _MODE_HEX) {
-        if (g_bIsColon) {
-            if (sText.contains(":")) {
-                sText = sText.remove(":");
-            }
-        }
+//    if (g_mode == _MODE_HEX) {
+//        if (g_bIsColon) {
+//            if (sText.contains(":")) {
+//                sText = sText.remove(":");
+//            }
+//        }
 
-        nResult = sText.toULongLong(nullptr, 16);
-    } else if (g_mode == _MODE_DEC) {
-        nResult = sText.toULongLong(nullptr, 10);
-    } else if (g_mode == _MODE_SIGN_DEC) {
-        nResult = sText.toLongLong(nullptr, 10);
-    }
+//        nResult = sText.toULongLong(nullptr, 16);
+//    } else if (g_mode == _MODE_DEC) {
+//        nResult = sText.toULongLong(nullptr, 10);
+//    } else if (g_mode == _MODE_SIGN_DEC) {
+//        nResult = sText.toLongLong(nullptr, 10);
+//    }
 
-    return nResult;
-}
+//    return nResult;
+//}
 
-qint64 XLineEditHEX::getSignValue()
-{
-    qint64 nResult = 0;
+//qint64 XLineEditHEX::getSignValue()
+//{
+//    qint64 nResult = 0;
 
-    QString sText = text();
+//    QString sText = text();
 
-    if (g_mode == _MODE_HEX) {
-        if (g_bIsColon) {
-            if (sText.contains(":")) {
-                sText = sText.remove(":");
-            }
-        }
+//    if (g_mode == _MODE_HEX) {
+//        if (g_bIsColon) {
+//            if (sText.contains(":")) {
+//                sText = sText.remove(":");
+//            }
+//        }
 
-        nResult = sText.toULongLong(nullptr, 16);
-        // TODO
-    } else if (g_mode == _MODE_DEC) {
-        nResult = sText.toULongLong(nullptr, 10);
-    } else if (g_mode == _MODE_SIGN_DEC) {
-        nResult = sText.toLongLong(nullptr, 10);
-    }
+//        nResult = sText.toULongLong(nullptr, 16);
+//        // TODO
+//    } else if (g_mode == _MODE_DEC) {
+//        nResult = sText.toULongLong(nullptr, 10);
+//    } else if (g_mode == _MODE_SIGN_DEC) {
+//        nResult = sText.toLongLong(nullptr, 10);
+//    }
 
-    return nResult;
-}
+//    return nResult;
+//}
 
 QVariant XLineEditHEX::_getValue()
 {
@@ -559,15 +559,15 @@ void XLineEditHEX::customContextMenu(const QPoint &nPos)
     connect(&actionCopy, SIGNAL(triggered()), this, SLOT(_copy()));
     contextMenu.addAction(&actionCopy);
 
-    QAction actionCopyValue(QString("%1: \"%2\"").arg(tr("Copy"), QString::number(getIntValue())), this);
+    QAction actionCopyValue(QString("%1: \"%2\"").arg(tr("Copy"), QString::number(_getValue().toULongLong())), this);
     QAction actionCopySignValue(this);
 
     if ((g_mode == _MODE_HEX) || (g_mode == _MODE_DEC) || (g_mode == _MODE_SIGN_DEC)) {
         connect(&actionCopyValue, SIGNAL(triggered()), this, SLOT(_copyValue()));
         contextMenu.addAction(&actionCopyValue);
 
-        if (getIntValue() != (quint64)getSignValue()) {
-            actionCopySignValue.setText(QString("%1: \"%2\"").arg(tr("Copy"), QString::number(getSignValue())));
+        if (_getValue().toULongLong() != (quint64)_getValue().toLongLong()) {
+            actionCopySignValue.setText(QString("%1: \"%2\"").arg(tr("Copy"), QString::number(_getValue().toLongLong())));
             connect(&actionCopySignValue, SIGNAL(triggered()), this, SLOT(_copySignValue()));
             contextMenu.addAction(&actionCopySignValue);
         }
@@ -606,12 +606,12 @@ void XLineEditHEX::_copy()
 
 void XLineEditHEX::_copyValue()
 {
-    QApplication::clipboard()->setText(QString::number(getIntValue()));
+    QApplication::clipboard()->setText(QString::number(_getValue().toULongLong()));
 }
 
 void XLineEditHEX::_copySignValue()
 {
-    QApplication::clipboard()->setText(QString::number(getSignValue()));
+    QApplication::clipboard()->setText(QString::number(_getValue().toLongLong()));
 }
 
 void XLineEditHEX::_clearValue()
