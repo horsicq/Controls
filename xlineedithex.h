@@ -49,7 +49,7 @@ public:
     enum _MODE {
         _MODE_TEXT = 0,
         _MODE_UUID,
-        _MODE_SIZE, // TODO
+        _MODE_SIZE,  // TODO
         _MODE_HEX,
         _MODE_DEC,
         _MODE_SIGN_DEC
@@ -60,14 +60,14 @@ public:
 
     void setOptions(const OPTIONS &options);
 
-    void setValue(quint8 nValue, _MODE mode = _MODE_HEX); // TODO remove
-    void setValue(qint8 nValue, _MODE mode = _MODE_HEX); // TODO remove
-    void setValue(quint16 nValue, _MODE mode = _MODE_HEX); // TODO remove
-    void setValue(qint16 nValue, _MODE mode = _MODE_HEX); // TODO remove
-    void setValue(quint32 nValue, _MODE mode = _MODE_HEX); // TODO remove
-    void setValue(qint32 nValue, _MODE mode = _MODE_HEX); // TODO remove
-    void setValue(quint64 nValue, _MODE mode = _MODE_HEX); // TODO remove
-    void setValue(qint64 nValue, _MODE mode = _MODE_HEX); // TODO remove
+    void setValue(quint8 nValue, _MODE mode = _MODE_HEX);   // TODO remove
+    void setValue(qint8 nValue, _MODE mode = _MODE_HEX);    // TODO remove
+    void setValue(quint16 nValue, _MODE mode = _MODE_HEX);  // TODO remove
+    void setValue(qint16 nValue, _MODE mode = _MODE_HEX);   // TODO remove
+    void setValue(quint32 nValue, _MODE mode = _MODE_HEX);  // TODO remove
+    void setValue(qint32 nValue, _MODE mode = _MODE_HEX);   // TODO remove
+    void setValue(quint64 nValue, _MODE mode = _MODE_HEX);  // TODO remove
+    void setValue(qint64 nValue, _MODE mode = _MODE_HEX);   // TODO remove
 
     void setValue_uint8(quint8 nValue, _MODE mode = _MODE_HEX);
     void setValue_int8(qint8 nValue, _MODE mode = _MODE_HEX);
@@ -84,10 +84,10 @@ public:
     void setValue_String(const QString &sText, qint32 nMaxLength = 0);
     void setValue_UUID(const QString &sText);
     void setValue_Variant(const QVariant &variant);
-//    quint64 getIntValue();
-//    qint64 getSignValue();
+    //    quint64 getIntValue();
+    //    qint64 getSignValue();
     QVariant _getValue();
-    void setText(const QString &sText); // TODO remove
+    void setText(const QString &sText);  // TODO remove
     //    static MODE getModeFromValue(quint64 nValue);
     static QString getFormatString(XLineEditValidator::MODE mode, qint64 nValue);
     static qint32 getWidthFromMode(QWidget *pWidget, XLineEditValidator::MODE mode);

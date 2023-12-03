@@ -345,9 +345,9 @@ void XLineEditHEX::setValue_Variant(const QVariant &variant)
     }
 }
 
-//quint64 XLineEditHEX::getIntValue()
+// quint64 XLineEditHEX::getIntValue()
 //{
-//    quint64 nResult = 0;
+//     quint64 nResult = 0;
 
 //    QString sText = text();
 
@@ -368,9 +368,9 @@ void XLineEditHEX::setValue_Variant(const QVariant &variant)
 //    return nResult;
 //}
 
-//qint64 XLineEditHEX::getSignValue()
+// qint64 XLineEditHEX::getSignValue()
 //{
-//    qint64 nResult = 0;
+//     qint64 nResult = 0;
 
 //    QString sText = text();
 
