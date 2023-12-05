@@ -388,6 +388,18 @@ bool XDeviceTableView::getViewWidgetState(VIEWWIDGET viewWidget)
     return g_stViewWidgetState.contains(viewWidget);
 }
 
+void XDeviceTableView::dumpMemory(qint64 nOffset, qint64 nSize)
+{
+    QString sSaveFileName = XBinary::getResultFileName(getDevice(), QString("%1.bin").arg(tr("Dump")));
+    QString sFileName = QFileDialog::getSaveFileName(this, tr("Save dump"), sSaveFileName, QString("%1 (*.bin)").arg(tr("Raw data")));
+
+    if (!sFileName.isEmpty()) {
+        DialogDumpProcess dd(this, getDevice(), nOffset, nSize, sFileName, DumpProcess::DT_OFFSET);
+
+        dd.showDialogDelay();
+    }
+}
+
 qint64 XDeviceTableView::write_array(qint64 nOffset, char *pData, qint64 nDataSize)
 {
     //    // TODO define if XPROCESS -> use Addresses
@@ -654,16 +666,9 @@ void XDeviceTableView::_goToSelectionEnd()
 
 void XDeviceTableView::_dumpToFileSlot()
 {
-    QString sSaveFileName = XBinary::getResultFileName(getDevice(), QString("%1.bin").arg(tr("Dump")));
-    QString sFileName = QFileDialog::getSaveFileName(this, tr("Save dump"), sSaveFileName, QString("%1 (*.bin)").arg(tr("Raw data")));
+    DEVICESTATE state = getDeviceState();
 
-    if (!sFileName.isEmpty()) {
-        DEVICESTATE state = getDeviceState();
-
-        DialogDumpProcess dd(this, getDevice(), state.nSelectionDeviceOffset, state.nSelectionSize, sFileName, DumpProcess::DT_OFFSET);
-
-        dd.showDialogDelay();
-    }
+    dumpMemory(state.nSelectionDeviceOffset, state.nSelectionSize);
 }
 
 void XDeviceTableView::_hexSignatureSlot()

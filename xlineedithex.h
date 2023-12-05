@@ -30,6 +30,7 @@
 #include <QVariant>
 
 #include "xlineeditvalidator.h"
+#include "dialogbits8.h"
 
 // TODO setMode
 class XLineEditHEX : public QLineEdit {
@@ -47,7 +48,8 @@ public:
     };
 
     enum _MODE {
-        _MODE_TEXT = 0,
+        _MODE_UNKNOWN = 0,
+        _MODE_TEXT,
         _MODE_UUID,
         _MODE_SIZE,  // TODO
         _MODE_HEX,
@@ -109,6 +111,7 @@ private slots:
     void _copyValue();
     void _copySignValue();
     void _clearValue();
+    void _bits();
 
 signals:
     void valueChanged(QVariant varValue);
