@@ -648,7 +648,7 @@ void XLineEditHEX::_bits()
     if ((validatorMode == XLineEditValidator::MODE_HEX_8) || (validatorMode == XLineEditValidator::MODE_DEC_8) ||
         (validatorMode == XLineEditValidator::MODE_SIGN_DEC_8)) {
         DialogBits8 dialog(this);
-        dialog.setData((quint8)_getValue().toULongLong(), isReadOnly());
+        dialog.setData8((quint8)_getValue().toULongLong(), isReadOnly());
         if (dialog.exec() == QDialog::Accepted) {
             quint8 nValue = 0;
             setValue_uint8(nValue, _MODE_UNKNOWN);
