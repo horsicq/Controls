@@ -648,19 +648,38 @@ void XLineEditHEX::_bits()
     if ((validatorMode == XLineEditValidator::MODE_HEX_8) || (validatorMode == XLineEditValidator::MODE_DEC_8) ||
         (validatorMode == XLineEditValidator::MODE_SIGN_DEC_8)) {
         DialogBits8 dialog(this);
-        dialog.setData8((quint8)_getValue().toULongLong(), isReadOnly());
+        dialog.setValue_uint8((quint8)_getValue().toULongLong());
+        dialog.setReadonly(isReadOnly());
+
         if (dialog.exec() == QDialog::Accepted) {
-            quint8 nValue = 0;
-            setValue_uint8(nValue, _MODE_UNKNOWN);
+            setValue_uint8(dialog.getValue_uint8(), _MODE_UNKNOWN);
         }
     } else if ((validatorMode == XLineEditValidator::MODE_HEX_16) || (validatorMode == XLineEditValidator::MODE_DEC_16) ||
        (validatorMode == XLineEditValidator::MODE_SIGN_DEC_16)) {
-       // TODO
+        DialogBits8 dialog(this);
+        dialog.setValue_uint16((quint16)_getValue().toULongLong());
+        dialog.setReadonly(isReadOnly());
+
+        if (dialog.exec() == QDialog::Accepted) {
+            setValue_uint16(dialog.getValue_uint16(), _MODE_UNKNOWN);
+        }
     } else if ((validatorMode == XLineEditValidator::MODE_HEX_32) || (validatorMode == XLineEditValidator::MODE_DEC_32) ||
        (validatorMode == XLineEditValidator::MODE_SIGN_DEC_32)) {
-       // TODO
+        DialogBits8 dialog(this);
+        dialog.setValue_uint32((quint32)_getValue().toULongLong());
+        dialog.setReadonly(isReadOnly());
+
+        if (dialog.exec() == QDialog::Accepted) {
+            setValue_uint32(dialog.getValue_uint32(), _MODE_UNKNOWN);
+        }
     } else if ((validatorMode == XLineEditValidator::MODE_HEX_64) || (validatorMode == XLineEditValidator::MODE_DEC_64) ||
        (validatorMode == XLineEditValidator::MODE_SIGN_DEC_64)) {
-       // TODO
+        DialogBits8 dialog(this);
+        dialog.setValue_uint64((quint64)_getValue().toULongLong());
+        dialog.setReadonly(isReadOnly());
+
+        if (dialog.exec() == QDialog::Accepted) {
+            setValue_uint64(dialog.getValue_uint64(), _MODE_UNKNOWN);
+        }
     }
 }

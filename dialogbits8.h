@@ -17,8 +17,16 @@ public:
     explicit DialogBits8(QWidget *parent = nullptr);
     ~DialogBits8();
 
-    void setData8(quint8 nValue, bool bIsReadonly);
+    void setReadonly(bool bIsReadonly);
+    void setValue_uint8(quint8 nValue);
+    void setValue_uint16(quint16 nValue);
+    void setValue_uint32(quint32 nValue);
+    void setValue_uint64(quint64 nValue);
     void reload();
+    quint8 getValue_uint8();
+    quint16 getValue_uint16();
+    quint32 getValue_uint32();
+    quint64 getValue_uint64();
 
 private slots:
     void _handleButton(QToolButton *pToolButton);
