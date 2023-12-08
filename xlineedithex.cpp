@@ -405,6 +405,46 @@ QVariant XLineEditHEX::_getValue()
     return g_vValue;
 }
 
+quint8 XLineEditHEX::getValue_uint8()
+{
+    return (quint8)g_vValue.toUInt();
+}
+
+qint8 XLineEditHEX::getValue_int8()
+{
+    return (qint8)g_vValue.toUInt();
+}
+
+quint16 XLineEditHEX::getValue_uint16()
+{
+    return (quint16)g_vValue.toUInt();
+}
+
+qint16 XLineEditHEX::getValue_int16()
+{
+    return (qint16)g_vValue.toUInt();
+}
+
+quint32 XLineEditHEX::getValue_uint32()
+{
+    return g_vValue.toUInt();
+}
+
+qint32 XLineEditHEX::getValue_int32()
+{
+    return (qint32)g_vValue.toUInt();
+}
+
+quint64 XLineEditHEX::getValue_uint64()
+{
+    return g_vValue.toULongLong();
+}
+
+qint64 XLineEditHEX::getValue_int64()
+{
+    return (qint64)g_vValue.toULongLong();
+}
+
 void XLineEditHEX::setText(const QString &sText)
 {
     _setText(sText);

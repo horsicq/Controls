@@ -89,6 +89,16 @@ public:
     //    quint64 getIntValue();
     //    qint64 getSignValue();
     QVariant _getValue();
+
+    quint8 getValue_uint8();
+    qint8 getValue_int8();
+    quint16 getValue_uint16();
+    qint16 getValue_int16();
+    quint32 getValue_uint32();
+    qint32 getValue_int32();
+    quint64 getValue_uint64();
+    qint64 getValue_int64();
+
     void setText(const QString &sText);  // TODO remove
     //    static MODE getModeFromValue(quint64 nValue);
     static QString getFormatString(XLineEditValidator::MODE mode, qint64 nValue);
