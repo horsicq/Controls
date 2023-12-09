@@ -1,9 +1,7 @@
 #include "dialogbits8.h"
 #include "ui_dialogbits8.h"
 
-DialogBits8::DialogBits8(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::DialogBits8)
+DialogBits8::DialogBits8(QWidget *parent) : QDialog(parent), ui(new Ui::DialogBits8)
 {
     ui->setupUi(this);
 
@@ -186,7 +184,6 @@ void DialogBits8::setValue_uint64(quint64 nValue)
 void DialogBits8::reload()
 {
     enableControls(false);
-
 
     if (!(ui->lineEditHex->hasFocus())) {
         if (g_nBits == 8) {

@@ -695,7 +695,7 @@ void XLineEditHEX::_bits()
             setValue_uint8(dialog.getValue_uint8(), _MODE_UNKNOWN);
         }
     } else if ((validatorMode == XLineEditValidator::MODE_HEX_16) || (validatorMode == XLineEditValidator::MODE_DEC_16) ||
-       (validatorMode == XLineEditValidator::MODE_SIGN_DEC_16)) {
+               (validatorMode == XLineEditValidator::MODE_SIGN_DEC_16)) {
         DialogBits8 dialog(this);
         dialog.setValue_uint16((quint16)_getValue().toULongLong());
         dialog.setReadonly(isReadOnly());
@@ -704,7 +704,7 @@ void XLineEditHEX::_bits()
             setValue_uint16(dialog.getValue_uint16(), _MODE_UNKNOWN);
         }
     } else if ((validatorMode == XLineEditValidator::MODE_HEX_32) || (validatorMode == XLineEditValidator::MODE_DEC_32) ||
-       (validatorMode == XLineEditValidator::MODE_SIGN_DEC_32)) {
+               (validatorMode == XLineEditValidator::MODE_SIGN_DEC_32)) {
         DialogBits8 dialog(this);
         dialog.setValue_uint32((quint32)_getValue().toULongLong());
         dialog.setReadonly(isReadOnly());
@@ -713,7 +713,7 @@ void XLineEditHEX::_bits()
             setValue_uint32(dialog.getValue_uint32(), _MODE_UNKNOWN);
         }
     } else if ((validatorMode == XLineEditValidator::MODE_HEX_64) || (validatorMode == XLineEditValidator::MODE_DEC_64) ||
-       (validatorMode == XLineEditValidator::MODE_SIGN_DEC_64)) {
+               (validatorMode == XLineEditValidator::MODE_SIGN_DEC_64)) {
         DialogBits8 dialog(this);
         dialog.setValue_uint64((quint64)_getValue().toULongLong());
         dialog.setReadonly(isReadOnly());

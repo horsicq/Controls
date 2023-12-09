@@ -9,8 +9,7 @@ namespace Ui {
 class DialogBits8;
 }
 
-class DialogBits8 : public QDialog
-{
+class DialogBits8 : public QDialog {
     Q_OBJECT
 
 public:
@@ -50,4 +49,4 @@ private:
     qint32 g_nBits;
 };
 
-#endif // DIALOGBITS8_H
+#endif  // DIALOGBITS8_H
