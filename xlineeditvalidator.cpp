@@ -48,25 +48,25 @@ QValidator::State XLineEditValidator::validate(QString &sInput, int &nPos) const
         // TODO Dec Lenght !!!
 
         // TODO optimize!
-        if ((g_mode == MODE_HEX_8) || (g_mode == MODE_DEC_8)) {
+        if ((g_mode == MODE_HEX_8) || (g_mode == MODE_DEC_8) || (g_mode == MODE_BIN_8)) {
             nMax = UCHAR_MAX;
             nMin = 0;
         } else if (g_mode == MODE_SIGN_DEC_8) {
             nMax = SCHAR_MAX;
             nMin = SCHAR_MIN;
-        } else if ((g_mode == MODE_HEX_16) || (g_mode == MODE_DEC_16)) {
+        } else if ((g_mode == MODE_HEX_16) || (g_mode == MODE_DEC_16) || (g_mode == MODE_BIN_16)) {
             nMax = USHRT_MAX;
             nMin = 0;
         } else if (g_mode == MODE_SIGN_DEC_16) {
             nMax = SHRT_MAX;
             nMin = SHRT_MIN;
-        } else if ((g_mode == MODE_HEX_32) || (g_mode == MODE_DEC_32)) {
+        } else if ((g_mode == MODE_HEX_32) || (g_mode == MODE_DEC_32) || (g_mode == MODE_BIN_32)) {
             nMax = UINT_MAX;
             nMin = 0;
         } else if (g_mode == MODE_SIGN_DEC_32) {
             nMax = INT_MAX;
             nMin = INT_MIN;
-        } else if ((g_mode == MODE_HEX_64) || (g_mode == MODE_DEC_64)) {
+        } else if ((g_mode == MODE_HEX_64) || (g_mode == MODE_DEC_64) || (g_mode == MODE_BIN_64)) {
             nMax = ULLONG_MAX;
             nMin = 0;
         } else if (g_mode == MODE_SIGN_DEC_64) {
@@ -89,6 +89,14 @@ QValidator::State XLineEditValidator::validate(QString &sInput, int &nPos) const
             nLenght = 8;
         } else if (g_mode == MODE_HEX_64) {
             nLenght = 16;
+        } else if (g_mode == MODE_BIN_8) {
+            nLenght = 16;
+        } else if (g_mode == MODE_BIN_16) {
+            nLenght = 32;
+        } else if (g_mode == MODE_BIN_32) {
+            nLenght = 64;
+        } else if (g_mode == MODE_BIN_64) {
+            nLenght = 128;
         }
 
         if ((g_mode == MODE_HEX_8) || (g_mode == MODE_HEX_16) || (g_mode == MODE_HEX_32) || (g_mode == MODE_HEX_64)) {
@@ -132,6 +140,17 @@ QValidator::State XLineEditValidator::validate(QString &sInput, int &nPos) const
             } else if (sInput == "-") {
                 result = Intermediate;
             }
+        } else if ((g_mode == MODE_BIN_8) || (g_mode == MODE_BIN_16) || (g_mode == MODE_BIN_32) || (g_mode == MODE_BIN_64)) {
+            result = Invalid;
+
+            bool bSuccess = false;
+            quint64 nValue = binStringToValue(sInput, &bSuccess);
+
+            if (bSuccess && (sInput.length() <= nLenght)) {
+                if ((qint64)nValue <= nMax) {
+                    result = Acceptable;
+                }
+            }
         }
         // TODO validate UUID !!!
         // NNNNNNNN-NNNN-NNNN-NNNN-NNNNNNNNNNNN
@@ -139,4 +158,67 @@ QValidator::State XLineEditValidator::validate(QString &sInput, int &nPos) const
     }
 
     return result;
+}
+
+quint64 XLineEditValidator::binStringToValue(const QString sString, bool *pbSuccess)
+{
+    quint64 nResult = 0;
+
+    bool bSuccess = false;
+    if (pbSuccess == nullptr) {
+        pbSuccess = &bSuccess;
+    }
+
+    *pbSuccess = true;
+
+    qint32 nSize = sString.size();
+
+    for (qint32 i = nSize - 1; i >= 0; i--) {
+        if (sString.at(i) == QChar('1')) {
+            nResult += i * 2;
+        } else if (sString.at(i) != QChar('0')) {
+            *pbSuccess = false;
+            break;
+        }
+    }
+
+    return nResult;
+}
+
+QString XLineEditValidator::value8ToBinString(quint8 nValue)
+{
+    return _valueToBinString(nValue, 8);
+}
+
+QString XLineEditValidator::value16ToBinString(quint16 nValue)
+{
+    return _valueToBinString(nValue, 16);
+}
+
+QString XLineEditValidator::value32ToBinString(quint32 nValue)
+{
+    return _valueToBinString(nValue, 32);
+}
+
+QString XLineEditValidator::value64ToBinString(quint64 nValue)
+{
+    return _valueToBinString(nValue, 64);
+}
+
+QString XLineEditValidator::_valueToBinString(quint64 nValue, qint32 nBits)
+{
+    QString sResult;
+
+    for (qint32 i = 0; i < nBits; i++) {
+        if (nValue & 0x1) {
+            sResult += "1";
+        } else {
+            sResult += "0";
+        }
+        nValue = nValue >> 1;
+    }
+
+    std::reverse(sResult.begin(), sResult.end());
+
+    return sResult;
 }

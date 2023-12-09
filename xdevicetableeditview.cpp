@@ -98,6 +98,8 @@ void XDeviceTableEditView::_editResize()
                         emit deviceSizeChanged(_data.nOldSize, _data.nNewSize);
                         emit dataChanged(_data.nNewSize, _data.nOldSize - _data.nNewSize);
                     }
+                } else {
+                    emit errorMessage(tr("Cannot resize"));
                 }
             }
         }

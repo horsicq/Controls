@@ -33,8 +33,10 @@ private slots:
     void on_lineEditHex_textChanged(const QString &sString);
     void on_lineEditSigned_textChanged(const QString &sString);
     void on_lineEditUnsigned_textChanged(const QString &sString);
+    void on_lineEditBin_textChanged(const QString &sString);
     void toggledSlot(bool bState);
     void enableControls(bool bState);
+    void on_pushButtonCancel_clicked();
 
 private:
     Ui::DialogBits8 *ui;
@@ -43,6 +45,7 @@ private:
     XLineEditValidator g_validatorHex;
     XLineEditValidator g_validatorSigned;
     XLineEditValidator g_validatorUnsigned;
+    XLineEditValidator g_validatorBin;
     QList<QToolButton *> g_listButtons;
     qint32 g_nBits;
 };

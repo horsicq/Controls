@@ -14,6 +14,7 @@ DialogBits8::DialogBits8(QWidget *parent) :
     ui->lineEditHex->setValidator(&g_validatorHex);
     ui->lineEditSigned->setValidator(&g_validatorSigned);
     ui->lineEditUnsigned->setValidator(&g_validatorUnsigned);
+    ui->lineEditBin->setValidator(&g_validatorBin);
 
     _handleButton(ui->toolButton0);
     _handleButton(ui->toolButton1);
@@ -102,6 +103,7 @@ void DialogBits8::setValue_uint8(quint8 nValue)
     g_validatorHex.setMode(XLineEditValidator::MODE_HEX_8);
     g_validatorSigned.setMode(XLineEditValidator::MODE_SIGN_DEC_8);
     g_validatorUnsigned.setMode(XLineEditValidator::MODE_DEC_8);
+    g_validatorBin.setMode(XLineEditValidator::MODE_BIN_8);
 
     ui->groupBox0_7->show();
     ui->groupBox8_15->hide();
@@ -123,6 +125,7 @@ void DialogBits8::setValue_uint16(quint16 nValue)
     g_validatorHex.setMode(XLineEditValidator::MODE_HEX_16);
     g_validatorSigned.setMode(XLineEditValidator::MODE_SIGN_DEC_16);
     g_validatorUnsigned.setMode(XLineEditValidator::MODE_DEC_16);
+    g_validatorBin.setMode(XLineEditValidator::MODE_BIN_16);
 
     ui->groupBox0_7->show();
     ui->groupBox8_15->show();
@@ -144,6 +147,7 @@ void DialogBits8::setValue_uint32(quint32 nValue)
     g_validatorHex.setMode(XLineEditValidator::MODE_HEX_32);
     g_validatorSigned.setMode(XLineEditValidator::MODE_SIGN_DEC_32);
     g_validatorUnsigned.setMode(XLineEditValidator::MODE_DEC_32);
+    g_validatorBin.setMode(XLineEditValidator::MODE_BIN_32);
 
     ui->groupBox0_7->show();
     ui->groupBox8_15->show();
@@ -165,6 +169,7 @@ void DialogBits8::setValue_uint64(quint64 nValue)
     g_validatorHex.setMode(XLineEditValidator::MODE_HEX_64);
     g_validatorSigned.setMode(XLineEditValidator::MODE_SIGN_DEC_64);
     g_validatorUnsigned.setMode(XLineEditValidator::MODE_DEC_64);
+    g_validatorBin.setMode(XLineEditValidator::MODE_BIN_64);
 
     ui->groupBox0_7->show();
     ui->groupBox8_15->show();
@@ -216,6 +221,17 @@ void DialogBits8::reload()
             ui->lineEditUnsigned->setText(QString::number((quint64)g_nValue, 10));
         }
     }
+    if (!(ui->lineEditBin->hasFocus())) {
+        if (g_nBits == 8) {
+            ui->lineEditBin->setText(XLineEditValidator::value8ToBinString((quint8)g_nValue));
+        } else if (g_nBits == 16) {
+            ui->lineEditBin->setText(XLineEditValidator::value16ToBinString((quint16)g_nValue));
+        } else if (g_nBits == 32) {
+            ui->lineEditBin->setText(XLineEditValidator::value32ToBinString((quint32)g_nValue));
+        } else if (g_nBits == 64) {
+            ui->lineEditBin->setText(XLineEditValidator::value64ToBinString((quint64)g_nValue));
+        }
+    }
 
     for (qint32 i = 0; i < g_nBits; i++) {
         if (!g_listButtons.at(i)->hasFocus()) {
@@ -261,19 +277,25 @@ void DialogBits8::_handleButton(QToolButton *pToolButton)
 
 void DialogBits8::on_lineEditHex_textChanged(const QString &sString)
 {
-    g_nValue = sString.toUInt(0, 16);
+    g_nValue = sString.toULongLong(0, 16);
     reload();
 }
 
 void DialogBits8::on_lineEditSigned_textChanged(const QString &sString)
 {
-    g_nValue = sString.toInt(0, 10);
+    g_nValue = sString.toULongLong(0, 10);
     reload();
 }
 
 void DialogBits8::on_lineEditUnsigned_textChanged(const QString &sString)
 {
-    g_nValue = sString.toUInt(0, 10);
+    g_nValue = sString.toULongLong(0, 10);
+    reload();
+}
+
+void DialogBits8::on_lineEditBin_textChanged(const QString &sString)
+{
+    g_nValue = XLineEditValidator::binStringToValue(sString);
     reload();
 }
 
@@ -301,10 +323,16 @@ void DialogBits8::enableControls(bool bState)
     ui->lineEditHex->blockSignals(!bState);
     ui->lineEditSigned->blockSignals(!bState);
     ui->lineEditUnsigned->blockSignals(!bState);
+    ui->lineEditBin->blockSignals(!bState);
 
     qint32 nNumberOfRecords = g_listButtons.count();
 
     for (qint32 i = 0; i < nNumberOfRecords; i++) {
         g_listButtons.at(i)->blockSignals(!bState);
     }
+}
+
+void DialogBits8::on_pushButtonCancel_clicked()
+{
+    this->close();
 }

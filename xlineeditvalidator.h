@@ -37,6 +37,10 @@ public:
         MODE_SIGN_DEC_16,
         MODE_SIGN_DEC_32,
         MODE_SIGN_DEC_64,
+        MODE_BIN_8,
+        MODE_BIN_16,
+        MODE_BIN_32,
+        MODE_BIN_64,
         MODE_HEX_8,
         MODE_HEX_16,
         MODE_HEX_32,
@@ -50,6 +54,12 @@ public:
     void setMode(MODE mode);
     MODE getMode();
     virtual State validate(QString &sInput, int &nPos) const;
+    static quint64 binStringToValue(const QString sString, bool *pbSuccess = 0);
+    static QString value8ToBinString(quint8 nValue);
+    static QString value16ToBinString(quint16 nValue);
+    static QString value32ToBinString(quint32 nValue);
+    static QString value64ToBinString(quint64 nValue);
+    static QString _valueToBinString(quint64 nValue, qint32 nBits);
 
 private:
     MODE g_mode;
