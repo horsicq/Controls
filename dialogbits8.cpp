@@ -280,7 +280,7 @@ void DialogBits8::on_lineEditHex_textChanged(const QString &sString)
 
 void DialogBits8::on_lineEditSigned_textChanged(const QString &sString)
 {
-    g_nValue = sString.toULongLong(0, 10);
+    g_nValue = sString.toLongLong(0, 10);
     reload();
 }
 
