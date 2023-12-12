@@ -583,7 +583,7 @@ void XLineEditHEX::customContextMenu(const QPoint &nPos)
     QAction actionCopySignValue(this);
     QAction actionBits(tr("Bits"), this);
 
-    if ((g_mode == _MODE_HEX) || (g_mode == _MODE_DEC) || (g_mode == _MODE_SIGN_DEC)) {
+    if ((g_mode == _MODE_HEX) || (g_mode == _MODE_DEC) || (g_mode == _MODE_SIGN_DEC) || (g_mode == _MODE_SIZE)) {
         connect(&actionCopyValue, SIGNAL(triggered()), this, SLOT(_copyValue()));
         contextMenu.addAction(&actionCopyValue);
 
@@ -592,7 +592,9 @@ void XLineEditHEX::customContextMenu(const QPoint &nPos)
             connect(&actionCopySignValue, SIGNAL(triggered()), this, SLOT(_copySignValue()));
             contextMenu.addAction(&actionCopySignValue);
         }
+    }
 
+    if ((g_mode == _MODE_HEX) || (g_mode == _MODE_DEC) || (g_mode == _MODE_SIGN_DEC)) {
         contextMenu.addSeparator();
         connect(&actionBits, SIGNAL(triggered()), this, SLOT(_bits()));
         contextMenu.addAction(&actionBits);
