@@ -222,3 +222,33 @@ QString XLineEditValidator::_valueToBinString(quint64 nValue, qint32 nBits)
 
     return sResult;
 }
+
+QString XLineEditValidator::_valueToSizeString(quint64 nValue)
+{
+    QString sResult;
+
+    qint32 nBase = 1024;
+    QString sValue;
+    QString sUnit;
+
+    if (nValue < nBase) {
+        sValue = QString::number(nValue);
+        sUnit = tr("Bytes");
+    } else if (nValue < (nBase * nBase)) {
+        sValue = QString::number((double)nValue / nBase, 'f', 2);
+        sUnit = tr("KiB");
+    } else if (nValue < (nBase * nBase * nBase)) {
+        sValue = QString::number((double)nValue / (nBase * nBase), 'f', 2);
+        sUnit = tr("MiB");
+    } else if (nValue < (nBase * nBase * nBase * nBase)) {
+        sValue = QString::number((double)nValue / (nBase * nBase * nBase), 'f', 2);
+        sUnit = tr("GiB");
+    } else {
+        sValue = QString::number((double)nValue / (nBase * nBase * nBase * nBase), 'f', 2);
+        sUnit = tr("TiB");
+    }
+
+    sResult = QString("%1 %2").arg(sValue, sUnit);
+
+    return sResult;
+}

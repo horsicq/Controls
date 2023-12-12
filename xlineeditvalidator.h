@@ -45,7 +45,8 @@ public:
         MODE_HEX_16,
         MODE_HEX_32,
         MODE_HEX_64,
-        MODE_UUID
+        MODE_UUID,
+        MODE_SIZE
         // TODO more
     };
 
@@ -60,6 +61,7 @@ public:
     static QString value32ToBinString(quint32 nValue);
     static QString value64ToBinString(quint64 nValue);
     static QString _valueToBinString(quint64 nValue, qint32 nBits);
+    static QString _valueToSizeString(quint64 nValue);
 
 private:
     MODE g_mode;

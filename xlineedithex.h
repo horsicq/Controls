@@ -62,15 +62,6 @@ public:
 
     void setOptions(const OPTIONS &options);
 
-    void setValue(quint8 nValue, _MODE mode = _MODE_HEX);   // TODO remove
-    void setValue(qint8 nValue, _MODE mode = _MODE_HEX);    // TODO remove
-    void setValue(quint16 nValue, _MODE mode = _MODE_HEX);  // TODO remove
-    void setValue(qint16 nValue, _MODE mode = _MODE_HEX);   // TODO remove
-    void setValue(quint32 nValue, _MODE mode = _MODE_HEX);  // TODO remove
-    void setValue(qint32 nValue, _MODE mode = _MODE_HEX);   // TODO remove
-    void setValue(quint64 nValue, _MODE mode = _MODE_HEX);  // TODO remove
-    void setValue(qint64 nValue, _MODE mode = _MODE_HEX);   // TODO remove
-
     void setValue_uint8(quint8 nValue, _MODE mode = _MODE_HEX);
     void setValue_int8(qint8 nValue, _MODE mode = _MODE_HEX);
     void setValue_uint16(quint16 nValue, _MODE mode = _MODE_HEX);
