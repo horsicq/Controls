@@ -125,6 +125,8 @@ public:
 
 public slots:
     void setEdited(qint64 nDeviceOffset, qint64 nDeviceSize);
+    void _goToAddressSlot();
+    void _goToOffsetSlot();
 
 protected:
     virtual bool isViewOffsetValid(qint64 nViewOffset);
@@ -148,8 +150,6 @@ signals:
 #endif
 
 protected slots:
-    void _goToAddressSlot();
-    void _goToOffsetSlot();
     void _goToSelectionStart();
     void _goToSelectionEnd();
     void _dumpToFileSlot();

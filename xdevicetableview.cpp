@@ -495,7 +495,9 @@ void XDeviceTableView::goToAddress(XADDR nAddress, bool bShort, bool bAprox, boo
                 addVisited(nViewOffset);
             }
 
-            _initSetSelection(nViewOffset, getViewSizeByViewOffset(nViewOffset));
+            qint64 nViewSize = getViewSizeByViewOffset(nViewOffset);
+
+            _initSetSelection(nViewOffset, nViewSize);
             // TODO
         }
         // mb TODO reload

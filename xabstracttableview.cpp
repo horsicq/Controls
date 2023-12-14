@@ -483,6 +483,10 @@ void XAbstractTableView::setState(STATE state)
 
 void XAbstractTableView::_initSelection(qint64 nViewOffset, qint64 nSize)
 {
+#ifdef QT_DEBUG
+    qDebug("_initSelection %llx, %llx", nViewOffset, nSize);
+#endif
+
     if (isViewOffsetValid(nViewOffset) || isEnd(nViewOffset)) {
         g_nSelectionInitOffset = nViewOffset;
         g_nSelectionInitSize = nSize;
@@ -498,7 +502,7 @@ void XAbstractTableView::_initSelection(qint64 nViewOffset, qint64 nSize)
 void XAbstractTableView::_setSelection(qint64 nViewOffset, qint64 nSize)
 {
 #ifdef QT_DEBUG
-//    qDebug("_setSelection %llx, %llx", nViewOffset, nSize);
+    qDebug("_setSelection %llx, %llx", nViewOffset, nSize);
 #endif
 
     if (isViewOffsetValid(nViewOffset) || isEnd(nViewOffset)) {
@@ -941,7 +945,7 @@ void XAbstractTableView::mouseReleaseEvent(QMouseEvent *pEvent)
         if (pEvent->button() == Qt::LeftButton) {
             if (g_bHeaderClickButton) {
                 _headerClicked(g_nHeaderClickColumnNumber);
-            } else if (g_bIsSelectionEnable) {
+            } else if (g_bIsSelectionEnable && g_bMouseSelection) {
                 CURSOR_POSITION cursorPosition = getCursorPosition(pEvent->pos());
                 OS os = cursorPositionToOS(cursorPosition);
 
