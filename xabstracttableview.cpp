@@ -410,7 +410,13 @@ XAbstractTableView::CURSOR_POSITION XAbstractTableView::getCursorPosition(QPoint
 
                 if (result.nX >= (nCurrentOffset + g_listColumns.at(i).nWidth - g_nSideDelta)) {
                     if (!g_bColumnFixed) {
-                        result.bResizeColumn = true;
+                        if (g_bVerticalLinesVisible) {
+                            result.bResizeColumn = true;
+                        } else {
+                            if (result.nY < nHeaderHeight) {
+                                result.bResizeColumn = true;
+                            }
+                        }
 
                         if ((result.nColumn == (nNumberOfColumns - 1)) && (g_bLastColumnStretch)) {
                             result.bResizeColumn = false;

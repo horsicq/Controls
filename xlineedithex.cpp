@@ -315,6 +315,15 @@ void XLineEditHEX::setValue_UUID(const QString &sText)
     setValue_Variant(sText);
 }
 
+void XLineEditHEX::setValue_double(double dValue)
+{
+    g_mode = _MODE_DOUBLE;
+    g_validator.setMode(XLineEditValidator::MODE_DOUBLE);
+
+    QLineEdit::setText(QString::number(dValue, 'f', 2));
+    setValue_Variant(dValue);
+}
+
 void XLineEditHEX::setValue_Variant(const QVariant &variant)
 {
     if (g_vValue != variant) {

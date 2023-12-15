@@ -22,6 +22,7 @@
 #define XLINEEDITVALIDATOR_H
 
 #include <QIntValidator>
+#include <QDoubleValidator>
 
 class XLineEditValidator : public QValidator {
     Q_OBJECT
@@ -46,7 +47,8 @@ public:
         MODE_HEX_32,
         MODE_HEX_64,
         MODE_UUID,
-        MODE_SIZE
+        MODE_SIZE,
+        MODE_DOUBLE
         // TODO more
     };
 

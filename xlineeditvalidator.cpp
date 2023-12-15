@@ -42,116 +42,127 @@ QValidator::State XLineEditValidator::validate(QString &sInput, int &nPos) const
     QValidator::State result = Acceptable;
 
     if (!sInput.isEmpty()) {
-        qint64 nMax = 0;
-        qint64 nMin = 0;
-        qint32 nLenght = 0;
-        // TODO Dec Lenght !!!
+        if (    (g_mode == MODE_HEX_8) || (g_mode == MODE_DEC_8) || (g_mode == MODE_BIN_8) ||
+                (g_mode == MODE_HEX_16) || (g_mode == MODE_DEC_16) || (g_mode == MODE_BIN_16) ||
+                (g_mode == MODE_HEX_32) || (g_mode == MODE_DEC_32) || (g_mode == MODE_BIN_32) ||
+                (g_mode == MODE_HEX_64) || (g_mode == MODE_DEC_64) || (g_mode == MODE_BIN_64)) {
+            qint64 nMax = 0;
+            qint64 nMin = 0;
+            qint32 nLenght = 0;
+            // TODO Dec Lenght !!!
 
-        // TODO optimize!
-        if ((g_mode == MODE_HEX_8) || (g_mode == MODE_DEC_8) || (g_mode == MODE_BIN_8)) {
-            nMax = UCHAR_MAX;
-            nMin = 0;
-        } else if (g_mode == MODE_SIGN_DEC_8) {
-            nMax = SCHAR_MAX;
-            nMin = SCHAR_MIN;
-        } else if ((g_mode == MODE_HEX_16) || (g_mode == MODE_DEC_16) || (g_mode == MODE_BIN_16)) {
-            nMax = USHRT_MAX;
-            nMin = 0;
-        } else if (g_mode == MODE_SIGN_DEC_16) {
-            nMax = SHRT_MAX;
-            nMin = SHRT_MIN;
-        } else if ((g_mode == MODE_HEX_32) || (g_mode == MODE_DEC_32) || (g_mode == MODE_BIN_32)) {
-            nMax = UINT_MAX;
-            nMin = 0;
-        } else if (g_mode == MODE_SIGN_DEC_32) {
-            nMax = INT_MAX;
-            nMin = INT_MIN;
-        } else if ((g_mode == MODE_HEX_64) || (g_mode == MODE_DEC_64) || (g_mode == MODE_BIN_64)) {
-            nMax = ULLONG_MAX;
-            nMin = 0;
-        } else if (g_mode == MODE_SIGN_DEC_64) {
-            // TODO Check
-#ifdef LLONG_MAX
-            nMax = LLONG_MAX;
-            nMin = LLONG_MIN;
-#endif
-#ifdef LONG_LONG_MAX
-            nMax = LONG_LONG_MAX;
-            nMin = LONG_LONG_MIN;
-#endif
-        }
+            // TODO optimize!
+            if ((g_mode == MODE_HEX_8) || (g_mode == MODE_DEC_8) || (g_mode == MODE_BIN_8)) {
+                nMax = UCHAR_MAX;
+                nMin = 0;
+            } else if (g_mode == MODE_SIGN_DEC_8) {
+                nMax = SCHAR_MAX;
+                nMin = SCHAR_MIN;
+            } else if ((g_mode == MODE_HEX_16) || (g_mode == MODE_DEC_16) || (g_mode == MODE_BIN_16)) {
+                nMax = USHRT_MAX;
+                nMin = 0;
+            } else if (g_mode == MODE_SIGN_DEC_16) {
+                nMax = SHRT_MAX;
+                nMin = SHRT_MIN;
+            } else if ((g_mode == MODE_HEX_32) || (g_mode == MODE_DEC_32) || (g_mode == MODE_BIN_32)) {
+                nMax = UINT_MAX;
+                nMin = 0;
+            } else if (g_mode == MODE_SIGN_DEC_32) {
+                nMax = INT_MAX;
+                nMin = INT_MIN;
+            } else if ((g_mode == MODE_HEX_64) || (g_mode == MODE_DEC_64) || (g_mode == MODE_BIN_64)) {
+                nMax = ULLONG_MAX;
+                nMin = 0;
+            } else if (g_mode == MODE_SIGN_DEC_64) {
+                // TODO Check
+    #ifdef LLONG_MAX
+                nMax = LLONG_MAX;
+                nMin = LLONG_MIN;
+    #endif
+    #ifdef LONG_LONG_MAX
+                nMax = LONG_LONG_MAX;
+                nMin = LONG_LONG_MIN;
+    #endif
+            }
 
-        if (g_mode == MODE_HEX_8) {
-            nLenght = 2;
-        } else if (g_mode == MODE_HEX_16) {
-            nLenght = 4;
-        } else if (g_mode == MODE_HEX_32) {
-            nLenght = 8;
-        } else if (g_mode == MODE_HEX_64) {
-            nLenght = 16;
-        } else if (g_mode == MODE_BIN_8) {
-            nLenght = 16;
-        } else if (g_mode == MODE_BIN_16) {
-            nLenght = 32;
-        } else if (g_mode == MODE_BIN_32) {
-            nLenght = 64;
-        } else if (g_mode == MODE_BIN_64) {
-            nLenght = 128;
-        }
+            if (g_mode == MODE_HEX_8) {
+                nLenght = 2;
+            } else if (g_mode == MODE_HEX_16) {
+                nLenght = 4;
+            } else if (g_mode == MODE_HEX_32) {
+                nLenght = 8;
+            } else if (g_mode == MODE_HEX_64) {
+                nLenght = 16;
+            } else if (g_mode == MODE_BIN_8) {
+                nLenght = 16;
+            } else if (g_mode == MODE_BIN_16) {
+                nLenght = 32;
+            } else if (g_mode == MODE_BIN_32) {
+                nLenght = 64;
+            } else if (g_mode == MODE_BIN_64) {
+                nLenght = 128;
+            }
 
-        if ((g_mode == MODE_HEX_8) || (g_mode == MODE_HEX_16) || (g_mode == MODE_HEX_32) || (g_mode == MODE_HEX_64)) {
-            result = Invalid;
+            if ((g_mode == MODE_HEX_8) || (g_mode == MODE_HEX_16) || (g_mode == MODE_HEX_32) || (g_mode == MODE_HEX_64)) {
+                result = Invalid;
 
-            bool bSuccess = false;
-            quint64 nValue = sInput.toULongLong(&bSuccess, 16);
+                bool bSuccess = false;
+                quint64 nValue = sInput.toULongLong(&bSuccess, 16);
 
-            if (bSuccess && (sInput.length() <= nLenght)) {
-                if (g_mode != MODE_HEX_64) {
+                if (bSuccess && (sInput.length() <= nLenght)) {
+                    if (g_mode != MODE_HEX_64) {
+                        if ((qint64)nValue <= nMax) {
+                            result = Acceptable;
+                        }
+                    } else {
+                        result = Acceptable;
+                    }
+                }
+            } else if ((g_mode == MODE_DEC_8) || (g_mode == MODE_DEC_16) || (g_mode == MODE_DEC_32) || (g_mode == MODE_DEC_64)) {
+                result = Invalid;
+
+                bool bSuccess = false;
+                quint64 nValue = sInput.toULongLong(&bSuccess, 10);
+
+                if (bSuccess) {
+                    if (g_mode != MODE_DEC_64) {
+                        if ((qint64)nValue <= nMax) {
+                            result = Acceptable;
+                        }
+                    } else {
+                        result = Acceptable;
+                    }
+                }
+            } else if ((g_mode == MODE_SIGN_DEC_8) || (g_mode == MODE_SIGN_DEC_16) || (g_mode == MODE_SIGN_DEC_32) || (g_mode == MODE_SIGN_DEC_64)) {
+                result = Invalid;
+
+                bool bSuccess = false;
+                qint64 nValue = sInput.toLongLong(&bSuccess, 10);
+
+                if (bSuccess && (nValue <= nMax) && (nValue >= nMin)) {
+                    result = Acceptable;
+                } else if (sInput == "-") {
+                    result = Intermediate;
+                }
+            } else if ((g_mode == MODE_BIN_8) || (g_mode == MODE_BIN_16) || (g_mode == MODE_BIN_32) || (g_mode == MODE_BIN_64)) {
+                result = Invalid;
+
+                bool bSuccess = false;
+                quint64 nValue = binStringToValue(sInput, &bSuccess);
+
+                if (bSuccess && (sInput.length() <= nLenght)) {
                     if ((qint64)nValue <= nMax) {
                         result = Acceptable;
                     }
-                } else {
-                    result = Acceptable;
                 }
             }
-        } else if ((g_mode == MODE_DEC_8) || (g_mode == MODE_DEC_16) || (g_mode == MODE_DEC_32) || (g_mode == MODE_DEC_64)) {
-            result = Invalid;
-
-            bool bSuccess = false;
-            quint64 nValue = sInput.toULongLong(&bSuccess, 10);
-
-            if (bSuccess) {
-                if (g_mode != MODE_DEC_64) {
-                    if ((qint64)nValue <= nMax) {
-                        result = Acceptable;
-                    }
-                } else {
-                    result = Acceptable;
-                }
-            }
-        } else if ((g_mode == MODE_SIGN_DEC_8) || (g_mode == MODE_SIGN_DEC_16) || (g_mode == MODE_SIGN_DEC_32) || (g_mode == MODE_SIGN_DEC_64)) {
-            result = Invalid;
-
-            bool bSuccess = false;
-            qint64 nValue = sInput.toLongLong(&bSuccess, 10);
-
-            if (bSuccess && (nValue <= nMax) && (nValue >= nMin)) {
-                result = Acceptable;
-            } else if (sInput == "-") {
-                result = Intermediate;
-            }
-        } else if ((g_mode == MODE_BIN_8) || (g_mode == MODE_BIN_16) || (g_mode == MODE_BIN_32) || (g_mode == MODE_BIN_64)) {
-            result = Invalid;
-
-            bool bSuccess = false;
-            quint64 nValue = binStringToValue(sInput, &bSuccess);
-
-            if (bSuccess && (sInput.length() <= nLenght)) {
-                if ((qint64)nValue <= nMax) {
-                    result = Acceptable;
-                }
-            }
+        } else if (g_mode == MODE_DOUBLE) {
+            QDoubleValidator val;
+            val.setLocale(QLocale::C);
+            val.setNotation(QDoubleValidator::StandardNotation);
+            result = val.validate(sInput, nPos);
         }
+
         // TODO validate UUID !!!
         // NNNNNNNN-NNNN-NNNN-NNNN-NNNNNNNNNNNN
         // As 5 uints

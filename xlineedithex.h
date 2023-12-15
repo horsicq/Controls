@@ -51,7 +51,8 @@ public:
         _MODE_UNKNOWN = 0,
         _MODE_TEXT,
         _MODE_UUID,
-        _MODE_SIZE,  // TODO
+        _MODE_SIZE,
+        _MODE_DOUBLE,
         _MODE_HEX,
         _MODE_DEC,
         _MODE_SIGN_DEC
@@ -76,6 +77,7 @@ public:
     void setValue32_64(quint64 nValue, _MODE mode = _MODE_HEX);
     void setValue_String(const QString &sText, qint32 nMaxLength = 0);
     void setValue_UUID(const QString &sText);
+    void setValue_double(double dValue);
     void setValue_Variant(const QVariant &variant);
     //    quint64 getIntValue();
     //    qint64 getSignValue();
