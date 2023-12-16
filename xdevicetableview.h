@@ -47,7 +47,6 @@ public:
         LOCMODE_OFFSET = 0,
         LOCMODE_ADDRESS,
         LOCMODE_RELADDRESS,
-        LOCMODE_LABEL,
         LOCMODE_THIS
     };
 
