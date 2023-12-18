@@ -160,11 +160,11 @@ QValidator::State XLineEditValidator::validate(QString &sInput, int &nPos) const
             val.setLocale(QLocale::C);
             val.setNotation(QDoubleValidator::StandardNotation);
             result = val.validate(sInput, nPos);
+        } else if (g_mode == MODE_UUID) {
+            // TODO
+            // NNNNNNNN-NNNN-NNNN-NNNN-NNNNNNNNNNNN
+            // As 5 uints
         }
-
-        // TODO validate UUID !!!
-        // NNNNNNNN-NNNN-NNNN-NNNN-NNNNNNNNNNNN
-        // As 5 uints
     }
 
     return result;
