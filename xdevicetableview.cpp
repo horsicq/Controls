@@ -100,11 +100,11 @@ qint64 XDeviceTableView::getViewSize()
     return g_nViewSize;
 }
 
-void XDeviceTableView::setMemoryMap(XBinary::_MEMORY_MAP memoryMap)
+void XDeviceTableView::setMemoryMap(const XBinary::_MEMORY_MAP &memoryMap)
 {
     if (memoryMap.fileType == XBinary::FT_UNKNOWN) {
         XBinary binary(getDevice());
-        memoryMap = binary.getMemoryMap();
+        g_memoryMap = binary.getMemoryMap();
     }
 
     g_memoryMap = memoryMap;

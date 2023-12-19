@@ -86,7 +86,7 @@ public:
     QIODevice *getBackupDevice();
     void setViewSize(qint64 nViewSize);
     qint64 getViewSize();
-    void setMemoryMap(XBinary::_MEMORY_MAP memoryMap);
+    void setMemoryMap(const XBinary::_MEMORY_MAP &memoryMap);
     XBinary::_MEMORY_MAP *getMemoryMap();
     void setAddressMode(LOCMODE addressMode);
     LOCMODE getAddressMode();
