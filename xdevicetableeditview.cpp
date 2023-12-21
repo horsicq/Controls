@@ -51,25 +51,31 @@ void XDeviceTableEditView::_editHex()
 
 void XDeviceTableEditView::_editRemove()
 {
-    if (XBinary::isResizeEnable(getDevice())) {
-        DialogRemove::DATA _data = {};
-        _data.nDeviceOffset = 0;
-        _data.nDeviceSize = 0;
-        _data.nOldSize = getDevice()->size();
-        _data.nNewSize = _data.nOldSize - _data.nDeviceSize;
+    if (!isReadonly()) {
+        if (XBinary::isResizeEnable(getDevice())) {
+            DEVICESTATE state = getDeviceState();
 
-        DialogRemove dialogRemove(this, &_data);
+            DialogRemove::DATA _data = {};
+            _data.nOffset = state.nSelectionDeviceOffset;
+            _data.nSize = state.nSelectionSize;
+            _data.nMaxSize = getDevice()->size();
 
-        if (dialogRemove.exec() == QDialog::Accepted) {
-            if (_data.nOldSize != _data.nNewSize) {
-                // mb TODO Process move memory
-                if (XBinary::moveMemory(getDevice(), _data.nDeviceOffset + _data.nDeviceSize, _data.nDeviceOffset, _data.nDeviceSize)) {
-                    if (XBinary::resize(getDevice(), _data.nNewSize)) {
-                        // mb TODO correct bookmarks
-                        adjustScrollCount();
-                        reload(true);
-                        emit deviceSizeChanged(_data.nOldSize, _data.nNewSize);
-                        emit dataChanged(_data.nDeviceOffset, (_data.nOldSize - _data.nNewSize) - _data.nDeviceOffset);
+            DialogRemove dialogRemove(this, &_data);
+
+            if (dialogRemove.exec() == QDialog::Accepted) {
+                qint64 nOldSize = _data.nMaxSize;
+                qint64 nNewSize = nOldSize - _data.nSize;
+
+                if (nOldSize != nNewSize) {
+                    // mb TODO Process move memory
+                    if (XBinary::moveMemory(getDevice(), _data.nOffset + _data.nSize, _data.nOffset, _data.nSize)) {
+                        if (XBinary::resize(getDevice(), nNewSize)) {
+                            // mb TODO correct bookmarks
+                            adjustScrollCount();
+                            reload(true);
+                            emit deviceSizeChanged(nOldSize, nNewSize);
+                            emit dataChanged(_data.nOffset, nNewSize - _data.nOffset);
+                        }
                     }
                 }
             }
@@ -79,27 +85,30 @@ void XDeviceTableEditView::_editRemove()
 
 void XDeviceTableEditView::_editResize()
 {
-    if (XBinary::isResizeEnable(getDevice())) {
-        DialogResize::DATA _data = {};
-        _data.nOldSize = getDevice()->size();
-        _data.nNewSize = _data.nOldSize;
+    if (!isReadonly()) {
+        if (XBinary::isResizeEnable(getDevice())) {
+            DialogResize::DATA _data = {};
+            _data.nOldSize = getDevice()->size();
+            _data.nNewSize = _data.nOldSize;
 
-        DialogResize dialogResize(this, &_data);
+            DialogResize dialogResize(this, &_data);
 
-        if (dialogResize.exec() == QDialog::Accepted) {
-            if (_data.nOldSize != _data.nNewSize) {
-                if (XBinary::resize(getDevice(), _data.nNewSize)) {
-                    adjustScrollCount();
-                    reload(true);
-                    if (_data.nNewSize > _data.nOldSize) {
-                        emit deviceSizeChanged(_data.nOldSize, _data.nNewSize);
-                        emit dataChanged(_data.nOldSize, _data.nNewSize - _data.nOldSize);
-                    } else if (_data.nOldSize > _data.nNewSize) {
-                        emit deviceSizeChanged(_data.nOldSize, _data.nNewSize);
-                        emit dataChanged(_data.nNewSize, _data.nOldSize - _data.nNewSize);
+            if (dialogResize.exec() == QDialog::Accepted) {
+                if (_data.nOldSize != _data.nNewSize) {
+                    if (XBinary::resize(getDevice(), _data.nNewSize)) {
+                        // mb TODO correct bookmarks
+                        adjustScrollCount();
+                        reload(true);
+                        if (_data.nNewSize > _data.nOldSize) {
+                            emit deviceSizeChanged(_data.nOldSize, _data.nNewSize);
+                            emit dataChanged(_data.nOldSize, _data.nNewSize - _data.nOldSize);
+                        } else if (_data.nOldSize > _data.nNewSize) {
+                            emit deviceSizeChanged(_data.nOldSize, _data.nNewSize);
+                            emit dataChanged(_data.nNewSize, _data.nOldSize - _data.nNewSize);
+                        }
+                    } else {
+                        emit errorMessage(tr("Cannot resize"));
                     }
-                } else {
-                    emit errorMessage(tr("Cannot resize"));
                 }
             }
         }
