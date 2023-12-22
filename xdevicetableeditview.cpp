@@ -67,14 +67,16 @@ void XDeviceTableEditView::_editRemove()
                 qint64 nNewSize = nOldSize - _data.nSize;
 
                 if (nOldSize != nNewSize) {
-                    // mb TODO Process move memory
-                    if (XBinary::moveMemory(getDevice(), _data.nOffset + _data.nSize, _data.nOffset, _data.nSize)) {
-                        if (XBinary::resize(getDevice(), nNewSize)) {
-                            // mb TODO correct bookmarks
-                            adjustScrollCount();
-                            reload(true);
-                            emit deviceSizeChanged(nOldSize, nNewSize);
-                            emit dataChanged(_data.nOffset, nNewSize - _data.nOffset);
+                    if (saveBackup()) {
+                        // mb TODO Process move memory
+                        if (XBinary::moveMemory(getDevice(), _data.nOffset + _data.nSize, _data.nOffset, _data.nSize)) {
+                            if (XBinary::resize(getDevice(), nNewSize)) {
+                                // mb TODO correct bookmarks
+                                adjustScrollCount();
+                                reload(true);
+                                emit deviceSizeChanged(nOldSize, nNewSize);
+                                emit dataChanged(_data.nOffset, nNewSize - _data.nOffset);
+                            }
                         }
                     }
                 }
@@ -95,19 +97,21 @@ void XDeviceTableEditView::_editResize()
 
             if (dialogResize.exec() == QDialog::Accepted) {
                 if (_data.nOldSize != _data.nNewSize) {
-                    if (XBinary::resize(getDevice(), _data.nNewSize)) {
-                        // mb TODO correct bookmarks
-                        adjustScrollCount();
-                        reload(true);
-                        if (_data.nNewSize > _data.nOldSize) {
-                            emit deviceSizeChanged(_data.nOldSize, _data.nNewSize);
-                            emit dataChanged(_data.nOldSize, _data.nNewSize - _data.nOldSize);
-                        } else if (_data.nOldSize > _data.nNewSize) {
-                            emit deviceSizeChanged(_data.nOldSize, _data.nNewSize);
-                            emit dataChanged(_data.nNewSize, _data.nOldSize - _data.nNewSize);
+                    if (saveBackup()) {
+                        if (XBinary::resize(getDevice(), _data.nNewSize)) {
+                            // mb TODO correct bookmarks
+                            adjustScrollCount();
+                            reload(true);
+                            if (_data.nNewSize > _data.nOldSize) {
+                                emit deviceSizeChanged(_data.nOldSize, _data.nNewSize);
+                                emit dataChanged(_data.nOldSize, _data.nNewSize - _data.nOldSize);
+                            } else if (_data.nOldSize > _data.nNewSize) {
+                                emit deviceSizeChanged(_data.nOldSize, _data.nNewSize);
+                                emit dataChanged(_data.nNewSize, _data.nOldSize - _data.nNewSize);
+                            }
+                        } else {
+                            emit errorMessage(tr("Cannot resize"));
                         }
-                    } else {
-                        emit errorMessage(tr("Cannot resize"));
                     }
                 }
             }
