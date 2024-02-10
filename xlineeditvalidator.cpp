@@ -42,10 +42,10 @@ QValidator::State XLineEditValidator::validate(QString &sInput, int &nPos) const
     QValidator::State result = Acceptable;
 
     if (!sInput.isEmpty()) {
-        if ((g_mode == MODE_HEX_8) || (g_mode == MODE_DEC_8) || (g_mode == MODE_SIGN_DEC_8) || (g_mode == MODE_BIN_8) ||
-            (g_mode == MODE_HEX_16) || (g_mode == MODE_DEC_16) || (g_mode == MODE_SIGN_DEC_16) ||  (g_mode == MODE_BIN_16) ||
-            (g_mode == MODE_HEX_32) || (g_mode == MODE_DEC_32) || (g_mode == MODE_SIGN_DEC_32) ||  (g_mode == MODE_BIN_32) ||
-            (g_mode == MODE_HEX_64) || (g_mode == MODE_DEC_64) || (g_mode == MODE_SIGN_DEC_64) ||  (g_mode == MODE_BIN_64)) {
+        if ((g_mode == MODE_HEX_8) || (g_mode == MODE_DEC_8) || (g_mode == MODE_SIGN_DEC_8) || (g_mode == MODE_BIN_8) || (g_mode == MODE_HEX_16) ||
+            (g_mode == MODE_DEC_16) || (g_mode == MODE_SIGN_DEC_16) || (g_mode == MODE_BIN_16) || (g_mode == MODE_HEX_32) || (g_mode == MODE_DEC_32) ||
+            (g_mode == MODE_SIGN_DEC_32) || (g_mode == MODE_BIN_32) || (g_mode == MODE_HEX_64) || (g_mode == MODE_DEC_64) || (g_mode == MODE_SIGN_DEC_64) ||
+            (g_mode == MODE_BIN_64)) {
             qint64 nMax = 0;
             qint64 nMin = 0;
             qint32 nLenght = 0;
