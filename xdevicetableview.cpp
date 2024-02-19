@@ -394,7 +394,7 @@ void XDeviceTableView::dumpMemory(qint64 nOffset, qint64 nSize)
     QString sFileName = QFileDialog::getSaveFileName(this, tr("Save dump"), sSaveFileName, QString("%1 (*.bin)").arg(tr("Raw data")));
 
     if (!sFileName.isEmpty()) {
-        DialogDumpProcess dd(this, getDevice(), nOffset, nSize, sFileName, DumpProcess::DT_OFFSET);
+        DialogDumpProcess dd(this, getDevice(), nOffset, nSize, sFileName, DumpProcess::DT_DUMP_OFFSET);
 
         dd.showDialogDelay();
     }
