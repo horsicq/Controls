@@ -57,7 +57,7 @@ void XDeviceTableEditView::_editPatch()
         if (sJsonFileName != "") {
             DialogDumpProcess dd(this);
 
-            dd.setData(getDevice(), DumpProcess::DT_PATCH_OFFSET, sJsonFileName);
+            dd.setData(getDevice(), DumpProcess::DT_PATCH_DEVICE_OFFSET, sJsonFileName);
 
             dd.showDialogDelay();
 
