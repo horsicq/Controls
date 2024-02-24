@@ -52,7 +52,8 @@ void XDeviceTableEditView::_editHex()
 void XDeviceTableEditView::_editPatch()
 {
     if (!isReadonly()) {
-        QString sJsonFileName = QFileDialog::getOpenFileName(this, tr("Open file") + QString("..."), XBinary::getDeviceDirectory(getDevice()), QString("%1 (*.patch.json)").arg(tr("Patch")));
+        QString sJsonFileName =
+            QFileDialog::getOpenFileName(this, tr("Open file") + QString("..."), XBinary::getDeviceDirectory(getDevice()), QString("%1 (*.patch.json)").arg(tr("Patch")));
 
         if (sJsonFileName != "") {
             DialogDumpProcess dd(this);
