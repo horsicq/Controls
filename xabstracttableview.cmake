@@ -13,6 +13,9 @@ set(XABSTRACTTABLEVIEW_SOURCES
     ${DIALOGTEXTINFO_SOURCES}
     ${XINFODB_SOURCES}
     ${CMAKE_CURRENT_LIST_DIR}/xabstracttableview.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/xabstracttableview.h
     ${CMAKE_CURRENT_LIST_DIR}/xdevicetableview.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/xdevicetableview.h
     ${CMAKE_CURRENT_LIST_DIR}/xdevicetableeditview.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/xdevicetableeditview.h
 )
