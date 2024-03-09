@@ -238,7 +238,7 @@ QString XLineEditValidator::_valueToSizeString(quint64 nValue)
 {
     QString sResult;
 
-    qint32 nBase = 1024;
+    quint64 nBase = 1024;
     QString sValue;
     QString sUnit;
 
