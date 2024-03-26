@@ -184,3 +184,26 @@ void XDeviceTableEditView::_strings()
         emit closeWidget_Strings();
     }
 }
+#if defined(QT_SCRIPT_LIB) || defined(QT_QML_LIB)
+void XDeviceTableEditView::_scripts()
+{
+    if (!getViewWidgetState(VIEWWIDGET_SCRIPTS)) {
+        setViewWidgetState(VIEWWIDGET_SCRIPTS, true);
+
+        DialogDieHexViewer dialogDieHexViewer(this);
+
+        connect(&dialogDieHexViewer, SIGNAL(currentAddressChanged(XADDR, qint64)), this, SLOT(goToAddressSlot(XADDR, qint64)));
+        connect(this, SIGNAL(closeWidget_Scripts()), &dialogDieHexViewer, SLOT(close()));
+
+        dialogDieHexViewer.setGlobal(getShortcuts(), getGlobalOptions());
+
+        XOptions::_adjustStayOnTop(&dialogDieHexViewer, true);
+
+        dialogDieHexViewer.exec();
+
+        setViewWidgetState(VIEWWIDGET_SCRIPTS, false);
+    } else {
+        emit closeWidget_Scripts();
+    }
+}
+#endif

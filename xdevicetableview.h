@@ -73,7 +73,10 @@ public:
         VIEWWIDGET_DATACONVERTOR,
         VIEWWIDGET_MULTISEARCH,
         VIEWWIDGET_BOOKMARKS,
-        VIEWWIDGET_STRINGS
+        VIEWWIDGET_STRINGS,
+#if defined(QT_SCRIPT_LIB) || defined(QT_QML_LIB)
+        VIEWWIDGET_SCRIPTS,
+#endif
     };
 
     XDeviceTableView(QWidget *pParent = nullptr);
@@ -146,6 +149,9 @@ signals:
     void closeWidget_Strings();
 #ifdef QT_SQL_LIB
     void closeWidget_Bookmarks();
+#endif
+#if defined(QT_SCRIPT_LIB) || defined(QT_QML_LIB)
+    void closeWidget_Scripts();
 #endif
 
 protected slots:

@@ -24,6 +24,9 @@
 #include "dialoghexedit.h"
 #include "dialogsearchstrings.h"
 #include "xdevicetableview.h"
+#if defined(QT_SCRIPT_LIB) || defined(QT_QML_LIB)
+#include "dialogdiehexviewer.h"
+#endif
 
 class XDeviceTableEditView : public XDeviceTableView {
     Q_OBJECT
@@ -39,6 +42,9 @@ protected slots:
     void _followInDisasmSlot();
     void _followInHexSlot();
     void _strings();
+#if defined(QT_SCRIPT_LIB) || defined(QT_QML_LIB)
+    void _scripts();
+#endif
 
 signals:
     void followInDisasm(XADDR nAddress);
