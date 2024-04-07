@@ -21,7 +21,7 @@
 #include "dialogbits8.h"
 #include "ui_dialogbits8.h"
 
-DialogBits8::DialogBits8(QWidget *parent) : QDialog(parent), ui(new Ui::DialogBits8)
+DialogBits8::DialogBits8(QWidget *pParent) : QDialog(pParent), ui(new Ui::DialogBits8)
 {
     ui->setupUi(this);
 
