@@ -43,10 +43,10 @@ private slots:
     void _setDateTime(const QDateTime &dtValue);
 
 signals:
-    void valueChanged(quint64 nValue);
+    void valueChanged(QVariant vValue);
 
 private:
-    quint64 g_nValue;
+    quint64 g_nValue; // TODO QVariant
     DT_TYPE g_dtType;
 };
 
