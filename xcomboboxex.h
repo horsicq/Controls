@@ -48,8 +48,8 @@ public:
     explicit XComboBoxEx(QWidget *pParent = nullptr);
 
     void setData(QMap<quint64, QString> mapData, CBTYPE cbtype = CBTYPE_LIST, quint64 nMask = 0);
-    void setValue(quint64 nValue);
-    quint64 getValue();
+    void setValue(QVariant vValue);
+    QVariant getValue();
     void setReadOnly(bool bIsReadOnly);
     QString getDescription();
     void addCustomFlags(const QString &sTitle, const QList<CUSTOM_FLAG> &listCustomFlags);
@@ -65,12 +65,12 @@ signals:
     void valueChanged(QVariant vValue);
 
 private:
-    quint64 g_nValue;  // TODO QVariant
+    QVariant g_vValue;
     bool g_bIsReadOnly;
     QStandardItemModel g_model;
     CBTYPE g_cbtype;
     quint64 g_nMask;
-    QMap<quint64, QString> g_mapData;
+    QMap<QVariant, QString> g_mapData;
 };
 
 #define PXComboBoxEx XComboBoxEx *
