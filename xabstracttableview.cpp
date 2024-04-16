@@ -321,9 +321,9 @@ bool XAbstractTableView::setTextFontFromOptions(XOptions::ID id)
         setTextFont(_font);
 
         bResult = true;
+    } else {
+        emit errorMessage(QString("%1: %2").arg(tr("Invalid font"), sFont));
     }
-    // mb TODO errorString signal if invalid font
-    // TODO Check
 
     return bResult;
 }

@@ -37,13 +37,7 @@ void XComboBoxEx::setData(QMap<quint64, QString> mapData, CBTYPE cbtype, quint64
     g_cbtype = cbtype;
     g_nMask = nMask;
 
-    g_mapData.clear();
-
-    for (QMap<quint64, QString>::iterator it = mapData.begin(); it != mapData.end();) {
-        g_mapData.insert(it.key(), it.value());
-
-        ++it;
-    }
+    g_mapData = mapData;
 
     g_model.clear();
     g_model.setColumnCount(1);
@@ -161,9 +155,9 @@ QString XComboBoxEx::getDescription()
     QString sResult;
 
     if (g_cbtype == CBTYPE_LIST) {
-        sResult = g_mapData.value(g_vValue);
+        sResult = g_mapData.value(g_vValue.toULongLong());
     } else if (g_cbtype == CBTYPE_ELIST) {
-        sResult = g_mapData.value(g_vValue);
+        sResult = g_mapData.value(g_vValue.toULongLong());
     }
     if (g_cbtype == CBTYPE_FLAGS) {
         qint32 nNumberOfItems = g_model.rowCount();

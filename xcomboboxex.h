@@ -70,7 +70,7 @@ private:
     QStandardItemModel g_model;
     CBTYPE g_cbtype;
     quint64 g_nMask;
-    QMap<QVariant, QString> g_mapData;
+    QMap<quint64, QString> g_mapData;
 };
 
 #define PXComboBoxEx XComboBoxEx *

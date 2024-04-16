@@ -41,6 +41,8 @@ protected slots:
     void _editResize();
     void _followInDisasmSlot();
     void _followInHexSlot();
+
+public slots:
     void _strings();
 #if defined(QT_SCRIPT_LIB) || defined(QT_QML_LIB)
     void _scripts();
