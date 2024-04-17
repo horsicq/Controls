@@ -577,7 +577,9 @@ void XLineEditHEX::_setText(const QString &sText)
         }
     }
 
+    qint32 nCursorPosition = QLineEdit::cursorPosition();
     QLineEdit::setText(sText);
+    QLineEdit::setCursorPosition(nCursorPosition);
 }
 
 void XLineEditHEX::customContextMenu(const QPoint &nPos)

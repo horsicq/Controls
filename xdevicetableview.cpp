@@ -318,7 +318,7 @@ void XDeviceTableView::addVisited(qint64 nViewOffset)
 
         g_listVisited.append(nViewOffset);
 
-        if (g_listVisited.count() > 100) {  // TODO const
+        if (g_listVisited.count() > N_MAX_VISITED) {
             g_listVisited.removeFirst();
         }
 

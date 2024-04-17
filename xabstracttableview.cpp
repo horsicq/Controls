@@ -317,12 +317,13 @@ bool XAbstractTableView::setTextFontFromOptions(XOptions::ID id)
     QFont _font;
     QString sFont = getGlobalOptions()->getValue(id).toString();
 
-    if ((sFont != "") && _font.fromString(sFont)) {
-        setTextFont(_font);
-
-        bResult = true;
-    } else {
-        emit errorMessage(QString("%1: %2").arg(tr("Invalid font"), sFont));
+    if (sFont != "") {
+        if (_font.fromString(sFont)) {
+            setTextFont(_font);
+            bResult = true;
+        } else {
+            emit errorMessage(QString("%1: %2").arg(tr("Invalid font"), sFont));
+        }
     }
 
     return bResult;

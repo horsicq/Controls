@@ -186,6 +186,7 @@ public slots:
     void _showMultisearch();
 
 private:
+    static const qint32 N_MAX_VISITED = 100;
     XInfoDB *g_pXInfoDB;
     QIODevice *g_pDevice;
     QIODevice *g_pBackupDevice;
