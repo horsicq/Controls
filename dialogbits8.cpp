@@ -353,3 +353,8 @@ void DialogBits8::on_pushButtonCancel_clicked()
 {
     this->close();
 }
+
+void DialogBits8::on_pushButtonOK_clicked()
+{
+    accept();
+}

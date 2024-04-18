@@ -151,7 +151,11 @@ QValidator::State XLineEditValidator::validate(QString &sInput, int &nPos) const
                 quint64 nValue = binStringToValue(sInput, &bSuccess);
 
                 if (bSuccess && (sInput.length() <= nLenght)) {
-                    if ((qint64)nValue <= nMax) {
+                    if (g_mode != MODE_BIN_64) {
+                        if ((qint64)nValue <= nMax) {
+                            result = Acceptable;
+                        }
+                    } else {
                         result = Acceptable;
                     }
                 }

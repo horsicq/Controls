@@ -57,6 +57,8 @@ private slots:
     void enableControls(bool bState);
     void on_pushButtonCancel_clicked();
 
+    void on_pushButtonOK_clicked();
+
 private:
     Ui::DialogBits8 *ui;
     quint64 g_nValue;
