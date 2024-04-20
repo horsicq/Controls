@@ -35,9 +35,8 @@ public:
 
     XDateTimeEditX(QWidget *pParent = nullptr);
 
-    void setType(DT_TYPE dtType);
-    void setValue(quint64 nValue);
-    quint64 getValue();
+    void setValue(QVariant vValue, DT_TYPE dtType);
+    QVariant getValue();
 
 private slots:
     void _setDateTime(const QDateTime &dtValue);
@@ -46,7 +45,7 @@ signals:
     void valueChanged(QVariant vValue);
 
 private:
-    quint64 g_nValue; // TODO QVariant
+    QVariant g_vValue;
     DT_TYPE g_dtType;
 };
 

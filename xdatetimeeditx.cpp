@@ -22,45 +22,42 @@
 
 XDateTimeEditX::XDateTimeEditX(QWidget *pParent) : QDateTimeEdit(pParent)
 {
-    g_nValue = 0;
     g_dtType = DT_TYPE_UNKNOWN;
 
     connect(this, SIGNAL(dateTimeChanged(QDateTime)), this, SLOT(_setDateTime(QDateTime)));
 }
 
-void XDateTimeEditX::setType(XDateTimeEditX::DT_TYPE dtType)
+void XDateTimeEditX::setValue(QVariant vValue, DT_TYPE dtType)
 {
-    this->g_dtType = dtType;
-
-    if (dtType == DT_TYPE_POSIX) {
-        setDisplayFormat("yyyy-MM-dd hh:mm:ss");
-        QDateTime dt;
-        dt = dt.fromString("1970-01-01 00:00:00", "yyyy-MM-dd hh:mm:ss");
-        setMinimumDateTime(QDateTime(dt));
-        setDateTime(dt);
+    if (this->g_vValue != vValue) {
+        this->g_vValue = vValue;
+        emit valueChanged(vValue);
     }
-    // TODO more
-}
 
-void XDateTimeEditX::setValue(quint64 nValue)
-{
-    if (this->g_nValue != nValue) {
-        this->g_nValue = nValue;
+    if (this->g_dtType != dtType) {
+        this->g_dtType = dtType;
 
-        if (g_dtType == DT_TYPE_POSIX) {
+        if (dtType == DT_TYPE_POSIX) {
+            setDisplayFormat("yyyy-MM-dd hh:mm:ss");
             QDateTime dt;
-            dt.setMSecsSinceEpoch((quint64)nValue * 1000);
-
+            dt = dt.fromString("1970-01-01 00:00:00", "yyyy-MM-dd hh:mm:ss");
+            setMinimumDateTime(QDateTime(dt));
             setDateTime(dt);
         }
-
-        emit valueChanged(nValue);
     }
+
+    if (g_dtType == DT_TYPE_POSIX) {
+        QDateTime dt;
+        dt.setMSecsSinceEpoch((quint64)vValue.toULongLong() * 1000);
+
+        setDateTime(dt);
+    }
+
 }
 
-quint64 XDateTimeEditX::getValue()
+QVariant XDateTimeEditX::getValue()
 {
-    return g_nValue;
+    return g_vValue;
 }
 
 void XDateTimeEditX::_setDateTime(const QDateTime &dtValue)
@@ -71,9 +68,11 @@ void XDateTimeEditX::_setDateTime(const QDateTime &dtValue)
         nCurrentValue = (quint64)dtValue.toMSecsSinceEpoch() / 1000;
     }
 
-    if (g_nValue != nCurrentValue) {
-        g_nValue = nCurrentValue;
+    QVariant vValue = nCurrentValue;
 
-        emit valueChanged(nCurrentValue);
+    if (g_vValue != vValue) {
+        g_vValue = vValue;
+
+        emit valueChanged(vValue);
     }
 }
