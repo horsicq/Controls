@@ -52,7 +52,6 @@ void XDateTimeEditX::setValue(QVariant vValue, DT_TYPE dtType)
 
         setDateTime(dt);
     }
-
 }
 
 QVariant XDateTimeEditX::getValue()
