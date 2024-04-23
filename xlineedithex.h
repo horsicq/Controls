@@ -37,15 +37,15 @@ class XLineEditHEX : public QLineEdit {
     Q_OBJECT
 
 public:
-    struct OPTIONS {
-        bool bDemangle;              // TODO Check
-        bool bShowHexAddress;        // TODO Check
-        bool bShowHexOffset;         // TODO Check
-        bool bShowHexRelAddress;     // TODO Check
-        bool bShowDisasmAddress;     // TODO Check
-        bool bShowDisasmOffset;      // TODO Check
-        bool bShowDisasmRelAddress;  // TODO Check
-    };
+    // struct OPTIONS {
+    //     bool bDemangle;              // TODO Check
+    //     bool bShowHexAddress;        // TODO Check
+    //     bool bShowHexOffset;         // TODO Check
+    //     bool bShowHexRelAddress;     // TODO Check
+    //     bool bShowDisasmAddress;     // TODO Check
+    //     bool bShowDisasmOffset;      // TODO Check
+    //     bool bShowDisasmRelAddress;  // TODO Check
+    // };
 
     enum _MODE {
         _MODE_UNKNOWN = 0,
@@ -60,8 +60,6 @@ public:
     };
 
     explicit XLineEditHEX(QWidget *pParent = nullptr);
-
-    void setOptions(const OPTIONS &options);
 
     void setValue_uint8(quint8 nValue, _MODE mode = _MODE_HEX);
     void setValue_int8(qint8 nValue, _MODE mode = _MODE_HEX);
@@ -110,6 +108,8 @@ private slots:
     void _setText(const QString &sText);
     void customContextMenu(const QPoint &nPos);
     void updateFont();
+
+public slots:
     void _copy();
     void _copyValue();
     void _copySignValue();
@@ -123,7 +123,6 @@ signals:
 private:
     QVariant g_vValue;
     XLineEditValidator g_validator;
-    OPTIONS g_options;
     bool g_bIsColon;
     bool g_bIsFocused;
     _MODE g_mode;

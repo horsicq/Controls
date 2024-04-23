@@ -24,7 +24,6 @@ XLineEditHEX::XLineEditHEX(QWidget *pParent) : QLineEdit(pParent)
 {
     g_bIsColon = false;
     g_bIsFocused = false;
-    g_options = {};
     g_mode = _MODE_HEX;
 
     updateFont();
@@ -34,19 +33,10 @@ XLineEditHEX::XLineEditHEX(QWidget *pParent) : QLineEdit(pParent)
     connect(this, SIGNAL(textChanged(QString)), this, SLOT(_setText(QString)));
     setValidator(&g_validator);
 
-    // TODO Context Menu
-    // TODO Copy
-    // TODO clear
-    // mb TODO 10/16
     setContextMenuPolicy(Qt::CustomContextMenu);
     connect(this, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(customContextMenu(QPoint)));
 
     installEventFilter(this);
-}
-
-void XLineEditHEX::setOptions(const OPTIONS &options)
-{
-    g_options = options;
 }
 
 void XLineEditHEX::setValue_uint8(quint8 nValue, _MODE mode)
