@@ -533,8 +533,10 @@ void XAbstractTableView::_setSelection(qint64 nViewOffset, qint64 nSize)
 
 void XAbstractTableView::_initSetSelection(qint64 nViewOffset, qint64 nSize)
 {
-    _initSelection(nViewOffset, nSize);
-    _setSelection(nViewOffset, nSize);
+    if (nViewOffset != -1) {
+        _initSelection(nViewOffset, nSize);
+        _setSelection(nViewOffset, nSize);
+    }
 }
 
 void XAbstractTableView::verticalScroll()

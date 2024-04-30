@@ -90,7 +90,6 @@ public:
     quint64 getValue_uint64();
     qint64 getValue_int64();
 
-    void setText(const QString &sText);  // TODO remove
     //    static MODE getModeFromValue(quint64 nValue);
     static QString getFormatString(XLineEditValidator::MODE mode, qint64 nValue);
     static qint32 getWidthFromMode(QWidget *pWidget, XLineEditValidator::MODE mode);

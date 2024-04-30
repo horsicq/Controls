@@ -416,11 +416,6 @@ qint64 XLineEditHEX::getValue_int64()
     return (qint64)g_vValue.toULongLong();
 }
 
-void XLineEditHEX::setText(const QString &sText)
-{
-    _setText(sText);
-}
-
 // XLineEditHEX::MODE XLineEditHEX::getModeFromValue(quint64 nValue)
 //{
 //     MODE result = MODE_64;
