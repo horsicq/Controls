@@ -55,7 +55,8 @@ public:
         _MODE_DOUBLE,
         _MODE_HEX,
         _MODE_DEC,
-        _MODE_SIGN_DEC
+        _MODE_SIGN_DEC,
+        _MODE_BIN
         // TODO more
     };
 

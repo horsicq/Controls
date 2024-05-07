@@ -64,6 +64,7 @@ public:
     static QString value64ToBinString(quint64 nValue);
     static QString _valueToBinString(quint64 nValue, qint32 nBits);
     static QString _valueToSizeString(quint64 nValue);
+    static qint32 getNumberOfBits(MODE mode);
 
 private:
     MODE g_mode;

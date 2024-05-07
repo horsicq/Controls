@@ -267,3 +267,20 @@ QString XLineEditValidator::_valueToSizeString(quint64 nValue)
 
     return sResult;
 }
+
+qint32 XLineEditValidator::getNumberOfBits(MODE mode)
+{
+    qint32 nResult = 0;
+
+    if ((mode == MODE_DEC_8) || (mode == MODE_SIGN_DEC_8) || (mode == MODE_BIN_8) || (mode == MODE_HEX_8)) {
+        nResult = 8;
+    } else if ((mode == MODE_DEC_16) || (mode == MODE_SIGN_DEC_16) || (mode == MODE_BIN_16) || (mode == MODE_HEX_16)) {
+        nResult = 16;
+    } else if ((mode == MODE_DEC_32) || (mode == MODE_SIGN_DEC_32) || (mode == MODE_BIN_32) || (mode == MODE_HEX_32)) {
+        nResult = 32;
+    } else if ((mode == MODE_DEC_64) || (mode == MODE_SIGN_DEC_64) || (mode == MODE_BIN_64) || (mode == MODE_HEX_64)) {
+        nResult = 64;
+    }
+
+    return nResult;
+}
