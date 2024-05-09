@@ -94,13 +94,13 @@ QValidator::State XLineEditValidator::validate(QString &sInput, int &nPos) const
             } else if (g_mode == MODE_HEX_64) {
                 nLenght = 16;
             } else if (g_mode == MODE_BIN_8) {
-                nLenght = 16;
+                nLenght = 8;
             } else if (g_mode == MODE_BIN_16) {
-                nLenght = 32;
+                nLenght = 16;
             } else if (g_mode == MODE_BIN_32) {
-                nLenght = 64;
+                nLenght = 32;
             } else if (g_mode == MODE_BIN_64) {
-                nLenght = 128;
+                nLenght = 64;
             }
 
             if ((g_mode == MODE_HEX_8) || (g_mode == MODE_HEX_16) || (g_mode == MODE_HEX_32) || (g_mode == MODE_HEX_64)) {
@@ -188,13 +188,18 @@ quint64 XLineEditValidator::binStringToValue(const QString sString, bool *pbSucc
 
     qint32 nSize = sString.size();
 
+
+    quint64 nMask = 1;
+
     for (qint32 i = nSize - 1; i >= 0; i--) {
         if (sString.at(i) == QChar('1')) {
-            nResult += i * 2;
+            nResult += nMask;
         } else if (sString.at(i) != QChar('0')) {
             *pbSuccess = false;
             break;
         }
+
+        nMask <<= 1;
     }
 
     return nResult;
