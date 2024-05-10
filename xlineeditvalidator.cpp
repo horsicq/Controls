@@ -188,7 +188,6 @@ quint64 XLineEditValidator::binStringToValue(const QString sString, bool *pbSucc
 
     qint32 nSize = sString.size();
 
-
     quint64 nMask = 1;
 
     for (qint32 i = nSize - 1; i >= 0; i--) {
