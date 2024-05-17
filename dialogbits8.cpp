@@ -25,6 +25,8 @@ DialogBits8::DialogBits8(QWidget *pParent) : QDialog(pParent), ui(new Ui::Dialog
 {
     ui->setupUi(this);
 
+    setWindowFlags(Qt::Window);
+
     g_nBits = 8;
     g_nValue = 0;
     g_bIsReadonly = true;
