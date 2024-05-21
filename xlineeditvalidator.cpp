@@ -175,7 +175,7 @@ QValidator::State XLineEditValidator::validate(QString &sInput, int &nPos) const
     return result;
 }
 
-quint64 XLineEditValidator::binStringToValue(const QString sString, bool *pbSuccess)
+quint64 XLineEditValidator::binStringToValue(const QString &sString, bool *pbSuccess)
 {
     quint64 nResult = 0;
 

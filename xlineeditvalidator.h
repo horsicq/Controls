@@ -57,7 +57,7 @@ public:
     void setMode(MODE mode);
     MODE getMode();
     virtual State validate(QString &sInput, int &nPos) const;
-    static quint64 binStringToValue(const QString sString, bool *pbSuccess = 0);
+    static quint64 binStringToValue(const QString &sString, bool *pbSuccess = 0);
     static QString value8ToBinString(quint8 nValue);
     static QString value16ToBinString(quint16 nValue);
     static QString value32ToBinString(quint32 nValue);

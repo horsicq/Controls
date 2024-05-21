@@ -388,7 +388,7 @@ bool XDeviceTableView::getViewWidgetState(VIEWWIDGET viewWidget)
     return g_stViewWidgetState.contains(viewWidget);
 }
 
-void XDeviceTableView::dumpMemory(QString sDumpName, qint64 nOffset, qint64 nSize)
+void XDeviceTableView::dumpMemory(const QString &sDumpName, qint64 nOffset, qint64 nSize)
 {
     QString sSaveFileName = XBinary::getResultFileName(getDevice(), QString("%1.bin").arg(sDumpName));
     QString sFileName = QFileDialog::getSaveFileName(this, tr("Save dump"), sSaveFileName, QString("%1 (*.bin)").arg(tr("Raw data")));

@@ -123,7 +123,7 @@ public:
     void setViewWidgetState(VIEWWIDGET viewWidget, bool bState);
     bool getViewWidgetState(VIEWWIDGET viewWidget);
 
-    void dumpMemory(QString sDumpName, qint64 nOffset = 0, qint64 nSize = -1);
+    void dumpMemory(const QString &sDumpName, qint64 nOffset = 0, qint64 nSize = -1);
 
 public slots:
     void setEdited(qint64 nDeviceOffset, qint64 nDeviceSize);
