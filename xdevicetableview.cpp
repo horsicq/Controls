@@ -902,7 +902,8 @@ void XDeviceTableView::_showMultisearch()
         setViewWidgetState(VIEWWIDGET_MULTISEARCH, true);
 
         SearchValuesWidget::OPTIONS options = {};
-        options.fileType = XBinary::FT_REGION;
+//        options.fileType = XBinary::FT_REGION;
+        options.fileType = XBinary::FT_UNKNOWN;
 
         DialogSearchValues dialogSearchValues(this);
         dialogSearchValues.setData(getDevice(), options);
