@@ -695,15 +695,16 @@ void XLineEditHEX::_bits()
     qint32 nNumberOfBits = XLineEditValidator::getNumberOfBits(validatorMode);
 
     if (nNumberOfBits == 8) {
-        DialogBits8 dialog(this);
+        DialogBits8 dialog(this, true);
         dialog.setValue_uint8((quint8)_getValue().toULongLong());
         dialog.setReadonly(isReadOnly());
+
 
         if (dialog.exec() == QDialog::Accepted) {
             setValue_uint8(dialog.getValue_uint8(), _MODE_UNKNOWN);
         }
     } else if (nNumberOfBits == 16) {
-        DialogBits8 dialog(this);
+        DialogBits8 dialog(this, true);
         dialog.setValue_uint16((quint16)_getValue().toULongLong());
         dialog.setReadonly(isReadOnly());
 
@@ -711,7 +712,7 @@ void XLineEditHEX::_bits()
             setValue_uint16(dialog.getValue_uint16(), _MODE_UNKNOWN);
         }
     } else if (nNumberOfBits == 32) {
-        DialogBits8 dialog(this);
+        DialogBits8 dialog(this, true);
         dialog.setValue_uint32((quint32)_getValue().toULongLong());
         dialog.setReadonly(isReadOnly());
 
@@ -719,7 +720,7 @@ void XLineEditHEX::_bits()
             setValue_uint32(dialog.getValue_uint32(), _MODE_UNKNOWN);
         }
     } else if (nNumberOfBits == 64) {
-        DialogBits8 dialog(this);
+        DialogBits8 dialog(this, true);
         dialog.setValue_uint64((quint64)_getValue().toULongLong());
         dialog.setReadonly(isReadOnly());
 

@@ -33,7 +33,7 @@ class DialogBits8 : public QDialog {
     Q_OBJECT
 
 public:
-    explicit DialogBits8(QWidget *pParent = nullptr);
+    explicit DialogBits8(QWidget *pParent, bool bStayOnTop);
     ~DialogBits8();
 
     void setReadonly(bool bIsReadonly);

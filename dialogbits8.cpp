@@ -21,11 +21,17 @@
 #include "dialogbits8.h"
 #include "ui_dialogbits8.h"
 
-DialogBits8::DialogBits8(QWidget *pParent) : QDialog(pParent), ui(new Ui::DialogBits8)
+DialogBits8::DialogBits8(QWidget *pParent, bool bStayOnTop) : QDialog(pParent), ui(new Ui::DialogBits8)
 {
     ui->setupUi(this);
 
-    setWindowFlags(Qt::Window);
+    Qt::WindowFlags flags = Qt::Window;
+
+    if (bStayOnTop) {
+        flags |= Qt::WindowStaysOnTopHint;
+    }
+
+    setWindowFlags(flags);
 
     g_nBits = 8;
     g_nValue = 0;
