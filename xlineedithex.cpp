@@ -699,7 +699,6 @@ void XLineEditHEX::_bits()
         dialog.setValue_uint8((quint8)_getValue().toULongLong());
         dialog.setReadonly(isReadOnly());
 
-
         if (dialog.exec() == QDialog::Accepted) {
             setValue_uint8(dialog.getValue_uint8(), _MODE_UNKNOWN);
         }
