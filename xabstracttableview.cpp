@@ -295,7 +295,7 @@ void XAbstractTableView::reload(bool bUpdateData)
 void XAbstractTableView::setTextFont(const QFont &font)
 {
     const QFontMetricsF fm(font);
-    g_nCharWidth = fm.maxWidth();
+    g_nCharWidth = fm.maxWidth() + 2;
     g_nCharHeight = fm.height();
 
     g_fontText = font;
