@@ -163,6 +163,7 @@ void XDeviceTableEditView::_strings()
         DialogSearchStrings dialogSearchStrings(this);
 
         connect(&dialogSearchStrings, SIGNAL(currentAddressChanged(XADDR, qint64)), this, SLOT(goToAddressSlot(XADDR, qint64)));
+
         connect(this, SIGNAL(closeWidget_Strings()), &dialogSearchStrings, SLOT(close()));
 
         dialogSearchStrings.setGlobal(getShortcuts(), getGlobalOptions());
