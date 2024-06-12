@@ -35,6 +35,7 @@
 #include "xformats.h"
 #include "xinfodb.h"
 #include "dialogsearchvalues.h"
+#include "dialogvisualization.h"
 #ifdef QT_SQL_LIB
 #include "dialogbookmarks.h"
 #endif
@@ -74,6 +75,7 @@ public:
         VIEWWIDGET_MULTISEARCH,
         VIEWWIDGET_BOOKMARKS,
         VIEWWIDGET_STRINGS,
+        VIEWWIDGET_VISUALIZATION,
 #if defined(QT_SCRIPT_LIB) || defined(QT_QML_LIB)
         VIEWWIDGET_SCRIPTS,
 #endif
@@ -148,6 +150,7 @@ signals:
     void closeWidget_DataConvertor();
     void closeWidget_Multisearch();
     void closeWidget_Strings();
+    void closeWidget_Visualization();
 #ifdef QT_SQL_LIB
     void closeWidget_Bookmarks();
 #endif

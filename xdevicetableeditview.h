@@ -44,6 +44,7 @@ protected slots:
 
 public slots:
     void _strings();
+    void _visualization();
 #if defined(QT_SCRIPT_LIB) || defined(QT_QML_LIB)
     void _scripts();
 #endif

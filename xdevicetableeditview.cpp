@@ -185,6 +185,31 @@ void XDeviceTableEditView::_strings()
         emit closeWidget_Strings();
     }
 }
+
+void XDeviceTableEditView::_visualization()
+{
+    if (!getViewWidgetState(VIEWWIDGET_VISUALIZATION)) {
+        setViewWidgetState(VIEWWIDGET_VISUALIZATION, true);
+
+        DialogVisualization dialogVisualization(this);
+
+        connect(&dialogVisualization, SIGNAL(currentLocationChanged(quint64, qint32, qint64)), this, SLOT(currentLocationChangedSlot(quint64, qint32, qint64)));
+
+        connect(this, SIGNAL(closeWidget_Visualization()), &dialogVisualization, SLOT(close()));
+
+        dialogVisualization.setGlobal(getShortcuts(), getGlobalOptions());
+
+        dialogVisualization.setData(getDevice(), XBinary::FT_UNKNOWN, true); // TODO options
+
+        XOptions::_adjustStayOnTop(&dialogVisualization, true);
+
+        dialogVisualization.exec();
+
+        setViewWidgetState(VIEWWIDGET_VISUALIZATION, false);
+    } else {
+        emit closeWidget_Visualization();
+    }
+}
 #if defined(QT_SCRIPT_LIB) || defined(QT_QML_LIB)
 void XDeviceTableEditView::_scripts()
 {
