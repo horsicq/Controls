@@ -60,7 +60,7 @@ public:
     struct HIGHLIGHTREGION {
         bool bIsValid;
         quint64 nLocation;
-        XInfoDB::LT locationType;
+        XBinary::LT locationType;
         qint64 nSize;
         QColor colText;
         QColor colBackground;
@@ -96,8 +96,9 @@ public:
     qint64 write_array(qint64 nOffset, char *pData, qint64 nDataSize);
     QByteArray read_array(qint64 nOffset, qint32 nSize);
     void goToAddress(XADDR nAddress, bool bShort = false, bool bAprox = false, bool bSaveVisited = false);
-    void goToOffset(qint64 nOffset, bool bSaveVisited = false);
+    void goToOffset(qint64 nOffset, bool bShort = false, bool bAprox = false, bool bSaveVisited = false);
     void setSelectionAddress(XADDR nAddress, qint64 nSize);
+    void setSelectionOffset(qint64 nOffset, qint64 nSize);
     bool isEdited();
     bool saveBackup();
     void setReadonly(bool bState);
@@ -118,7 +119,7 @@ public:
     void clearVisited();
 
     static QList<HIGHLIGHTREGION> _convertBookmarksToHighlightRegion(QList<XInfoDB::BOOKMARKRECORD> *pList);
-    static QList<HIGHLIGHTREGION> getHighlightRegion(QList<HIGHLIGHTREGION> *pList, quint64 nLocation, XInfoDB::LT locationType);
+    static QList<HIGHLIGHTREGION> getHighlightRegion(QList<HIGHLIGHTREGION> *pList, quint64 nLocation, XBinary::LT locationType);
 
     void setViewWidgetState(VIEWWIDGET viewWidget, bool bState);
     bool getViewWidgetState(VIEWWIDGET viewWidget);
@@ -177,8 +178,8 @@ protected slots:
 #ifdef QT_SQL_LIB
     void _bookmarkNew();
     void _bookmarkList();
-    void currentBookmarkChangedSlot(quint64 nLocation, qint32 nLocationType, qint64 nSize);
 #endif
+    void currentLocationChangedSlot(quint64 nLocation, qint32 nLocationType, qint64 nSize);
 
 public slots:
     void _showDataInspector();

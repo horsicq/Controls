@@ -355,7 +355,7 @@ QList<XDeviceTableView::HIGHLIGHTREGION> XDeviceTableView::_convertBookmarksToHi
     return listResult;
 }
 
-QList<XDeviceTableView::HIGHLIGHTREGION> XDeviceTableView::getHighlightRegion(QList<HIGHLIGHTREGION> *pList, quint64 nLocation, XInfoDB::LT locationType)
+QList<XDeviceTableView::HIGHLIGHTREGION> XDeviceTableView::getHighlightRegion(QList<HIGHLIGHTREGION> *pList, quint64 nLocation, XBinary::LT locationType)
 {
     QList<HIGHLIGHTREGION> listResult;
 
@@ -448,7 +448,7 @@ void XDeviceTableView::goToAddress(XADDR nAddress, bool bShort, bool bAprox, boo
     }
 }
 
-void XDeviceTableView::goToOffset(qint64 nOffset, bool bSaveVisited)
+void XDeviceTableView::goToOffset(qint64 nOffset, bool bShort, bool bAprox, bool bSaveVisited)
 {
     qint64 nViewOffset = deviceOffsetToViewOffset(nOffset);
 
@@ -456,7 +456,7 @@ void XDeviceTableView::goToOffset(qint64 nOffset, bool bSaveVisited)
         addVisited(getState().nSelectionViewOffset);
     }
 
-    if (_goToViewOffset(nViewOffset)) {
+    if (_goToViewOffset(nViewOffset, false, bShort, bAprox)) {
         if (bSaveVisited) {
             addVisited(nViewOffset);
         }
@@ -471,6 +471,11 @@ void XDeviceTableView::setSelectionAddress(XADDR nAddress, qint64 nSize)
 {
     qint64 nOffset = XBinary::addressToOffset(getMemoryMap(), nAddress);
 
+    setSelectionOffset(nOffset, nSize);
+}
+
+void XDeviceTableView::setSelectionOffset(qint64 nOffset, qint64 nSize)
+{
     if (nOffset != -1) {
         qint64 nViewOffset = deviceOffsetToViewOffset(nOffset);
         qint64 nViewSize = deviceSizeToViewSize(nOffset, nSize);
@@ -796,7 +801,7 @@ void XDeviceTableView::_bookmarkList()
 
             dialogBookmarks.setData(getXInfoDB(), nLocation, -1, getDevice()->size());
 
-            connect(&dialogBookmarks, SIGNAL(currentBookmarkChanged(quint64, qint32, qint64)), this, SLOT(currentBookmarkChangedSlot(quint64, qint32, qint64)));
+            connect(&dialogBookmarks, SIGNAL(currentLocationChanged(quint64, qint32, qint64)), this, SLOT(currentLocationChangedSlot(quint64, qint32, qint64)));
             connect(this, SIGNAL(closeWidget_Bookmarks()), &dialogBookmarks, SLOT(close()));
 
             XOptions::_adjustStayOnTop(&dialogBookmarks, true);
@@ -806,20 +811,6 @@ void XDeviceTableView::_bookmarkList()
         } else {
             emit closeWidget_Bookmarks();
         }
-    }
-}
-#endif
-#ifdef QT_SQL_LIB
-void XDeviceTableView::currentBookmarkChangedSlot(quint64 nLocation, qint32 nLocationType, qint64 nSize)
-{
-    Q_UNUSED(nSize)
-
-    if (nLocationType == XInfoDB::LT_ADDRESS) {
-        goToAddressSlot(nLocation);
-        viewport()->update();
-    } else if (nLocationType == XInfoDB::LT_OFFSET) {
-        goToOffset(nLocation);
-        viewport()->update();
     }
 }
 #endif
@@ -835,7 +826,7 @@ void XDeviceTableView::_bookmarkNew()
         XInfoDB::BOOKMARKRECORD record = {};
         record.colBackground = QColor(Qt::yellow);
         record.nLocation = state.nSelectionDeviceOffset;
-        record.locationType = XInfoDB::LT_OFFSET;
+        record.locationType = XBinary::LT_OFFSET;
         record.nSize = state.nSelectionSize;
         record.sComment = sComment;
 
@@ -845,6 +836,27 @@ void XDeviceTableView::_bookmarkNew()
     }
 }
 #endif
+
+void XDeviceTableView::currentLocationChangedSlot(quint64 nLocation, qint32 nLocationType, qint64 nSize)
+{
+    Q_UNUSED(nSize)
+
+    if (nLocationType == XBinary::LT_ADDRESS) {
+        goToAddress(nLocation, true, true, true);
+
+        if (nSize) {
+            setSelectionAddress(nLocation, nSize);
+        }
+    } else if (nLocationType == XBinary::LT_OFFSET) {
+        goToOffset(nLocation, true, true, true);
+
+        if (nSize) {
+            setSelectionOffset(nLocation, nSize);
+        }
+    }
+
+    reload(true);
+}
 
 void XDeviceTableView::_showDataInspector()
 {
@@ -908,7 +920,7 @@ void XDeviceTableView::_showMultisearch()
         DialogSearchValues dialogSearchValues(this);
         dialogSearchValues.setData(getDevice(), options);
 
-        connect(&dialogSearchValues, SIGNAL(currentAddressChanged(XADDR, qint64)), this, SLOT(goToAddressSlot(XADDR, qint64)));
+        connect(&dialogSearchValues, SIGNAL(currentLocationChanged(quint64, qint32, qint64)), this, SLOT(currentLocationChangedSlot(quint64, qint32, qint64)));
         connect(this, SIGNAL(closeWidget_Multisearch()), &dialogSearchValues, SLOT(close()));
 
         XOptions::_adjustStayOnTop(&dialogSearchValues, true);
