@@ -382,7 +382,7 @@ qint32 XAbstractTableView::getCharWidth()
     return g_nCharWidth;
 }
 
-XAbstractTableView::CURSOR_POSITION XAbstractTableView::getCursorPosition(QPoint pos)
+XAbstractTableView::CURSOR_POSITION XAbstractTableView::getCursorPosition(const QPoint &pos)
 {
     CURSOR_POSITION result = {};
 

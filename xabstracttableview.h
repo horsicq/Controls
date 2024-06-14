@@ -118,7 +118,7 @@ public:
 
     qint32 getCharWidth();
 
-    CURSOR_POSITION getCursorPosition(QPoint pos);
+    CURSOR_POSITION getCursorPosition(const QPoint &pos);
 
     bool isViewOffsetSelected(qint64 nViewOffset);
     QPainter *getBoldTextPointer();
