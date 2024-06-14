@@ -105,7 +105,6 @@ DialogBits8::DialogBits8(QWidget *pParent, bool bStayOnTop) : QDialog(pParent), 
     _handleButton(ui->toolButton60);
     _handleButton(ui->toolButton61);
     _handleButton(ui->toolButton62);
-    _handleButton(ui->toolButton63);
 
     ui->pushButtonCancel->setFocus();
 }

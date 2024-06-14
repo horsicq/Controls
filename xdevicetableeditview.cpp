@@ -199,7 +199,7 @@ void XDeviceTableEditView::_visualization()
 
         dialogVisualization.setGlobal(getShortcuts(), getGlobalOptions());
 
-        dialogVisualization.setData(getDevice(), XBinary::FT_UNKNOWN, true); // TODO options
+        dialogVisualization.setData(getDevice(), XBinary::FT_UNKNOWN, true);  // TODO options
 
         XOptions::_adjustStayOnTop(&dialogVisualization, true);
 
