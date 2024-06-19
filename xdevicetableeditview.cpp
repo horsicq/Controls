@@ -172,7 +172,7 @@ void XDeviceTableEditView::_strings()
         stringsOptions.bAnsi = true;
         stringsOptions.bUTF8 = false;
         stringsOptions.bUnicode = true;
-        stringsOptions.bCStrings = false;
+        stringsOptions.bNullTerminated = false;
 
         dialogSearchStrings.setData(getDevice(), XBinary::FT_UNKNOWN, stringsOptions, true);
 
