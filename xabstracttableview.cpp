@@ -703,31 +703,6 @@ void XAbstractTableView::setHorisontalLinesVisible(bool bState)
     g_bHorisontalLinesVisible = bState;
 }
 
-QFont XAbstractTableView::getMonoFont(qint32 nFontSize)
-{
-    QFont fontResult;
-
-    if (nFontSize == -1) {
-#ifdef Q_OS_MACOS
-        nFontSize = 12;
-#else
-        nFontSize = 10;
-#endif
-    }
-
-#ifdef Q_OS_WIN
-    fontResult = QFont("Courier", nFontSize);
-#endif
-#ifdef Q_OS_LINUX
-    fontResult = QFont("DejaVu Sans Mono", nFontSize);
-#endif
-#ifdef Q_OS_MACOS
-    fontResult = QFont("Menlo", nFontSize);
-#endif
-
-    return fontResult;
-}
-
 qint64 XAbstractTableView::getSelectionInitOffset()
 {
     return g_nSelectionInitOffset;

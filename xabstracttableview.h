@@ -143,7 +143,6 @@ public:
     void setVerticalLinesVisible(bool bState);
     void setHorisontalLinesVisible(bool bState);
 
-    static QFont getMonoFont(qint32 nFontSize = -1);
     qint64 getSelectionInitOffset();
     qint64 getSelectionInitSize();
     void setCurrentBlock(qint64 nViewOffset, qint64 nSize);
