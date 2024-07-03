@@ -395,6 +395,7 @@ void XDeviceTableView::dumpMemory(const QString &sDumpName, qint64 nOffset, qint
 
     if (!sFileName.isEmpty()) {
         DialogDumpProcess dd(this);
+        dd.setGlobal(getShortcuts(), getGlobalOptions());
         dd.setData(getDevice(), nOffset, nSize, sFileName, DumpProcess::DT_DUMP_DEVICE_OFFSET);
 
         dd.showDialogDelay();
@@ -663,6 +664,7 @@ void XDeviceTableView::_findSlot(DialogSearch::SEARCHMODE mode)
     if (dialogSearch.exec() == QDialog::Accepted)  // TODO use status
     {
         DialogSearchProcess dsp(this, getDevice(), &g_searchData);
+        dsp.setGlobal(getShortcuts(), getGlobalOptions());
 
         dsp.showDialogDelay();
 
@@ -688,6 +690,7 @@ void XDeviceTableView::_findNextSlot()
         g_searchData.startFrom = XBinary::SF_CURRENTOFFSET;
 
         DialogSearchProcess dialogSearch(this, getDevice(), &g_searchData);
+        dialogSearch.setGlobal(getShortcuts(), getGlobalOptions());
 
         dialogSearch.showDialogDelay();
 
@@ -894,6 +897,7 @@ void XDeviceTableView::_showDataConvertor()
 
         if (sd.open(QIODevice::ReadOnly)) {
             DialogXDataConvertor dialogDataConvertor(this);
+            dialogDataConvertor.setGlobal(getShortcuts(), getGlobalOptions());
             dialogDataConvertor.setData(&sd);
             connect(this, SIGNAL(closeWidget_DataConvertor()), &dialogDataConvertor, SLOT(close()));
 
@@ -918,6 +922,7 @@ void XDeviceTableView::_showMultisearch()
         options.fileType = XBinary::FT_UNKNOWN;
 
         DialogSearchValues dialogSearchValues(this);
+        dialogSearchValues.setGlobal(getShortcuts(), getGlobalOptions());
         dialogSearchValues.setData(getDevice(), options);
 
         connect(&dialogSearchValues, SIGNAL(currentLocationChanged(quint64, qint32, qint64)), this, SLOT(currentLocationChangedSlot(quint64, qint32, qint64)));
