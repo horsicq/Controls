@@ -32,7 +32,7 @@ XComboBoxEx::XComboBoxEx(QWidget *pParent) : QComboBox(pParent)
     connect(&g_model, SIGNAL(itemChanged(QStandardItem *)), this, SLOT(itemChangedSlot(QStandardItem *)));
 }
 
-void XComboBoxEx::setData(QMap<quint64, QString> mapData, CBTYPE cbtype, quint64 nMask)
+void XComboBoxEx::setData(QMap<quint64, QString> mapData, CBTYPE cbtype, quint64 nMask, const QString &sTitle)
 {
     g_cbtype = cbtype;
     g_nMask = nMask;
@@ -47,7 +47,13 @@ void XComboBoxEx::setData(QMap<quint64, QString> mapData, CBTYPE cbtype, quint64
     if ((cbtype == CBTYPE_LIST) || (cbtype == CBTYPE_ELIST)) {
         g_model.setItem(0, 0, new QStandardItem(""));  // Empty
     } else if ((cbtype == CBTYPE_FLAGS) || (cbtype == CBTYPE_CUSTOM_FLAGS)) {
-        g_model.setItem(0, 0, new QStandardItem(tr("Flags")));
+        QString _sTitle = sTitle;
+
+        if (_sTitle == "") {
+            _sTitle = tr("Flags");
+        }
+
+        g_model.setItem(0, 0, new QStandardItem(_sTitle));
     }
 
     qint32 nIndex = 1;
@@ -191,9 +197,13 @@ void XComboBoxEx::addCustomFlags(const QString &sTitle, const QList<CUSTOM_FLAG>
         QStandardItem *pItem = new QStandardItem(listCustomFlags.at(i).sString);
         pItem->setData(listCustomFlags.at(i).nValue, Qt::UserRole);
 
-        pItem->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
+        if (listCustomFlags.at(i).bIsReadOnly) {
+            pItem->setFlags(Qt::ItemIsUserCheckable);
+        } else {
+            pItem->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
+        }
 
-        if (listCustomFlags.at(i).bChecked) {
+        if (listCustomFlags.at(i).bIsChecked) {
             pItem->setData(Qt::Checked, Qt::CheckStateRole);
         } else {
             pItem->setData(Qt::Unchecked, Qt::CheckStateRole);
@@ -239,7 +249,7 @@ void XComboBoxEx::_addCustomFlag(QList<CUSTOM_FLAG> *pListCustomFlags, quint64 n
 
     record.nValue = nValue;
     record.sString = sString;
-    record.bChecked = bChecked;
+    record.bIsChecked = bChecked;
 
     pListCustomFlags->append(record);
 }

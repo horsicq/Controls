@@ -42,12 +42,13 @@ public:
     struct CUSTOM_FLAG {
         quint64 nValue;
         QString sString;
-        bool bChecked;
+        bool bIsChecked;
+        bool bIsReadOnly;
     };
 
     explicit XComboBoxEx(QWidget *pParent = nullptr);
 
-    void setData(QMap<quint64, QString> mapData, CBTYPE cbtype = CBTYPE_LIST, quint64 nMask = 0);
+    void setData(QMap<quint64, QString> mapData, CBTYPE cbtype = CBTYPE_LIST, quint64 nMask = 0, const QString &sTitle = "");
     void setValue(QVariant vValue);
     QVariant getValue();
     void setReadOnly(bool bIsReadOnly);
