@@ -254,6 +254,11 @@ void XComboBoxEx::_addCustomFlag(QList<CUSTOM_FLAG> *pListCustomFlags, quint64 n
     pListCustomFlags->append(record);
 }
 
+void XComboBoxEx::setItemEnabled(qint32 nRow, bool bState)
+{
+    g_model.item(nRow, 0)->setEnabled(bState);
+}
+
 void XComboBoxEx::currentIndexChangedSlot(int nIndex)
 {
     if (g_cbtype == CBTYPE_FLAGS) {
