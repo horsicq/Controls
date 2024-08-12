@@ -50,6 +50,8 @@ XAbstractTableView::XAbstractTableView(QWidget *pParent) : XShortcutstScrollArea
     g_bColumnFixed = false;
     g_bVerticalLinesVisible = false;
     g_bHorisontalLinesVisible = false;
+    g_bIsMapEnable = false;
+    g_nMapWidth = 0;
 
     g_nResizeColumnNumber = 0;
 
@@ -179,22 +181,22 @@ void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
         //        if (g_rectCursorSquare != pEvent->rect())
         {
             startPainting(pPainter);
+            // TODO paint visible only
+
+            qint32 nTopLeftY = pEvent->rect().topLeft().y();
+            qint32 nTopLeftX = pEvent->rect().topLeft().x() - g_nXViewOffset;
+            qint32 nScreenWidth = pEvent->rect().width();
+            qint32 nHeight = pEvent->rect().height();
 
             qint32 nNumberOfColumns = g_listColumns.count();
 
             if (nNumberOfColumns) {
-                qint32 nTopLeftY = pEvent->rect().topLeft().y();
-                qint32 nTopLeftX = pEvent->rect().topLeft().x() - g_nXViewOffset;
-                qint32 nScreenWidth = pEvent->rect().width();
-
-                qint32 nHeight = pEvent->rect().height();
-
                 qint32 nX = nTopLeftX;
 
                 qint32 nHeaderHeight = (g_bHeaderVisible) ? (g_nHeaderHeight) : (0);
 
                 for (qint32 i = 0; i < nNumberOfColumns; i++) {
-                    if (g_listColumns.at(i).bEnable) {
+                    if (g_listColumns.at(i).bEnable) {                        
                         qint32 nColumnWidth = g_listColumns.at(i).nWidth;
 
                         pPainter->fillRect(nX, nTopLeftY + nHeaderHeight, nColumnWidth, nHeight - nHeaderHeight, viewport()->palette().color(QPalette::Base));
@@ -210,7 +212,9 @@ void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
                 }
 
                 // Rest
-                pPainter->fillRect(nX, nTopLeftY, nScreenWidth - nX, nHeight, viewport()->palette().color(QPalette::Base));
+                if (nScreenWidth - nX > 0) {
+                    pPainter->fillRect(nX, nTopLeftY, nScreenWidth - nX, nHeight, viewport()->palette().color(QPalette::Base));
+                }
 
                 nX = nTopLeftX;
 
@@ -247,6 +251,22 @@ void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
                         }
 
                         nX += nColumnWidth;
+                    }
+                }
+
+                if (isMapEnable()) {
+                    qint32 nMapWidth = getMapWidth();
+                    qint32 _nX = nTopLeftX + nScreenWidth - nMapWidth;
+                    pPainter->fillRect(_nX, nTopLeftY + nHeaderHeight, nMapWidth, nHeight - nHeaderHeight, viewport()->palette().color(QPalette::Base));
+
+                    paintMap(pPainter, nX, nTopLeftY + nHeaderHeight, nMapWidth, nHeight - nHeaderHeight);
+
+                    if (nHeaderHeight > 0) {
+                        QStyleOptionButton styleOptionButton;
+                        styleOptionButton.state = QStyle::State_Enabled;
+                        styleOptionButton.rect = QRect(_nX, nTopLeftY, nMapWidth, nHeaderHeight);
+
+                        g_pushButtonHeader.style()->drawControl(QStyle::CE_PushButton, &styleOptionButton, pPainter, &g_pushButtonHeader);
                     }
                 }
             }
@@ -405,8 +425,8 @@ XAbstractTableView::CURSOR_POSITION XAbstractTableView::getCursorPosition(const 
                 } else {
                     result.ptype = PT_CELL;
                     result.nRow = (result.nY - nHeaderHeight) / g_nLineHeight;
-                    result.nCellTop = (result.nY - nHeaderHeight) % g_nLineHeight;
-                    result.nCellLeft = result.nX - nCurrentOffset;
+                    result.nAreaTop = (result.nY - nHeaderHeight) % g_nLineHeight;
+                    result.nAreaLeft = result.nX - nCurrentOffset;
                 }
 
                 if (result.nX >= (nCurrentOffset + g_listColumns.at(i).nWidth - g_nSideDelta)) {
@@ -429,6 +449,18 @@ XAbstractTableView::CURSOR_POSITION XAbstractTableView::getCursorPosition(const 
             }
 
             nCurrentOffset += g_listColumns.at(i).nWidth;
+        }
+    }
+
+    if (isMapEnable()) {
+        if ((result.nX >= (g_nViewWidth - g_nMapWidth)) && (result.nX < g_nViewWidth)) {
+            result.bIsValid = true;
+
+            if (result.nY < nHeaderHeight) {
+                result.ptype = PT_MAPHEADER;
+            } else {
+                result.ptype = PT_MAP;
+            }
         }
     }
 
@@ -801,6 +833,26 @@ void XAbstractTableView::setMaxSelectionViewSize(qint64 nMaxSelectionViewSize)
     g_nMaxSelectionViewSize = nMaxSelectionViewSize;
 }
 
+void XAbstractTableView::setMapEnable(bool bState)
+{
+    g_bIsMapEnable = bState;
+}
+
+bool XAbstractTableView::isMapEnable()
+{
+    return g_bIsMapEnable;
+}
+
+void XAbstractTableView::setMapWidth(qint32 nWidth)
+{
+    g_nMapWidth = nWidth;
+}
+
+qint32 XAbstractTableView::getMapWidth()
+{
+    return g_nMapWidth;
+}
+
 void XAbstractTableView::_customContextMenu(const QPoint &pos)
 {
     contextMenu(mapToGlobal(pos));
@@ -892,7 +944,11 @@ void XAbstractTableView::mousePressEvent(QMouseEvent *pEvent)
             CURSOR_POSITION cursorPosition = getCursorPosition(pEvent->pos());
             OS os = cursorPositionToOS(cursorPosition);
 
-            if (cursorPosition.bResizeColumn) {
+            if (cursorPosition.ptype == PT_MAPHEADER) {
+
+            } else if (cursorPosition.ptype == PT_MAP) {
+
+            } else if (cursorPosition.bResizeColumn) {
                 g_bMouseResizeColumn = true;
                 g_nResizeColumnNumber = cursorPosition.nColumn;
                 setCursor(Qt::SplitHCursor);
@@ -997,7 +1053,7 @@ bool XAbstractTableView::isEnd(qint64 nViewOffset)
     return false;
 }
 
-XAbstractTableView::OS XAbstractTableView::cursorPositionToOS(XAbstractTableView::CURSOR_POSITION cursorPosition)
+XAbstractTableView::OS XAbstractTableView::cursorPositionToOS(const XAbstractTableView::CURSOR_POSITION &cursorPosition)
 {
     Q_UNUSED(cursorPosition)
 
@@ -1019,6 +1075,15 @@ void XAbstractTableView::paintColumn(QPainter *pPainter, qint32 nColumn, qint32 
 {
     Q_UNUSED(pPainter)
     Q_UNUSED(nColumn)
+    Q_UNUSED(nLeft)
+    Q_UNUSED(nTop)
+    Q_UNUSED(nWidth)
+    Q_UNUSED(nHeight)
+}
+
+void XAbstractTableView::paintMap(QPainter *pPainter, qint32 nLeft, qint32 nTop, qint32 nWidth, qint32 nHeight)
+{
+    Q_UNUSED(pPainter)
     Q_UNUSED(nLeft)
     Q_UNUSED(nTop)
     Q_UNUSED(nWidth)

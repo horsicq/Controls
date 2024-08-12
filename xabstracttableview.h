@@ -53,6 +53,8 @@ public:
         PT_UNKNOWN = 0,
         PT_HEADER,
         PT_CELL,
+        PT_MAP,
+        PT_MAPHEADER,
         // TODO Check more
     };
 
@@ -63,8 +65,8 @@ public:
         qint32 nX;
         qint32 nRow;
         qint32 nColumn;
-        qint32 nCellTop;
-        qint32 nCellLeft;
+        qint32 nAreaTop;
+        qint32 nAreaLeft;
         bool bResizeColumn;
     };
 
@@ -157,6 +159,10 @@ public:
     void _verticalScroll();
     bool isSelectionEnable();
     void setMaxSelectionViewSize(qint64 nMaxSelectionViewSize);
+    void setMapEnable(bool bState);
+    bool isMapEnable();
+    void setMapWidth(qint32 nWidth);
+    qint32 getMapWidth();
 
 signals:
     void cursorViewOffsetChanged(qint64 nViewOffset);
@@ -191,10 +197,11 @@ protected:
     virtual void wheelEvent(QWheelEvent *pEvent) override;
     virtual bool isViewOffsetValid(qint64 nViewOffset);
     virtual bool isEnd(qint64 nViewOffset);
-    virtual OS cursorPositionToOS(CURSOR_POSITION cursorPosition);
+    virtual OS cursorPositionToOS(const CURSOR_POSITION &cursorPosition);
     virtual void updateData();
     virtual void startPainting(QPainter *pPainter);
     virtual void paintColumn(QPainter *pPainter, qint32 nColumn, qint32 nLeft, qint32 nTop, qint32 nWidth, qint32 nHeight);
+    virtual void paintMap(QPainter *pPainter, qint32 nLeft, qint32 nTop, qint32 nWidth, qint32 nHeight);
     virtual void paintCell(QPainter *pPainter, qint32 nRow, qint32 nColumn, qint32 nLeft, qint32 nTop, qint32 nWidth, qint32 nHeight);
     virtual void paintTitle(QPainter *pPainter, qint32 nColumn, qint32 nLeft, qint32 nTop, qint32 nWidth, qint32 nHeight, const QString &sTitle);
     virtual void endPainting(QPainter *pPainter);
@@ -250,6 +257,8 @@ private:
     bool g_bColumnFixed;
     bool g_bVerticalLinesVisible;
     bool g_bHorisontalLinesVisible;
+    bool g_bIsMapEnable;
+    qint32 g_nMapWidth;
     qint64 g_nCurrentBlockViewOffset;
     qint64 g_nCurrentBlockViewSize;
     bool g_bIsSelectionEnable;
