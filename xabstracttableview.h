@@ -67,6 +67,7 @@ public:
         qint32 nColumn;
         qint32 nAreaTop;
         qint32 nAreaLeft;
+        qint32 nProcent;
         bool bResizeColumn;
     };
 
@@ -163,6 +164,8 @@ public:
     bool isMapEnable();
     void setMapWidth(qint32 nWidth);
     qint32 getMapWidth();
+    void setMapCount(qint32 nMapCount);
+    qint32 getMapCount();
 
 signals:
     void cursorViewOffsetChanged(qint64 nViewOffset);
@@ -214,6 +217,7 @@ protected:
     virtual void _headerClicked(qint32 nNumber);
     virtual void _cellDoubleClicked(qint32 nRow, qint32 nColumn);
     virtual qint64 getFixViewOffset(qint64 nViewOffset);
+    virtual void adjustMap();
 
 private:
     bool g_bIsActive;
@@ -259,6 +263,7 @@ private:
     bool g_bHorisontalLinesVisible;
     bool g_bIsMapEnable;
     qint32 g_nMapWidth;
+    qint32 g_nMapCount;
     qint64 g_nCurrentBlockViewOffset;
     qint64 g_nCurrentBlockViewSize;
     bool g_bIsSelectionEnable;

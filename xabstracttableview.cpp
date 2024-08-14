@@ -52,6 +52,7 @@ XAbstractTableView::XAbstractTableView(QWidget *pParent) : XShortcutstScrollArea
     g_bHorisontalLinesVisible = false;
     g_bIsMapEnable = false;
     g_nMapWidth = 0;
+    g_nMapCount = 1;
 
     g_nResizeColumnNumber = 0;
 
@@ -405,7 +406,6 @@ qint32 XAbstractTableView::getCharWidth()
 XAbstractTableView::CURSOR_POSITION XAbstractTableView::getCursorPosition(const QPoint &pos)
 {
     CURSOR_POSITION result = {};
-
     result.nY = pos.y();
     result.nX = pos.x() + g_nXViewOffset;
 
@@ -417,6 +417,7 @@ XAbstractTableView::CURSOR_POSITION XAbstractTableView::getCursorPosition(const 
     for (qint32 i = 0; i < nNumberOfColumns; i++) {
         if (g_listColumns.at(i).bEnable) {
             if ((result.nX >= nCurrentOffset) && (result.nX < (nCurrentOffset + g_listColumns.at(i).nWidth))) {
+
                 result.bIsValid = true;
                 result.nColumn = i;
 
@@ -460,6 +461,7 @@ XAbstractTableView::CURSOR_POSITION XAbstractTableView::getCursorPosition(const 
                 result.ptype = PT_MAPHEADER;
             } else {
                 result.ptype = PT_MAP;
+                result.nProcent = ((result.nY - nHeaderHeight) * getMapCount()) / (g_nViewHeight - nHeaderHeight);
             }
         }
     }
@@ -687,6 +689,11 @@ qint64 XAbstractTableView::getFixViewOffset(qint64 nViewOffset)
     return nViewOffset;
 }
 
+void XAbstractTableView::adjustMap()
+{
+
+}
+
 // void XAbstractTableView::setCursorData(QRect rectSquare, QRect rectText, QString sText, qint32 nDelta)
 //{
 //     g_rectCursorSquare = rectSquare;
@@ -853,6 +860,16 @@ qint32 XAbstractTableView::getMapWidth()
     return g_nMapWidth;
 }
 
+void XAbstractTableView::setMapCount(qint32 nMapCount)
+{
+    g_nMapCount = nMapCount;
+}
+
+qint32 XAbstractTableView::getMapCount()
+{
+    return g_nMapCount;
+}
+
 void XAbstractTableView::_customContextMenu(const QPoint &pos)
 {
     contextMenu(mapToGlobal(pos));
@@ -947,7 +964,7 @@ void XAbstractTableView::mousePressEvent(QMouseEvent *pEvent)
             if (cursorPosition.ptype == PT_MAPHEADER) {
 
             } else if (cursorPosition.ptype == PT_MAP) {
-
+                _goToViewOffset(os.nViewOffset, false, false, true);
             } else if (cursorPosition.bResizeColumn) {
                 g_bMouseResizeColumn = true;
                 g_nResizeColumnNumber = cursorPosition.nColumn;

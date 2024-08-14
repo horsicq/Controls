@@ -79,6 +79,7 @@ void XDeviceTableEditView::_editRemove()
             _data.nMaxSize = getDevice()->size();
 
             DialogRemove dialogRemove(this, &_data);
+            dialogRemove.setGlobal(getShortcuts(), getGlobalOptions());
 
             if (dialogRemove.exec() == QDialog::Accepted) {
                 qint64 nOldSize = _data.nMaxSize;
@@ -112,6 +113,7 @@ void XDeviceTableEditView::_editResize()
             _data.nNewSize = _data.nOldSize;
 
             DialogResize dialogResize(this, &_data);
+            dialogResize.setGlobal(getShortcuts(), getGlobalOptions());
 
             if (dialogResize.exec() == QDialog::Accepted) {
                 if (_data.nOldSize != _data.nNewSize) {
