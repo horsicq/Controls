@@ -720,6 +720,7 @@ void XDeviceTableView::_copyDataSlot()
     DEVICESTATE state = getDeviceState();
 
     DialogShowData dialogShowData(this, getDevice(), state.nSelectionDeviceOffset, state.nSelectionSize);
+    dialogShowData.setGlobal(getShortcuts(), getGlobalOptions());
 
     dialogShowData.exec();
 }
