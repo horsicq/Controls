@@ -197,7 +197,7 @@ void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
                 qint32 nHeaderHeight = (g_bHeaderVisible) ? (g_nHeaderHeight) : (0);
 
                 for (qint32 i = 0; i < nNumberOfColumns; i++) {
-                    if (g_listColumns.at(i).bEnable) {                        
+                    if (g_listColumns.at(i).bEnable) {
                         qint32 nColumnWidth = g_listColumns.at(i).nWidth;
 
                         pPainter->fillRect(nX, nTopLeftY + nHeaderHeight, nColumnWidth, nHeight - nHeaderHeight, viewport()->palette().color(QPalette::Base));
@@ -417,7 +417,6 @@ XAbstractTableView::CURSOR_POSITION XAbstractTableView::getCursorPosition(const 
     for (qint32 i = 0; i < nNumberOfColumns; i++) {
         if (g_listColumns.at(i).bEnable) {
             if ((result.nX >= nCurrentOffset) && (result.nX < (nCurrentOffset + g_listColumns.at(i).nWidth))) {
-
                 result.bIsValid = true;
                 result.nColumn = i;
 
@@ -691,7 +690,6 @@ qint64 XAbstractTableView::getFixViewOffset(qint64 nViewOffset)
 
 void XAbstractTableView::adjustMap()
 {
-
 }
 
 // void XAbstractTableView::setCursorData(QRect rectSquare, QRect rectText, QString sText, qint32 nDelta)
@@ -962,7 +960,6 @@ void XAbstractTableView::mousePressEvent(QMouseEvent *pEvent)
             OS os = cursorPositionToOS(cursorPosition);
 
             if (cursorPosition.ptype == PT_MAPHEADER) {
-
             } else if (cursorPosition.ptype == PT_MAP) {
                 _goToViewOffset(os.nViewOffset, false, false, true);
             } else if (cursorPosition.bResizeColumn) {
