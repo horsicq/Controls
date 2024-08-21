@@ -29,7 +29,7 @@ XDeviceTableView::XDeviceTableView(QWidget *pParent) : XAbstractTableView(pParen
     g_pBackupDevice = nullptr;
     g_nViewSize = 0;
     g_searchData = {};
-    g_addressMode = LOCMODE_ADDRESS;
+    g_locationMode = LOCMODE_ADDRESS;
     g_bIsReadonly = true;
     g_nVisitedIndex = 0;
 
@@ -115,14 +115,14 @@ XBinary::_MEMORY_MAP *XDeviceTableView::getMemoryMap()
     return &g_memoryMap;
 }
 
-void XDeviceTableView::setAddressMode(XDeviceTableView::LOCMODE addressMode)
+void XDeviceTableView::setLocationMode(XDeviceTableView::LOCMODE locationMode)
 {
-    g_addressMode = addressMode;
+    g_locationMode = locationMode;
 }
 
-XDeviceTableView::LOCMODE XDeviceTableView::getAddressMode()
+XDeviceTableView::LOCMODE XDeviceTableView::getlocationMode()
 {
-    return g_addressMode;
+    return g_locationMode;
 }
 
 void XDeviceTableView::adjustScrollCount()
@@ -561,7 +561,7 @@ void XDeviceTableView::_goToAddressSlot()
 {
     DialogGoToAddress::TYPE type = DialogGoToAddress::TYPE_VIRTUALADDRESS;
 
-    if (g_addressMode == LOCMODE_RELADDRESS) {
+    if (g_locationMode == LOCMODE_RELADDRESS) {
         type = DialogGoToAddress::TYPE_RELVIRTUALADDRESS;
     }
 
@@ -785,6 +785,19 @@ void XDeviceTableView::selectionChangedSlot()
     XDeviceTableView::DEVICESTATE deviceState = getDeviceState();
 
     emit deviceSelectionChanged(deviceState.nSelectionDeviceOffset, deviceState.nSelectionSize);
+}
+
+void XDeviceTableView::changeLocationView()
+{
+    QAction *pAction = qobject_cast<QAction *>(sender());
+
+    if (pAction) {
+        LOCMODE mode = (LOCMODE)pAction->property("location").toUInt();
+
+        setLocationMode(mode);
+
+        adjust(true);
+    }
 }
 
 #ifdef QT_SQL_LIB

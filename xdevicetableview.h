@@ -93,8 +93,8 @@ public:
     qint64 getViewSize();
     void setMemoryMap(const XBinary::_MEMORY_MAP &memoryMap);
     XBinary::_MEMORY_MAP *getMemoryMap();
-    void setAddressMode(LOCMODE addressMode);
-    LOCMODE getAddressMode();
+    void setLocationMode(LOCMODE locationMode);
+    LOCMODE getlocationMode();
     qint64 write_array(qint64 nOffset, char *pData, qint64 nDataSize);
     QByteArray read_array(qint64 nOffset, qint32 nSize);
     void goToAddress(XADDR nAddress, bool bShort = false, bool bAprox = false, bool bSaveVisited = false);
@@ -178,6 +178,7 @@ protected slots:
     void goToAddressSlot(XADDR nAddress);
     void reloadView();
     void selectionChangedSlot();
+    void changeLocationView();
 #ifdef QT_SQL_LIB
     void _bookmarkNew();
     void _bookmarkList();
@@ -197,7 +198,7 @@ private:
     qint64 g_nViewSize;
     XBinary::_MEMORY_MAP g_memoryMap;
     XBinary::SEARCHDATA g_searchData;
-    LOCMODE g_addressMode;
+    LOCMODE g_locationMode;
     bool g_bIsReadonly;
     QList<qint64> g_listVisited;
     qint32 g_nVisitedIndex;
