@@ -692,7 +692,7 @@ void XAbstractTableView::adjustMap()
 {
 }
 
-// void XAbstractTableView::setCursorData(QRect rectSquare, QRect rectText, QString sText, qint32 nDelta)
+// void XAbstractTableView::setCursorData(QRect rectSquare, QRect rectText, const QString &sText, qint32 nDelta)
 //{
 //     g_rectCursorSquare = rectSquare;
 //     g_rectCursorText = rectText;

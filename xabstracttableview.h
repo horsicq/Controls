@@ -134,7 +134,7 @@ public:
     //    void setCursorViewPos(qint64 nViewPos, qint32 nColumn = -1, QVariant varCursorExtraInfo = QVariant());
     void adjust(bool bUpdateData = false);
 
-    //    void setCursorData(QRect rectSquare, QRect rectText, QString sText, qint32 nDelta);
+    //    void setCursorData(QRect rectSquare, QRect rectText, const QString &sText, qint32 nDelta);
     //    void resetCursorData();
 
     //    qint32 getCursorDelta();
