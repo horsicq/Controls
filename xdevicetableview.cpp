@@ -132,20 +132,20 @@ void XDeviceTableView::adjustScrollCount()
     }
 }
 
-qint64 XDeviceTableView::getViewSizeByViewOffset(qint64 nViewOffset)
+qint64 XDeviceTableView::getViewSizeByViewPos(qint64 nViewPos)
 {
-    Q_UNUSED(nViewOffset)
+    Q_UNUSED(nViewPos)
 
     return 1;
 }
 
-qint64 XDeviceTableView::addressToViewOffset(XADDR nAddress)
+qint64 XDeviceTableView::addressToViewPos(XADDR nAddress)
 {
     qint64 nResult = 0;
 
     qint64 nOffset = XBinary::addressToOffset(getMemoryMap(), nAddress);
 
-    nResult = deviceOffsetToViewOffset(nOffset);
+    nResult = deviceOffsetToViewPos(nOffset);
 
     return nResult;
 }
@@ -155,10 +155,10 @@ XDeviceTableView::DEVICESTATE XDeviceTableView::getDeviceState(bool bGlobalOffse
     DEVICESTATE result = {};
     STATE state = getState();
 
-    result.nSelectionDeviceOffset = state.nSelectionViewOffset;
-    //    result.nCursorOffset = state.nCursorViewOffset;
+    result.nSelectionDeviceOffset = state.nSelectionViewPos;
+    //    result.nCursorOffset = state.nCursorViewPos;
     result.nSelectionSize = state.nSelectionViewSize;
-    result.nStartDeviceOffset = getViewOffsetStart();
+    result.nStartDeviceOffset = getViewPosStart();
 
     if (bGlobalOffset) {
         XIODevice *pSubDevice = dynamic_cast<XIODevice *>(getDevice());
@@ -189,15 +189,15 @@ void XDeviceTableView::setDeviceState(const DEVICESTATE &deviceState, bool bGlob
         }
     }
 
-    _goToViewOffset(_deviceState.nStartDeviceOffset);
+    _goToViewPos(_deviceState.nStartDeviceOffset);
     _initSetSelection(_deviceState.nSelectionDeviceOffset, _deviceState.nSelectionSize);
-    //    setCursorViewOffset(deviceState.nCursorOffset);
+    //    setCursorViewPos(deviceState.nCursorOffset);
 
     adjust();
     viewport()->update();
 }
 
-qint64 XDeviceTableView::deviceOffsetToViewOffset(qint64 nOffset, bool bGlobalOffset)
+qint64 XDeviceTableView::deviceOffsetToViewPos(qint64 nOffset, bool bGlobalOffset)
 {
     qint64 nResult = nOffset;
 
@@ -223,9 +223,9 @@ qint64 XDeviceTableView::deviceSizeToViewSize(qint64 nOffset, qint64 nSize, bool
     return nResult;
 }
 
-qint64 XDeviceTableView::viewOffsetToDeviceOffset(qint64 nViewOffset, bool bGlobalOffset)
+qint64 XDeviceTableView::viewPosToDeviceOffset(qint64 nViewPos, bool bGlobalOffset)
 {
-    qint64 nResult = nViewOffset;
+    qint64 nResult = nViewPos;
 
     if (bGlobalOffset) {
         XIODevice *pSubDevice = dynamic_cast<XIODevice *>(getDevice());
@@ -242,9 +242,9 @@ qint64 XDeviceTableView::viewOffsetToDeviceOffset(qint64 nViewOffset, bool bGlob
 void XDeviceTableView::setDeviceSelection(qint64 nOffset, qint64 nSize)
 {
     if (isSelectionEnable()) {
-        qint64 nViewOffset = deviceOffsetToViewOffset(nOffset);
+        qint64 nViewPos = deviceOffsetToViewPos(nOffset);
 
-        _initSetSelection(nViewOffset, nSize);
+        _initSetSelection(nViewPos, nSize);
 
         adjust();
         viewport()->update();
@@ -279,10 +279,10 @@ void XDeviceTableView::goToNextVisited()
 {
     if (isNextVisitedAvailable()) {
         g_nVisitedIndex++;
-        qint64 nViewOffset = g_listVisited.at(g_nVisitedIndex);
+        qint64 nViewPos = g_listVisited.at(g_nVisitedIndex);
 
-        if (_goToViewOffset(nViewOffset)) {
-            _initSetSelection(nViewOffset, getViewSizeByViewOffset(nViewOffset));
+        if (_goToViewPos(nViewPos)) {
+            _initSetSelection(nViewPos, getViewSizeByViewPos(nViewPos));
         }
     }
 
@@ -293,30 +293,30 @@ void XDeviceTableView::goToPrevVisited()
 {
     if (isPrevVisitedAvailable()) {
         g_nVisitedIndex--;
-        qint64 nViewOffset = g_listVisited.at(g_nVisitedIndex);
+        qint64 nViewPos = g_listVisited.at(g_nVisitedIndex);
 
-        if (_goToViewOffset(nViewOffset)) {
-            _initSetSelection(nViewOffset, getViewSizeByViewOffset(nViewOffset));
+        if (_goToViewPos(nViewPos)) {
+            _initSetSelection(nViewPos, getViewSizeByViewPos(nViewPos));
         }
     }
 
     emit visitedStateChanged();
 }
 
-void XDeviceTableView::addVisited(qint64 nViewOffset)
+void XDeviceTableView::addVisited(qint64 nViewPos)
 {
     // #ifdef QT_DEBUG
-    //     qDebug("Add visited %s", XBinary::valueToHex(nViewOffset).toLatin1().data());
+    //     qDebug("Add visited %s", XBinary::valueToHex(nViewPos).toLatin1().data());
     // #endif
 
-    if ((g_listVisited.empty()) || (g_listVisited.last() != nViewOffset)) {
+    if ((g_listVisited.empty()) || (g_listVisited.last() != nViewPos)) {
         qint32 nNumberOfVisited = g_listVisited.count();
 
         for (qint32 i = nNumberOfVisited - 1; i > g_nVisitedIndex; i--) {
             g_listVisited.removeAt(i);
         }
 
-        g_listVisited.append(nViewOffset);
+        g_listVisited.append(nViewPos);
 
         if (g_listVisited.count() > N_MAX_VISITED) {
             g_listVisited.removeFirst();
@@ -429,20 +429,20 @@ QByteArray XDeviceTableView::read_array(qint64 nOffset, qint32 nSize)
 void XDeviceTableView::goToAddress(XADDR nAddress, bool bShort, bool bAprox, bool bSaveVisited)
 {
     if (nAddress != (XADDR)-1) {
-        qint64 nViewOffset = addressToViewOffset(nAddress);  // deviceAddressToViewOffset
+        qint64 nViewPos = addressToViewPos(nAddress);  // deviceAddressToViewPos
 
         if (bSaveVisited) {
-            addVisited(getState().nSelectionViewOffset);
+            addVisited(getState().nSelectionViewPos);
         }
 
-        if (_goToViewOffset(nViewOffset, false, bShort, bAprox)) {
+        if (_goToViewPos(nViewPos, false, bShort, bAprox)) {
             if (bSaveVisited) {
-                addVisited(nViewOffset);
+                addVisited(nViewPos);
             }
 
-            qint64 nViewSize = getViewSizeByViewOffset(nViewOffset);
+            qint64 nViewSize = getViewSizeByViewPos(nViewPos);
 
-            _initSetSelection(nViewOffset, nViewSize);
+            _initSetSelection(nViewPos, nViewSize);
             // TODO
         }
         // mb TODO reload
@@ -451,18 +451,18 @@ void XDeviceTableView::goToAddress(XADDR nAddress, bool bShort, bool bAprox, boo
 
 void XDeviceTableView::goToOffset(qint64 nOffset, bool bShort, bool bAprox, bool bSaveVisited)
 {
-    qint64 nViewOffset = deviceOffsetToViewOffset(nOffset);
+    qint64 nViewPos = deviceOffsetToViewPos(nOffset);
 
     if (bSaveVisited) {
-        addVisited(getState().nSelectionViewOffset);
+        addVisited(getState().nSelectionViewPos);
     }
 
-    if (_goToViewOffset(nViewOffset, false, bShort, bAprox)) {
+    if (_goToViewPos(nViewPos, false, bShort, bAprox)) {
         if (bSaveVisited) {
-            addVisited(nViewOffset);
+            addVisited(nViewPos);
         }
 
-        _initSetSelection(nViewOffset, getViewSizeByViewOffset(nViewOffset));
+        _initSetSelection(nViewPos, getViewSizeByViewPos(nViewPos));
         // TODO
     }
     // mb TODO reload
@@ -478,10 +478,10 @@ void XDeviceTableView::setSelectionAddress(XADDR nAddress, qint64 nSize)
 void XDeviceTableView::setSelectionOffset(qint64 nOffset, qint64 nSize)
 {
     if (nOffset != -1) {
-        qint64 nViewOffset = deviceOffsetToViewOffset(nOffset);
+        qint64 nViewPos = deviceOffsetToViewPos(nOffset);
         qint64 nViewSize = deviceSizeToViewSize(nOffset, nSize);
 
-        _initSetSelection(nViewOffset, nViewSize);
+        _initSetSelection(nViewPos, nViewSize);
         viewport()->update();  // TODO Check
     }
 }
@@ -541,11 +541,11 @@ void XDeviceTableView::adjustAfterAnalysis()
     reload(true);
 }
 
-bool XDeviceTableView::isViewOffsetValid(qint64 nViewOffset)
+bool XDeviceTableView::isViewPosValid(qint64 nViewPos)
 {
     bool bResult = false;
 
-    if ((nViewOffset >= 0) && (nViewOffset < g_nViewSize)) {
+    if ((nViewPos >= 0) && (nViewPos < g_nViewSize)) {
         bResult = true;
     }
 
@@ -669,11 +669,11 @@ void XDeviceTableView::_findSlot(DialogSearch::SEARCHMODE mode)
         dsp.showDialogDelay();
 
         if (g_searchData.nResultOffset != -1) {
-            qint64 nViewOffset = deviceOffsetToViewOffset(g_searchData.nResultOffset);
+            qint64 nViewPos = deviceOffsetToViewPos(g_searchData.nResultOffset);
             qint64 nViewSize = deviceSizeToViewSize(g_searchData.nResultOffset, g_searchData.nResultSize);
 
-            _goToViewOffset(nViewOffset);
-            _initSetSelection(nViewOffset, nViewSize);
+            _goToViewPos(nViewPos);
+            _initSetSelection(nViewPos, nViewSize);
             setFocus();
             viewport()->update();
 
@@ -696,11 +696,11 @@ void XDeviceTableView::_findNextSlot()
 
         if (dialogSearch.isSuccess())  // TODO use status
         {
-            qint64 nViewOffset = deviceOffsetToViewOffset(g_searchData.nResultOffset);
+            qint64 nViewPos = deviceOffsetToViewPos(g_searchData.nResultOffset);
             qint64 nViewSize = deviceSizeToViewSize(g_searchData.nResultOffset, g_searchData.nResultSize);
 
-            _goToViewOffset(nViewOffset);
-            _initSetSelection(nViewOffset, nViewSize);
+            _goToViewPos(nViewPos);
+            _initSetSelection(nViewPos, nViewSize);
             setFocus();
             viewport()->update();
         } else if (g_searchData.valueType != XBinary::VT_UNKNOWN) {

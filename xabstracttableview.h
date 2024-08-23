@@ -72,15 +72,15 @@ public:
     };
 
     struct STATE {
-        //        qint64 nCursorViewOffset;
+        //        qint64 nCursorViewPos;
         QVariant varCursorExtraInfo;
-        qint64 nSelectionViewOffset;
+        qint64 nSelectionViewPos;
         qint64 nSelectionViewSize;
         CURSOR_POSITION cursorPosition;
     };
 
     struct OS {
-        qint64 nViewOffset;
+        qint64 nViewPos;
         qint64 nSize;
         QVariant varData;
     };
@@ -116,22 +116,22 @@ public:
     void setSideDelta(qint32 nValue);
     qint32 getLinesProPage();
 
-    void setViewOffsetStart(qint64 nValue);
-    qint64 getViewOffsetStart();
+    void setViewPosStart(qint64 nValue);
+    qint64 getViewPosStart();
 
     qint32 getCharWidth();
 
     CURSOR_POSITION getCursorPosition(const QPoint &pos);
 
-    bool isViewOffsetSelected(qint64 nViewOffset);
+    bool isViewPosSelected(qint64 nViewPos);
     QPainter *getBoldTextPointer();
     qint32 getLineDelta();
     qint32 getSideDelta();
     STATE getState();
     void setState(STATE state);
 
-    //    qint64 getCursorViewOffset();
-    //    void setCursorViewOffset(qint64 nViewOffset, qint32 nColumn = -1, QVariant varCursorExtraInfo = QVariant());
+    //    qint64 getCursorViewPos();
+    //    void setCursorViewPos(qint64 nViewPos, qint32 nColumn = -1, QVariant varCursorExtraInfo = QVariant());
     void adjust(bool bUpdateData = false);
 
     //    void setCursorData(QRect rectSquare, QRect rectText, QString sText, qint32 nDelta);
@@ -148,8 +148,8 @@ public:
 
     qint64 getSelectionInitOffset();
     qint64 getSelectionInitSize();
-    void setCurrentBlock(qint64 nViewOffset, qint64 nSize);
-    bool isViewOffsetInCurrentBlock(qint64 nViewOffset);
+    void setCurrentBlock(qint64 nViewPos, qint64 nSize);
+    bool isViewPosInCurrentBlock(qint64 nViewPos);
     qint32 getLineHeight();
     qint32 getHeaderHeight();
     void setSelectionEnable(bool bState);
@@ -168,7 +168,7 @@ public:
     qint32 getMapCount();
 
 signals:
-    void cursorViewOffsetChanged(qint64 nViewOffset);
+    void cursorViewPosChanged(qint64 nViewPos);
     void selectionChanged();
     void errorMessage(const QString &sText);
     void infoMessage(const QString &sText);
@@ -176,9 +176,9 @@ signals:
     void cellDoubleClicked(qint32 nRow, qint32 nColumn);
 
 protected:
-    void _initSelection(qint64 nViewOffset, qint64 nSize);
-    void _setSelection(qint64 nViewOffset, qint64 nSize);
-    void _initSetSelection(qint64 nViewOffset, qint64 nSize);
+    void _initSelection(qint64 nViewPos, qint64 nSize);
+    void _setSelection(qint64 nViewPos, qint64 nSize);
+    void _initSetSelection(qint64 nViewPos, qint64 nSize);
 
 private slots:
     void verticalScroll();
@@ -198,8 +198,8 @@ protected:
     virtual void mouseDoubleClickEvent(QMouseEvent *pEvent) override;
     virtual void keyPressEvent(QKeyEvent *pEvent) override;
     virtual void wheelEvent(QWheelEvent *pEvent) override;
-    virtual bool isViewOffsetValid(qint64 nViewOffset);
-    virtual bool isEnd(qint64 nViewOffset);
+    virtual bool isViewPosValid(qint64 nViewPos);
+    virtual bool isEnd(qint64 nViewPos);
     virtual OS cursorPositionToOS(const CURSOR_POSITION &cursorPosition);
     virtual void updateData();
     virtual void startPainting(QPainter *pPainter);
@@ -208,15 +208,15 @@ protected:
     virtual void paintCell(QPainter *pPainter, qint32 nRow, qint32 nColumn, qint32 nLeft, qint32 nTop, qint32 nWidth, qint32 nHeight);
     virtual void paintTitle(QPainter *pPainter, qint32 nColumn, qint32 nLeft, qint32 nTop, qint32 nWidth, qint32 nHeight, const QString &sTitle);
     virtual void endPainting(QPainter *pPainter);
-    virtual bool _goToViewOffset(qint64 nViewOffset, bool bSaveCursor = false, bool bShort = false, bool bAprox = false);
+    virtual bool _goToViewPos(qint64 nViewPos, bool bSaveCursor = false, bool bShort = false, bool bAprox = false);
     virtual void contextMenu(const QPoint &pos);
-    virtual qint64 getCurrentViewOffsetFromScroll();
-    virtual void setCurrentViewOffsetToScroll(qint64 nViewOffset);
+    virtual qint64 getCurrentViewPosFromScroll();
+    virtual void setCurrentViewPosToScroll(qint64 nViewPos);
     virtual void adjustColumns();
     virtual void adjustHeader();
     virtual void _headerClicked(qint32 nNumber);
     virtual void _cellDoubleClicked(qint32 nRow, qint32 nColumn);
-    virtual qint64 getFixViewOffset(qint64 nViewOffset);
+    virtual qint64 getFixViewPos(qint64 nViewPos);
     virtual void adjustMap();
 
 private:
@@ -226,8 +226,8 @@ private:
     QList<COLUMN> g_listColumns;
     qint32 g_nHeaderHeight;
     QPushButton g_pushButtonHeader;
-    qint32 g_nXViewOffset;
-    qint64 g_nViewOffsetStart;  // TODO move to state
+    qint32 g_nXViewPos;
+    qint64 g_nViewPosStart;  // TODO move to state
     qint32 g_nCharWidth;        // mb TODO CharWidth for Hex
     qint32 g_nCharHeight;
     qint32 g_nLinesProPage;
@@ -264,7 +264,7 @@ private:
     bool g_bIsMapEnable;
     qint32 g_nMapWidth;
     qint32 g_nMapCount;
-    qint64 g_nCurrentBlockViewOffset;
+    qint64 g_nCurrentBlockViewPos;
     qint64 g_nCurrentBlockViewSize;
     bool g_bIsSelectionEnable;
     bool g_bIsContextMenuEnable;

@@ -108,16 +108,16 @@ public:
     void adjustAfterAnalysis();  // TODO Check mb remove
     virtual DEVICESTATE getDeviceState(bool bGlobalOffset = false);
     virtual void setDeviceState(const DEVICESTATE &deviceState, bool bGlobalOffset = false);
-    virtual qint64 deviceOffsetToViewOffset(qint64 nOffset, bool bGlobalOffset = false);
+    virtual qint64 deviceOffsetToViewPos(qint64 nOffset, bool bGlobalOffset = false);
     virtual qint64 deviceSizeToViewSize(qint64 nOffset, qint64 nSize, bool bGlobalOffset = false);  // TODO mb remove
-    virtual qint64 viewOffsetToDeviceOffset(qint64 nViewOffset, bool bGlobalOffset = false);
+    virtual qint64 viewPosToDeviceOffset(qint64 nViewPos, bool bGlobalOffset = false);
     void setDeviceSelection(qint64 nOffset, qint64 nSize);
     virtual qint64 deviceOffsetToGlobal(qint64 nDeviceOffset);
     bool isPrevVisitedAvailable();
     bool isNextVisitedAvailable();
     void goToNextVisited();
     void goToPrevVisited();
-    void addVisited(qint64 nViewOffset);
+    void addVisited(qint64 nViewPos);
     void clearVisited();
 
     static QList<HIGHLIGHTREGION> _convertBookmarksToHighlightRegion(QList<XInfoDB::BOOKMARKRECORD> *pList);
@@ -134,11 +134,11 @@ public slots:
     void _goToOffsetSlot();
 
 protected:
-    virtual bool isViewOffsetValid(qint64 nViewOffset);
+    virtual bool isViewPosValid(qint64 nViewPos);
     virtual bool isEnd(qint64 nOffset);
     virtual void adjustScrollCount();
-    virtual qint64 getViewSizeByViewOffset(qint64 nViewOffset);
-    virtual qint64 addressToViewOffset(XADDR nAddress);
+    virtual qint64 getViewSizeByViewPos(qint64 nViewPos);
+    virtual qint64 addressToViewPos(XADDR nAddress);
 
 signals:
     void visitedStateChanged();
