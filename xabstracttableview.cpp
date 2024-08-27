@@ -86,13 +86,6 @@ void XAbstractTableView::setActive(bool bIsActive)
 {
     bool bChanged = (g_bIsActive != bIsActive);
 
-    // #ifdef QT_DEBUG
-    //     if(g_bIsActive==bIsActive)
-    //     {
-    //         qDebug("Double set!!!");
-    //     }
-    // #endif
-
     if (bChanged) {
         if (bIsActive) {
             connect(this, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(_customContextMenu(QPoint)));
