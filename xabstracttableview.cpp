@@ -453,7 +453,7 @@ XAbstractTableView::CURSOR_POSITION XAbstractTableView::getCursorPosition(const 
                 result.ptype = PT_MAPHEADER;
             } else {
                 result.ptype = PT_MAP;
-                result.nProcent = ((result.nY - nHeaderHeight) * getMapCount()) / (g_nViewHeight - nHeaderHeight);
+                result.nPercentage = ((result.nY - nHeaderHeight) * getMapCount()) / (g_nViewHeight - nHeaderHeight);
             }
         }
     }

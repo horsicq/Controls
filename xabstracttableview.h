@@ -67,7 +67,7 @@ public:
         qint32 nColumn;
         qint32 nAreaTop;
         qint32 nAreaLeft;
-        qint32 nProcent;
+        qint32 nPercentage;
         bool bResizeColumn;
     };
 
