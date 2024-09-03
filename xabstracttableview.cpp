@@ -40,7 +40,7 @@ XAbstractTableView::XAbstractTableView(QWidget *pParent) : XShortcutstScrollArea
     g_nNumberOfRows = 0;
     //    g_nCursorDelta = 0;
     g_nXViewPos = 0;
-    g_nHeaderHeight = 20;  // TODO Set/Get function !!!
+    g_nHeaderHeight = 20;
     g_nLineDelta = 0;      // TODO Check
     g_nSideDelta = 0;      // TODO Check
     g_state = {};
@@ -770,6 +770,11 @@ qint32 XAbstractTableView::getLineHeight()
 qint32 XAbstractTableView::getHeaderHeight()
 {
     return g_nHeaderHeight;
+}
+
+void XAbstractTableView::setHeaderHeight(qint32 nHeight)
+{
+    g_nHeaderHeight = nHeight;
 }
 
 void XAbstractTableView::setSelectionEnable(bool bState)

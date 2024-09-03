@@ -119,6 +119,7 @@ public:
     void setViewPosStart(qint64 nValue);
     qint64 getViewPosStart();
 
+
     qint32 getCharWidth();
 
     CURSOR_POSITION getCursorPosition(const QPoint &pos);
@@ -152,6 +153,7 @@ public:
     bool isViewPosInCurrentBlock(qint64 nViewPos);
     qint32 getLineHeight();
     qint32 getHeaderHeight();
+    void setHeaderHeight(qint32 nHeight);
     void setSelectionEnable(bool bState);
     void setContextMenuEnable(bool bState);
     bool isContextMenuEnable();
