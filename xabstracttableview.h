@@ -230,7 +230,7 @@ private:
     QPushButton g_pushButtonHeader;
     qint32 g_nXViewPos;
     qint64 g_nViewPosStart;  // TODO move to state
-    qint32 g_nCharWidth;     // mb TODO CharWidth for Hex
+    qint32 g_nCharWidth;
     qint32 g_nCharHeight;
     qint32 g_nLinesProPage;
     qint32 g_nLineHeight;
