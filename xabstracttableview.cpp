@@ -41,8 +41,8 @@ XAbstractTableView::XAbstractTableView(QWidget *pParent) : XShortcutstScrollArea
     //    g_nCursorDelta = 0;
     g_nXViewPos = 0;
     g_nHeaderHeight = 20;
-    g_nLineDelta = 0;      // TODO Check
-    g_nSideDelta = 0;      // TODO Check
+    g_nLineDelta = 0;
+    g_nSideDelta = 0;
     g_state = {};
     g_bBlink = false;
     g_bLastColumnStretch = false;
