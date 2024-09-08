@@ -119,7 +119,6 @@ public:
     void setViewPosStart(qint64 nValue);
     qint64 getViewPosStart();
 
-
     qint32 getCharWidth();
 
     CURSOR_POSITION getCursorPosition(const QPoint &pos);
