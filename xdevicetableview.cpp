@@ -442,7 +442,7 @@ void XDeviceTableView::goToLocation(XADDR nLocation, XBinary::LT locationType, b
         qint64 nViewPos = 0;
 
         if (locationType == XBinary::LT_ADDRESS) {
-            nViewPos = addressToViewPos(nLocation);  // deviceAddressToViewPos
+            nViewPos = addressToViewPos(nLocation);
         } else if (locationType == XBinary::LT_OFFSET) {
             nViewPos = deviceOffsetToViewPos(nLocation);
         }
