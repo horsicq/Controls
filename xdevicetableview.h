@@ -99,6 +99,7 @@ public:
     QByteArray read_array(qint64 nOffset, qint32 nSize);
     void goToAddress(XADDR nAddress, bool bShort = false, bool bAprox = false, bool bSaveVisited = false);
     void goToOffset(qint64 nOffset, bool bShort = false, bool bAprox = false, bool bSaveVisited = false);
+    void goToLocation(XADDR nLocation, XBinary::LT locationType, bool bShort = false, bool bAprox = false, bool bSaveVisited = false);
     void setSelectionAddress(XADDR nAddress, qint64 nSize);
     void setSelectionOffset(qint64 nOffset, qint64 nSize);
     bool isEdited();
