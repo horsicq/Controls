@@ -49,7 +49,6 @@ public:
         MODE_UUID,
         MODE_SIZE,
         MODE_DOUBLE
-        // TODO more
     };
 
     explicit XLineEditValidator(QObject *pParent = nullptr);
