@@ -319,8 +319,8 @@ void XComboBoxEx::itemChangedSlot(QStandardItem *pItem)
             }
         }
 
-        if (nCurrentValue != g_vValue.toULongLong()) {
-            g_vValue = nCurrentValue;
+        if (nCurrentValue != g_varValue.toULongLong()) {
+            g_varValue = nCurrentValue;
             emit valueChanged(nCurrentValue);
         }
     }
