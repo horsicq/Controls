@@ -79,9 +79,9 @@ void XComboBoxEx::setData(QMap<quint64, QString> mapData, CBTYPE cbtype, quint64
     setModel(&g_model);
 }
 
-void XComboBoxEx::setValue(QVariant vValue)
+void XComboBoxEx::setValue(QVariant varValue)
 {
-    this->g_vValue = vValue;
+    this->g_varValue = varValue;
 
     qint32 nNumberOfItems = g_model.rowCount();
 
@@ -91,7 +91,7 @@ void XComboBoxEx::setValue(QVariant vValue)
         for (qint32 i = 1; i < nNumberOfItems; i++) {
             quint64 _nValue = g_model.item(i, 0)->data(Qt::UserRole).toULongLong();
 
-            if (_nValue == vValue) {
+            if (_nValue == varValue) {
                 setCurrentIndex(i);
                 bFound = true;
                 break;
@@ -103,7 +103,7 @@ void XComboBoxEx::setValue(QVariant vValue)
         }
     } else if (g_cbtype == CBTYPE_ELIST) {
         bool bFound = false;
-        quint64 nValue = vValue.toULongLong();
+        quint64 nValue = varValue.toULongLong();
 
         for (qint32 i = 1; i < nNumberOfItems; i++) {
             quint64 _nValue = g_model.item(i, 0)->data(Qt::UserRole).toULongLong();
@@ -120,7 +120,7 @@ void XComboBoxEx::setValue(QVariant vValue)
             setCurrentIndex(0);
         }
     } else if (g_cbtype == CBTYPE_FLAGS) {
-        quint64 nValue = vValue.toULongLong();
+        quint64 nValue = varValue.toULongLong();
 
         for (qint32 i = 1; i < nNumberOfItems; i++) {
             quint64 _nValue = g_model.item(i, 0)->data(Qt::UserRole).toULongLong();
@@ -136,7 +136,7 @@ void XComboBoxEx::setValue(QVariant vValue)
 
 QVariant XComboBoxEx::getValue()
 {
-    return g_vValue;
+    return g_varValue;
 }
 
 void XComboBoxEx::setReadOnly(bool bIsReadOnly)
@@ -161,9 +161,9 @@ QString XComboBoxEx::getDescription()
     QString sResult;
 
     if (g_cbtype == CBTYPE_LIST) {
-        sResult = g_mapData.value(g_vValue.toULongLong());
+        sResult = g_mapData.value(g_varValue.toULongLong());
     } else if (g_cbtype == CBTYPE_ELIST) {
-        sResult = g_mapData.value(g_vValue.toULongLong());
+        sResult = g_mapData.value(g_varValue.toULongLong());
     }
     if (g_cbtype == CBTYPE_FLAGS) {
         qint32 nNumberOfItems = g_model.rowCount();
@@ -270,34 +270,34 @@ void XComboBoxEx::currentIndexChangedSlot(int nIndex)
             if (nIndex) {
                 quint64 nCurrentValue = itemData(nIndex).toULongLong();
 
-                quint64 _nValue = g_vValue.toULongLong();
+                quint64 _nValue = g_varValue.toULongLong();
 
                 _nValue &= (~g_nMask);
 
                 _nValue |= nCurrentValue;
 
-                if (_nValue != g_vValue.toULongLong()) {
-                    g_vValue = _nValue;
-                    emit valueChanged(g_vValue);
+                if (_nValue != g_varValue.toULongLong()) {
+                    g_varValue = _nValue;
+                    emit valueChanged(g_varValue);
                 }
             }
         } else {
             // restore
-            setValue(g_vValue);
+            setValue(g_varValue);
         }
     } else if (g_cbtype == CBTYPE_LIST) {
         if (!g_bIsReadOnly) {
             if (nIndex) {
                 QVariant vCurrentValue = itemData(nIndex);
 
-                if (vCurrentValue != g_vValue) {
-                    g_vValue = vCurrentValue;
-                    emit valueChanged(g_vValue);
+                if (vCurrentValue != g_varValue) {
+                    g_varValue = vCurrentValue;
+                    emit valueChanged(g_varValue);
                 }
             }
         } else {
             // restore ild value
-            setValue(g_vValue);
+            setValue(g_varValue);
         }
     }
 }
@@ -307,7 +307,7 @@ void XComboBoxEx::itemChangedSlot(QStandardItem *pItem)
     Q_UNUSED(pItem)
 
     if ((g_cbtype == CBTYPE_FLAGS) && count()) {
-        quint64 nCurrentValue = g_vValue.toULongLong();
+        quint64 nCurrentValue = g_varValue.toULongLong();
 
         qint32 nNumberOfItems = g_model.rowCount();
 
