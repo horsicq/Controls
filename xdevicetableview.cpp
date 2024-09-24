@@ -682,7 +682,7 @@ void XDeviceTableView::_findSlot(DialogSearch::SEARCHMODE mode)
 
 void XDeviceTableView::_findNextSlot()
 {
-    if (g_searchData.bInit) {
+    if (g_searchData.bIsInit) {
         g_searchData.nCurrentOffset = g_searchData.nResultOffset + 1;
         g_searchData.startFrom = XBinary::SF_CURRENTOFFSET;
 
