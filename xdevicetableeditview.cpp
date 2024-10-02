@@ -172,7 +172,7 @@ void XDeviceTableEditView::_strings()
 
         SearchStringsWidget::OPTIONS stringsOptions = {};
         stringsOptions.bAnsi = true;
-        stringsOptions.bUTF8 = false;
+        // stringsOptions.bUTF8 = false;
         stringsOptions.bUnicode = true;
         stringsOptions.bNullTerminated = false;
 
