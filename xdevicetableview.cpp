@@ -556,21 +556,18 @@ bool XDeviceTableView::isEnd(qint64 nOffset)
 
 void XDeviceTableView::_goToAddressSlot()
 {
+    DEVICESTATE state = getDeviceState();
+    XADDR nAddress = 0;
+
     DialogGoToAddress::TYPE type = DialogGoToAddress::TYPE_VIRTUALADDRESS;
 
     if (g_locationMode == LOCMODE_RELADDRESS) {
-        type = DialogGoToAddress::TYPE_RELVIRTUALADDRESS;
+        nAddress = XBinary::offsetToRelAddress(getMemoryMap(), state.nSelectionDeviceOffset);
+    } else {
+        nAddress = XBinary::offsetToAddress(getMemoryMap(), state.nSelectionDeviceOffset);
     }
 
-    XADDR nCurrentValue = 0;
-
-    QAction *pAction = qobject_cast<QAction *>(sender());
-
-    if (pAction) {
-        nCurrentValue = pAction->property("ADDRESS").toULongLong();
-    }
-
-    DialogGoToAddress da(this, getMemoryMap(), type, nCurrentValue);
+    DialogGoToAddress da(this, getMemoryMap(), type, nAddress);
     da.setGlobal(getShortcuts(), getGlobalOptions());
 
     if (da.exec() == QDialog::Accepted)  // TODO use status
@@ -583,15 +580,9 @@ void XDeviceTableView::_goToAddressSlot()
 
 void XDeviceTableView::_goToOffsetSlot()
 {
-    XADDR nCurrentValue = 0;
+    DEVICESTATE state = getDeviceState();
 
-    QAction *pAction = qobject_cast<QAction *>(sender());
-
-    if (pAction) {
-        nCurrentValue = pAction->property("OFFSET").toLongLong();
-    }
-
-    DialogGoToAddress da(this, getMemoryMap(), DialogGoToAddress::TYPE_OFFSET, nCurrentValue);
+    DialogGoToAddress da(this, getMemoryMap(), DialogGoToAddress::TYPE_OFFSET, state.nSelectionDeviceOffset);
     da.setGlobal(getShortcuts(), getGlobalOptions());
 
     if (da.exec() == QDialog::Accepted)  // TODO use status
