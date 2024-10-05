@@ -29,14 +29,14 @@ class XTableView : public QTableView {
     Q_OBJECT
 
 public:
-      XTableView(QWidget *pParent = nullptr);
-      ~XTableView();
+    XTableView(QWidget *pParent = nullptr);
+    ~XTableView();
 
-      void setCustomModel(QAbstractItemModel *pModel, bool bFilterEnabled);
+    void setCustomModel(QAbstractItemModel *pModel, bool bFilterEnabled);
 
 private:
-      bool g_bFilterEnabled;
-      XHeaderView *g_pHeaderView;
+    bool g_bFilterEnabled;
+    XHeaderView *g_pHeaderView;
 };
 
 #endif  // XTABLEVIEW_H

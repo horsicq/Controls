@@ -22,7 +22,7 @@
 
 XHeaderView::XHeaderView(QWidget *pParent) : QHeaderView(Qt::Horizontal, pParent)
 {
-     connect(this, SIGNAL(sectionResized(int, int, int)), this, SLOT(onSectionResized(int, int, int)));
+    connect(this, SIGNAL(sectionResized(int, int, int)), this, SLOT(onSectionResized(int, int, int)));
 }
 
 QSize XHeaderView::sizeHint() const
@@ -49,7 +49,7 @@ void XHeaderView::setNumberOfFilters(qint32 nNumberOfFilters)
     for (qint32 i = 0; i < nNumberOfFilters; i++) {
         QLineEdit *pLineEdit = new QLineEdit(this);
         pLineEdit->setPlaceholderText(tr("Filter"));
-        connect( pLineEdit, SIGNAL(textChanged(QString)), this, SLOT(_textChanged(QString)));
+        connect(pLineEdit, SIGNAL(textChanged(QString)), this, SLOT(_textChanged(QString)));
         g_listLineEdits.append(pLineEdit);
     }
 

@@ -188,7 +188,7 @@ private slots:
     //    void updateBlink();
 
 protected slots:
-    void _copyValueSlot(); // TODO
+    void _copyValueSlot();  // TODO
 
 protected:
     virtual void paintEvent(QPaintEvent *pEvent) override;

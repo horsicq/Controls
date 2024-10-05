@@ -30,7 +30,6 @@ XTableView::XTableView(QWidget *pParent) : QTableView(pParent)
 
 XTableView::~XTableView()
 {
-
 }
 
 void XTableView::setCustomModel(QAbstractItemModel *pModel, bool bFilterEnabled)

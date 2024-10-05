@@ -27,8 +27,7 @@
 #include <QPainter>
 #include <QLineEdit>
 
-class XHeaderView : public QHeaderView
-{
+class XHeaderView : public QHeaderView {
     Q_OBJECT
 
 public:
@@ -51,4 +50,4 @@ private:
     QList<QLineEdit *> g_listLineEdits;
 };
 
-#endif // XHEADERVIEW_H
+#endif  // XHEADERVIEW_H
