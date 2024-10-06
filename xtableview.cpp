@@ -23,7 +23,10 @@
 XTableView::XTableView(QWidget *pParent) : QTableView(pParent)
 {
     g_bFilterEnabled = false;
+    g_pOldModel = nullptr;
+    g_pModel = nullptr;
     g_pHeaderView = new XHeaderView(this);
+    g_pSortFilterProxyModel = new XSortFilterProxyModel(this);
 
     setHorizontalHeader(g_pHeaderView);
 }
@@ -32,10 +35,40 @@ XTableView::~XTableView()
 {
 }
 
-void XTableView::setCustomModel(QAbstractItemModel *pModel, bool bFilterEnabled)
+void XTableView::setCustomModel(QStandardItemModel *pModel, bool bFilterEnabled)
 {
     g_bFilterEnabled = bFilterEnabled;
-    g_pHeaderView->setNumberOfFilters(pModel->columnCount());
 
-    setModel(pModel);
+    g_pOldModel = g_pModel;
+
+    if (g_pOldModel) {
+// #ifdef QT_CONCURRENT_LIB
+// #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+//         QtConcurrent::run(&XTableView::deleteOldModel, this, &g_pOldModel);
+// #else
+//         QtConcurrent::run(this, &XTableView::deleteOldModel, &g_pOldModel);
+// #endif
+// #else
+//         deleteOldModel(&g_pOldModel);
+// #endif
+        deleteOldModel(&g_pOldModel);
+    }
+
+    g_pModel = pModel;
+
+    if (bFilterEnabled) {
+        g_pHeaderView->setNumberOfFilters(pModel->columnCount());
+        g_pSortFilterProxyModel->setSourceModel(pModel);
+        setModel(g_pSortFilterProxyModel);
+
+    } else {
+        setModel(pModel);
+    }
+}
+
+void XTableView::deleteOldModel(QStandardItemModel **g_ppOldModel)
+{
+    delete (*g_ppOldModel);
+
+    (*g_ppOldModel) = nullptr;
 }

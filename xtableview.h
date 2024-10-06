@@ -22,8 +22,15 @@
 #define XTABLEVIEW_H
 
 #include <QTableView>
+#ifdef QT_CONCURRENT_LIB
+#include <QAbstractItemModel>
+#include <QFuture>
+#include <QStandardItemModel>
+#include <QtConcurrent>
+#endif
 
 #include "xheaderview.h"
+#include "xsortfilterproxymodel.h"
 
 class XTableView : public QTableView {
     Q_OBJECT
@@ -32,11 +39,15 @@ public:
     XTableView(QWidget *pParent = nullptr);
     ~XTableView();
 
-    void setCustomModel(QAbstractItemModel *pModel, bool bFilterEnabled);
+    void setCustomModel(QStandardItemModel *pModel, bool bFilterEnabled);
+    void deleteOldModel(QStandardItemModel **g_ppOldModel);
 
 private:
     bool g_bFilterEnabled;
     XHeaderView *g_pHeaderView;
+    XSortFilterProxyModel *g_pSortFilterProxyModel;
+    QStandardItemModel *g_pOldModel;
+    QStandardItemModel *g_pModel;
 };
 
 #endif  // XTABLEVIEW_H

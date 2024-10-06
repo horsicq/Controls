@@ -5,4 +5,6 @@ set(XTABLEVIEW_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/xtableview.h
     ${CMAKE_CURRENT_LIST_DIR}/xheaderview.cpp
     ${CMAKE_CURRENT_LIST_DIR}/xheaderview.h
+    ${CMAKE_CURRENT_LIST_DIR}/xsortfilterproxymodel.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/xsortfilterproxymodel.h
     )

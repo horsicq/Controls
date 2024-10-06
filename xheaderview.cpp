@@ -49,6 +49,7 @@ void XHeaderView::setNumberOfFilters(qint32 nNumberOfFilters)
     for (qint32 i = 0; i < nNumberOfFilters; i++) {
         QLineEdit *pLineEdit = new QLineEdit(this);
         pLineEdit->setPlaceholderText(tr("Filter"));
+        pLineEdit->setToolTip(tr("Filter"));
         connect(pLineEdit, SIGNAL(textChanged(QString)), this, SLOT(_textChanged(QString)));
         g_listLineEdits.append(pLineEdit);
     }
@@ -79,6 +80,7 @@ void XHeaderView::adjustPositions()
         qint32 nHeight = g_listLineEdits.at(i)->sizeHint().height();
         g_listLineEdits.at(i)->move(sectionPosition(i) - offset(), baseSize.height() + 2);
         g_listLineEdits.at(i)->resize(sectionSize(i) - 2, nHeight);
+        g_listLineEdits.at(i)->show();
     }
 }
 
