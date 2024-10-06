@@ -42,15 +42,15 @@ void XTableView::setCustomModel(QStandardItemModel *pModel, bool bFilterEnabled)
     g_pOldModel = g_pModel;
 
     if (g_pOldModel) {
-// #ifdef QT_CONCURRENT_LIB
-// #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-//         QtConcurrent::run(&XTableView::deleteOldModel, this, &g_pOldModel);
-// #else
-//         QtConcurrent::run(this, &XTableView::deleteOldModel, &g_pOldModel);
-// #endif
-// #else
-//         deleteOldModel(&g_pOldModel);
-// #endif
+        // #ifdef QT_CONCURRENT_LIB
+        // #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        //         QtConcurrent::run(&XTableView::deleteOldModel, this, &g_pOldModel);
+        // #else
+        //         QtConcurrent::run(this, &XTableView::deleteOldModel, &g_pOldModel);
+        // #endif
+        // #else
+        //         deleteOldModel(&g_pOldModel);
+        // #endif
         deleteOldModel(&g_pOldModel);
     }
 

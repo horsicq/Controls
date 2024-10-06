@@ -24,10 +24,9 @@
 
 #include <QSortFilterProxyModel>
 
-class XSortFilterProxyModel : public QSortFilterProxyModel
-{
+class XSortFilterProxyModel : public QSortFilterProxyModel {
 public:
     explicit XSortFilterProxyModel(QObject *pParent = nullptr);
 };
 
-#endif // XSORTFILTERPROXYMODEL_H
+#endif  // XSORTFILTERPROXYMODEL_H

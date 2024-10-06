@@ -23,5 +23,4 @@
 
 XSortFilterProxyModel::XSortFilterProxyModel(QObject *pParent) : QSortFilterProxyModel(pParent)
 {
-
 }
