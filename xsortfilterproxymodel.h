@@ -27,6 +27,15 @@
 class XSortFilterProxyModel : public QSortFilterProxyModel {
 public:
     explicit XSortFilterProxyModel(QObject *pParent = nullptr);
+    void setFilters(const QList<QString> &listFilters);
+    void setSourceModel(QAbstractItemModel *sourceModel) override;
+
+protected:
+    bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override;
+    // bool lessThan(const QModelIndex &left, const QModelIndex &right) const override;
+
+private:
+    QList<QString> g_listFilters;
 };
 
 #endif  // XSORTFILTERPROXYMODEL_H

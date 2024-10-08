@@ -29,6 +29,10 @@ XTableView::XTableView(QWidget *pParent) : QTableView(pParent)
     g_pSortFilterProxyModel = new XSortFilterProxyModel(this);
 
     setHorizontalHeader(g_pHeaderView);
+
+    connect(g_pHeaderView, SIGNAL(filterChanged()), this, SLOT(onFilterChanged()));
+
+    setSortingEnabled(true);
 }
 
 XTableView::~XTableView()
@@ -37,6 +41,7 @@ XTableView::~XTableView()
 
 void XTableView::setCustomModel(QStandardItemModel *pModel, bool bFilterEnabled)
 {
+    // TODO Stretch
     g_bFilterEnabled = bFilterEnabled;
 
     g_pOldModel = g_pModel;
@@ -60,7 +65,6 @@ void XTableView::setCustomModel(QStandardItemModel *pModel, bool bFilterEnabled)
         g_pHeaderView->setNumberOfFilters(pModel->columnCount());
         g_pSortFilterProxyModel->setSourceModel(pModel);
         setModel(g_pSortFilterProxyModel);
-
     } else {
         setModel(pModel);
     }
@@ -71,4 +75,16 @@ void XTableView::deleteOldModel(QStandardItemModel **g_ppOldModel)
     delete (*g_ppOldModel);
 
     (*g_ppOldModel) = nullptr;
+}
+
+XSortFilterProxyModel *XTableView::getProxyModel()
+{
+    return g_pSortFilterProxyModel;
+}
+
+void XTableView::onFilterChanged()
+{
+    QList<QString> listFilters = g_pHeaderView->getFilters();
+
+    g_pSortFilterProxyModel->setFilters(listFilters);
 }

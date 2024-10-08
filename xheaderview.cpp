@@ -23,6 +23,8 @@
 XHeaderView::XHeaderView(QWidget *pParent) : QHeaderView(Qt::Horizontal, pParent)
 {
     connect(this, SIGNAL(sectionResized(int, int, int)), this, SLOT(onSectionResized(int, int, int)));
+
+    setSectionsClickable(true);
 }
 
 QSize XHeaderView::sizeHint() const
@@ -55,6 +57,15 @@ void XHeaderView::setNumberOfFilters(qint32 nNumberOfFilters)
     }
 
     adjustPositions();
+}
+
+void XHeaderView::clearFilters()
+{
+    qint32 nCount = g_listLineEdits.count();
+
+    for (qint32 i = 0; i < nCount; i++) {
+        g_listLineEdits.at(i)->clear();
+    }
 }
 
 void XHeaderView::updateGeometries()

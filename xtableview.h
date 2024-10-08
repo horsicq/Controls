@@ -41,6 +41,10 @@ public:
 
     void setCustomModel(QStandardItemModel *pModel, bool bFilterEnabled);
     void deleteOldModel(QStandardItemModel **g_ppOldModel);
+    XSortFilterProxyModel *getProxyModel();
+
+private slots:
+    void onFilterChanged();
 
 private:
     bool g_bFilterEnabled;

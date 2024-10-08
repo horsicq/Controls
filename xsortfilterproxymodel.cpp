@@ -24,3 +24,45 @@
 XSortFilterProxyModel::XSortFilterProxyModel(QObject *pParent) : QSortFilterProxyModel(pParent)
 {
 }
+
+void XSortFilterProxyModel::setFilters(const QList<QString> &listFilters)
+{
+    g_listFilters = listFilters;
+    invalidateFilter();
+}
+
+void XSortFilterProxyModel::setSourceModel(QAbstractItemModel *sourceModel)
+{
+    g_listFilters.clear();
+
+    QSortFilterProxyModel::setSourceModel(sourceModel);
+}
+
+bool XSortFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
+{
+    bool bResult = true;
+
+    qint32 nCount = g_listFilters.count();
+
+    for (qint32 i = 0; i < nCount; i++) {
+        if (g_listFilters.at(i) != "") {
+            QModelIndex index = sourceModel()->index(sourceRow, i, sourceParent);
+
+            if (index.isValid()) {
+                QString sValue = index.data().toString();
+
+                if (!sValue.contains(g_listFilters.at(i), Qt::CaseInsensitive)) {
+                    bResult = false;
+                    break;
+                }
+            }
+        }
+    }
+
+    return bResult;
+}
+
+// bool XSortFilterProxyModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
+// {
+
+// }
