@@ -41,7 +41,7 @@ XTableView::~XTableView()
 
 void XTableView::setCustomModel(QStandardItemModel *pModel, bool bFilterEnabled)
 {
-    // TODO Stretch
+    // TODO Stretch last section
     g_bFilterEnabled = bFilterEnabled;
 
     g_pOldModel = g_pModel;
