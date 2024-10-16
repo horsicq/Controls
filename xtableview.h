@@ -40,8 +40,10 @@ public:
     ~XTableView();
 
     void setCustomModel(QStandardItemModel *pModel, bool bFilterEnabled);
-    void deleteOldModel(QStandardItemModel **g_ppOldModel);
     XSortFilterProxyModel *getProxyModel();
+
+private:
+    void deleteOldModel(QStandardItemModel **g_ppOldModel);
 
 private slots:
     void onFilterChanged();
