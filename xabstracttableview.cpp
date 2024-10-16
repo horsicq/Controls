@@ -253,7 +253,7 @@ void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
                     qint32 _nX = nTopLeftX + nScreenWidth - nMapWidth;
                     pPainter->fillRect(_nX, nTopLeftY + nHeaderHeight, nMapWidth, nHeight - nHeaderHeight, viewport()->palette().color(QPalette::Base));
 
-                    paintMap(pPainter, nX, nTopLeftY + nHeaderHeight, nMapWidth, nHeight - nHeaderHeight);
+                    paintMap(pPainter, _nX, nTopLeftY + nHeaderHeight, nMapWidth, nHeight - nHeaderHeight);
 
                     if (nHeaderHeight > 0) {
                         QStyleOptionButton styleOptionButton;
