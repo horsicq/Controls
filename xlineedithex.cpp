@@ -599,7 +599,7 @@ void XLineEditHEX::_setText(const QString &sText)
 
 void XLineEditHEX::customContextMenu(const QPoint &nPos)
 {
-    QMenu contextMenu(this);
+    QMenu contextMenu(this); // TODO
 
     QAction actionCopy(QString("%1: \"%2\"").arg(tr("Copy"), text()), this);
     connect(&actionCopy, SIGNAL(triggered()), this, SLOT(_copy()));
