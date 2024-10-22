@@ -31,6 +31,7 @@ XTableView::XTableView(QWidget *pParent) : QTableView(pParent)
     setHorizontalHeader(g_pHeaderView);
 
     connect(g_pHeaderView, SIGNAL(filterChanged()), this, SLOT(onFilterChanged()));
+    connect(horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(horisontalScroll()));
 
     setSortingEnabled(true);
 }
@@ -87,4 +88,9 @@ void XTableView::onFilterChanged()
     QList<QString> listFilters = g_pHeaderView->getFilters();
 
     g_pSortFilterProxyModel->setFilters(listFilters);
+}
+
+void XTableView::horisontalScroll()
+{
+    g_pHeaderView->adjustPositions();
 }

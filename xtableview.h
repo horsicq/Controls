@@ -25,6 +25,7 @@
 #ifdef QT_CONCURRENT_LIB
 #include <QAbstractItemModel>
 #include <QFuture>
+#include <QScrollBar>
 #include <QStandardItemModel>
 #include <QtConcurrent>
 #endif
@@ -47,6 +48,7 @@ private:
 
 private slots:
     void onFilterChanged();
+    void horisontalScroll();
 
 private:
     bool g_bFilterEnabled;
