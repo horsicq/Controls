@@ -42,6 +42,7 @@ public:
 
     void setCustomModel(QStandardItemModel *pModel, bool bFilterEnabled);
     XSortFilterProxyModel *getProxyModel();
+    void setFilterEnabled(qint32 nColumn, bool bFilterEnabled);
 
 private:
     void deleteOldModel(QStandardItemModel **g_ppOldModel);

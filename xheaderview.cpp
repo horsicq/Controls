@@ -108,6 +108,14 @@ QList<QString> XHeaderView::getFilters()
     return listResult;
 }
 
+void XHeaderView::setFilterEnabled(qint32 nColumn, bool bFilterEnabled)
+{
+    // TODO
+    if ((nColumn >= 0) && (nColumn < g_listLineEdits.count())) {
+        g_listLineEdits.at(nColumn)->setReadOnly(!bFilterEnabled);
+    }
+}
+
 void XHeaderView::_textChanged(QString sText)
 {
     Q_UNUSED(sText)

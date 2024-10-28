@@ -29,6 +29,7 @@ public:
     explicit XSortFilterProxyModel(QObject *pParent = nullptr);
     void setFilters(const QList<QString> &listFilters);
     void setSourceModel(QAbstractItemModel *sourceModel) override;
+    QVariant data(const QModelIndex &index, int nRole = Qt::DisplayRole) const override;
 
 protected:
     bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override;

@@ -38,6 +38,11 @@ void XSortFilterProxyModel::setSourceModel(QAbstractItemModel *sourceModel)
     QSortFilterProxyModel::setSourceModel(sourceModel);
 }
 
+QVariant XSortFilterProxyModel::data(const QModelIndex &index, int nRole) const
+{
+    return QSortFilterProxyModel::data(index, nRole);
+}
+
 bool XSortFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
 {
     bool bResult = true;

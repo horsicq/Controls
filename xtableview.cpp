@@ -83,6 +83,11 @@ XSortFilterProxyModel *XTableView::getProxyModel()
     return g_pSortFilterProxyModel;
 }
 
+void XTableView::setFilterEnabled(qint32 nColumn, bool bFilterEnabled)
+{
+    g_pHeaderView->setFilterEnabled(nColumn, bFilterEnabled);
+}
+
 void XTableView::onFilterChanged()
 {
     QList<QString> listFilters = g_pHeaderView->getFilters();

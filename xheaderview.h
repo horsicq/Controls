@@ -39,6 +39,7 @@ public:
     void updateGeometries();
     void adjustPositions();
     QList<QString> getFilters();
+    void setFilterEnabled(qint32 nColumn, bool bFilterEnabled);
 
 private slots:
     void _textChanged(QString sText);
