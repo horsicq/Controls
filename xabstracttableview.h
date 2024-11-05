@@ -43,8 +43,8 @@ class XAbstractTableView : public XShortcutstScrollArea {
 public:
     struct COLUMN {
         bool bEnable;
-        qint32 nLeft;
-        qint32 nWidth;
+        qreal nLeft;
+        qreal nWidth;
         QString sTitle;
         bool bClickable;
     };
@@ -119,7 +119,7 @@ public:
     void setViewPosStart(qint64 nValue);
     qint64 getViewPosStart();
 
-    qint32 getCharWidth();
+    qreal getCharWidth();
 
     CURSOR_POSITION getCursorPosition(const QPoint &pos);
 
@@ -150,9 +150,9 @@ public:
     qint64 getSelectionInitSize();
     void setCurrentBlock(qint64 nViewPos, qint64 nSize);
     bool isViewPosInCurrentBlock(qint64 nViewPos);
-    qint32 getLineHeight();
-    qint32 getHeaderHeight();
-    void setHeaderHeight(qint32 nHeight);
+    qreal getLineHeight();
+    qreal getHeaderHeight();
+    void setHeaderHeight(qreal nHeight);
     void setSelectionEnable(bool bState);
     void setContextMenuEnable(bool bState);
     bool isContextMenuEnable();
@@ -164,7 +164,7 @@ public:
     void setMapEnable(bool bState);
     bool isMapEnable();
     void setMapWidth(qint32 nWidth);
-    qint32 getMapWidth();
+    qreal getMapWidth();
     void setMapCount(qint32 nMapCount);
     qint32 getMapCount();
 
@@ -225,21 +225,21 @@ private:
     //    bool g_bIsBlinkingCursorEnable;
     qint64 g_nNumberOfRows;
     QList<COLUMN> g_listColumns;
-    qint32 g_nHeaderHeight;
+    qreal g_nHeaderHeight;
     QPushButton g_pushButtonHeader;
     qint32 g_nXViewPos;
     qint64 g_nViewPosStart;  // TODO move to state
-    qint32 g_nCharWidth;
-    qint32 g_nCharHeight;
+    qreal g_nCharWidth;
+    qreal g_nCharHeight;
     qint32 g_nLinesProPage;
-    qint32 g_nLineHeight;
+    qreal g_nLineHeight;
     QFont g_fontText;
     qint64 g_nTotalScrollCount;
     qint32 g_nViewWidth;
     qint32 g_nViewHeight;
     qint32 g_nTableWidth;
-    qint32 g_nLineDelta;
-    qint32 g_nSideDelta;
+    qreal g_nLineDelta;
+    qreal g_nSideDelta;
 
     STATE g_state;
     bool g_bMouseSelection;
@@ -263,7 +263,7 @@ private:
     bool g_bVerticalLinesVisible;
     bool g_bHorisontalLinesVisible;
     bool g_bIsMapEnable;
-    qint32 g_nMapWidth;
+    qreal g_nMapWidth;
     qint32 g_nMapCount;
     qint64 g_nCurrentBlockViewPos;
     qint64 g_nCurrentBlockViewSize;

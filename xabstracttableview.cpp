@@ -391,7 +391,7 @@ qint64 XAbstractTableView::getViewPosStart()
     return g_nViewPosStart;
 }
 
-qint32 XAbstractTableView::getCharWidth()
+qreal XAbstractTableView::getCharWidth()
 {
     return g_nCharWidth;
 }
@@ -418,7 +418,7 @@ XAbstractTableView::CURSOR_POSITION XAbstractTableView::getCursorPosition(const 
                 } else {
                     result.ptype = PT_CELL;
                     result.nRow = (result.nY - nHeaderHeight) / g_nLineHeight;
-                    result.nAreaTop = (result.nY - nHeaderHeight) % g_nLineHeight;
+                    result.nAreaTop = (result.nY - nHeaderHeight) % (qint32)g_nLineHeight;
                     result.nAreaLeft = result.nX - nCurrentOffset;
                 }
 
@@ -762,17 +762,17 @@ bool XAbstractTableView::isViewPosInCurrentBlock(qint64 nViewPos)
     return bResult;
 }
 
-qint32 XAbstractTableView::getLineHeight()
+qreal XAbstractTableView::getLineHeight()
 {
     return g_nLineHeight;
 }
 
-qint32 XAbstractTableView::getHeaderHeight()
+qreal XAbstractTableView::getHeaderHeight()
 {
     return g_nHeaderHeight;
 }
 
-void XAbstractTableView::setHeaderHeight(qint32 nHeight)
+void XAbstractTableView::setHeaderHeight(qreal nHeight)
 {
     g_nHeaderHeight = nHeight;
 }
@@ -851,7 +851,7 @@ void XAbstractTableView::setMapWidth(qint32 nWidth)
     g_nMapWidth = nWidth;
 }
 
-qint32 XAbstractTableView::getMapWidth()
+qreal XAbstractTableView::getMapWidth()
 {
     return g_nMapWidth;
 }
@@ -925,7 +925,7 @@ void XAbstractTableView::mouseMoveEvent(QMouseEvent *pEvent)
                 viewport()->update();
             }
         } else if (g_bMouseResizeColumn) {
-            qint32 nColumnWidth = qMax(g_nSideDelta, cursorPosition.nX - g_listColumns.at(g_nResizeColumnNumber).nLeft);
+            qreal nColumnWidth = qMax(g_nSideDelta, cursorPosition.nX - g_listColumns.at(g_nResizeColumnNumber).nLeft);
 
             g_listColumns[g_nResizeColumnNumber].nWidth = nColumnWidth;
 
