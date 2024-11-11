@@ -182,6 +182,10 @@ void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
             qint32 nScreenWidth = pEvent->rect().width();
             qint32 nHeight = pEvent->rect().height();
 
+            if (isMapEnable()) {
+                nScreenWidth -= getMapWidth();
+            }
+
             qint32 nNumberOfColumns = g_listColumns.count();
 
             if (nNumberOfColumns) {
@@ -250,7 +254,7 @@ void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
 
                 if (isMapEnable()) {
                     qint32 nMapWidth = getMapWidth();
-                    qint32 _nX = nTopLeftX + nScreenWidth - nMapWidth;
+                    qint32 _nX = nScreenWidth;
                     pPainter->fillRect(_nX, nTopLeftY + nHeaderHeight, nMapWidth, nHeight - nHeaderHeight, viewport()->palette().color(QPalette::Base));
 
                     paintMap(pPainter, _nX, nTopLeftY + nHeaderHeight, nMapWidth, nHeight - nHeaderHeight);
@@ -617,6 +621,10 @@ void XAbstractTableView::adjust(bool bUpdateData)
                     g_listColumns[i].nLeft = g_nTableWidth;
                     g_nTableWidth += g_listColumns.at(i).nWidth;
                 }
+            }
+
+            if (isMapEnable()) {
+                g_nTableWidth += getMapWidth();
             }
 
             qint32 nDelta = g_nTableWidth - g_nViewWidth;
