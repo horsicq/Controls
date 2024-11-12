@@ -203,7 +203,7 @@ private:
     bool g_bIsReadonly;
     QList<qint64> g_listVisited;
     qint32 g_nVisitedIndex;
-    static QSet<VIEWWIDGET> g_stViewWidgetState;
+    QSet<VIEWWIDGET> g_stViewWidgetState;
 };
 
 #endif  // XDEVICETABLEVIEW_H

@@ -20,8 +20,6 @@
  */
 #include "xdevicetableview.h"
 
-QSet<XDeviceTableView::VIEWWIDGET> XDeviceTableView::g_stViewWidgetState = QSet<XDeviceTableView::VIEWWIDGET>();
-
 XDeviceTableView::XDeviceTableView(QWidget *pParent) : XAbstractTableView(pParent)
 {
     g_pXInfoDB = nullptr;
