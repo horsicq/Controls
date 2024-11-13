@@ -28,6 +28,7 @@ XDeviceTableView::XDeviceTableView(QWidget *pParent) : XAbstractTableView(pParen
     g_nViewSize = 0;
     g_searchData = {};
     g_locationMode = LOCMODE_ADDRESS;
+    g_nLocationBase = 16;
     g_bIsReadonly = true;
     g_nVisitedIndex = 0;
 
@@ -116,11 +117,29 @@ XBinary::_MEMORY_MAP *XDeviceTableView::getMemoryMap()
 void XDeviceTableView::setLocationMode(XDeviceTableView::LOCMODE locationMode)
 {
     g_locationMode = locationMode;
+
+    adjust(true);
+    viewport()->update();
+    emit selectionChanged();
 }
 
 XDeviceTableView::LOCMODE XDeviceTableView::getlocationMode()
 {
     return g_locationMode;
+}
+
+void XDeviceTableView::setLocationBase(qint32 nBase)
+{
+    g_nLocationBase = nBase;
+
+    adjust(true);
+    viewport()->update();
+    emit selectionChanged();
+}
+
+qint32 XDeviceTableView::getLocationBase()
+{
+    return g_nLocationBase;
 }
 
 void XDeviceTableView::adjustScrollCount()
@@ -791,16 +810,25 @@ void XDeviceTableView::selectionChangedSlot()
     emit deviceSelectionChanged(deviceState.nSelectionDeviceOffset, deviceState.nSelectionSize);
 }
 
-void XDeviceTableView::changeLocationView()
+void XDeviceTableView::changeLocationMode()
 {
     QAction *pAction = qobject_cast<QAction *>(sender());
 
     if (pAction) {
-        LOCMODE mode = (LOCMODE)pAction->property("location").toUInt();
+        LOCMODE mode = (LOCMODE)pAction->property("mode").toUInt();
 
         setLocationMode(mode);
+    }
+}
 
-        adjust(true);
+void XDeviceTableView::changeLocationBase()
+{
+    QAction *pAction = qobject_cast<QAction *>(sender());
+
+    if (pAction) {
+        qint32 nBase = (LOCMODE)pAction->property("base").toInt();
+
+        setLocationBase(nBase);
     }
 }
 
