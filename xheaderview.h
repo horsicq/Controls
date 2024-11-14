@@ -22,10 +22,9 @@
 #define XHEADERVIEW_H
 
 #include <QHeaderView>
-#include <QObject>
-#include <QWidget>
-#include <QPainter>
 #include <QLineEdit>
+#include <QObject>
+#include <QPainter>
 
 class XHeaderView : public QHeaderView {
     Q_OBJECT
