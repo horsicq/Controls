@@ -22,13 +22,9 @@
 #define XTABLEVIEW_H
 
 #include <QTableView>
-#ifdef QT_CONCURRENT_LIB
 #include <QAbstractItemModel>
-#include <QFuture>
 #include <QScrollBar>
 #include <QStandardItemModel>
-#include <QtConcurrent>
-#endif
 
 #include "xheaderview.h"
 #include "xsortfilterproxymodel.h"
