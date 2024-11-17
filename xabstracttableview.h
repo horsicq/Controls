@@ -102,6 +102,7 @@ public:
     void setColumnTitle(qint32 nNumber, const QString &sTitle);
     void setColumnEnabled(qint32 nNumber, bool bState);
     void setColumnWidth(qint32 nNumber, qint32 nWidth);
+    qint32 getColumnWidth(qint32 nNumber);
 
     void reload(bool bUpdateData = false);
 

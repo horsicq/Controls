@@ -159,6 +159,17 @@ void XAbstractTableView::setColumnWidth(qint32 nNumber, qint32 nWidth)
     }
 }
 
+qint32 XAbstractTableView::getColumnWidth(qint32 nNumber)
+{
+    qint32 nResult = 0;
+
+    if (nNumber < g_listColumns.count()) {
+        nResult = g_listColumns[nNumber].nWidth;
+    }
+
+    return nResult;
+}
+
 void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
 {
 #ifdef QT_DEBUG
