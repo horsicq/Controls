@@ -145,7 +145,6 @@ protected:
 
 signals:
     void visitedStateChanged();
-    void dataChanged(qint64 nDeviceOffset, qint64 nDeviceSize);
     void deviceSizeChanged(qint64 nOldSize, qint64 nNewSize);
     void deviceSelectionChanged(qint64 nDeviceOffset, qint64 nDeviceSize);
     void viewWidgetsStateChanged();
