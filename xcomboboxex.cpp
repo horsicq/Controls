@@ -32,7 +32,7 @@ XComboBoxEx::XComboBoxEx(QWidget *pParent) : QComboBox(pParent)
     connect(&g_model, SIGNAL(itemChanged(QStandardItem *)), this, SLOT(itemChangedSlot(QStandardItem *)));
 }
 
-void XComboBoxEx::setData(QMap<quint64, QString> mapData, CBTYPE cbtype, quint64 nMask, const QString &sTitle)
+void XComboBoxEx::setData(const QMap<quint64, QString> &mapData, CBTYPE cbtype, quint64 nMask, const QString &sTitle)
 {
     g_cbtype = cbtype;
     g_nMask = nMask;
@@ -171,7 +171,7 @@ QString XComboBoxEx::getDescription()
         for (qint32 i = 1; i < nNumberOfItems; i++) {
             if (g_model.item(i, 0)->data(Qt::CheckStateRole).toInt() == Qt::Checked) {
                 if (sResult != "") {
-                    sResult += "|";
+                    sResult += " | ";
                 }
 
                 sResult += g_mapData.value(g_model.item(i, 0)->data(Qt::UserRole).toULongLong());

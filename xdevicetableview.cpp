@@ -24,7 +24,6 @@ XDeviceTableView::XDeviceTableView(QWidget *pParent) : XAbstractTableView(pParen
 {
     g_pXInfoDB = nullptr;
     g_pDevice = nullptr;
-    g_pBackupDevice = nullptr;
     g_nViewSize = 0;
     g_searchData = {};
     g_locationMode = LOCMODE_ADDRESS;
@@ -66,27 +65,9 @@ void XDeviceTableView::setDevice(QIODevice *pDevice)
     }
 }
 
-void XDeviceTableView::setBackupDevice(QIODevice *pDevice)
-{
-    g_pBackupDevice = pDevice;
-}
-
 QIODevice *XDeviceTableView::getDevice()
 {
     return g_pDevice;
-}
-
-QIODevice *XDeviceTableView::getBackupDevice()
-{
-    QIODevice *pResult = nullptr;
-
-    if (g_pBackupDevice) {
-        pResult = g_pBackupDevice;
-    } else {
-        pResult = g_pDevice;
-    }
-
-    return pResult;
 }
 
 void XDeviceTableView::setViewSize(qint64 nViewSize)
@@ -502,7 +483,7 @@ void XDeviceTableView::setSelectionOffset(qint64 nOffset, qint64 nSize)
 
 bool XDeviceTableView::isEdited()
 {
-    bool bResult = XBinary::isBackupPresent(getBackupDevice());
+    bool bResult = XBinary::isBackupPresent(XBinary::getBackupDevice(getDevice()));
 
     return bResult;
 }
@@ -513,7 +494,7 @@ bool XDeviceTableView::saveBackup()
 
     if ((getGlobalOptions()->isSaveBackup()) && (!isEdited())) {
         // Save backup
-        bResult = XBinary::saveBackup(getBackupDevice());
+        bResult = XBinary::saveBackup(XBinary::getBackupDevice(getDevice()));
     }
 
     return bResult;

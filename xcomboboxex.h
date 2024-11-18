@@ -48,7 +48,7 @@ public:
 
     explicit XComboBoxEx(QWidget *pParent = nullptr);
 
-    void setData(QMap<quint64, QString> mapData, CBTYPE cbtype = CBTYPE_LIST, quint64 nMask = 0, const QString &sTitle = "");
+    void setData(const QMap<quint64, QString> &mapData, CBTYPE cbtype = CBTYPE_LIST, quint64 nMask = 0, const QString &sTitle = "");
     void setValue(QVariant varValue);
     QVariant getValue();
     void setReadOnly(bool bIsReadOnly);

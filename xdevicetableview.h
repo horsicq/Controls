@@ -86,9 +86,7 @@ public:
     void setXInfoDB(XInfoDB *pXInfoDB);
     XInfoDB *getXInfoDB();
     void setDevice(QIODevice *pDevice);
-    void setBackupDevice(QIODevice *pDevice);
     QIODevice *getDevice();
-    QIODevice *getBackupDevice();
     void setViewSize(qint64 nViewSize);
     qint64 getViewSize();
     void setMemoryMap(const XBinary::_MEMORY_MAP &memoryMap);
@@ -197,7 +195,6 @@ private:
     static const qint32 N_MAX_VISITED = 100;
     XInfoDB *g_pXInfoDB;
     QIODevice *g_pDevice;
-    QIODevice *g_pBackupDevice;
     qint64 g_nViewSize;
     XBinary::_MEMORY_MAP g_memoryMap;
     XBinary::SEARCHDATA g_searchData;

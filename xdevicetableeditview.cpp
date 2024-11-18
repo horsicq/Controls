@@ -38,7 +38,6 @@ void XDeviceTableEditView::_editHex()
             //        connect(&dialogHexEdit,SIGNAL(changed()),this,SLOT(_setEdited()));
 
             dialogHexEdit.setData(&sd, state.nSelectionDeviceOffset);
-            dialogHexEdit.setBackupDevice(getBackupDevice());
 
             dialogHexEdit.exec();
 
