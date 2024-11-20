@@ -106,6 +106,7 @@ protected:
 
 private slots:
     void _setText(const QString &sText);
+    void _returnPressed();
     void customContextMenu(const QPoint &nPos);
     void updateFont();
 

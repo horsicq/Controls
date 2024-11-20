@@ -321,6 +321,13 @@ void XAbstractTableView::reload(bool bUpdateData)
     viewport()->update();
 }
 
+void XAbstractTableView::reloadData(bool bSaveSelection)
+{
+    Q_UNUSED(bSaveSelection);
+
+    reload(true);
+}
+
 void XAbstractTableView::setTextFont(const QFont &font)
 {
     const QFontMetricsF fm(font);

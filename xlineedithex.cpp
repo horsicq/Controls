@@ -31,6 +31,7 @@ XLineEditHEX::XLineEditHEX(QWidget *pParent) : QLineEdit(pParent)
     setAlignment(Qt::AlignHCenter);
 
     connect(this, SIGNAL(textChanged(QString)), this, SLOT(_setText(QString)));
+    //connect(this, SIGNAL(returnPressed()), this, SLOT(_returnPressed()));
     setValidator(&g_validator);
 
     setContextMenuPolicy(Qt::CustomContextMenu);
@@ -595,6 +596,11 @@ void XLineEditHEX::_setText(const QString &sText)
     qint32 nCursorPosition = QLineEdit::cursorPosition();
     QLineEdit::setText(sText);
     QLineEdit::setCursorPosition(nCursorPosition);
+}
+
+void XLineEditHEX::_returnPressed()
+{
+    _setText(text());
 }
 
 void XLineEditHEX::customContextMenu(const QPoint &nPos)
