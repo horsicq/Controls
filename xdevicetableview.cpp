@@ -28,7 +28,6 @@ XDeviceTableView::XDeviceTableView(QWidget *pParent) : XAbstractTableView(pParen
     g_searchData = {};
     g_locationMode = LOCMODE_ADDRESS;
     g_nLocationBase = 16;
-    g_bIsReadonly = true;
     g_nVisitedIndex = 0;
 
     connect(this, SIGNAL(selectionChanged()), this, SLOT(selectionChangedSlot()));
@@ -518,16 +517,6 @@ void XDeviceTableView::setEdited(qint64 nDeviceOffset, qint64 nDeviceSize)
     viewport()->update();
 }
 
-void XDeviceTableView::setReadonly(bool bState)
-{
-    g_bIsReadonly = bState;
-}
-
-bool XDeviceTableView::isReadonly()
-{
-    return g_bIsReadonly;
-}
-
 void XDeviceTableView::adjustAfterAnalysis()
 {
     adjustScrollCount();
@@ -788,7 +777,7 @@ void XDeviceTableView::selectionChangedSlot()
 {
     XDeviceTableView::DEVICESTATE deviceState = getDeviceState();
 
-    emit deviceSelectionChanged(deviceState.nSelectionDeviceOffset, deviceState.nSelectionSize);
+    emit currentLocationChanged(deviceState.nSelectionDeviceOffset, XBinary::LT_OFFSET, deviceState.nSelectionSize);
 }
 
 void XDeviceTableView::changeLocationMode()
@@ -869,8 +858,6 @@ void XDeviceTableView::_bookmarkNew()
 
 void XDeviceTableView::currentLocationChangedSlot(quint64 nLocation, qint32 nLocationType, qint64 nSize)
 {
-    Q_UNUSED(nSize)
-
     if (nLocationType == XBinary::LT_ADDRESS) {
         goToAddress(nLocation, true, true, true);
 
@@ -898,7 +885,7 @@ void XDeviceTableView::_showDataInspector()
         DialogDataInspector dialogDataInspector(this, getDevice(), deviceState.nSelectionDeviceOffset, deviceState.nSelectionSize);
         dialogDataInspector.setGlobal(getShortcuts(), getGlobalOptions());
 
-        connect(this, SIGNAL(deviceSelectionChanged(qint64, qint64)), &dialogDataInspector, SLOT(selectionChangedSlot(qint64, qint64)));
+        connect(this, SIGNAL(currentLocationChanged(quint64,qint32,qint64)), &dialogDataInspector, SLOT(currentLocationChangedSlot(quint64,qint32,qint64)));
         connect(this, SIGNAL(dataChanged(qint64, qint64)), &dialogDataInspector, SLOT(dataChangedSlot(qint64, qint64)));
         connect(&dialogDataInspector, SIGNAL(dataChanged(qint64, qint64)), this, SLOT(_setEdited(qint64, qint64)));
         connect(this, SIGNAL(closeWidget_DataInspector()), &dialogDataInspector, SLOT(close()));

@@ -104,8 +104,6 @@ public:
     void setSelectionOffset(qint64 nOffset, qint64 nSize);
     bool isEdited();
     bool saveBackup();
-    void setReadonly(bool bState);
-    bool isReadonly();
     void adjustAfterAnalysis();  // TODO Check mb remove
     virtual DEVICESTATE getDeviceState(bool bGlobalOffset = false);
     virtual void setDeviceState(const DEVICESTATE &deviceState, bool bGlobalOffset = false);
@@ -144,7 +142,6 @@ protected:
 signals:
     void visitedStateChanged();
     void deviceSizeChanged(qint64 nOldSize, qint64 nNewSize);
-    void deviceSelectionChanged(qint64 nDeviceOffset, qint64 nDeviceSize);
     void viewWidgetsStateChanged();
     void closeWidget_DataInspector();
     void closeWidget_DataConvertor();
@@ -184,9 +181,9 @@ protected slots:
     void _bookmarkNew();
     void _bookmarkList();
 #endif
-    void currentLocationChangedSlot(quint64 nLocation, qint32 nLocationType, qint64 nSize);
 
 public slots:
+    void currentLocationChangedSlot(quint64 nLocation, qint32 nLocationType, qint64 nSize);
     void _showDataInspector();
     void _showDataConvertor();
     void _showMultisearch();
@@ -200,7 +197,6 @@ private:
     XBinary::SEARCHDATA g_searchData;
     LOCMODE g_locationMode;
     qint32 g_nLocationBase;
-    bool g_bIsReadonly;
     QList<qint64> g_listVisited;
     qint32 g_nVisitedIndex;
     QSet<VIEWWIDGET> g_stViewWidgetState;
