@@ -31,7 +31,7 @@ XLineEditHEX::XLineEditHEX(QWidget *pParent) : QLineEdit(pParent)
     setAlignment(Qt::AlignHCenter);
 
     connect(this, SIGNAL(textChanged(QString)), this, SLOT(_setText(QString)));
-    //connect(this, SIGNAL(returnPressed()), this, SLOT(_returnPressed()));
+    // connect(this, SIGNAL(returnPressed()), this, SLOT(_returnPressed()));
     setValidator(&g_validator);
 
     setContextMenuPolicy(Qt::CustomContextMenu);

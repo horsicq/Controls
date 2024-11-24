@@ -885,7 +885,7 @@ void XDeviceTableView::_showDataInspector()
         DialogDataInspector dialogDataInspector(this, getDevice(), deviceState.nSelectionDeviceOffset, deviceState.nSelectionSize);
         dialogDataInspector.setGlobal(getShortcuts(), getGlobalOptions());
 
-        connect(this, SIGNAL(currentLocationChanged(quint64,qint32,qint64)), &dialogDataInspector, SLOT(currentLocationChangedSlot(quint64,qint32,qint64)));
+        connect(this, SIGNAL(currentLocationChanged(quint64, qint32, qint64)), &dialogDataInspector, SLOT(currentLocationChangedSlot(quint64, qint32, qint64)));
         connect(this, SIGNAL(dataChanged(qint64, qint64)), &dialogDataInspector, SLOT(dataChangedSlot(qint64, qint64)));
         connect(&dialogDataInspector, SIGNAL(dataChanged(qint64, qint64)), this, SLOT(_setEdited(qint64, qint64)));
         connect(this, SIGNAL(closeWidget_DataInspector()), &dialogDataInspector, SLOT(close()));
