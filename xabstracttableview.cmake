@@ -1,13 +1,17 @@
 include_directories(${CMAKE_CURRENT_LIST_DIR})
 
+if (NOT DEFINED DIALOGRESIZE_SOURCES)
+    include(${CMAKE_CURRENT_LIST_DIR}/../FormatDialogs/dialogresize.cmake)
+    set(XABSTRACTTABLEVIEW_SOURCES ${XABSTRACTTABLEVIEW_SOURCES} ${DIALOGRESIZE_SOURCES})
+endif()
+
 include(${CMAKE_CURRENT_LIST_DIR}/../FormatDialogs/dialogtextinfo.cmake)
-include(${CMAKE_CURRENT_LIST_DIR}/../FormatDialogs/dialogresize.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/../FormatDialogs/dialogremove.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/../XShortcuts/xshortcuts.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/../XInfoDB/xinfodb.cmake)
 
 set(XABSTRACTTABLEVIEW_SOURCES
-    ${DIALOGRESIZE_SOURCES}
+    ${XABSTRACTTABLEVIEW_SOURCES}
     ${DIALOGREMOVE_SOURCES}
     ${XSHORTCUTS_SOURCES}
     ${DIALOGTEXTINFO_SOURCES}
