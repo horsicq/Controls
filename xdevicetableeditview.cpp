@@ -138,24 +138,6 @@ void XDeviceTableEditView::_editResize()
     }
 }
 
-void XDeviceTableEditView::_followInDisasmSlot()
-{
-    quint64 nOffset = getDeviceState(true).nSelectionDeviceOffset;
-    //    XADDR nAddress=XBinary::offsetToAddress(getMemoryMap(),nOffset);
-
-    emit followInDisasm(nOffset);
-}
-
-void XDeviceTableEditView::_followInHexSlot()
-{
-    //    emit
-    //    followInHex(XBinary::offsetToAddress(getMemoryMap(),getStateOffset()));
-    quint64 nOffset = getDeviceState(true).nSelectionDeviceOffset;
-    //    XADDR nAddress=XBinary::offsetToAddress(getMemoryMap(),nOffset);
-
-    emit followInHex(nOffset);
-}
-
 void XDeviceTableEditView::_strings()
 {
     if (!getViewWidgetState(VIEWWIDGET_STRINGS)) {

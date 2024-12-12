@@ -39,8 +39,6 @@ protected slots:
     void _editPatch();
     void _editRemove();
     void _editResize();
-    void _followInDisasmSlot();
-    void _followInHexSlot();
 
 public slots:
     void _strings();
@@ -48,10 +46,6 @@ public slots:
 #if defined(QT_SCRIPT_LIB) || defined(QT_QML_LIB)
     void _scripts();
 #endif
-
-signals:
-    void followInDisasm(XADDR nAddress);
-    void followInHex(XADDR nAddress);
 };
 
 #endif  // XDEVICETABLEEDITVIEW_H
