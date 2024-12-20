@@ -747,7 +747,7 @@ void XDeviceTableView::_setEdited(qint64 nDeviceOffset, qint64 nDeviceSize)
 {
     setEdited(nDeviceOffset, nDeviceSize);
 
-    emit dataChanged(nDeviceOffset, nDeviceSize);
+    emit dataChanged(nDeviceOffset, nDeviceSize); // TODO initOffset
 }
 
 void XDeviceTableView::goToAddressSlot(XADDR nAddress, qint64 nSize)
@@ -775,7 +775,7 @@ void XDeviceTableView::reloadView()
 
 void XDeviceTableView::selectionChangedSlot()
 {
-    XDeviceTableView::DEVICESTATE deviceState = getDeviceState();
+    XDeviceTableView::DEVICESTATE deviceState = getDeviceState(true);
 
     emit currentLocationChanged(deviceState.nSelectionDeviceOffset, XBinary::LT_OFFSET, deviceState.nSelectionSize);
 }
