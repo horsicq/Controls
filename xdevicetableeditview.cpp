@@ -93,7 +93,7 @@ void XDeviceTableEditView::_editRemove()
                                 adjustScrollCount();
                                 reload(true);
                                 emit deviceSizeChanged(nOldSize, nNewSize);
-                                emit dataChanged(_data.nOffset, nNewSize - _data.nOffset); // TODO initOffset
+                                emit dataChanged(_data.nOffset, nNewSize - _data.nOffset);  // TODO initOffset
                             }
                         }
                     }
@@ -123,10 +123,10 @@ void XDeviceTableEditView::_editResize()
                             reload(true);
                             if (_data.nNewSize > _data.nOldSize) {
                                 emit deviceSizeChanged(_data.nOldSize, _data.nNewSize);
-                                emit dataChanged(_data.nOldSize, _data.nNewSize - _data.nOldSize); // TODO initOffset
+                                emit dataChanged(_data.nOldSize, _data.nNewSize - _data.nOldSize);  // TODO initOffset
                             } else if (_data.nOldSize > _data.nNewSize) {
                                 emit deviceSizeChanged(_data.nOldSize, _data.nNewSize);
-                                emit dataChanged(_data.nNewSize, _data.nOldSize - _data.nNewSize); // TODO initOffset
+                                emit dataChanged(_data.nNewSize, _data.nOldSize - _data.nNewSize);  // TODO initOffset
                             }
                         } else {
                             emit errorMessage(tr("Cannot resize"));

@@ -747,7 +747,7 @@ void XDeviceTableView::_setEdited(qint64 nDeviceOffset, qint64 nDeviceSize)
 {
     setEdited(nDeviceOffset, nDeviceSize);
 
-    emit dataChanged(nDeviceOffset, nDeviceSize); // TODO initOffset
+    emit dataChanged(nDeviceOffset, nDeviceSize);  // TODO initOffset
 }
 
 void XDeviceTableView::goToAddressSlot(XADDR nAddress, qint64 nSize)
