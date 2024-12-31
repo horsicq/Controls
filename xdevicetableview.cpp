@@ -147,6 +147,23 @@ qint64 XDeviceTableView::addressToViewPos(XADDR nAddress)
     return nResult;
 }
 
+qint64 XDeviceTableView::locationToViewPos(XADDR nLocation, XBinary::LT locationType)
+{
+    qint64 nResult = 0;
+
+    if (locationType == XBinary::LT_ADDRESS) {
+        qint64 nOffset = XBinary::addressToOffset(getMemoryMap(), nLocation);
+        nResult = deviceOffsetToViewPos(nOffset);
+    } else if (locationType == XBinary::LT_RELADDRESS) {
+        qint64 nOffset = XBinary::relAddressToOffset(getMemoryMap(), nLocation);
+        nResult = deviceOffsetToViewPos(nOffset);
+    } else if (locationType == XBinary::LT_OFFSET) {
+        nResult = deviceOffsetToViewPos(nLocation);
+    }
+
+    return nResult;
+}
+
 XDeviceTableView::DEVICESTATE XDeviceTableView::getDeviceState(bool bGlobalOffset)
 {
     DEVICESTATE result = {};
@@ -436,13 +453,7 @@ void XDeviceTableView::goToOffset(qint64 nOffset, bool bShort, bool bAprox, bool
 void XDeviceTableView::goToLocation(XADDR nLocation, XBinary::LT locationType, bool bShort, bool bAprox, bool bSaveVisited)
 {
     if (nLocation != (XADDR)-1) {
-        qint64 nViewPos = 0;
-
-        if (locationType == XBinary::LT_ADDRESS) {
-            nViewPos = addressToViewPos(nLocation);
-        } else if (locationType == XBinary::LT_OFFSET) {
-            nViewPos = deviceOffsetToViewPos(nLocation);
-        }
+        qint64 nViewPos = locationToViewPos(nLocation, locationType);
 
         if (bSaveVisited) {
             addVisited(getState().nSelectionViewPos);
@@ -462,9 +473,32 @@ void XDeviceTableView::goToLocation(XADDR nLocation, XBinary::LT locationType, b
     }
 }
 
+void XDeviceTableView::setLocationOffset(XADDR nLocation, XBinary::LT locationType, qint64 nSize)
+{
+    qint64 nOffset = 0;
+
+    // TODO move to Binary
+    if (locationType == XBinary::LT_ADDRESS) {
+        nOffset = XBinary::addressToOffset(getMemoryMap(), nLocation);
+    } else if (locationType == XBinary::LT_RELADDRESS) {
+        nOffset = XBinary::relAddressToOffset(getMemoryMap(), nLocation);
+    } else if (locationType == XBinary::LT_OFFSET) {
+        nOffset = nLocation;
+    }
+
+    setDeviceSelection(nOffset, nSize);
+}
+
 void XDeviceTableView::setSelectionAddress(XADDR nAddress, qint64 nSize)
 {
     qint64 nOffset = XBinary::addressToOffset(getMemoryMap(), nAddress);
+
+    setSelectionOffset(nOffset, nSize);
+}
+
+void XDeviceTableView::setSelectionRelAddress(XADDR nRelAddress, qint64 nSize)
+{
+    qint64 nOffset = XBinary::relAddressToOffset(getMemoryMap(), nRelAddress);
 
     setSelectionOffset(nOffset, nSize);
 }
