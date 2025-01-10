@@ -101,9 +101,9 @@ public:
     void goToOffset(qint64 nOffset, bool bShort = false, bool bAprox = false, bool bSaveVisited = false);
     void goToLocation(XADDR nLocation, XBinary::LT locationType, bool bShort = false, bool bAprox = false, bool bSaveVisited = false);
     void setLocationOffset(XADDR nLocation, XBinary::LT locationType, qint64 nSize);
-    void setSelectionAddress(XADDR nAddress, qint64 nSize); // TODO remove
-    void setSelectionRelAddress(XADDR nRelAddress, qint64 nSize); // TODO remove
-    void setSelectionOffset(qint64 nOffset, qint64 nSize); // TODO remove
+    void setSelectionAddress(XADDR nAddress, qint64 nSize);        // TODO remove
+    void setSelectionRelAddress(XADDR nRelAddress, qint64 nSize);  // TODO remove
+    void setSelectionOffset(qint64 nOffset, qint64 nSize);         // TODO remove
     bool isEdited();
     bool saveBackup();
     void adjustAfterAnalysis();  // TODO Check mb remove
