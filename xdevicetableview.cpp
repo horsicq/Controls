@@ -416,6 +416,12 @@ void XDeviceTableView::dumpMemory(const QString &sDumpName, qint64 nOffset, qint
     }
 }
 
+void XDeviceTableView::setLocation(quint64 nLocation, qint32 nLocationType, qint64 nSize)
+{
+    goToLocation(nLocation, (XBinary::LT)nLocationType);
+    setLocationOffset(nLocation, (XBinary::LT)nLocationType, nSize);
+}
+
 qint64 XDeviceTableView::write_array(qint64 nOffset, char *pData, qint64 nDataSize)
 {
     qint64 nResult = 0;
@@ -892,19 +898,7 @@ void XDeviceTableView::_bookmarkNew()
 
 void XDeviceTableView::currentLocationChangedSlot(quint64 nLocation, qint32 nLocationType, qint64 nSize)
 {
-    if (nLocationType == XBinary::LT_ADDRESS) {
-        goToAddress(nLocation, true, true, true);
-
-        if (nSize) {
-            setSelectionAddress(nLocation, nSize);
-        }
-    } else if (nLocationType == XBinary::LT_OFFSET) {
-        goToOffset(nLocation, true, true, true);
-
-        if (nSize) {
-            setSelectionOffset(nLocation, nSize);
-        }
-    }
+    setLocation(nLocation, nLocationType, nSize);
 
     reload(true);
 }

@@ -128,6 +128,7 @@ public:
     bool getViewWidgetState(VIEWWIDGET viewWidget);
 
     void dumpMemory(const QString &sDumpName, qint64 nOffset = 0, qint64 nSize = -1);
+    virtual void setLocation(quint64 nLocation, qint32 nLocationType, qint64 nSize);
 
 public slots:
     void setEdited(qint64 nDeviceOffset, qint64 nDeviceSize);
