@@ -163,7 +163,7 @@ QString XComboBoxEx::getDescription()
     if (g_cbtype == CBTYPE_LIST) {
         sResult = g_mapData.value(g_varValue.toULongLong());
     } else if (g_cbtype == CBTYPE_ELIST) {
-        sResult = g_mapData.value(g_varValue.toULongLong());
+        sResult = g_mapData.value(g_varValue.toULongLong() & g_nMask);
     }
     if (g_cbtype == CBTYPE_FLAGS) {
         qint32 nNumberOfItems = g_model.rowCount();
