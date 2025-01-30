@@ -40,7 +40,7 @@ XTableView::~XTableView()
 {
 }
 
-void XTableView::setCustomModel(QStandardItemModel *pModel, bool bFilterEnabled)
+void XTableView::setCustomModel(QAbstractItemModel *pModel, bool bFilterEnabled)
 {
     // TODO Stretch last section
     g_bFilterEnabled = bFilterEnabled;
@@ -57,7 +57,21 @@ void XTableView::setCustomModel(QStandardItemModel *pModel, bool bFilterEnabled)
         // #else
         //         deleteOldModel(&g_pOldModel);
         // #endif
+        // g_pOldModel->beginResetModel();
+#ifdef QT_DEBUG
+        // get elapsed time
+        QElapsedTimer timer;
+        timer.start();
+        qDebug("g_pOldModel->clear() START");
+        // QStandartItemModel 433543
+        // 470701 ms
+#endif
+        // g_pOldModel->clear();
         deleteOldModel(&g_pOldModel);
+#ifdef QT_DEBUG
+        qDebug("setCustomModel Elapsed time: %lld ms", timer.elapsed());
+#endif
+        // g_pOldModel->endResetModel();
     }
 
     g_pModel = pModel;
@@ -71,7 +85,7 @@ void XTableView::setCustomModel(QStandardItemModel *pModel, bool bFilterEnabled)
     }
 }
 
-void XTableView::deleteOldModel(QStandardItemModel **g_ppOldModel)
+void XTableView::deleteOldModel(QAbstractItemModel **g_ppOldModel)
 {
     delete (*g_ppOldModel);
 

@@ -1,4 +1,4 @@
-/* Copyright (c) 2024 hors<horsicq@gmail.com>
+/* Copyright (c) 2024-2025 hors<horsicq@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@
 #include <QAbstractItemModel>
 #include <QScrollBar>
 #include <QStandardItemModel>
+#include <QElapsedTimer>
 
 #include "xheaderview.h"
 #include "xsortfilterproxymodel.h"
@@ -36,12 +37,12 @@ public:
     XTableView(QWidget *pParent = nullptr);
     ~XTableView();
 
-    void setCustomModel(QStandardItemModel *pModel, bool bFilterEnabled);
+    void setCustomModel(QAbstractItemModel *pModel, bool bFilterEnabled);
     XSortFilterProxyModel *getProxyModel();
     void setFilterEnabled(qint32 nColumn, bool bFilterEnabled);
 
 private:
-    void deleteOldModel(QStandardItemModel **g_ppOldModel);
+    void deleteOldModel(QAbstractItemModel **g_ppOldModel);
 
 private slots:
     void onFilterChanged();
@@ -51,8 +52,8 @@ private:
     bool g_bFilterEnabled;
     XHeaderView *g_pHeaderView;
     XSortFilterProxyModel *g_pSortFilterProxyModel;
-    QStandardItemModel *g_pOldModel;
-    QStandardItemModel *g_pModel;
+    QAbstractItemModel *g_pOldModel;
+    QAbstractItemModel *g_pModel;
 };
 
 #endif  // XTABLEVIEW_H
