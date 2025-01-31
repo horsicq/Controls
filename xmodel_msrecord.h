@@ -28,18 +28,46 @@
 class XModel_MSRecord : public QAbstractItemModel
 {
 public:
-    XModel_MSRecord(QVector<XBinary::MS_RECORD> *pListRecods, QObject *pParent = nullptr);
+    enum COLUMN {
+        COLUMN_NUMBER,
+        COLUMN_OFFSET,
+        COLUMN_ADDRESS,
+        COLUMN_REGION,
+        COLUMN_SIZE,
+        COLUMN_TYPE,
+        COLUMN_VALUE,
+        __COLUMN_SIZE
+    };
+
+    enum USERROLE {
+        USERROLE_SIZE = 0,
+        USERROLE_OFFSET,
+        USERROLE_ADDRESS,
+        USERROLE_TYPE
+    };
+
+
+    XModel_MSRecord(QIODevice *pDevice, const XBinary::_MEMORY_MAP &memoryMap, QVector<XBinary::MS_RECORD> *pListRecods, XBinary::MS_RECORD_TYPE msRecordType, QObject *pParent = nullptr);
 
     virtual QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
     virtual QModelIndex parent(const QModelIndex &child) const;
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
     virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
-    virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+    virtual QVariant data(const QModelIndex &index, int nRole = Qt::DisplayRole) const;
+    virtual QVariant headerData(int nSection, Qt::Orientation orientation, int nRole = Qt::DisplayRole) const;
+    qint32 getColumnSymbolSize(qint32 nColumn);
 
 private:
+    QIODevice *g_pDevice;
+    XBinary::_MEMORY_MAP g_memoryMap;
     QVector<XBinary::MS_RECORD> *g_pListRecords;
+    XBinary::MS_RECORD_TYPE g_msRecordType;
     qint32 g_nRowCount;
     qint32 g_nColumnCount;
+    qint32 g_nColumnWidths[__COLUMN_SIZE];
+    XBinary::MODE g_modeAddress;
+    XBinary::MODE g_modeOffset;
+    XBinary::MODE g_modeSize;
 };
 
 #endif // XMODEL_MSRECORD_H

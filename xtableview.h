@@ -29,6 +29,8 @@
 
 #include "xheaderview.h"
 #include "xsortfilterproxymodel.h"
+#include "xmodel_msrecord.h"
+#include "xoptions.h"
 
 class XTableView : public QTableView {
     Q_OBJECT
@@ -38,8 +40,10 @@ public:
     ~XTableView();
 
     void setCustomModel(QAbstractItemModel *pModel, bool bFilterEnabled);
+    void clear();
     XSortFilterProxyModel *getProxyModel();
     void setFilterEnabled(qint32 nColumn, bool bFilterEnabled);
+    void adjust();
 
 private:
     void deleteOldModel(QAbstractItemModel **g_ppOldModel);
