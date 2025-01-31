@@ -8,4 +8,6 @@ set(XTABLEVIEW_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/xheaderview.h
     ${CMAKE_CURRENT_LIST_DIR}/xsortfilterproxymodel.cpp
     ${CMAKE_CURRENT_LIST_DIR}/xsortfilterproxymodel.h
+    ${CMAKE_CURRENT_LIST_DIR}/xmodel_msrecord.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/xmodel_msrecord.h
     )
