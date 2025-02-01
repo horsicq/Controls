@@ -25,8 +25,7 @@
 #include "xbinary.h"
 #include <QAbstractItemModel>
 
-class XModel_MSRecord : public QAbstractItemModel
-{
+class XModel_MSRecord : public QAbstractItemModel {
 public:
     enum COLUMN {
         COLUMN_NUMBER,
@@ -46,8 +45,8 @@ public:
         USERROLE_TYPE
     };
 
-
-    XModel_MSRecord(QIODevice *pDevice, const XBinary::_MEMORY_MAP &memoryMap, QVector<XBinary::MS_RECORD> *pListRecods, XBinary::MS_RECORD_TYPE msRecordType, QObject *pParent = nullptr);
+    XModel_MSRecord(QIODevice *pDevice, const XBinary::_MEMORY_MAP &memoryMap, QVector<XBinary::MS_RECORD> *pListRecods, XBinary::MS_RECORD_TYPE msRecordType,
+                    QObject *pParent = nullptr);
 
     virtual QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
     virtual QModelIndex parent(const QModelIndex &child) const;
@@ -55,6 +54,7 @@ public:
     virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
     virtual QVariant data(const QModelIndex &index, int nRole = Qt::DisplayRole) const;
     virtual QVariant headerData(int nSection, Qt::Orientation orientation, int nRole = Qt::DisplayRole) const;
+    virtual void sort(int nColumn, Qt::SortOrder sortOrder = Qt::AscendingOrder);
     qint32 getColumnSymbolSize(qint32 nColumn);
 
 private:
@@ -67,7 +67,6 @@ private:
     qint32 g_nColumnWidths[__COLUMN_SIZE];
     XBinary::MODE g_modeAddress;
     XBinary::MODE g_modeOffset;
-    XBinary::MODE g_modeSize;
 };
 
-#endif // XMODEL_MSRECORD_H
+#endif  // XMODEL_MSRECORD_H

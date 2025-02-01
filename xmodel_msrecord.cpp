@@ -21,7 +21,9 @@
 
 #include "xmodel_msrecord.h"
 
-XModel_MSRecord::XModel_MSRecord(QIODevice *pDevice, const XBinary::_MEMORY_MAP &memoryMap, QVector<XBinary::MS_RECORD> *pListRecods, XBinary::MS_RECORD_TYPE msRecordType, QObject *pParent): QAbstractItemModel(pParent)
+XModel_MSRecord::XModel_MSRecord(QIODevice *pDevice, const XBinary::_MEMORY_MAP &memoryMap, QVector<XBinary::MS_RECORD> *pListRecods,
+                                 XBinary::MS_RECORD_TYPE msRecordType, QObject *pParent)
+    : QAbstractItemModel(pParent)
 {
     g_pDevice = pDevice;
     g_memoryMap = memoryMap;
@@ -31,31 +33,16 @@ XModel_MSRecord::XModel_MSRecord(QIODevice *pDevice, const XBinary::_MEMORY_MAP 
     g_nRowCount = pListRecods->count();
     g_nColumnCount = __COLUMN_SIZE;
 
-    {
-        XADDR nMaxAddress = 0;
-        qint64 nMaxOffset = 0;
-        qint64 nMaxSize = 0;
-
-        qint32 nNumberOfRecords = pListRecods->count();
-
-        for (qint32 i = 0; i < nNumberOfRecords; i++) {
-            nMaxAddress = qMax(nMaxAddress, pListRecods->at(i).nAddress);
-            nMaxOffset = qMax(nMaxOffset, pListRecods->at(i).nOffset);
-            nMaxSize = qMax(nMaxSize, pListRecods->at(i).nSize);
-        }
-
-        g_modeAddress = XBinary::getWidthModeFromSize(nMaxAddress);
-        g_modeOffset = XBinary::getWidthModeFromSize(nMaxOffset);
-        g_modeSize = XBinary::getWidthModeFromSize(nMaxSize);
-    }
+    g_modeAddress = XBinary::getWidthModeFromSize(memoryMap.nModuleAddress + memoryMap.nImageSize);
+    g_modeOffset = XBinary::getWidthModeFromSize(memoryMap.nBinarySize);
 
     g_nColumnWidths[COLUMN_NUMBER] = QString::number(pListRecods->count()).length();
-    g_nColumnWidths[COLUMN_OFFSET]=XBinary::getByteSizeFromWidthMode(g_modeOffset) * 2;
-    g_nColumnWidths[COLUMN_ADDRESS]= XBinary::getByteSizeFromWidthMode(g_modeAddress) * 2;
-    g_nColumnWidths[COLUMN_REGION]=1;
-    g_nColumnWidths[COLUMN_SIZE]= XBinary::getByteSizeFromWidthMode(g_modeSize) * 2;
-    g_nColumnWidths[COLUMN_TYPE]=1;
-    g_nColumnWidths[COLUMN_VALUE]=100;
+    g_nColumnWidths[COLUMN_OFFSET] = XBinary::getByteSizeFromWidthMode(g_modeOffset) * 2;
+    g_nColumnWidths[COLUMN_ADDRESS] = XBinary::getByteSizeFromWidthMode(g_modeAddress) * 2;
+    g_nColumnWidths[COLUMN_REGION] = 1;
+    g_nColumnWidths[COLUMN_SIZE] = 4;
+    g_nColumnWidths[COLUMN_TYPE] = 2;
+    g_nColumnWidths[COLUMN_VALUE] = 100;
 
     qint32 nNumberOfRegions = memoryMap.listRecords.count();
 
@@ -69,9 +56,8 @@ QModelIndex XModel_MSRecord::index(int row, int column, const QModelIndex &paren
 {
     QModelIndex result;
 
-    if(hasIndex(row, column, parent))
-    {
-        result=createIndex(row, column);
+    if (hasIndex(row, column, parent)) {
+        result = createIndex(row, column);
     }
 
     return result;
@@ -112,15 +98,15 @@ QVariant XModel_MSRecord::data(const QModelIndex &index, int nRole) const
                 if (nColumn == COLUMN_NUMBER) {
                     result = QString::number(nRow);
                 } else if (nColumn == COLUMN_OFFSET) {
-                    result = XBinary::valueToHex(g_pListRecords->at(nRow).nOffset);
+                    result = XBinary::valueToHex(g_modeOffset, g_pListRecords->at(nRow).nOffset);
                 } else if (nColumn == COLUMN_ADDRESS) {
-                    result = XBinary::valueToHex(g_pListRecords->at(nRow).nAddress);
+                    result = XBinary::valueToHex(g_modeAddress, g_pListRecords->at(nRow).nAddress);
                 } else if (nColumn == COLUMN_REGION) {
                     if (g_pListRecords->at(nRow).nRegionIndex >= 0) {
                         result = g_memoryMap.listRecords.at(g_pListRecords->at(nRow).nRegionIndex).sName;
                     }
                 } else if (nColumn == COLUMN_SIZE) {
-                    result = XBinary::valueToHex(g_pListRecords->at(nRow).nSize);
+                    result = QString::number(g_pListRecords->at(nRow).nSize, 16);
                 } else if (nColumn == COLUMN_TYPE) {
                     result = XBinary::msRecordTypeIdToString(g_pListRecords->at(nRow).recordType);
                 } else if (nColumn == COLUMN_VALUE) {
@@ -185,8 +171,12 @@ QVariant XModel_MSRecord::headerData(int nSection, Qt::Orientation orientation, 
     return result;
 }
 
+void XModel_MSRecord::sort(int nColumn, Qt::SortOrder sortOrder)
+{
+    QAbstractItemModel::sort(nColumn, sortOrder);
+}
+
 qint32 XModel_MSRecord::getColumnSymbolSize(qint32 nColumn)
 {
     return g_nColumnWidths[nColumn];
 }
-
