@@ -45,8 +45,11 @@ public:
         USERROLE_TYPE
     };
 
-    XModel_MSRecord(QIODevice *pDevice, const XBinary::_MEMORY_MAP &memoryMap, QVector<XBinary::MS_RECORD> *pListRecods, XBinary::MS_RECORD_TYPE msRecordType,
+    XModel_MSRecord(QIODevice *pDevice, const XBinary::_MEMORY_MAP &memoryMap, QVector<XBinary::MS_RECORD> *pListRecods, XBinary::VT valueType,
                     QObject *pParent = nullptr);
+
+    void setValue(XBinary::ENDIAN endian, XBinary::VT valueType, QVariant varValue);
+    void setSignaturesList(QList<XBinary::SIGNATUREDB_RECORD> *pListSignatureRecords);
 
     virtual QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
     virtual QModelIndex parent(const QModelIndex &child) const;
@@ -61,12 +64,16 @@ private:
     QIODevice *g_pDevice;
     XBinary::_MEMORY_MAP g_memoryMap;
     QVector<XBinary::MS_RECORD> *g_pListRecords;
-    XBinary::MS_RECORD_TYPE g_msRecordType;
     qint32 g_nRowCount;
     qint32 g_nColumnCount;
     qint32 g_nColumnWidths[__COLUMN_SIZE];
     XBinary::MODE g_modeAddress;
     XBinary::MODE g_modeOffset;
+    XBinary::ENDIAN g_endian;
+    QVariant g_varValue;
+    XBinary::VT g_valueType;
+    QString g_sValue;
+    QList<XBinary::SIGNATUREDB_RECORD> *g_pListSignatureRecords;
 };
 
 #endif  // XMODEL_MSRECORD_H
