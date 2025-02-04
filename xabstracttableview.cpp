@@ -75,7 +75,7 @@ XAbstractTableView::XAbstractTableView(QWidget *pParent) : XShortcutstScrollArea
     setSideDelta(3);
     // TODO Cursor off default !!! // TODO Check
 
-    installEventFilter(this);  // mb TODO move to setActive
+    //installEventFilter(this);  // mb TODO move to setActive
 }
 
 XAbstractTableView::~XAbstractTableView()
