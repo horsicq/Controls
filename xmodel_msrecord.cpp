@@ -133,7 +133,7 @@ QVariant XModel_MSRecord::data(const QModelIndex &index, int nRole) const
                         if (g_valueType == XBinary::VT_STRING) {
                             valueType = g_pListRecords->at(nRow).valueType;
                         }
-                        result = binary.read_valueString(valueType, g_pListRecords->at(nRow).nOffset, g_pListRecords->at(nRow).nSize, g_endian);
+                        result = binary.read_valueString(valueType, g_pListRecords->at(nRow).nOffset, g_pListRecords->at(nRow).nSize, g_endian == XBinary::ENDIAN_BIG);
                     } else if (g_valueType == XBinary::VT_SIGNATURE) {
                         if (g_pListSignatureRecords && (g_pListSignatureRecords->count() > g_pListRecords->at(nRow).nInfo)) {
                             result = g_pListSignatureRecords->at(g_pListRecords->at(nRow).nInfo).sName;
