@@ -36,9 +36,7 @@
 #include "xinfodb.h"
 #include "dialogsearchvalues.h"
 #include "dialogvisualization.h"
-#ifdef QT_SQL_LIB
 #include "dialogbookmarks.h"
-#endif
 
 class XDeviceTableView : public XAbstractTableView {
     Q_OBJECT
@@ -83,7 +81,7 @@ public:
 
     XDeviceTableView(QWidget *pParent = nullptr);
 
-    void setXInfoDB(XInfoDB *pXInfoDB);
+    void setXInfoDB(XInfoDB *pXInfoDB, QString sXInfoProfile);
     XInfoDB *getXInfoDB();
     void setDevice(QIODevice *pDevice);
     QIODevice *getDevice();
@@ -152,9 +150,7 @@ signals:
     void closeWidget_Multisearch();
     void closeWidget_Strings();
     void closeWidget_Visualization();
-#ifdef QT_SQL_LIB
     void closeWidget_Bookmarks();
-#endif
 #if defined(QT_SCRIPT_LIB) || defined(QT_QML_LIB)
     void closeWidget_Scripts();
 #endif
@@ -181,10 +177,8 @@ protected slots:
     void selectionChangedSlot();
     void changeLocationMode();
     void changeLocationBase();
-#ifdef QT_SQL_LIB
     void _bookmarkNew();
     void _bookmarkList();
-#endif
 
 public slots:
     void currentLocationChangedSlot(quint64 nLocation, qint32 nLocationType, qint64 nSize);
@@ -195,6 +189,7 @@ public slots:
 private:
     static const qint32 N_MAX_VISITED = 100;
     XInfoDB *g_pXInfoDB;
+    QString g_sXInfoProfile;
     QIODevice *g_pDevice;
     qint64 g_nViewSize;
     XBinary::_MEMORY_MAP g_memoryMap;

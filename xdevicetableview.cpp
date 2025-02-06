@@ -33,15 +33,14 @@ XDeviceTableView::XDeviceTableView(QWidget *pParent) : XAbstractTableView(pParen
     connect(this, SIGNAL(selectionChanged()), this, SLOT(selectionChangedSlot()));
 }
 
-void XDeviceTableView::setXInfoDB(XInfoDB *pXInfoDB)
+void XDeviceTableView::setXInfoDB(XInfoDB *pXInfoDB, QString sXInfoProfile)
 {
     g_pXInfoDB = pXInfoDB;
+    g_sXInfoProfile = sXInfoProfile;
 
-#ifdef QT_SQL_LIB
     if (pXInfoDB) {
         connect(g_pXInfoDB, SIGNAL(reloadViewSignal()), this, SLOT(reloadView()));
     }
-#endif
 }
 
 XInfoDB *XDeviceTableView::getXInfoDB()
@@ -842,7 +841,6 @@ void XDeviceTableView::changeLocationBase()
     }
 }
 
-#ifdef QT_SQL_LIB
 void XDeviceTableView::_bookmarkList()
 {
     if (getXInfoDB()) {
@@ -872,8 +870,6 @@ void XDeviceTableView::_bookmarkList()
         }
     }
 }
-#endif
-#ifdef QT_SQL_LIB
 void XDeviceTableView::_bookmarkNew()
 {
     if (getXInfoDB()) {
@@ -894,7 +890,6 @@ void XDeviceTableView::_bookmarkNew()
         getXInfoDB()->reloadView();
     }
 }
-#endif
 
 void XDeviceTableView::currentLocationChangedSlot(quint64 nLocation, qint32 nLocationType, qint64 nSize)
 {
