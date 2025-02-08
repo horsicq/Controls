@@ -21,8 +21,8 @@
 
 #include "xmodel_msrecord.h"
 
-XModel_MSRecord::XModel_MSRecord(QIODevice *pDevice, const XBinary::_MEMORY_MAP &memoryMap, QVector<XBinary::MS_RECORD> *pListRecods,
-                                 XBinary::VT valueType, QObject *pParent)
+XModel_MSRecord::XModel_MSRecord(QIODevice *pDevice, const XBinary::_MEMORY_MAP &memoryMap, QVector<XBinary::MS_RECORD> *pListRecods, XBinary::VT valueType,
+                                 QObject *pParent)
     : QAbstractItemModel(pParent)
 {
     g_pDevice = pDevice;
@@ -127,7 +127,8 @@ QVariant XModel_MSRecord::data(const QModelIndex &index, int nRole) const
                 } else if (nColumn == COLUMN_TYPE) {
                     result = XBinary::valueTypeToString(g_pListRecords->at(nRow).valueType);
                 } else if (nColumn == COLUMN_VALUE) {
-                    if ((g_valueType == XBinary::VT_STRING) || (g_valueType == XBinary::VT_ANSISTRING_I) || (g_valueType == XBinary::VT_UNICODESTRING_I) || (g_valueType == XBinary::VT_UTF8STRING_I)) {
+                    if ((g_valueType == XBinary::VT_STRING) || (g_valueType == XBinary::VT_ANSISTRING_I) || (g_valueType == XBinary::VT_UNICODESTRING_I) ||
+                        (g_valueType == XBinary::VT_UTF8STRING_I)) {
                         XBinary binary(g_pDevice);
                         XBinary::VT valueType = g_valueType;
                         if (g_valueType == XBinary::VT_STRING) {
