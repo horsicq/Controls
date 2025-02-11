@@ -83,6 +83,7 @@ public:
 
     void setXInfoDB(XInfoDB *pXInfoDB, QString sXInfoProfile);
     XInfoDB *getXInfoDB();
+    QString getXInfoProfile();
     void setDevice(QIODevice *pDevice);
     QIODevice *getDevice();
     void setViewSize(qint64 nViewSize);

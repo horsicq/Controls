@@ -48,6 +48,11 @@ XInfoDB *XDeviceTableView::getXInfoDB()
     return g_pXInfoDB;
 }
 
+QString XDeviceTableView::getXInfoProfile()
+{
+    return g_sXInfoProfile;
+}
+
 void XDeviceTableView::setDevice(QIODevice *pDevice)
 {
     g_pDevice = pDevice;
