@@ -26,6 +26,8 @@
 #include <QAbstractItemModel>
 
 class XModel_MSRecord : public QAbstractItemModel {
+    Q_OBJECT
+
 public:
     enum COLUMN {
         COLUMN_NUMBER,
