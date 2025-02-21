@@ -23,9 +23,9 @@
 #define XMODEL_MSRECORD_H
 
 #include "xbinary.h"
-#include <QAbstractItemModel>
+#include "xmodel.h"
 
-class XModel_MSRecord : public QAbstractItemModel {
+class XModel_MSRecord : public XModel {
     Q_OBJECT
 
 public:
@@ -60,7 +60,7 @@ public:
     virtual QVariant data(const QModelIndex &index, int nRole = Qt::DisplayRole) const;
     virtual QVariant headerData(int nSection, Qt::Orientation orientation, int nRole = Qt::DisplayRole) const;
     virtual void sort(int nColumn, Qt::SortOrder sortOrder = Qt::AscendingOrder);
-    qint32 getColumnSymbolSize(qint32 nColumn);
+    virtual qint32 getColumnSymbolSize(qint32 nColumn);
 
 private:
     QIODevice *g_pDevice;

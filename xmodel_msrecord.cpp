@@ -23,7 +23,7 @@
 
 XModel_MSRecord::XModel_MSRecord(QIODevice *pDevice, const XBinary::_MEMORY_MAP &memoryMap, QVector<XBinary::MS_RECORD> *pListRecods, XBinary::VT valueType,
                                  QObject *pParent)
-    : QAbstractItemModel(pParent)
+    : XModel(pParent)
 {
     g_pDevice = pDevice;
     g_memoryMap = memoryMap;

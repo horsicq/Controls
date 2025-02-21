@@ -112,13 +112,13 @@ void XTableView::setFilterEnabled(qint32 nColumn, bool bFilterEnabled)
 
 void XTableView::adjust()
 {
-    XModel_MSRecord *pMSModel = dynamic_cast<XModel_MSRecord *>(g_pModel);
+    XModel *pModel = dynamic_cast<XModel *>(g_pModel);
 
-    if (pMSModel) {
-        qint32 nNumberOfColumns = pMSModel->columnCount();
+    if (pModel) {
+        qint32 nNumberOfColumns = pModel->columnCount();
 
         for (qint32 i = 0; i < nNumberOfColumns; i++) {
-            qint32 nSymbolSize = pMSModel->getColumnSymbolSize(i);
+            qint32 nSymbolSize = pModel->getColumnSymbolSize(i);
 
             qint32 nWidth = XOptions::getControlWidth(this, nSymbolSize);
             setColumnWidth(i, nWidth);

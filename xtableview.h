@@ -29,7 +29,7 @@
 
 #include "xheaderview.h"
 #include "xsortfilterproxymodel.h"
-#include "xmodel_msrecord.h"
+#include "xmodel.h"
 #include "xoptions.h"
 
 class XTableView : public QTableView {
