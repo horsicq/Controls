@@ -24,8 +24,7 @@
 
 #include <QAbstractItemModel>
 
-class XModel: public QAbstractItemModel
-{
+class XModel : public QAbstractItemModel {
     Q_OBJECT
 
 public:
@@ -34,4 +33,4 @@ public:
     virtual qint32 getColumnSymbolSize(qint32 nColumn) = 0;
 };
 
-#endif // XMODEL_H
+#endif  // XMODEL_H

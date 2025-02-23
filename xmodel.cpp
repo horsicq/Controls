@@ -21,8 +21,6 @@
 
 #include "xmodel.h"
 
-
 XModel::XModel(QObject *pParent) : QAbstractItemModel(pParent)
 {
-
 }
