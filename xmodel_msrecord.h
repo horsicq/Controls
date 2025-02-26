@@ -59,7 +59,6 @@ public:
     virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
     virtual QVariant data(const QModelIndex &index, int nRole = Qt::DisplayRole) const;
     virtual QVariant headerData(int nSection, Qt::Orientation orientation, int nRole = Qt::DisplayRole) const;
-    virtual void sort(int nColumn, Qt::SortOrder sortOrder = Qt::AscendingOrder);
     virtual qint32 getColumnSymbolSize(qint32 nColumn);
 
 private:

@@ -39,7 +39,7 @@ XModel_MSRecord::XModel_MSRecord(QIODevice *pDevice, const XBinary::_MEMORY_MAP 
     g_modeAddress = XBinary::getWidthModeFromSize(memoryMap.nModuleAddress + memoryMap.nImageSize);
     g_modeOffset = XBinary::getWidthModeFromSize(memoryMap.nBinarySize);
 
-    g_nColumnWidths[COLUMN_NUMBER] = QString::number(pListRecods->count()).length();
+    g_nColumnWidths[COLUMN_NUMBER] = QString::number(g_nRowCount).length();
     g_nColumnWidths[COLUMN_OFFSET] = XBinary::getByteSizeFromWidthMode(g_modeOffset) * 2;
     g_nColumnWidths[COLUMN_ADDRESS] = XBinary::getByteSizeFromWidthMode(g_modeAddress) * 2;
     g_nColumnWidths[COLUMN_REGION] = 1;
@@ -233,11 +233,6 @@ QVariant XModel_MSRecord::headerData(int nSection, Qt::Orientation orientation, 
     }
 
     return result;
-}
-
-void XModel_MSRecord::sort(int nColumn, Qt::SortOrder sortOrder)
-{
-    QAbstractItemModel::sort(nColumn, sortOrder);
 }
 
 qint32 XModel_MSRecord::getColumnSymbolSize(qint32 nColumn)

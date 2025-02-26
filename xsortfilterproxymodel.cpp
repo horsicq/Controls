@@ -67,7 +67,7 @@ bool XSortFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &s
     return bResult;
 }
 
-// bool XSortFilterProxyModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
-// {
-
-// }
+bool XSortFilterProxyModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
+{
+    return QSortFilterProxyModel::lessThan(left, right);
+}

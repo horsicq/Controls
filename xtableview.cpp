@@ -120,8 +120,10 @@ void XTableView::adjust()
         for (qint32 i = 0; i < nNumberOfColumns; i++) {
             qint32 nSymbolSize = pModel->getColumnSymbolSize(i);
 
-            qint32 nWidth = XOptions::getControlWidth(this, nSymbolSize);
-            setColumnWidth(i, nWidth);
+            if (nSymbolSize != -1) {
+                qint32 nWidth = XOptions::getControlWidth(this, nSymbolSize);
+                setColumnWidth(i, nWidth);
+            }
         }
     }
 }
