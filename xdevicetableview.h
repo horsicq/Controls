@@ -81,9 +81,9 @@ public:
 
     XDeviceTableView(QWidget *pParent = nullptr);
 
-    void setXInfoDB(XInfoDB *pXInfoDB, QString sXInfoProfile);
+    void setXInfoDB(XInfoDB *pXInfoDB, XInfoDB::PROFILE profile);
     XInfoDB *getXInfoDB();
-    QString getXInfoProfile();
+    XInfoDB::PROFILE getXInfoProfile();
     void setDevice(QIODevice *pDevice);
     QIODevice *getDevice();
     void setViewSize(qint64 nViewSize);
@@ -190,7 +190,7 @@ public slots:
 private:
     static const qint32 N_MAX_VISITED = 100;
     XInfoDB *g_pXInfoDB;
-    QString g_sXInfoProfile;
+    XInfoDB::PROFILE g_profile;
     QIODevice *g_pDevice;
     qint64 g_nViewSize;
     XBinary::_MEMORY_MAP g_memoryMap;
