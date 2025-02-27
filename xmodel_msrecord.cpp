@@ -160,6 +160,8 @@ QVariant XModel_MSRecord::data(const QModelIndex &index, int nRole) const
                     } else if (g_valueType == XBinary::VT_SIGNATURE) {
                         if (g_pListSignatureRecords && (g_pListSignatureRecords->count() > g_pListRecords->at(nRow).nInfo)) {
                             result = g_pListSignatureRecords->at(g_pListRecords->at(nRow).nInfo).sName;
+                        } else {
+                            result = g_sValue;
                         }
                     } else {
                         result = g_sValue;
