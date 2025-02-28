@@ -35,7 +35,7 @@ public:
         COLUMN_ADDRESS,
         COLUMN_REGION,
         COLUMN_SIZE,
-        COLUMN_TYPE,
+        COLUMN_INFO,
         COLUMN_VALUE,
         __COLUMN_SIZE
     };

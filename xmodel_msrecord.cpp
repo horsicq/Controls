@@ -44,7 +44,7 @@ XModel_MSRecord::XModel_MSRecord(QIODevice *pDevice, const XBinary::_MEMORY_MAP 
     g_nColumnWidths[COLUMN_ADDRESS] = XBinary::getByteSizeFromWidthMode(g_modeAddress) * 2;
     g_nColumnWidths[COLUMN_REGION] = 1;
     g_nColumnWidths[COLUMN_SIZE] = 4;
-    g_nColumnWidths[COLUMN_TYPE] = 8;
+    g_nColumnWidths[COLUMN_INFO] = 8;
     g_nColumnWidths[COLUMN_VALUE] = 100;
 
     qint32 nNumberOfRegions = memoryMap.listRecords.count();
@@ -136,8 +136,20 @@ QVariant XModel_MSRecord::data(const QModelIndex &index, int nRole) const
                     }
                 } else if (nColumn == COLUMN_SIZE) {
                     result = QString::number(g_pListRecords->at(nRow).nSize, 16);
-                } else if (nColumn == COLUMN_TYPE) {
-                    result = XBinary::valueTypeToString((XBinary::VT)(g_pListRecords->at(nRow).nValueType));
+                } else if (nColumn == COLUMN_INFO) {
+                    if (g_valueType != XBinary::VT_SIGNATURE) {
+                        result = XBinary::valueTypeToString((XBinary::VT)(g_pListRecords->at(nRow).nValueType));
+                    } else {
+                        if (nColumn == COLUMN_INFO) {
+                            if (g_valueType == XBinary::VT_SIGNATURE) {
+                                if (g_pListSignatureRecords && (g_pListSignatureRecords->count() > g_pListRecords->at(nRow).nInfo)) {
+                                    if (g_pListSignatureRecords->at(g_pListRecords->at(nRow).nInfo).sPatch != "") {
+                                        result = tr("Patch");
+                                    }
+                                }
+                            }
+                        }
+                    }
                 } else if (nColumn == COLUMN_VALUE) {
                     if ((g_valueType == XBinary::VT_STRING) || (g_valueType == XBinary::VT_ANSISTRING_I) || (g_valueType == XBinary::VT_UNICODESTRING_I) ||
                         (g_valueType == XBinary::VT_UTF8STRING_I)) {
@@ -173,6 +185,16 @@ QVariant XModel_MSRecord::data(const QModelIndex &index, int nRole) const
                 } else {
                     result = (qint32)Qt::AlignVCenter + (qint32)Qt::AlignLeft;
                 }
+            // } else if (nRole == Qt::CheckStateRole) {
+            //     if (nColumn == COLUMN_INFO) {
+            //         if (g_valueType == XBinary::VT_SIGNATURE) {
+            //             if (g_pListSignatureRecords && (g_pListSignatureRecords->count() > g_pListRecords->at(nRow).nInfo)) {
+            //                 if (g_pListSignatureRecords->at(g_pListRecords->at(nRow).nInfo).sPatch != "") {
+            //                     result = Qt::Checked;
+            //                 }
+            //             }
+            //         }
+            //     }
             } else if (nRole == Qt::UserRole + USERROLE_ADDRESS) {
                 qint16 nRegionIndex = g_pListRecords->at(nRow).nRegionIndex;
                 if (nRegionIndex != -1) {
@@ -216,11 +238,18 @@ QVariant XModel_MSRecord::headerData(int nSection, Qt::Orientation orientation, 
                 result = tr("Region");
             } else if (nSection == COLUMN_SIZE) {
                 result = tr("Size");
-            } else if (nSection == COLUMN_TYPE) {
-                result = tr("Type");
+            } else if (nSection == COLUMN_INFO) {
+                // if (g_valueType == XBinary::VT_SIGNATURE) {
+                //     result = tr("Patch");
+                // } else {
+                //     result = tr("Info");
+                // }
+                result = tr("Info");
             } else if (nSection == COLUMN_VALUE) {
                 if (g_valueType == XBinary::VT_STRING) {
                     result = tr("String");
+                } else if (g_valueType == XBinary::VT_SIGNATURE) {
+                    result = tr("Signature");
                 } else {
                     result = tr("Value");
                 }
