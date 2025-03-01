@@ -185,16 +185,16 @@ QVariant XModel_MSRecord::data(const QModelIndex &index, int nRole) const
                 } else {
                     result = (qint32)Qt::AlignVCenter + (qint32)Qt::AlignLeft;
                 }
-            // } else if (nRole == Qt::CheckStateRole) {
-            //     if (nColumn == COLUMN_INFO) {
-            //         if (g_valueType == XBinary::VT_SIGNATURE) {
-            //             if (g_pListSignatureRecords && (g_pListSignatureRecords->count() > g_pListRecords->at(nRow).nInfo)) {
-            //                 if (g_pListSignatureRecords->at(g_pListRecords->at(nRow).nInfo).sPatch != "") {
-            //                     result = Qt::Checked;
-            //                 }
-            //             }
-            //         }
-            //     }
+                // } else if (nRole == Qt::CheckStateRole) {
+                //     if (nColumn == COLUMN_INFO) {
+                //         if (g_valueType == XBinary::VT_SIGNATURE) {
+                //             if (g_pListSignatureRecords && (g_pListSignatureRecords->count() > g_pListRecords->at(nRow).nInfo)) {
+                //                 if (g_pListSignatureRecords->at(g_pListRecords->at(nRow).nInfo).sPatch != "") {
+                //                     result = Qt::Checked;
+                //                 }
+                //             }
+                //         }
+                //     }
             } else if (nRole == Qt::UserRole + USERROLE_ADDRESS) {
                 qint16 nRegionIndex = g_pListRecords->at(nRow).nRegionIndex;
                 if (nRegionIndex != -1) {
