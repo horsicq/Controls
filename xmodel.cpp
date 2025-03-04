@@ -24,3 +24,10 @@
 XModel::XModel(QObject *pParent) : QAbstractItemModel(pParent)
 {
 }
+
+XModel::SORT_METHOD XModel::getSortMethod(qint32 nColumn)
+{
+    Q_UNUSED(nColumn)
+
+    return SORT_METHOD_DEFAULT;
+}

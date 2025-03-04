@@ -25,15 +25,33 @@ XSortFilterProxyModel::XSortFilterProxyModel(QObject *pParent) : QSortFilterProx
 {
 }
 
-void XSortFilterProxyModel::setFilters(const QList<QString> &listFilters)
+void XSortFilterProxyModel::setFilter(qint32 nColumn, const QString &sFilter)
 {
-    g_listFilters = listFilters;
+    g_mapFilters.insert(nColumn, sFilter);
+
     invalidateFilter();
+}
+
+void XSortFilterProxyModel::setSortMethod(qint32 nColumn, XModel::SORT_METHOD sortMethod)
+{
+    g_mapSortMethods.insert(nColumn, sortMethod);
 }
 
 void XSortFilterProxyModel::setSourceModel(QAbstractItemModel *sourceModel)
 {
-    g_listFilters.clear();
+    g_mapFilters.clear();
+
+    XModel *pModel = dynamic_cast<XModel *>(sourceModel);
+
+    if (pModel) {
+        qint32 nNumberOfColumns = pModel->columnCount();
+
+        for (qint32 i = 0; i < nNumberOfColumns; i++) {
+            XModel::SORT_METHOD sortMethod = pModel->getSortMethod(i);
+
+            setSortMethod(i, sortMethod);
+        }
+    }
 
     QSortFilterProxyModel::setSourceModel(sourceModel);
 }
@@ -47,16 +65,19 @@ bool XSortFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &s
 {
     bool bResult = true;
 
-    qint32 nCount = g_listFilters.count();
+    QList<qint32> listKeys = g_mapFilters.keys();
+
+    qint32 nCount = listKeys.count();
 
     for (qint32 i = 0; i < nCount; i++) {
-        if (g_listFilters.at(i) != "") {
+        QString sFilter = g_mapFilters.value(listKeys.at(i));
+        if (sFilter != "") {
             QModelIndex index = sourceModel()->index(sourceRow, i, sourceParent);
 
             if (index.isValid()) {
                 QString sValue = index.data().toString();
 
-                if (!sValue.contains(g_listFilters.at(i), Qt::CaseInsensitive)) {
+                if (!sValue.contains(sFilter, Qt::CaseInsensitive)) {
                     bResult = false;
                     break;
                 }
@@ -69,5 +90,26 @@ bool XSortFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &s
 
 bool XSortFilterProxyModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
 {
-    return QSortFilterProxyModel::lessThan(left, right);
+    bool bResult = false;
+
+    qint32 nColumn = left.column();
+
+    XModel::SORT_METHOD sortMethod = g_mapSortMethods.value(nColumn, XModel::SORT_METHOD_DEFAULT);
+
+    if(sortMethod==XModel::SORT_METHOD_HEX)
+    {
+        QString sLeft=left.data().toString();
+        QString sRight=right.data().toString();
+
+        sLeft=sLeft.remove(" ");
+        sRight=sRight.remove(" ");
+
+        bResult = sLeft.toULongLong(0,16)<sRight.toULongLong(0,16);
+    }
+    else
+    {
+        bResult = QSortFilterProxyModel::lessThan(left, right);
+    }
+
+    return bResult;
 }

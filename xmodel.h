@@ -28,9 +28,15 @@ class XModel : public QAbstractItemModel {
     Q_OBJECT
 
 public:
+    enum SORT_METHOD {
+        SORT_METHOD_DEFAULT,
+        SORT_METHOD_HEX,
+    };
+
     XModel(QObject *pParent);
 
     virtual qint32 getColumnSymbolSize(qint32 nColumn) = 0;
+    virtual SORT_METHOD getSortMethod(qint32 nColumn);
 };
 
 #endif  // XMODEL_H

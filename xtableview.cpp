@@ -132,7 +132,12 @@ void XTableView::onFilterChanged()
 {
     QList<QString> listFilters = g_pHeaderView->getFilters();
 
-    g_pSortFilterProxyModel->setFilters(listFilters);
+    qint32 nCount=listFilters.count();
+
+    for(int i=0;i<nCount;i++)
+    {
+        g_pSortFilterProxyModel->setFilter(i, listFilters.at(i));
+    }
 }
 
 void XTableView::horisontalScroll()
