@@ -60,6 +60,7 @@ public:
     virtual QVariant data(const QModelIndex &index, int nRole = Qt::DisplayRole) const;
     virtual QVariant headerData(int nSection, Qt::Orientation orientation, int nRole = Qt::DisplayRole) const;
     virtual qint32 getColumnSymbolSize(qint32 nColumn);
+    virtual SORT_METHOD getSortMethod(qint32 nColumn);
 
 private:
     QIODevice *g_pDevice;

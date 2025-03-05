@@ -270,3 +270,14 @@ qint32 XModel_MSRecord::getColumnSymbolSize(qint32 nColumn)
 {
     return g_nColumnWidths[nColumn];
 }
+
+XModel::SORT_METHOD XModel_MSRecord::getSortMethod(qint32 nColumn)
+{
+    SORT_METHOD result = SORT_METHOD_DEFAULT;
+
+    if ((nColumn == COLUMN_OFFSET) || (nColumn == COLUMN_OFFSET) || (nColumn == COLUMN_SIZE)) {
+        result = SORT_METHOD_HEX;
+    }
+
+    return result;
+}
