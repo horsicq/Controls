@@ -33,10 +33,9 @@ XDeviceTableView::XDeviceTableView(QWidget *pParent) : XAbstractTableView(pParen
     connect(this, SIGNAL(selectionChanged()), this, SLOT(selectionChangedSlot()));
 }
 
-void XDeviceTableView::setXInfoDB(XInfoDB *pXInfoDB, XInfoDB::PROFILE profile)
+void XDeviceTableView::setXInfoDB(XInfoDB *pXInfoDB)
 {
     g_pXInfoDB = pXInfoDB;
-    g_profile = profile;
 
     if (pXInfoDB) {
         connect(g_pXInfoDB, SIGNAL(reloadViewSignal()), this, SLOT(reloadView()));
@@ -46,11 +45,6 @@ void XDeviceTableView::setXInfoDB(XInfoDB *pXInfoDB, XInfoDB::PROFILE profile)
 XInfoDB *XDeviceTableView::getXInfoDB()
 {
     return g_pXInfoDB;
-}
-
-XInfoDB::PROFILE XDeviceTableView::getXInfoProfile()
-{
-    return g_profile;
 }
 
 void XDeviceTableView::setDevice(QIODevice *pDevice)
