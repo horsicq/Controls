@@ -96,18 +96,15 @@ bool XSortFilterProxyModel::lessThan(const QModelIndex &left, const QModelIndex 
 
     XModel::SORT_METHOD sortMethod = g_mapSortMethods.value(nColumn, XModel::SORT_METHOD_DEFAULT);
 
-    if(sortMethod==XModel::SORT_METHOD_HEX)
-    {
-        QString sLeft=left.data().toString();
-        QString sRight=right.data().toString();
+    if (sortMethod == XModel::SORT_METHOD_HEX) {
+        QString sLeft = left.data().toString();
+        QString sRight = right.data().toString();
 
-        sLeft=sLeft.remove(" ");
-        sRight=sRight.remove(" ");
+        sLeft = sLeft.remove(" ");
+        sRight = sRight.remove(" ");
 
-        bResult = sLeft.toULongLong(0,16)<sRight.toULongLong(0,16);
-    }
-    else
-    {
+        bResult = sLeft.toULongLong(0, 16) < sRight.toULongLong(0, 16);
+    } else {
         bResult = QSortFilterProxyModel::lessThan(left, right);
     }
 

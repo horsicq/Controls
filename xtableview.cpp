@@ -132,10 +132,9 @@ void XTableView::onFilterChanged()
 {
     QList<QString> listFilters = g_pHeaderView->getFilters();
 
-    qint32 nCount=listFilters.count();
+    qint32 nCount = listFilters.count();
 
-    for(int i=0;i<nCount;i++)
-    {
+    for (int i = 0; i < nCount; i++) {
         g_pSortFilterProxyModel->setFilter(i, listFilters.at(i));
     }
 }
