@@ -398,6 +398,11 @@ QVariant XLineEditHEX::_getValue()
     return g_vValue;
 }
 
+void XLineEditHEX::setMaxValue(qint64 nValue)
+{
+    g_validator.setMaxValue(nValue);
+}
+
 quint8 XLineEditHEX::getValue_uint8()
 {
     return (quint8)g_vValue.toUInt();

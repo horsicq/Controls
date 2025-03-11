@@ -23,11 +23,17 @@
 XLineEditValidator::XLineEditValidator(QObject *pParent) : QValidator(pParent)
 {
     g_mode = MODE_HEX_32;
+    g_nMaxValue = 0x7FFFFFFFFFFFFFFF;
 }
 
 void XLineEditValidator::setMode(XLineEditValidator::MODE mode)
 {
     g_mode = mode;
+}
+
+void XLineEditValidator::setMaxValue(qint64 nValue)
+{
+    g_nMaxValue = nValue;
 }
 
 XLineEditValidator::MODE XLineEditValidator::getMode()
@@ -84,6 +90,8 @@ QValidator::State XLineEditValidator::validate(QString &sInput, int &nPos) const
                 nMin = LONG_LONG_MIN;
 #endif
             }
+
+            nMax = qMin(g_nMaxValue, nMax);
 
             if (g_mode == MODE_HEX_8) {
                 nLenght = 2;

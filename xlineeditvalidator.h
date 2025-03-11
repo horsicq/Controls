@@ -56,6 +56,8 @@ public:
     void setMode(MODE mode);
     MODE getMode();
     virtual State validate(QString &sInput, int &nPos) const;
+    void setMaxValue(qint64 nValue);
+
     static quint64 binStringToValue(const QString &sString, bool *pbSuccess = 0);
     static QString value8ToBinString(quint8 nValue);
     static QString value16ToBinString(quint16 nValue);
@@ -67,6 +69,7 @@ public:
 
 private:
     MODE g_mode;
+    qint64 g_nMaxValue;
 };
 
 #endif  // XLINEEDITVALIDATOR_H
