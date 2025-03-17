@@ -41,7 +41,7 @@ public:
     void setFilterEnabled(qint32 nColumn, bool bFilterEnabled);
 
 private slots:
-    void _textChanged(QString sText);
+    void _textChanged(const QString &sText);
     void onSectionResized(int i, int nOldSize, int nNewSize);
 
 signals:

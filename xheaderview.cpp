@@ -116,7 +116,7 @@ void XHeaderView::setFilterEnabled(qint32 nColumn, bool bFilterEnabled)
     }
 }
 
-void XHeaderView::_textChanged(QString sText)
+void XHeaderView::_textChanged(const QString &sText)
 {
     Q_UNUSED(sText)
 
