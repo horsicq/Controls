@@ -35,7 +35,7 @@ public:
     QSize sizeHint() const override;
     void setNumberOfFilters(qint32 nNumberOfFilters);
     void clearFilters();
-    void updateGeometries();
+    void updateGeometries() override;
     void adjustPositions();
     QList<QString> getFilters();
     void setFilterEnabled(qint32 nColumn, bool bFilterEnabled);
