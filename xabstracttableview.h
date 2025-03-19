@@ -105,7 +105,7 @@ public:
     qint32 getColumnWidth(qint32 nNumber);
 
     void reload(bool bUpdateData = false);
-    virtual void reloadData(bool bSaveSelection);
+    virtual void reloadData(bool bSaveSelection) override;
 
     void setTextFont(const QFont &font);
     QFont getTextFont();
