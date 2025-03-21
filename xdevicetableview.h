@@ -80,14 +80,15 @@ public:
     };
 
     XDeviceTableView(QWidget *pParent = nullptr);
+    ~XDeviceTableView();
 
     void setXInfoDB(XInfoDB *pXInfoDB);
     XInfoDB *getXInfoDB();
     void setDevice(QIODevice *pDevice);
     QIODevice *getDevice();
+    void setInfoMode(XBinary::FT fileType, XBinary::DM disasmMode);
     void setViewSize(qint64 nViewSize);
     qint64 getViewSize();
-    void setMemoryMap(const XBinary::_MEMORY_MAP &memoryMap);
     XBinary::_MEMORY_MAP *getMemoryMap();
     void setLocationMode(LOCMODE locationMode);
     LOCMODE getlocationMode();
@@ -188,16 +189,19 @@ public slots:
 
 private:
     static const qint32 N_MAX_VISITED = 100;
+    XInfoDB g_emptyXInfoDB;
     XInfoDB *g_pXInfoDB;
     QIODevice *g_pDevice;
     qint64 g_nViewSize;
-    XBinary::_MEMORY_MAP g_memoryMap;
     XBinary::SEARCHDATA g_searchData;
     LOCMODE g_locationMode;
     qint32 g_nLocationBase;
     QList<qint64> g_listVisited;
     qint32 g_nVisitedIndex;
     QSet<VIEWWIDGET> g_stViewWidgetState;
+    XBinary::FT g_fileType;
+    XBinary::DM g_disasmMode;
+    XInfoDB::MODE g_infoMode;
 };
 
 #endif  // XDEVICETABLEVIEW_H

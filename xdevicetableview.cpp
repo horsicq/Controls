@@ -29,16 +29,27 @@ XDeviceTableView::XDeviceTableView(QWidget *pParent) : XAbstractTableView(pParen
     g_locationMode = LOCMODE_ADDRESS;
     g_nLocationBase = 16;
     g_nVisitedIndex = 0;
+    g_fileType = XBinary::FT_UNKNOWN;
+    g_disasmMode = XBinary::DM_UNKNOWN;
+    g_infoMode = XInfoDB::MODE_UNKNOWN;
 
     connect(this, SIGNAL(selectionChanged()), this, SLOT(selectionChangedSlot()));
+    setXInfoDB(&g_emptyXInfoDB);
+}
+
+XDeviceTableView::~XDeviceTableView()
+{
+    // TODO Check
 }
 
 void XDeviceTableView::setXInfoDB(XInfoDB *pXInfoDB)
 {
-    g_pXInfoDB = pXInfoDB;
+    if (g_pXInfoDB != pXInfoDB) {
+        g_pXInfoDB = pXInfoDB;
 
-    if (pXInfoDB) {
-        connect(g_pXInfoDB, SIGNAL(reloadViewSignal()), this, SLOT(reloadView()));
+        if (pXInfoDB) {
+            connect(g_pXInfoDB, SIGNAL(reloadViewSignal()), this, SLOT(reloadView()));
+        }
     }
 }
 
@@ -67,6 +78,14 @@ QIODevice *XDeviceTableView::getDevice()
     return g_pDevice;
 }
 
+void XDeviceTableView::setInfoMode(XBinary::FT fileType, XBinary::DM disasmMode)
+{
+    g_fileType = fileType;
+    g_disasmMode = disasmMode;
+
+    // g_pXInfoDB->setMode(fileType, disasmMode);
+}
+
 void XDeviceTableView::setViewSize(qint64 nViewSize)
 {
     g_nViewSize = nViewSize;
@@ -77,19 +96,11 @@ qint64 XDeviceTableView::getViewSize()
     return g_nViewSize;
 }
 
-void XDeviceTableView::setMemoryMap(const XBinary::_MEMORY_MAP &memoryMap)
-{
-    if (memoryMap.fileType == XBinary::FT_UNKNOWN) {
-        XBinary binary(getDevice());
-        g_memoryMap = binary.getMemoryMap();
-    }
-
-    g_memoryMap = memoryMap;
-}
-
 XBinary::_MEMORY_MAP *XDeviceTableView::getMemoryMap()
 {
-    return &g_memoryMap;
+    XBinary::PDSTRUCT pdStructEmpty = XBinary::createPdStruct();
+
+    return &(g_pXInfoDB->getState(g_infoMode)->memoryMap);
 }
 
 void XDeviceTableView::setLocationMode(XDeviceTableView::LOCMODE locationMode)
