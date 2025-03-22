@@ -42,6 +42,13 @@ class XDeviceTableView : public XAbstractTableView {
     Q_OBJECT
 
 public:
+    struct VIEWSTRUCT {
+        qint64 nViewPos;
+        XADDR nAddress;
+        qint64 nOffset;
+        qint64 nSize;
+    };
+
     enum LOCMODE {
         LOCMODE_OFFSET = 0,
         LOCMODE_ADDRESS,
@@ -84,9 +91,9 @@ public:
 
     void setXInfoDB(XInfoDB *pXInfoDB);
     XInfoDB *getXInfoDB();
-    void setDevice(QIODevice *pDevice);
+    void setMode(XBinary::FT fileType, XBinary::DM disasmMode);
+    void setDevice(QIODevice *pDevice, qint64 nStartOffset, qint64 nTotalSize);
     QIODevice *getDevice();
-    void setInfoMode(XBinary::FT fileType, XBinary::DM disasmMode);
     void setViewSize(qint64 nViewSize);
     qint64 getViewSize();
     XBinary::_MEMORY_MAP *getMemoryMap();
@@ -107,10 +114,10 @@ public:
     bool saveBackup();
     void adjustAfterAnalysis();  // TODO Check mb remove
     virtual DEVICESTATE getDeviceState(bool bGlobalOffset = false);
-    virtual void setDeviceState(const DEVICESTATE &deviceState, bool bGlobalOffset = false);
-    virtual qint64 deviceOffsetToViewPos(qint64 nOffset, bool bGlobalOffset = false);
-    virtual qint64 deviceSizeToViewSize(qint64 nOffset, qint64 nSize, bool bGlobalOffset = false);  // TODO mb remove
-    virtual qint64 viewPosToDeviceOffset(qint64 nViewPos, bool bGlobalOffset = false);
+    virtual void setDeviceState(const DEVICESTATE &deviceState, bool bGlobalOffset);
+    qint64 deviceOffsetToViewPos(qint64 nOffset);
+    qint64 deviceSizeToViewSize(qint64 nOffset, qint64 nSize);  // TODO mb remove
+    qint64 viewPosToDeviceOffset(qint64 nViewPos);
     void setDeviceSelection(qint64 nOffset, qint64 nSize);
     virtual qint64 deviceOffsetToGlobal(qint64 nDeviceOffset);
     bool isPrevVisitedAvailable();
@@ -128,6 +135,11 @@ public:
 
     void dumpMemory(const QString &sDumpName, qint64 nOffset = 0, qint64 nSize = -1);
     virtual void setLocation(quint64 nLocation, qint32 nLocationType, qint64 nSize);
+
+    VIEWSTRUCT _getViewStructByOffset(qint64 nOffset);
+    VIEWSTRUCT _getViewStructByAddress(XADDR nAddress);
+    // VIEWSTRUCT _getViewStructByScroll(qint64 nValue);
+    VIEWSTRUCT _getViewStructByViewPos(qint64 nViewPos);
 
 public slots:
     void setEdited(qint64 nDeviceOffset, qint64 nDeviceSize);
@@ -192,6 +204,8 @@ private:
     XInfoDB g_emptyXInfoDB;
     XInfoDB *g_pXInfoDB;
     QIODevice *g_pDevice;
+    qint64 g_nStartOffset;
+    qint64 g_nTotalSize;
     qint64 g_nViewSize;
     XBinary::SEARCHDATA g_searchData;
     LOCMODE g_locationMode;
@@ -201,7 +215,8 @@ private:
     QSet<VIEWWIDGET> g_stViewWidgetState;
     XBinary::FT g_fileType;
     XBinary::DM g_disasmMode;
-    XInfoDB::MODE g_infoMode;
+    XBinary::_MEMORY_MAP g_memoryMap;
+    QList<VIEWSTRUCT> g_listViewStruct;
 };
 
 #endif  // XDEVICETABLEVIEW_H

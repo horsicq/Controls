@@ -29,22 +29,16 @@ void XDeviceTableEditView::_editHex()
     if (!isReadonly()) {
         DEVICESTATE state = getDeviceState();
 
-        SubDevice sd(getDevice(), state.nSelectionDeviceOffset, state.nSelectionSize);
+        DialogHexEdit dialogHexEdit(this);
+        dialogHexEdit.setGlobal(getShortcuts(), getGlobalOptions());
 
-        if (sd.open(QIODevice::ReadWrite)) {
-            DialogHexEdit dialogHexEdit(this);
-            dialogHexEdit.setGlobal(getShortcuts(), getGlobalOptions());
+        //        connect(&dialogHexEdit,SIGNAL(changed()),this,SLOT(_setEdited()));
 
-            //        connect(&dialogHexEdit,SIGNAL(changed()),this,SLOT(_setEdited()));
+        dialogHexEdit.setData(getDevice(), state.nSelectionDeviceOffset, state.nSelectionSize);
 
-            dialogHexEdit.setData(&sd, state.nSelectionDeviceOffset);
+        dialogHexEdit.exec();
 
-            dialogHexEdit.exec();
-
-            _setEdited(state.nSelectionDeviceOffset, state.nSelectionSize);
-
-            sd.close();
-        }
+        _setEdited(state.nSelectionDeviceOffset, state.nSelectionSize);
     }
 }
 
