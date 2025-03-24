@@ -435,6 +435,11 @@ void XDeviceTableView::setLocation(quint64 nLocation, qint32 nLocationType, qint
     setLocationOffset(nLocation, (XBinary::LT)nLocationType, nSize);
 }
 
+XDisasmCore *XDeviceTableView::getDisasmCore()
+{
+    return &g_disasmCore;
+}
+
 XDeviceTableView::VIEWSTRUCT XDeviceTableView::_getViewStructByViewPos(qint64 nViewPos)
 {
     VIEWSTRUCT result = {};

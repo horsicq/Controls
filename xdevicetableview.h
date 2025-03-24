@@ -37,6 +37,7 @@
 #include "dialogsearchvalues.h"
 #include "dialogvisualization.h"
 #include "dialogbookmarks.h"
+#include "xcapstone.h"
 
 class XDeviceTableView : public XAbstractTableView {
     Q_OBJECT
@@ -141,6 +142,8 @@ public:
     // VIEWSTRUCT _getViewStructByScroll(qint64 nValue);
     VIEWSTRUCT _getViewStructByViewPos(qint64 nViewPos);
 
+    XDisasmCore *getDisasmCore();
+
 public slots:
     void setEdited(qint64 nDeviceOffset, qint64 nDeviceSize);
     void _goToAddressSlot();
@@ -217,6 +220,7 @@ private:
     XBinary::DM g_disasmMode;
     XBinary::_MEMORY_MAP g_memoryMap;
     QList<VIEWSTRUCT> g_listViewStruct;
+    XDisasmCore g_disasmCore;
 };
 
 #endif  // XDEVICETABLEVIEW_H
