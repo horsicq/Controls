@@ -92,7 +92,7 @@ public:
 
     void setXInfoDB(XInfoDB *pXInfoDB);
     XInfoDB *getXInfoDB();
-    void setMode(XBinary::FT fileType, XBinary::DM disasmMode);
+    void setMode(XBinary::FT fileType, XBinary::DM disasmMode, bool bShowVirtual);
     void setDevice(QIODevice *pDevice, qint64 nStartOffset, qint64 nTotalSize);
     QIODevice *getDevice();
     void setViewSize(qint64 nViewSize);
@@ -114,13 +114,12 @@ public:
     bool isEdited();
     bool saveBackup();
     void adjustAfterAnalysis();  // TODO Check mb remove
-    virtual DEVICESTATE getDeviceState(bool bGlobalOffset = false);
-    virtual void setDeviceState(const DEVICESTATE &deviceState, bool bGlobalOffset);
+    virtual DEVICESTATE getDeviceState();
+    virtual void setDeviceState(const DEVICESTATE &deviceState);
     qint64 deviceOffsetToViewPos(qint64 nOffset);
-    qint64 deviceSizeToViewSize(qint64 nOffset, qint64 nSize);  // TODO mb remove
     qint64 viewPosToDeviceOffset(qint64 nViewPos);
+    XADDR viewPosToAddress(qint64 nViewPos);
     void setDeviceSelection(qint64 nOffset, qint64 nSize);
-    virtual qint64 deviceOffsetToGlobal(qint64 nDeviceOffset);
     bool isPrevVisitedAvailable();
     bool isNextVisitedAvailable();
     void goToNextVisited();
