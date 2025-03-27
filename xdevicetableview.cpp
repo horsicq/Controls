@@ -64,6 +64,8 @@ void XDeviceTableView::setMode(XBinary::FT fileType, XBinary::DM disasmMode, boo
     g_fileType = fileType;
     g_disasmMode = disasmMode;
 
+    g_disasmCore.setMode(disasmMode);
+
     g_memoryMap = XFormats::getMemoryMap(fileType, XBinary::MAPMODE_UNKNOWN, g_pDevice);
 
     qint64 nViewPos = 0;
