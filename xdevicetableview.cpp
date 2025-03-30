@@ -611,7 +611,7 @@ void XDeviceTableView::setSelectionOffset(qint64 nOffset, qint64 nSize)
 {
     if (nOffset != -1) {
         qint64 nViewPos = deviceOffsetToViewPos(nOffset);
-        qint64 nViewSize =nSize;
+        qint64 nViewSize = nSize;
 
         _initSetSelection(nViewPos, nViewSize);
         viewport()->update();  // TODO Check
