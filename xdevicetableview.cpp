@@ -70,6 +70,14 @@ void XDeviceTableView::setMode(XBinary::FT fileType, XBinary::DM disasmMode, boo
 
     qint64 nViewPos = 0;
 
+    bool bAll = false;
+
+    if (g_pDevice) {
+        if ((g_nStartOffset == 0) && (g_nTotalSize == g_pDevice->size())) {
+            bAll = true;
+        }
+    }
+
     g_listViewStruct.clear();
 
     qint32 nNumberOfRecords = getMemoryMap()->listRecords.count();
@@ -96,25 +104,29 @@ void XDeviceTableView::setMode(XBinary::FT fileType, XBinary::DM disasmMode, boo
         }
 
         // Add if g_nStartOffset and qint64 g_nTotalSize in this viewStruct
-        if (g_nTotalSize != -1) {
-            if (record.nOffset >= g_nStartOffset && (record.nOffset + record.nSize <= g_nStartOffset + g_nTotalSize)) {
-                bAdd = true;
-            } else {
-                bAdd = false;
+        if (!bAll) {
+            if (record.nOffset != -1) {
+                if (record.nOffset >= g_nStartOffset && (record.nOffset + record.nSize <= g_nStartOffset + g_nTotalSize)) {
+                    bAdd = true;
+                } else {
+                    bAdd = false;
+                }
             }
         }
 
         // Add if g_nStartOffset and qint64 g_nTotalSize partially in this viewStruct, correct nAddress, nOffset, nSize
-        if (g_nTotalSize != -1) {
-            if (record.nOffset < g_nStartOffset && (record.nOffset + record.nSize > g_nStartOffset)) {
-                record.nAddress += g_nStartOffset - record.nOffset;
-                record.nOffset = g_nStartOffset;
-                record.nSize -= g_nStartOffset - record.nOffset;
-                bAdd = true;
-            }
-            if (record.nOffset < g_nStartOffset + g_nTotalSize && (record.nOffset + record.nSize > g_nStartOffset + g_nTotalSize)) {
-                record.nSize = g_nStartOffset + g_nTotalSize - record.nOffset;
-                bAdd = true;
+        if (!bAll) {
+            if (record.nOffset != -1) {
+                if (record.nOffset < g_nStartOffset && (record.nOffset + record.nSize > g_nStartOffset)) {
+                    record.nAddress += g_nStartOffset - record.nOffset;
+                    record.nOffset = g_nStartOffset;
+                    record.nSize -= g_nStartOffset - record.nOffset;
+                    bAdd = true;
+                }
+                if (record.nOffset < g_nStartOffset + g_nTotalSize && (record.nOffset + record.nSize > g_nStartOffset + g_nTotalSize)) {
+                    record.nSize = g_nStartOffset + g_nTotalSize - record.nOffset;
+                    bAdd = true;
+                }
             }
         }
 
