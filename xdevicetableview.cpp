@@ -402,7 +402,7 @@ void XDeviceTableView::clearVisited()
     g_listVisited.clear();
 }
 
-QList<XDeviceTableView::HIGHLIGHTREGION> XDeviceTableView::_convertBookmarksToHighlightRegion(QList<XInfoDB::BOOKMARKRECORD> *pList)
+QList<XDeviceTableView::HIGHLIGHTREGION> XDeviceTableView::_convertBookmarksToHighlightRegion(QVector<XInfoDB::BOOKMARKRECORD> *pList)
 {
     QList<HIGHLIGHTREGION> listResult;
 
@@ -414,7 +414,7 @@ QList<XDeviceTableView::HIGHLIGHTREGION> XDeviceTableView::_convertBookmarksToHi
         record.nLocation = pList->at(i).nLocation;
         record.locationType = pList->at(i).locationType;
         record.nSize = pList->at(i).nSize;
-        record.colBackground = pList->at(i).colBackground;
+        record.colBackground = XOptions::stringToColor(pList->at(i).sColorBackground);
         record.colBackgroundSelected = getColorSelected(record.colBackground);
         record.sComment = pList->at(i).sComment;
 
@@ -990,7 +990,7 @@ void XDeviceTableView::_bookmarkNew()
             QString("%1 - %2").arg(QString::number(state.nSelectionDeviceOffset, 16), QString::number(state.nSelectionDeviceOffset + state.nSelectionSize, 16));
 
         XInfoDB::BOOKMARKRECORD record = {};
-        record.colBackground = QColor(Qt::yellow);
+        record.sColorBackground = QColor(Qt::yellow).name();
         record.nLocation = state.nSelectionDeviceOffset;
         record.locationType = XBinary::LT_OFFSET;
         record.nSize = state.nSelectionSize;

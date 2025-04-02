@@ -127,7 +127,7 @@ public:
     void addVisited(qint64 nViewPos);
     void clearVisited();
 
-    static QList<HIGHLIGHTREGION> _convertBookmarksToHighlightRegion(QList<XInfoDB::BOOKMARKRECORD> *pList);
+    static QList<HIGHLIGHTREGION> _convertBookmarksToHighlightRegion(QVector<XInfoDB::BOOKMARKRECORD> *pList);
     static QList<HIGHLIGHTREGION> getHighlightRegion(QList<HIGHLIGHTREGION> *pList, quint64 nLocation, XBinary::LT locationType);
 
     void setViewWidgetState(VIEWWIDGET viewWidget, bool bState);
