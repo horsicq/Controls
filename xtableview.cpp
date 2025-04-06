@@ -134,7 +134,7 @@ void XTableView::onFilterChanged()
 
     qint32 nCount = listFilters.count();
 
-    for (int i = 0; i < nCount; i++) {
+    for (qint32 i = 0; i < nCount; i++) {
         g_pSortFilterProxyModel->setFilter(i, listFilters.at(i));
     }
 }
