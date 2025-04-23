@@ -130,13 +130,28 @@ void XTableView::adjust()
 
 void XTableView::onFilterChanged()
 {
+#ifdef QT_DEBUG
+    // Elapsed time
+    QElapsedTimer timer;
+    timer.start();
+    qDebug("onFilterChanged START");
+#endif
+
     QList<QString> listFilters = g_pHeaderView->getFilters();
 
-    qint32 nCount = listFilters.count();
+    g_pSortFilterProxyModel->setFilters(listFilters);
 
-    for (qint32 i = 0; i < nCount; i++) {
-        g_pSortFilterProxyModel->setFilter(i, listFilters.at(i));
+    if (g_bFilterEnabled) {
+        g_pSortFilterProxyModel->invalidate();
     }
+
+#ifdef QT_DEBUG
+    qDebug("onFilterChanged Elapsed time: %lld ms", timer.elapsed());
+    // 16266 ms
+    // 16342
+    //
+    //
+#endif
 }
 
 void XTableView::horisontalScroll()

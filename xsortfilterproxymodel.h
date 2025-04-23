@@ -28,7 +28,7 @@
 class XSortFilterProxyModel : public QSortFilterProxyModel {
 public:
     explicit XSortFilterProxyModel(QObject *pParent = nullptr);
-    void setFilter(qint32 nColumn, const QString &sFilter);
+    void setFilters(const QList<QString> &listFilters);
     void setSortMethod(qint32 nColumn, XModel::SORT_METHOD sortMethod);
     void setSourceModel(QAbstractItemModel *sourceModel) override;
     QVariant data(const QModelIndex &index, int nRole = Qt::DisplayRole) const override;
@@ -38,7 +38,7 @@ protected:
     bool lessThan(const QModelIndex &left, const QModelIndex &right) const override;
 
 private:
-    QMap<qint32, QString> g_mapFilters;
+    QList<QString> g_listFilters;
     QMap<qint32, XModel::SORT_METHOD> g_mapSortMethods;
 };
 

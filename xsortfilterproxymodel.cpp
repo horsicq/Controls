@@ -25,11 +25,9 @@ XSortFilterProxyModel::XSortFilterProxyModel(QObject *pParent) : QSortFilterProx
 {
 }
 
-void XSortFilterProxyModel::setFilter(qint32 nColumn, const QString &sFilter)
+void XSortFilterProxyModel::setFilters(const QList<QString> &listFilters)
 {
-    g_mapFilters.insert(nColumn, sFilter);
-
-    invalidateFilter();
+    g_listFilters = listFilters;
 }
 
 void XSortFilterProxyModel::setSortMethod(qint32 nColumn, XModel::SORT_METHOD sortMethod)
@@ -39,7 +37,7 @@ void XSortFilterProxyModel::setSortMethod(qint32 nColumn, XModel::SORT_METHOD so
 
 void XSortFilterProxyModel::setSourceModel(QAbstractItemModel *sourceModel)
 {
-    g_mapFilters.clear();
+    g_listFilters.clear();
 
     XModel *pModel = dynamic_cast<XModel *>(sourceModel);
 
@@ -65,17 +63,15 @@ bool XSortFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &s
 {
     bool bResult = true;
 
-    QList<qint32> listKeys = g_mapFilters.keys();
-
-    qint32 nCount = listKeys.count();
+    qint32 nCount = g_listFilters.count();
 
     for (qint32 i = 0; i < nCount; i++) {
-        QString sFilter = g_mapFilters.value(listKeys.at(i));
+        QString sFilter = g_listFilters.at(i);
         if (sFilter != "") {
             QModelIndex index = sourceModel()->index(sourceRow, i, sourceParent);
 
             if (index.isValid()) {
-                QString sValue = index.data().toString();
+                QString sValue = sourceModel()->data(index).toString();
 
                 if (!sValue.contains(sFilter, Qt::CaseInsensitive)) {
                     bResult = false;
