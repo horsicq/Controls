@@ -23,6 +23,7 @@
 XHeaderView::XHeaderView(QWidget *pParent) : QHeaderView(Qt::Horizontal, pParent)
 {
     connect(this, SIGNAL(sectionResized(int, int, int)), this, SLOT(onSectionResized(int, int, int)));
+    connect(this, SIGNAL(sectionClicked(int)), this, SLOT(onSectionClicked(int)));
 
     setSectionsClickable(true);
 }
@@ -130,4 +131,17 @@ void XHeaderView::onSectionResized(int i, int nOldSize, int nNewSize)
     Q_UNUSED(nNewSize)
 
     adjustPositions();
+}
+
+void XHeaderView::onSectionClicked(int logicalIndex)
+{
+    Qt::SortOrder sortOrder = sortIndicatorOrder();
+
+    if (sortIndicatorSection() == logicalIndex) {
+        sortOrder = (sortOrder == Qt::AscendingOrder) ? Qt::DescendingOrder : Qt::AscendingOrder;
+    } else {
+        sortOrder = Qt::AscendingOrder;
+    }
+
+    emit sortIndicatorChanged(logicalIndex, sortOrder);
 }

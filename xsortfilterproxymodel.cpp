@@ -59,6 +59,11 @@ QVariant XSortFilterProxyModel::data(const QModelIndex &index, int nRole) const
     return QSortFilterProxyModel::data(index, nRole);
 }
 
+void XSortFilterProxyModel::sort(int column, Qt::SortOrder order)
+{
+    QSortFilterProxyModel::sort(column, order);
+}
+
 bool XSortFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
 {
     bool bResult = true;

@@ -50,10 +50,11 @@ private:
 
 private slots:
     void onFilterChanged();
+    void onSortChanged(int column, Qt::SortOrder order);
     void horisontalScroll();
 
 private:
-    bool g_bFilterEnabled;
+    // bool g_bFilterEnabled;
     XHeaderView *g_pHeaderView;
     XSortFilterProxyModel *g_pSortFilterProxyModel;
     QAbstractItemModel *g_pOldModel;

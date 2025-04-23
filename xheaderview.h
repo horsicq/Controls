@@ -43,6 +43,7 @@ public:
 private slots:
     void _textChanged(const QString &sText);
     void onSectionResized(int i, int nOldSize, int nNewSize);
+    void onSectionClicked(int logicalIndex);
 
 signals:
     void filterChanged();
