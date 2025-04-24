@@ -54,7 +54,6 @@ private slots:
     void horisontalScroll();
 
 private:
-    // bool g_bFilterEnabled;
     XHeaderView *g_pHeaderView;
     XSortFilterProxyModel *g_pSortFilterProxyModel;
     QAbstractItemModel *g_pOldModel;

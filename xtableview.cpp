@@ -22,7 +22,6 @@
 
 XTableView::XTableView(QWidget *pParent) : QTableView(pParent)
 {
-    // g_bFilterEnabled = false;
     g_pOldModel = nullptr;
     g_pModel = nullptr;
     g_pHeaderView = new XHeaderView(this);
@@ -45,7 +44,6 @@ XTableView::~XTableView()
 void XTableView::setCustomModel(QAbstractItemModel *pModel, bool bFilterEnabled)
 {
     // TODO Stretch last section
-    // g_bFilterEnabled = bFilterEnabled;
     g_pOldModel = g_pModel;
 
     if (g_pOldModel) {
@@ -141,10 +139,8 @@ void XTableView::onFilterChanged()
 
     g_pSortFilterProxyModel->setFilters(listFilters);
 
-    // if (g_bFilterEnabled) {
-        // TODO Thread
-        g_pSortFilterProxyModel->invalidate();
-    // }
+    // TODO Thread
+    g_pSortFilterProxyModel->invalidate();
 
 #ifdef QT_DEBUG
     qDebug("onFilterChanged Elapsed time: %lld ms", timer.elapsed());
