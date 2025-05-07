@@ -151,8 +151,8 @@ QVariant XModel_MSRecord::data(const QModelIndex &index, int nRole) const
                         }
                     }
                 } else if (nColumn == COLUMN_VALUE) {
-                    if ((g_valueType == XBinary::VT_STRING) || (g_valueType == XBinary::VT_ANSISTRING_I) || (g_valueType == XBinary::VT_UNICODESTRING_I) ||
-                        (g_valueType == XBinary::VT_UTF8STRING_I)) {
+                    if ((g_valueType == XBinary::VT_STRING) || (g_valueType == XBinary::VT_A_I) || (g_valueType == XBinary::VT_U_I) ||
+                        (g_valueType == XBinary::VT_UTF8_I)) {
                         XBinary binary(g_pDevice);
                         XBinary::VT valueType = g_valueType;
                         if (g_valueType == XBinary::VT_STRING) {
