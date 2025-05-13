@@ -163,11 +163,11 @@ QVariant XModel_MSRecord::data(const QModelIndex &index, int nRole) const
                         if (nRegionIndex != -1) {
                             if (g_memoryMap.listRecords.at(nRegionIndex).nOffset != -1) {
                                 qint64 _nOffset = g_memoryMap.listRecords.at(nRegionIndex).nOffset + g_pListRecords->at(nRow).nRelOffset;
-                                result = binary.read_valueString(valueType, _nOffset, g_pListRecords->at(nRow).nSize, g_endian == XBinary::ENDIAN_BIG);
+                                result = binary.read_value(valueType, _nOffset, g_pListRecords->at(nRow).nSize, g_endian == XBinary::ENDIAN_BIG).toString();
                             }
                         } else {
                             qint64 _nOffset = g_pListRecords->at(nRow).nRelOffset;
-                            result = binary.read_valueString(valueType, _nOffset, g_pListRecords->at(nRow).nSize, g_endian == XBinary::ENDIAN_BIG);
+                            result = binary.read_value(valueType, _nOffset, g_pListRecords->at(nRow).nSize, g_endian == XBinary::ENDIAN_BIG).toString();
                         }
                     } else if (g_valueType == XBinary::VT_SIGNATURE) {
                         if (g_pListSignatureRecords && (g_pListSignatureRecords->count() > g_pListRecords->at(nRow).nInfo)) {
