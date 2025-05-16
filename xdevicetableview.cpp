@@ -990,13 +990,14 @@ void XDeviceTableView::_bookmarkNew()
             QString("%1 - %2").arg(QString::number(state.nSelectionDeviceOffset, 16), QString::number(state.nSelectionDeviceOffset + state.nSelectionSize, 16));
 
         XInfoDB::BOOKMARKRECORD record = {};
+        record.sUUID = XBinary::generateUUID();
         record.sColorBackground = QColor(Qt::yellow).name();
         record.nLocation = state.nSelectionDeviceOffset;
         record.locationType = XBinary::LT_OFFSET;
         record.nSize = state.nSelectionSize;
         record.sComment = sComment;
 
-        getXInfoDB()->_addBookmarkRecord(record);
+        getXInfoDB()->addBookmarkRecord(record);
 
         getXInfoDB()->reloadView();
     }
