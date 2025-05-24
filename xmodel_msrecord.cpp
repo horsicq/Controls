@@ -126,7 +126,7 @@ QVariant XModel_MSRecord::data(const QModelIndex &index, int nRole) const
                 } else if (nColumn == COLUMN_ADDRESS) {
                     qint16 nRegionIndex = g_pListRecords->at(nRow).nRegionIndex;
                     if (nRegionIndex != -1) {
-                        if (g_memoryMap.listRecords.at(nRegionIndex).nAddress != -1) {
+                        if (g_memoryMap.listRecords.at(nRegionIndex).nAddress != (XADDR)-1) {
                             result = XBinary::valueToHex(g_modeAddress, g_memoryMap.listRecords.at(nRegionIndex).nAddress + g_pListRecords->at(nRow).nRelOffset);
                         }
                     }
@@ -198,7 +198,7 @@ QVariant XModel_MSRecord::data(const QModelIndex &index, int nRole) const
             } else if (nRole == Qt::UserRole + USERROLE_ADDRESS) {
                 qint16 nRegionIndex = g_pListRecords->at(nRow).nRegionIndex;
                 if (nRegionIndex != -1) {
-                    if (g_memoryMap.listRecords.at(nRegionIndex).nAddress != -1) {
+                    if (g_memoryMap.listRecords.at(nRegionIndex).nAddress != (XADDR)-1) {
                         result = g_memoryMap.listRecords.at(nRegionIndex).nAddress + g_pListRecords->at(nRow).nRelOffset;
                     }
                 }
