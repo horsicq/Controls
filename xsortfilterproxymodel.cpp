@@ -23,6 +23,7 @@
 
 XSortFilterProxyModel::XSortFilterProxyModel(QObject *pParent) : QSortFilterProxyModel(pParent)
 {
+    g_bIsXmodel = false;
 }
 
 void XSortFilterProxyModel::setFilters(const QList<QString> &listFilters)
@@ -49,6 +50,10 @@ void XSortFilterProxyModel::setSourceModel(QAbstractItemModel *sourceModel)
 
             setSortMethod(i, sortMethod);
         }
+
+        g_bIsXmodel = true;
+    } else {
+        g_bIsXmodel = false;
     }
 
     QSortFilterProxyModel::setSourceModel(sourceModel);

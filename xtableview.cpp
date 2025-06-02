@@ -26,6 +26,7 @@ XTableView::XTableView(QWidget *pParent) : QTableView(pParent)
     g_pModel = nullptr;
     g_pHeaderView = new XHeaderView(this);
     g_pSortFilterProxyModel = new XSortFilterProxyModel(this);
+    g_bIsXmodel = false;
 
     setHorizontalHeader(g_pHeaderView);
 
@@ -123,6 +124,9 @@ void XTableView::adjust()
                 setColumnWidth(i, nWidth);
             }
         }
+        g_bIsXmodel = true;
+    } else {
+        g_bIsXmodel = false;
     }
 }
 
@@ -139,8 +143,12 @@ void XTableView::onFilterChanged()
 
     g_pSortFilterProxyModel->setFilters(listFilters);
 
-    // TODO Thread
-    g_pSortFilterProxyModel->invalidate();
+    if (g_bIsXmodel) {
+        // TODO Thread
+        g_pSortFilterProxyModel->invalidate();
+    } else {
+        g_pSortFilterProxyModel->invalidate();
+    }
 
 #ifdef QT_DEBUG
     qDebug("onFilterChanged Elapsed time: %lld ms", timer.elapsed());
@@ -153,8 +161,12 @@ void XTableView::onFilterChanged()
 
 void XTableView::onSortChanged(int column, Qt::SortOrder order)
 {
-    // TODO Thread
-    g_pSortFilterProxyModel->sort(column, order);
+    if (g_bIsXmodel) {
+        // TODO Thread
+        g_pSortFilterProxyModel->sort(column, order);
+    } else {
+        g_pSortFilterProxyModel->sort(column, order);
+    }
 }
 
 void XTableView::horisontalScroll()

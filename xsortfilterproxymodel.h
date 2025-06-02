@@ -39,6 +39,7 @@ protected:
     bool lessThan(const QModelIndex &left, const QModelIndex &right) const override;
 
 private:
+    bool g_bIsXmodel;
     QList<QString> g_listFilters;
     QMap<qint32, XModel::SORT_METHOD> g_mapSortMethods;
 };

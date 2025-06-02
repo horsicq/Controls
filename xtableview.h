@@ -58,6 +58,7 @@ private:
     XSortFilterProxyModel *g_pSortFilterProxyModel;
     QAbstractItemModel *g_pOldModel;
     QAbstractItemModel *g_pModel;
+    bool g_bIsXmodel;
 };
 
 #endif  // XTABLEVIEW_H
