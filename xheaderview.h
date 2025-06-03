@@ -25,6 +25,7 @@
 #include <QLineEdit>
 #include <QObject>
 #include <QPainter>
+#include <QProgressBar>
 
 class XHeaderView : public QHeaderView {
     Q_OBJECT
@@ -50,6 +51,7 @@ signals:
 
 private:
     QList<QLineEdit *> g_listLineEdits;
+    // QProgressBar *g_pProgressBar;
 };
 
 #endif  // XHEADERVIEW_H

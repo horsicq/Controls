@@ -22,6 +22,8 @@
 
 XHeaderView::XHeaderView(QWidget *pParent) : QHeaderView(Qt::Horizontal, pParent)
 {
+    // g_pProgressBar = nullptr;
+
     connect(this, SIGNAL(sectionResized(int, int, int)), this, SLOT(onSectionResized(int, int, int)));
     connect(this, SIGNAL(sectionClicked(int)), this, SLOT(onSectionClicked(int)));
 
@@ -57,6 +59,8 @@ void XHeaderView::setNumberOfFilters(qint32 nNumberOfFilters)
         g_listLineEdits.append(pLineEdit);
     }
 
+    // g_pProgressBar = new QProgressBar(this);
+
     adjustPositions();
 }
 
@@ -72,8 +76,8 @@ void XHeaderView::clearFilters()
 void XHeaderView::updateGeometries()
 {
     if (g_listLineEdits.count()) {
-        qint32 nHeight = g_listLineEdits.at(0)->sizeHint().height();
-        setViewportMargins(0, 0, 0, nHeight + 4);
+        qint32 nLineEditHeight = g_listLineEdits.at(0)->sizeHint().height();
+        setViewportMargins(0, 0, 0, nLineEditHeight + 4);
     } else {
         setViewportMargins(0, 0, 0, 0);
     }
@@ -89,10 +93,17 @@ void XHeaderView::adjustPositions()
     QSize baseSize = QHeaderView::sizeHint();
 
     for (qint32 i = 0; i < nCount; i++) {
-        qint32 nHeight = g_listLineEdits.at(i)->sizeHint().height();
+        qint32 nLineEditHeight = g_listLineEdits.at(i)->sizeHint().height();
+
         g_listLineEdits.at(i)->move(sectionPosition(i) - offset(), baseSize.height() + 2);
-        g_listLineEdits.at(i)->resize(sectionSize(i) - 2, nHeight);
+        g_listLineEdits.at(i)->resize(sectionSize(i) - 2, nLineEditHeight);
         g_listLineEdits.at(i)->show();
+
+        // qint32 nProgressBarHeight = g_pProgressBar->sizeHint().height();
+
+        // g_pProgressBar->move(sectionPosition(i) - offset(), baseSize.height() + nLineEditHeight + 4);
+        // g_pProgressBar->resize(sectionSize(i) - 2, nProgressBarHeight);
+        // g_pProgressBar->show();
     }
 }
 
