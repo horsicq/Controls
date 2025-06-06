@@ -24,6 +24,75 @@ XDeviceTableEditView::XDeviceTableEditView(QWidget *pParent) : XDeviceTableView(
 {
 }
 
+void XDeviceTableEditView::setViewWidgetState(VIEWWIDGET viewWidget, bool bState)
+{
+    if (bState) {
+        g_stViewWidgetState.insert(viewWidget);
+    } else {
+        g_stViewWidgetState.remove(viewWidget);
+    }
+
+    emit viewWidgetsStateChanged();
+}
+
+bool XDeviceTableEditView::getViewWidgetState(VIEWWIDGET viewWidget)
+{
+    return g_stViewWidgetState.contains(viewWidget);
+}
+
+void XDeviceTableEditView::dumpMemory(const QString &sDumpName, qint64 nOffset, qint64 nSize)
+{
+    QString sSaveFileName = XBinary::getResultFileName(getDevice(), QString("%1.bin").arg(sDumpName));
+    QString sFileName = QFileDialog::getSaveFileName(this, tr("Save dump"), sSaveFileName, QString("%1 (*.bin)").arg(tr("Raw data")));
+
+    if (!sFileName.isEmpty()) {
+        DialogDumpProcess dd(this);
+        dd.setGlobal(getShortcuts(), getGlobalOptions());
+        dd.setData(getDevice(), nOffset, nSize, sFileName, DumpProcess::DT_DUMP_DEVICE_OFFSET);
+
+        dd.showDialogDelay();
+    }
+}
+
+QList<XDeviceTableEditView::HIGHLIGHTREGION> XDeviceTableEditView::getHighlightRegion(QList<HIGHLIGHTREGION> *pList, quint64 nLocation, XBinary::LT locationType)
+{
+    QList<HIGHLIGHTREGION> listResult;
+
+    qint32 nNumberOfRecords = pList->count();
+
+    for (qint32 i = 0; i < nNumberOfRecords; i++) {
+        if (pList->at(i).locationType == locationType) {
+            if ((nLocation >= pList->at(i).nLocation) && (nLocation < (pList->at(i).nLocation + pList->at(i).nSize))) {
+                listResult.append(pList->at(i));
+            }
+        }
+    }
+
+    return listResult;
+}
+
+QList<XDeviceTableEditView::HIGHLIGHTREGION> XDeviceTableEditView::_convertBookmarksToHighlightRegion(QVector<XInfoDB::BOOKMARKRECORD> *pList)
+{
+    QList<HIGHLIGHTREGION> listResult;
+
+    qint32 nNumberOfRecords = pList->count();
+
+    for (qint32 i = 0; i < nNumberOfRecords; i++) {
+        HIGHLIGHTREGION record = {};
+        record.bIsValid = true;
+        record.nLocation = pList->at(i).nLocation;
+        record.locationType = pList->at(i).locationType;
+        record.nSize = pList->at(i).nSize;
+        record.colBackground = XOptions::stringToColor(pList->at(i).sColorBackground);
+        record.colBackgroundSelected = getColorSelected(record.colBackground);
+        record.sComment = pList->at(i).sComment;
+
+        listResult.append(record);
+    }
+
+    return listResult;
+}
+
 void XDeviceTableEditView::_editHex()
 {
     if (!isReadonly()) {
@@ -186,6 +255,171 @@ void XDeviceTableEditView::_visualization()
     } else {
         emit closeWidget_Visualization();
     }
+}
+
+void XDeviceTableEditView::_dataInspector()
+{
+    if (!getViewWidgetState(VIEWWIDGET_DATAINSPECTOR)) {
+        setViewWidgetState(VIEWWIDGET_DATAINSPECTOR, true);
+
+        XDeviceTableView::DEVICESTATE deviceState = getDeviceState();
+
+        DialogDataInspector dialogDataInspector(this, getDevice(), deviceState.nSelectionDeviceOffset, deviceState.nSelectionSize);
+        dialogDataInspector.setGlobal(getShortcuts(), getGlobalOptions());
+
+        connect(this, SIGNAL(currentLocationChanged(quint64, qint32, qint64)), &dialogDataInspector, SLOT(currentLocationChangedSlot(quint64, qint32, qint64)));
+        connect(this, SIGNAL(dataChanged(qint64, qint64)), &dialogDataInspector, SLOT(dataChangedSlot(qint64, qint64)));
+        connect(&dialogDataInspector, SIGNAL(dataChanged(qint64, qint64)), this, SLOT(_setEdited(qint64, qint64)));
+        connect(this, SIGNAL(closeWidget_DataInspector()), &dialogDataInspector, SLOT(close()));
+
+        XOptions::_adjustStayOnTop(&dialogDataInspector, true);
+
+        dialogDataInspector.exec();
+
+        setViewWidgetState(VIEWWIDGET_DATAINSPECTOR, false);
+    } else {
+        emit closeWidget_DataInspector();
+    }
+}
+
+void XDeviceTableEditView::_dataConvertor()
+{
+    if (!getViewWidgetState(VIEWWIDGET_DATACONVERTOR)) {
+        setViewWidgetState(VIEWWIDGET_DATACONVERTOR, true);
+
+        XDeviceTableView::DEVICESTATE deviceState = getDeviceState();
+
+        SubDevice sd(getDevice(), deviceState.nSelectionDeviceOffset, deviceState.nSelectionSize);
+
+        if (sd.open(QIODevice::ReadOnly)) {
+            DialogXDataConvertor dialogDataConvertor(this);
+            dialogDataConvertor.setGlobal(getShortcuts(), getGlobalOptions());
+            dialogDataConvertor.setData(&sd);
+            connect(this, SIGNAL(closeWidget_DataConvertor()), &dialogDataConvertor, SLOT(close()));
+
+            dialogDataConvertor.exec();
+
+            setViewWidgetState(VIEWWIDGET_DATACONVERTOR, false);
+
+            sd.close();
+        }
+    } else {
+        emit closeWidget_DataConvertor();
+    }
+}
+
+void XDeviceTableEditView::_multisearch()
+{
+    if (!getViewWidgetState(VIEWWIDGET_MULTISEARCH)) {
+        setViewWidgetState(VIEWWIDGET_MULTISEARCH, true);
+
+        SearchValuesWidget::OPTIONS options = {};
+        //        options.fileType = XBinary::FT_REGION;
+        options.fileType = XBinary::FT_UNKNOWN;
+
+        DialogSearchValues dialogSearchValues(this);
+        dialogSearchValues.setGlobal(getShortcuts(), getGlobalOptions());
+        dialogSearchValues.setData(getDevice(), options);
+
+        connect(&dialogSearchValues, SIGNAL(currentLocationChanged(quint64, qint32, qint64)), this, SLOT(currentLocationChangedSlot(quint64, qint32, qint64)));
+        connect(this, SIGNAL(closeWidget_Multisearch()), &dialogSearchValues, SLOT(close()));
+
+        XOptions::_adjustStayOnTop(&dialogSearchValues, true);
+
+        dialogSearchValues.exec();
+
+        setViewWidgetState(VIEWWIDGET_MULTISEARCH, false);
+    } else {
+        emit closeWidget_Multisearch();
+    }
+}
+
+void XDeviceTableEditView::_bookmarkNew()
+{
+    if (getXInfoDB()) {
+        DEVICESTATE state = getDeviceState();
+
+        QString sComment =
+            QString("%1 - %2").arg(QString::number(state.nSelectionDeviceOffset, 16), QString::number(state.nSelectionDeviceOffset + state.nSelectionSize, 16));
+
+        XInfoDB::BOOKMARKRECORD record = {};
+        record.sUUID = XBinary::generateUUID();
+        record.sColorBackground = QColor(Qt::yellow).name();
+        record.nLocation = state.nSelectionDeviceOffset;
+        record.locationType = XBinary::LT_OFFSET;
+        record.nSize = state.nSelectionSize;
+        record.sComment = sComment;
+
+        getXInfoDB()->addBookmarkRecord(record);
+
+        getXInfoDB()->reloadView();
+    }
+}
+
+void XDeviceTableEditView::_bookmarkList()
+{
+    if (getXInfoDB()) {
+        if (!getViewWidgetState(VIEWWIDGET_BOOKMARKS)) {
+            setViewWidgetState(VIEWWIDGET_BOOKMARKS, true);
+
+            quint64 nLocation = 0;
+            XIODevice *pSubDevice = dynamic_cast<XIODevice *>(getDevice());
+
+            if (pSubDevice) {
+                nLocation = pSubDevice->getInitLocation();
+            }
+
+            DialogBookmarks dialogBookmarks(this);
+
+            dialogBookmarks.setData(getXInfoDB(), nLocation, -1, getDevice()->size());
+
+            connect(&dialogBookmarks, SIGNAL(currentLocationChanged(quint64, qint32, qint64)), this, SLOT(currentLocationChangedSlot(quint64, qint32, qint64)));
+            connect(this, SIGNAL(closeWidget_Bookmarks()), &dialogBookmarks, SLOT(close()));
+
+            XOptions::_adjustStayOnTop(&dialogBookmarks, true);
+            dialogBookmarks.exec();
+
+            setViewWidgetState(VIEWWIDGET_BOOKMARKS, false);
+        } else {
+            emit closeWidget_Bookmarks();
+        }
+    }
+}
+
+void XDeviceTableEditView::_structs()
+{
+    // DEVICESTATE deviceState = getDeviceState();
+
+    // DialogSetGenericWidget dialogSetGenericWidget(this);
+    // dialogSetGenericWidget.setData(getDevice(), deviceState.nSelectionDeviceOffset, deviceState.nSelectionSize);
+    // dialogSetGenericWidget.exec();
+}
+
+void XDeviceTableEditView::_copyDataSlot()
+{
+    DEVICESTATE state = getDeviceState();
+
+    DialogShowData dialogShowData(this, getDevice(), state.nSelectionDeviceOffset, state.nSelectionSize);
+    dialogShowData.setGlobal(getShortcuts(), getGlobalOptions());
+
+    dialogShowData.exec();
+}
+
+void XDeviceTableEditView::_dumpToFileSlot()
+{
+    DEVICESTATE state = getDeviceState();
+
+    dumpMemory(tr("Dump"), state.nSelectionDeviceOffset, state.nSelectionSize);
+}
+
+void XDeviceTableEditView::_hexSignatureSlot()
+{
+    DEVICESTATE state = getDeviceState();
+
+    DialogHexSignature dhs(this, getDevice(), state.nSelectionDeviceOffset, state.nSelectionSize);
+    dhs.setGlobal(getShortcuts(), getGlobalOptions());
+
+    dhs.exec();
 }
 #if defined(QT_SCRIPT_LIB) || defined(QT_QML_LIB)
 void XDeviceTableEditView::_scripts()

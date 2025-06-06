@@ -21,22 +21,13 @@
 #ifndef XDEVICETABLEVIEW_H
 #define XDEVICETABLEVIEW_H
 
-#include "dialogdatainspector.h"
-#include "dialogxdataconvertor.h"
-#include "dialogdumpprocess.h"
 #include "dialoggotoaddress.h"
 #include "dialoghexsignature.h"
 #include "dialogsearch.h"
-#include "dialogshowdata.h"
 #include "dialogsearchprocess.h"
 #include "xabstracttableview.h"
-#include "dialogresize.h"
-#include "dialogremove.h"
 #include "xformats.h"
 #include "xinfodb.h"
-#include "dialogsearchvalues.h"
-#include "dialogvisualization.h"
-#include "dialogbookmarks.h"
 #include "xcapstone.h"
 
 class XDeviceTableView : public XAbstractTableView {
@@ -62,29 +53,6 @@ public:
         qint64 nSelectionSize;
         //        qint64 nCursorOffset;
         qint64 nStartDeviceOffset;
-    };
-
-    struct HIGHLIGHTREGION {
-        bool bIsValid;
-        quint64 nLocation;
-        XBinary::LT locationType;
-        qint64 nSize;
-        QColor colText;
-        QColor colBackground;
-        QColor colBackgroundSelected;
-        QString sComment;
-    };
-
-    enum VIEWWIDGET {
-        VIEWWIDGET_DATAINSPECTOR,
-        VIEWWIDGET_DATACONVERTOR,
-        VIEWWIDGET_MULTISEARCH,
-        VIEWWIDGET_BOOKMARKS,
-        VIEWWIDGET_STRINGS,
-        VIEWWIDGET_VISUALIZATION,
-#if defined(QT_SCRIPT_LIB) || defined(QT_QML_LIB)
-        VIEWWIDGET_SCRIPTS,
-#endif
     };
 
     XDeviceTableView(QWidget *pParent = nullptr);
@@ -127,13 +95,6 @@ public:
     void addVisited(qint64 nViewPos);
     void clearVisited();
 
-    static QList<HIGHLIGHTREGION> _convertBookmarksToHighlightRegion(QVector<XInfoDB::BOOKMARKRECORD> *pList);
-    static QList<HIGHLIGHTREGION> getHighlightRegion(QList<HIGHLIGHTREGION> *pList, quint64 nLocation, XBinary::LT locationType);
-
-    void setViewWidgetState(VIEWWIDGET viewWidget, bool bState);
-    bool getViewWidgetState(VIEWWIDGET viewWidget);
-
-    void dumpMemory(const QString &sDumpName, qint64 nOffset = 0, qint64 nSize = -1);
     virtual void setLocation(quint64 nLocation, qint32 nLocationType, qint64 nSize);
 
     VIEWSTRUCT _getViewStructByOffset(qint64 nOffset);
@@ -159,29 +120,16 @@ protected:
 signals:
     void visitedStateChanged();
     void deviceSizeChanged(qint64 nOldSize, qint64 nNewSize);
-    void viewWidgetsStateChanged();
-    void closeWidget_DataInspector();
-    void closeWidget_DataConvertor();
-    void closeWidget_Multisearch();
-    void closeWidget_Strings();
-    void closeWidget_Visualization();
-    void closeWidget_Bookmarks();
-#if defined(QT_SCRIPT_LIB) || defined(QT_QML_LIB)
-    void closeWidget_Scripts();
-#endif
 
 protected slots:
     void _goToSelectionStart();
     void _goToSelectionEnd();
-    void _dumpToFileSlot();
-    void _hexSignatureSlot();
     void _findStringSlot();
     void _findSignatureSlot();
     void _findValueSlot();
     void _findSlot(DialogSearch::SEARCHMODE mode);
     void _findNextSlot();
     void _selectAllSlot();
-    void _copyDataSlot();
     void _copyAddressSlot();
     void _copyRelAddressSlot();
     void _copyOffsetSlot();
@@ -192,14 +140,9 @@ protected slots:
     void selectionChangedSlot();
     void changeLocationMode();
     void changeLocationBase();
-    void _bookmarkNew();
-    void _bookmarkList();
 
 public slots:
     void currentLocationChangedSlot(quint64 nLocation, qint32 nLocationType, qint64 nSize);
-    void _showDataInspector();
-    void _showDataConvertor();
-    void _showMultisearch();
 
 private:
     static const qint32 N_MAX_VISITED = 100;
@@ -214,7 +157,7 @@ private:
     qint32 g_nLocationBase;
     QList<qint64> g_listVisited;
     qint32 g_nVisitedIndex;
-    QSet<VIEWWIDGET> g_stViewWidgetState;
+
     XBinary::FT g_fileType;
     XBinary::DM g_disasmMode;
     XBinary::_MEMORY_MAP g_memoryMap;
