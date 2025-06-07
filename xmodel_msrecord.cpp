@@ -138,7 +138,7 @@ QVariant XModel_MSRecord::data(const QModelIndex &index, int nRole) const
                     result = QString::number(g_pListRecords->at(nRow).nSize, 16);
                 } else if (nColumn == COLUMN_INFO) {
                     if (g_valueType != XBinary::VT_SIGNATURE) {
-                        result = XBinary::valueTypeToString((XBinary::VT)(g_pListRecords->at(nRow).nValueType));
+                        result = XBinary::valueTypeToString((XBinary::VT)(g_pListRecords->at(nRow).nValueType), 0);
                     } else {
                         if (nColumn == COLUMN_INFO) {
                             if (g_valueType == XBinary::VT_SIGNATURE) {
