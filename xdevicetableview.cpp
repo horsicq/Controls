@@ -150,6 +150,8 @@ void XDeviceTableView::setDevice(QIODevice *pDevice, qint64 nStartOffset, qint64
     if ((nTotalSize == -1) || (nTotalSize == 0)) {
         if (pDevice) {
             g_nTotalSize = pDevice->size() - nStartOffset;
+        } else {
+            g_nTotalSize = 0;
         }
     }
 
