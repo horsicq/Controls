@@ -694,20 +694,20 @@ void XDeviceTableView::_goToSelectionEnd()
 
 void XDeviceTableView::_findStringSlot()
 {
-    _findSlot(DialogSearch::SEARCHMODE_STRING);
+    _findSlot(XBinary::SEARCHMODE_STRING);
 }
 
 void XDeviceTableView::_findSignatureSlot()
 {
-    _findSlot(DialogSearch::SEARCHMODE_SIGNATURE);
+    _findSlot(XBinary::SEARCHMODE_SIGNATURE);
 }
 
 void XDeviceTableView::_findValueSlot()
 {
-    _findSlot(DialogSearch::SEARCHMODE_VALUE);
+    _findSlot(XBinary::SEARCHMODE_VALUE);
 }
 
-void XDeviceTableView::_findSlot(DialogSearch::SEARCHMODE mode)
+void XDeviceTableView::_findSlot(XBinary::SEARCHMODE mode)
 {
     DEVICESTATE state = getDeviceState();
 
@@ -722,9 +722,11 @@ void XDeviceTableView::_findSlot(DialogSearch::SEARCHMODE mode)
 
     if (dialogSearch.exec() == QDialog::Accepted)  // TODO use status
     {
-        DialogSearchProcess dsp(this, getDevice(), &g_searchData);
+        SearchProcess searchProcess;
+        XDialogProcess dsp(this, &searchProcess);
         dsp.setGlobal(getShortcuts(), getGlobalOptions());
-
+        searchProcess.setData(getDevice(), &g_searchData, dsp.getPdStruct());
+        dsp.start();
         dsp.showDialogDelay();
 
         if (g_searchData.nResultOffset != -1) {
@@ -735,7 +737,6 @@ void XDeviceTableView::_findSlot(DialogSearch::SEARCHMODE mode)
             _initSetSelection(nViewPos, nViewSize);
             setFocus();
             viewport()->update();
-
         } else {
             emit errorMessage(tr("Nothing found"));
         }
@@ -748,12 +749,16 @@ void XDeviceTableView::_findNextSlot()
         g_searchData.nCurrentOffset = g_searchData.nResultOffset + 1;
         g_searchData.startFrom = XBinary::SF_CURRENTOFFSET;
 
-        DialogSearchProcess dialogSearch(this, getDevice(), &g_searchData);
-        dialogSearch.setGlobal(getShortcuts(), getGlobalOptions());
+        SearchProcess searchProcess;
+        XDialogProcess dsp(this, &searchProcess);
+        dsp.setGlobal(getShortcuts(), getGlobalOptions());
+        searchProcess.setData(getDevice(), &g_searchData, dsp.getPdStruct());
+        dsp.start();
+        dsp.showDialogDelay();
 
-        dialogSearch.showDialogDelay();
+        dsp.showDialogDelay();
 
-        if (dialogSearch.isSuccess())  // TODO use status
+        if (dsp.isSuccess())  // TODO use status
         {
             qint64 nViewPos = deviceOffsetToViewPos(g_searchData.nResultOffset);
             qint64 nViewSize = g_searchData.nResultSize;

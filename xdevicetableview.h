@@ -24,11 +24,12 @@
 #include "dialoggotoaddress.h"
 #include "dialoghexsignature.h"
 #include "dialogsearch.h"
-#include "dialogsearchprocess.h"
 #include "xabstracttableview.h"
 #include "xformats.h"
 #include "xinfodb.h"
 #include "xcapstone.h"
+#include "xdialogprocess.h"
+#include "searchprocess.h"
 
 class XDeviceTableView : public XAbstractTableView {
     Q_OBJECT
@@ -127,7 +128,7 @@ protected slots:
     void _findStringSlot();
     void _findSignatureSlot();
     void _findValueSlot();
-    void _findSlot(DialogSearch::SEARCHMODE mode);
+    void _findSlot(XBinary::SEARCHMODE mode);
     void _findNextSlot();
     void _selectAllSlot();
     void _copyAddressSlot();
