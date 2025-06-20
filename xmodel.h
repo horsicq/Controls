@@ -37,6 +37,16 @@ public:
 
     virtual qint32 getColumnSymbolSize(qint32 nColumn) = 0;
     virtual SORT_METHOD getSortMethod(qint32 nColumn);
+    virtual bool isCustomFilter();
+    virtual bool isCustomSort();
+    void setRowHidden(qint32 nRow, bool bState);
+    void setRowPrio(qint32 nRow, quint64 nPrio);
+    bool isRowHidden(qint32 nRow);
+    quint64 getRowPrio(qint32 nRow);
+
+private:
+    QHash<qint32, bool> g_hashRowHidden;
+    QHash<qint32, quint64> g_hashRowPrio;
 };
 
 #endif  // XMODEL_H

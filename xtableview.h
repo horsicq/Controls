@@ -26,6 +26,7 @@
 #include <QScrollBar>
 #include <QStandardItemModel>
 #include <QElapsedTimer>
+#include <QFutureWatcher>
 
 #include "xheaderview.h"
 #include "xsortfilterproxymodel.h"
@@ -45,8 +46,12 @@ public:
     void setFilterEnabled(qint32 nColumn, bool bFilterEnabled);
     void adjust();
 
+signals:
+    void invalidateSignal();
+
 private:
     void deleteOldModel(QAbstractItemModel **g_ppOldModel);
+    void handleFilter();
 
 private slots:
     void onFilterChanged();
@@ -59,6 +64,11 @@ private:
     QAbstractItemModel *g_pOldModel;
     QAbstractItemModel *g_pModel;
     bool g_bIsXmodel;
+    bool g_bIsCustomFilter;
+    bool g_bIsCustomSort;
+    XModel *g_pXModel;
+    QFutureWatcher<void> g_watcher;
+    bool g_bIsStop;
 };
 
 #endif  // XTABLEVIEW_H

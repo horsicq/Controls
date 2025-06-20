@@ -25,6 +25,36 @@ XModel::XModel(QObject *pParent) : QAbstractItemModel(pParent)
 {
 }
 
+bool XModel::isCustomFilter()
+{
+    return false;
+}
+
+bool XModel::isCustomSort()
+{
+    return false;
+}
+
+void XModel::setRowHidden(qint32 nRow, bool bState)
+{
+    g_hashRowHidden[nRow] = bState; // TODO optimize use allocated memory
+}
+
+void XModel::setRowPrio(qint32 nRow, quint64 nPrio)
+{
+    g_hashRowPrio[nRow] = nPrio;
+}
+
+bool XModel::isRowHidden(qint32 nRow)
+{
+    return g_hashRowHidden.value(nRow, false);
+}
+
+quint64 XModel::getRowPrio(qint32 nRow)
+{
+    return g_hashRowPrio.value(nRow, 0);
+}
+
 XModel::SORT_METHOD XModel::getSortMethod(qint32 nColumn)
 {
     Q_UNUSED(nColumn)

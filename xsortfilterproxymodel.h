@@ -40,6 +40,9 @@ protected:
 
 private:
     bool g_bIsXmodel;
+    bool g_bIsCustomFilter;
+    bool g_bIsCustomSort;
+    XModel *g_pXModel;
     QList<QString> g_listFilters;
     QMap<qint32, XModel::SORT_METHOD> g_mapSortMethods;
 };

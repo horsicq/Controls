@@ -271,6 +271,16 @@ qint32 XModel_MSRecord::getColumnSymbolSize(qint32 nColumn)
     return g_nColumnWidths[nColumn];
 }
 
+bool XModel_MSRecord::isCustomFilter()
+{
+    return false;
+}
+
+bool XModel_MSRecord::isCustomSort()
+{
+    return false;
+}
+
 XModel::SORT_METHOD XModel_MSRecord::getSortMethod(qint32 nColumn)
 {
     SORT_METHOD result = SORT_METHOD_DEFAULT;

@@ -19,6 +19,7 @@
  * SOFTWARE.
  */
 #include "xtableview.h"
+#include <QtConcurrent>
 
 XTableView::XTableView(QWidget *pParent) : QTableView(pParent)
 {
@@ -27,12 +28,17 @@ XTableView::XTableView(QWidget *pParent) : QTableView(pParent)
     g_pHeaderView = new XHeaderView(this);
     g_pSortFilterProxyModel = new XSortFilterProxyModel(this);
     g_bIsXmodel = false;
+    g_bIsCustomFilter = false;
+    g_bIsCustomSort = false;
+    g_pXModel = nullptr;
+    g_bIsStop = false;
 
     setHorizontalHeader(g_pHeaderView);
 
     connect(g_pHeaderView, SIGNAL(filterChanged()), this, SLOT(onFilterChanged()));
     connect(g_pHeaderView, SIGNAL(sortIndicatorChanged(int, Qt::SortOrder)), this, SLOT(onSortChanged(int, Qt::SortOrder)));
     connect(horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(horisontalScroll()));
+    connect(this, SIGNAL(invalidateSignal()), g_pSortFilterProxyModel, SLOT(invalidate()));
 
     setSortingEnabled(true);
     setWordWrap(false);
@@ -40,6 +46,12 @@ XTableView::XTableView(QWidget *pParent) : QTableView(pParent)
 
 XTableView::~XTableView()
 {
+#ifdef QT_DEBUG
+    qDebug("~XTableView()");
+#endif
+
+    g_bIsStop = true;
+    g_watcher.waitForFinished();
 }
 
 void XTableView::setCustomModel(QAbstractItemModel *pModel, bool bFilterEnabled)
@@ -99,6 +111,49 @@ void XTableView::deleteOldModel(QAbstractItemModel **g_ppOldModel)
     (*g_ppOldModel) = nullptr;
 }
 
+void XTableView::handleFilter()
+{
+    QList<QString> listFilters = g_pHeaderView->getFilters();
+
+    qint32 nNumberOfRows = g_pModel->rowCount();
+    qint32 nNumberOfFilters = listFilters.count();
+
+    for (qint32 i = 0; (i < nNumberOfRows) && (!g_bIsStop); i++) {
+        bool bHidden = false;
+
+        for (qint32 j = 0; j < nNumberOfFilters; j++) {
+            QString sFilter = listFilters.at(j);
+            if (sFilter != "") {
+                QModelIndex index = g_pModel->index(i, j);
+
+                if (index.isValid()) {
+                    QString sValue = g_pModel->data(index).toString();
+
+                    if (!sValue.contains(sFilter, Qt::CaseInsensitive)) {
+                        bHidden = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (g_bIsXmodel) {
+            g_pXModel->setRowHidden(i, bHidden);
+        }
+    }
+
+    if (!g_bIsStop) {
+#ifdef QT_DEBUG
+        qDebug("invalidateSignal");
+#endif
+        emit invalidateSignal();
+    } else {
+#ifdef QT_DEBUG
+        qDebug("XTableView::handleFilter is stopped");
+#endif
+    }
+}
+
 XSortFilterProxyModel *XTableView::getProxyModel()
 {
     return g_pSortFilterProxyModel;
@@ -111,13 +166,13 @@ void XTableView::setFilterEnabled(qint32 nColumn, bool bFilterEnabled)
 
 void XTableView::adjust()
 {
-    XModel *pModel = dynamic_cast<XModel *>(g_pModel);
+    g_pXModel = dynamic_cast<XModel *>(g_pModel);
 
-    if (pModel) {
-        qint32 nNumberOfColumns = pModel->columnCount();
+    if (g_pXModel) {
+        qint32 nNumberOfColumns = g_pXModel->columnCount();
 
         for (qint32 i = 0; i < nNumberOfColumns; i++) {
-            qint32 nSymbolSize = pModel->getColumnSymbolSize(i);
+            qint32 nSymbolSize = g_pXModel->getColumnSymbolSize(i);
 
             if (nSymbolSize != -1) {
                 qint32 nWidth = XOptions::getControlWidth(this, nSymbolSize);
@@ -125,8 +180,12 @@ void XTableView::adjust()
             }
         }
         g_bIsXmodel = true;
+        g_bIsCustomFilter = g_pXModel->isCustomFilter();
+        g_bIsCustomSort = g_pXModel->isCustomSort();
     } else {
         g_bIsXmodel = false;
+        g_bIsCustomFilter = false;
+        g_bIsCustomSort = false;
     }
 }
 
@@ -143,11 +202,20 @@ void XTableView::onFilterChanged()
 
     g_pSortFilterProxyModel->setFilters(listFilters);
 
-    if (g_bIsXmodel) {
-        // TODO Thread
-        g_pSortFilterProxyModel->invalidate();
+    if (g_bIsCustomFilter) {
+        g_bIsStop = true;
+        g_watcher.waitForFinished();
+        g_bIsStop = false;
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        QFuture<void> future = QtConcurrent::run(&XTableView::handleFilter, this);
+#else
+        QFuture<void> future = QtConcurrent::run(this, &XTableView::handleFilter);
+#endif
+        g_watcher.setFuture(future);
     } else {
-        g_pSortFilterProxyModel->invalidate();
+        emit invalidateSignal();
+        // g_pSortFilterProxyModel->invalidate();
     }
 
 #ifdef QT_DEBUG
@@ -161,7 +229,7 @@ void XTableView::onFilterChanged()
 
 void XTableView::onSortChanged(int column, Qt::SortOrder order)
 {
-    if (g_bIsXmodel) {
+    if (g_bIsCustomSort) {
         // TODO Thread
         g_pSortFilterProxyModel->sort(column, order);
     } else {

@@ -61,6 +61,8 @@ public:
     virtual QVariant headerData(int nSection, Qt::Orientation orientation, int nRole = Qt::DisplayRole) const;
     virtual qint32 getColumnSymbolSize(qint32 nColumn);
     virtual SORT_METHOD getSortMethod(qint32 nColumn);
+    virtual bool isCustomFilter();
+    virtual bool isCustomSort();
 
 private:
     QIODevice *g_pDevice;
