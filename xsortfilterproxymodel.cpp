@@ -82,7 +82,7 @@ bool XSortFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &s
 
     if (g_bIsCustomFilter) {
         bResult = !(g_pXModel->isRowHidden(sourceRow));
-    } else  {
+    } else {
         qint32 nCount = g_listFilters.count();
 
         for (qint32 i = 0; i < nCount; i++) {

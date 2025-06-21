@@ -37,7 +37,7 @@ bool XModel::isCustomSort()
 
 void XModel::setRowHidden(qint32 nRow, bool bState)
 {
-    g_hashRowHidden[nRow] = bState; // TODO optimize use allocated memory
+    g_hashRowHidden[nRow] = bState;  // TODO optimize use allocated memory
 }
 
 void XModel::setRowPrio(qint32 nRow, quint64 nPrio)
