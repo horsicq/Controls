@@ -756,8 +756,6 @@ void XDeviceTableView::_findNextSlot()
         dsp.start();
         dsp.showDialogDelay();
 
-        dsp.showDialogDelay();
-
         if (dsp.isSuccess())  // TODO use status
         {
             qint64 nViewPos = deviceOffsetToViewPos(g_searchData.nResultOffset);
