@@ -39,20 +39,23 @@ XModel_MSRecord::XModel_MSRecord(QIODevice *pDevice, const XBinary::_MEMORY_MAP 
     g_modeAddress = XBinary::getWidthModeFromSize(memoryMap.nModuleAddress + memoryMap.nImageSize);
     g_modeOffset = XBinary::getWidthModeFromSize(memoryMap.nBinarySize);
 
-    g_nColumnWidths[COLUMN_NUMBER] = QString::number(g_nRowCount).length();
-    g_nColumnWidths[COLUMN_OFFSET] = XBinary::getByteSizeFromWidthMode(g_modeOffset) * 2;
-    g_nColumnWidths[COLUMN_ADDRESS] = XBinary::getByteSizeFromWidthMode(g_modeAddress) * 2;
-    g_nColumnWidths[COLUMN_REGION] = 1;
-    g_nColumnWidths[COLUMN_SIZE] = 4;
-    g_nColumnWidths[COLUMN_INFO] = 8;
-    g_nColumnWidths[COLUMN_VALUE] = 100;
+    setColumnSymbolSize(COLUMN_NUMBER, QString::number(g_nRowCount).length());
+    setColumnSymbolSize(COLUMN_OFFSET, XBinary::getByteSizeFromWidthMode(g_modeOffset) * 2);
+    setColumnSymbolSize(COLUMN_ADDRESS, XBinary::getByteSizeFromWidthMode(g_modeAddress) * 2);
+    setColumnSymbolSize(COLUMN_REGION, 1);
+    setColumnSymbolSize(COLUMN_SIZE, 4);
+    setColumnSymbolSize(COLUMN_INFO, 8);
+    setColumnSymbolSize(COLUMN_NUMBER, 100);
 
     qint32 nNumberOfRegions = memoryMap.listRecords.count();
+    qint32 nMaxRegionNameLength = 4;
 
     for (qint32 i = 0; i < nNumberOfRegions; i++) {
-        g_nColumnWidths[COLUMN_REGION] = qMax(g_nColumnWidths[COLUMN_REGION], memoryMap.listRecords.at(i).sName.length());
-        g_nColumnWidths[COLUMN_REGION] = qMin(g_nColumnWidths[COLUMN_REGION], 50);
+        nMaxRegionNameLength = qMax(nMaxRegionNameLength, memoryMap.listRecords.at(i).sName.length());
+        nMaxRegionNameLength = qMin(50, nMaxRegionNameLength);
     }
+
+    setColumnSymbolSize(COLUMN_REGION, nMaxRegionNameLength);
 }
 
 void XModel_MSRecord::setValue(XBinary::ENDIAN endian, XBinary::VT valueType, QVariant varValue)
@@ -85,20 +88,6 @@ QModelIndex XModel_MSRecord::parent(const QModelIndex &child) const
     Q_UNUSED(child)
 
     return QModelIndex();
-}
-
-int XModel_MSRecord::rowCount(const QModelIndex &parent) const
-{
-    Q_UNUSED(parent)
-
-    return g_nRowCount;
-}
-
-int XModel_MSRecord::columnCount(const QModelIndex &parent) const
-{
-    Q_UNUSED(parent)
-
-    return g_nColumnCount;
 }
 
 QVariant XModel_MSRecord::data(const QModelIndex &index, int nRole) const
@@ -264,11 +253,6 @@ QVariant XModel_MSRecord::headerData(int nSection, Qt::Orientation orientation, 
     }
 
     return result;
-}
-
-qint32 XModel_MSRecord::getColumnSymbolSize(qint32 nColumn)
-{
-    return g_nColumnWidths[nColumn];
 }
 
 bool XModel_MSRecord::isCustomFilter()

@@ -23,6 +23,18 @@
 
 XModel::XModel(QObject *pParent) : QAbstractItemModel(pParent)
 {
+    g_nRowCount = 0;
+    g_nColumnCount = 0;
+}
+
+void XModel::setColumnSymbolSize(qint32 nColumn, qint32 nValue)
+{
+    g_hashColumnSymbolSize[nColumn] = nValue;  // TODO optimize use allocated memory
+}
+
+qint32 XModel::getColumnSymbolSize(qint32 nColumn)
+{
+    return g_hashColumnSymbolSize.value(nColumn, 40);
 }
 
 bool XModel::isCustomFilter()
@@ -53,6 +65,48 @@ bool XModel::isRowHidden(qint32 nRow)
 quint64 XModel::getRowPrio(qint32 nRow)
 {
     return g_hashRowPrio.value(nRow, 0);
+}
+
+QModelIndex XModel::index(int row, int column, const QModelIndex &parent) const
+{
+    QModelIndex result;
+
+    if (hasIndex(row, column, parent)) {
+        result = createIndex(row, column);
+    }
+
+    return result;
+}
+
+QModelIndex XModel::parent(const QModelIndex &child) const
+{
+    Q_UNUSED(child)
+
+    return QModelIndex();
+}
+
+void XModel::_setRowCount(qint32 nRowCount)
+{
+    g_nRowCount = nRowCount;
+}
+
+void XModel::_setColumnCount(qint32 nColumnCount)
+{
+    g_nColumnCount = nColumnCount;
+}
+
+int XModel::rowCount(const QModelIndex &parent) const
+{
+    Q_UNUSED(parent)
+
+    return g_nRowCount;
+}
+
+int XModel::columnCount(const QModelIndex &parent) const
+{
+    Q_UNUSED(parent)
+
+    return g_nColumnCount;
 }
 
 XModel::SORT_METHOD XModel::getSortMethod(qint32 nColumn)

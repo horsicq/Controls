@@ -33,9 +33,17 @@ public:
         SORT_METHOD_HEX,
     };
 
+    enum USERROLE {
+        USERROLE_SIZE = 0,
+        USERROLE_OFFSET,
+        USERROLE_ADDRESS,
+        USERROLE_TYPE
+    };
+
     XModel(QObject *pParent);
 
-    virtual qint32 getColumnSymbolSize(qint32 nColumn) = 0;
+    void setColumnSymbolSize(qint32 nColumn, qint32 nValue);
+    qint32 getColumnSymbolSize(qint32 nColumn);
     virtual SORT_METHOD getSortMethod(qint32 nColumn);
     virtual bool isCustomFilter();
     virtual bool isCustomSort();
@@ -43,10 +51,19 @@ public:
     void setRowPrio(qint32 nRow, quint64 nPrio);
     bool isRowHidden(qint32 nRow);
     quint64 getRowPrio(qint32 nRow);
+    virtual QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
+    virtual QModelIndex parent(const QModelIndex &child) const;
+    void _setRowCount(qint32 nRowCount);
+    void _setColumnCount(qint32 nColumnCount);
+    virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
+    virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
 private:
     QHash<qint32, bool> g_hashRowHidden;
     QHash<qint32, quint64> g_hashRowPrio;
+    QHash<qint32, qint32> g_hashColumnSymbolSize;
+    qint32 g_nRowCount;
+    qint32 g_nColumnCount;
 };
 
 #endif  // XMODEL_H

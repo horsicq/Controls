@@ -40,13 +40,6 @@ public:
         __COLUMN_SIZE
     };
 
-    enum USERROLE {
-        USERROLE_SIZE = 0,
-        USERROLE_OFFSET,
-        USERROLE_ADDRESS,
-        USERROLE_TYPE
-    };
-
     XModel_MSRecord(QIODevice *pDevice, const XBinary::_MEMORY_MAP &memoryMap, QVector<XBinary::MS_RECORD> *pListRecods, XBinary::VT valueType,
                     QObject *pParent = nullptr);
 
@@ -55,11 +48,8 @@ public:
 
     virtual QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
     virtual QModelIndex parent(const QModelIndex &child) const;
-    virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
-    virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
     virtual QVariant data(const QModelIndex &index, int nRole = Qt::DisplayRole) const;
     virtual QVariant headerData(int nSection, Qt::Orientation orientation, int nRole = Qt::DisplayRole) const;
-    virtual qint32 getColumnSymbolSize(qint32 nColumn);
     virtual SORT_METHOD getSortMethod(qint32 nColumn);
     virtual bool isCustomFilter();
     virtual bool isCustomSort();
@@ -70,7 +60,6 @@ private:
     QVector<XBinary::MS_RECORD> *g_pListRecords;
     qint32 g_nRowCount;
     qint32 g_nColumnCount;
-    qint32 g_nColumnWidths[__COLUMN_SIZE];
     XBinary::MODE g_modeAddress;
     XBinary::MODE g_modeOffset;
     XBinary::ENDIAN g_endian;
