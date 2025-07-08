@@ -34,10 +34,12 @@ public:
     };
 
     enum USERROLE {
-        USERROLE_SIZE = 0,
+        USERROLE_ORIGINDEX = 0,
+        USERROLE_SIZE,
         USERROLE_OFFSET,
         USERROLE_ADDRESS,
-        USERROLE_TYPE
+        USERROLE_STRING1,
+        USERROLE_STRING2
     };
 
     XModel(QObject *pParent);
@@ -57,6 +59,9 @@ public:
     void _setColumnCount(qint32 nColumnCount);
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
     virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
+
+    void adjustColumnToContent(qint32 nColumn, bool bHeader);
+    void adjustColumnsToContent(bool bHeader);
 
 private:
     QHash<qint32, bool> g_hashRowHidden;

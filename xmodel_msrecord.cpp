@@ -184,6 +184,8 @@ QVariant XModel_MSRecord::data(const QModelIndex &index, int nRole) const
                 //             }
                 //         }
                 //     }
+            } else if (nRole == Qt::UserRole + USERROLE_ORIGINDEX) {
+                result = nRow;
             } else if (nRole == Qt::UserRole + USERROLE_ADDRESS) {
                 qint16 nRegionIndex = g_pListRecords->at(nRow).nRegionIndex;
                 if (nRegionIndex != -1) {
@@ -202,7 +204,7 @@ QVariant XModel_MSRecord::data(const QModelIndex &index, int nRole) const
                 }
             } else if (nRole == Qt::UserRole + USERROLE_SIZE) {
                 result = g_pListRecords->at(nRow).nSize;
-            } else if (nRole == Qt::UserRole + USERROLE_TYPE) {
+            } else if (nRole == Qt::UserRole + USERROLE_STRING1) {
                 result = g_pListRecords->at(nRow).nValueType;
             }
         }

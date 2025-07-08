@@ -2,12 +2,12 @@ INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
 
 HEADERS += \
-    $$PWD/xhtml.h
+    $$PWD/xmodel.h
 
 SOURCES += \
-    $$PWD/xhtml.cpp
+    $$PWD/xmodel.cpp
 
 DISTFILES += \
     $$PWD/LICENSE \
     $$PWD/README.md \
-    $$PWD/xhtml.cmake
+    $$PWD/xmodel.cmake

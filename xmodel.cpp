@@ -109,6 +109,35 @@ int XModel::columnCount(const QModelIndex &parent) const
     return g_nColumnCount;
 }
 
+void XModel::adjustColumnToContent(qint32 nColumn, bool bHeader)
+{
+    qint32 nSymbolSize = 0;
+
+    if (bHeader) {
+        nSymbolSize = qMax(nSymbolSize, headerData(nColumn, Qt::Horizontal).toString().length());
+    }
+
+    qint32 nNumberOfRows = rowCount();
+
+    for (qint32 i = 0; i < nNumberOfRows; i++) {
+        QModelIndex index = this->index(i, nColumn);
+        QString sData = data(index, Qt::DisplayRole).toString();
+
+        nSymbolSize = qMax(nSymbolSize, sData.length());
+    }
+
+    setColumnSymbolSize(nColumn, nSymbolSize);
+}
+
+void XModel::adjustColumnsToContent(bool bHeader)
+{
+    qint32 nNumberOfColumns = columnCount();
+
+    for (qint32 i = 0; i < nNumberOfColumns; i++) {
+        adjustColumnToContent(i, bHeader);
+    }
+}
+
 XModel::SORT_METHOD XModel::getSortMethod(qint32 nColumn)
 {
     Q_UNUSED(nColumn)
