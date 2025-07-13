@@ -58,8 +58,6 @@ private:
     QIODevice *g_pDevice;
     XBinary::_MEMORY_MAP g_memoryMap;
     QVector<XBinary::MS_RECORD> *g_pListRecords;
-    qint32 g_nRowCount;
-    qint32 g_nColumnCount;
     XBinary::MODE g_modeAddress;
     XBinary::MODE g_modeOffset;
     XBinary::ENDIAN g_endian;

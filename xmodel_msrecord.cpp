@@ -33,19 +33,20 @@ XModel_MSRecord::XModel_MSRecord(QIODevice *pDevice, const XBinary::_MEMORY_MAP 
     g_endian = XBinary::ENDIAN_LITTLE;
     g_valueType = valueType;
 
-    g_nRowCount = pListRecods->count();
-    g_nColumnCount = __COLUMN_SIZE;
+    qint32 nRowCount = pListRecods->count();
+
+    _setRowCount(nRowCount);
+    _setColumnCount(__COLUMN_SIZE);
 
     g_modeAddress = XBinary::getWidthModeFromSize(memoryMap.nModuleAddress + memoryMap.nImageSize);
     g_modeOffset = XBinary::getWidthModeFromSize(memoryMap.nBinarySize);
 
-    setColumnSymbolSize(COLUMN_NUMBER, QString::number(g_nRowCount).length());
+    setColumnSymbolSize(COLUMN_NUMBER, QString::number(nRowCount).length());
     setColumnSymbolSize(COLUMN_OFFSET, XBinary::getByteSizeFromWidthMode(g_modeOffset) * 2);
     setColumnSymbolSize(COLUMN_ADDRESS, XBinary::getByteSizeFromWidthMode(g_modeAddress) * 2);
     setColumnSymbolSize(COLUMN_REGION, 1);
     setColumnSymbolSize(COLUMN_SIZE, 4);
     setColumnSymbolSize(COLUMN_INFO, 8);
-    setColumnSymbolSize(COLUMN_NUMBER, 100);
 
     qint32 nNumberOfRegions = memoryMap.listRecords.count();
     qint32 nMaxRegionNameLength = 4;
