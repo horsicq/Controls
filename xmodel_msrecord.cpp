@@ -73,24 +73,6 @@ void XModel_MSRecord::setSignaturesList(QList<XBinary::SIGNATUREDB_RECORD> *pLis
     g_pListSignatureRecords = pListSignatureRecords;
 }
 
-QModelIndex XModel_MSRecord::index(int row, int column, const QModelIndex &parent) const
-{
-    QModelIndex result;
-
-    if (hasIndex(row, column, parent)) {
-        result = createIndex(row, column);
-    }
-
-    return result;
-}
-
-QModelIndex XModel_MSRecord::parent(const QModelIndex &child) const
-{
-    Q_UNUSED(child)
-
-    return QModelIndex();
-}
-
 QVariant XModel_MSRecord::data(const QModelIndex &index, int nRole) const
 {
     QVariant result;

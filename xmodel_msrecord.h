@@ -46,8 +46,6 @@ public:
     void setValue(XBinary::ENDIAN endian, XBinary::VT valueType, QVariant varValue);
     void setSignaturesList(QList<XBinary::SIGNATUREDB_RECORD> *pListSignatureRecords);
 
-    virtual QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
-    virtual QModelIndex parent(const QModelIndex &child) const;
     virtual QVariant data(const QModelIndex &index, int nRole = Qt::DisplayRole) const;
     virtual QVariant headerData(int nSection, Qt::Orientation orientation, int nRole = Qt::DisplayRole) const;
     virtual SORT_METHOD getSortMethod(qint32 nColumn);
