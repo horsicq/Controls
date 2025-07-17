@@ -20,10 +20,10 @@
  */
 #include "xmodel_binary.h"
 
-XModel_Binary::XModel_Binary(const XBinary::DATA_RECORDS_OPTIONS &dataRecordsOptions, QList<QVariant> *pListValues, QList<QString> *pListTitles, QObject *pParent) : XModel(pParent)
+XModel_Binary::XModel_Binary(const XBinary::DATA_RECORDS_OPTIONS &dataRecordsOptions, QList<XBinary::DATA_RECORD_ROW> *pListDataRecords, QList<QString> *pListTitles, QObject *pParent) : XModel(pParent)
 {
     g_dataRecordsOptions = dataRecordsOptions;
-    g_pListValues = pListValues;
+    g_pListDataRecords = pListDataRecords;
     g_pListTitles = pListTitles;
 
     _setColumnCount(pListTitles->count());

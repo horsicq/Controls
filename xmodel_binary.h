@@ -28,14 +28,14 @@ class XModel_Binary : public XModel {
     Q_OBJECT
 
 public:
-    XModel_Binary(const XBinary::DATA_RECORDS_OPTIONS &dataRecordsOptions, QList<QVariant> *pListValues, QList<QString> *pListTitles, QObject *pParent);
+    XModel_Binary(const XBinary::DATA_RECORDS_OPTIONS &dataRecordsOptions, QList<XBinary::DATA_RECORD_ROW> *pListDataRecords, QList<QString> *pListTitles, QObject *pParent);
 
     virtual QVariant data(const QModelIndex &index, int nRole = Qt::DisplayRole) const;
     virtual QVariant headerData(int nSection, Qt::Orientation orientation, int nRole = Qt::DisplayRole) const;
 
 private:
     XBinary::DATA_RECORDS_OPTIONS g_dataRecordsOptions;
-    QList<QVariant> *g_pListValues;
+    QList<XBinary::DATA_RECORD_ROW> *g_pListDataRecords;
     QList<QString> *g_pListTitles;
 };
 
