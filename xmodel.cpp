@@ -32,9 +32,29 @@ void XModel::setColumnSymbolSize(qint32 nColumn, qint32 nValue)
     g_hashColumnSymbolSize[nColumn] = nValue;  // TODO optimize use allocated memory
 }
 
-qint32 XModel::getColumnSymbolSize(qint32 nColumn)
+qint32 XModel::getColumnSymbolSize(qint32 nColumn) const
 {
     return g_hashColumnSymbolSize.value(nColumn, 40);
+}
+
+void XModel::setColumnAlignment(qint32 nColumn, qint32 flag)
+{
+    g_hashColumnAlignment[nColumn] = flag;  // TODO optimize use allocated memory
+}
+
+qint32 XModel::getColumnAlignment(qint32 nColumn) const
+{
+    return g_hashColumnAlignment.value(nColumn, Qt::AlignVCenter | Qt::AlignLeft);
+}
+
+void XModel::setColumnName(qint32 nColumn, const QString &sName)
+{
+    g_hashColumnName[nColumn] = sName;  // TODO optimize use allocated memory
+}
+
+QString XModel::getColumnName(qint32 nColumn) const
+{
+    return g_hashColumnName.value(nColumn, "");
 }
 
 bool XModel::isCustomFilter()

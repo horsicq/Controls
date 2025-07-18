@@ -27,16 +27,29 @@
 class XModel_Binary : public XModel {
     Q_OBJECT
 
+    enum HEADER_COLUMN {
+        HEADER_COLUMN_NAME = 0,
+        HEADER_COLUMN_OFFSET,
+        HEADER_COLUMN_SIZE,
+        HEADER_COLUMN_TYPE,
+        HEADER_COLUMN_VALUE,
+        HEADER_COLUMN_INFO,
+        HEADER_COLUMN_COMMENT,
+        __HEADER_COLUMN_SIZE
+    };
+
 public:
     XModel_Binary(const XBinary::DATA_RECORDS_OPTIONS &dataRecordsOptions, QList<XBinary::DATA_RECORD_ROW> *pListDataRecords, QList<QString> *pListTitles, QObject *pParent);
 
     virtual QVariant data(const QModelIndex &index, int nRole = Qt::DisplayRole) const;
     virtual QVariant headerData(int nSection, Qt::Orientation orientation, int nRole = Qt::DisplayRole) const;
+    void setComments(QList<QString> *pListComments);
 
 private:
     XBinary::DATA_RECORDS_OPTIONS g_dataRecordsOptions;
     QList<XBinary::DATA_RECORD_ROW> *g_pListDataRecords;
     QList<QString> *g_pListTitles;
+    QList<QString> *g_pListComments;
 };
 
 #endif // XMODEL_BINARY_H

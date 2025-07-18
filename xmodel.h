@@ -45,7 +45,11 @@ public:
     XModel(QObject *pParent);
 
     void setColumnSymbolSize(qint32 nColumn, qint32 nValue);
-    qint32 getColumnSymbolSize(qint32 nColumn);
+    qint32 getColumnSymbolSize(qint32 nColumn) const;
+    void setColumnAlignment(qint32 nColumn, qint32 flag);
+    qint32 getColumnAlignment(qint32 nColumn) const;
+    void setColumnName(qint32 nColumn, const QString &sName);
+    QString getColumnName(qint32 nColumn) const;
     virtual SORT_METHOD getSortMethod(qint32 nColumn);
     virtual bool isCustomFilter();
     virtual bool isCustomSort();
@@ -67,6 +71,8 @@ private:
     QHash<qint32, bool> g_hashRowHidden;
     QHash<qint32, quint64> g_hashRowPrio;
     QHash<qint32, qint32> g_hashColumnSymbolSize;
+    QHash<qint32, qint32> g_hashColumnAlignment;
+    QHash<qint32, QString> g_hashColumnName;
     qint32 g_nRowCount;
     qint32 g_nColumnCount;
 };

@@ -25,16 +25,88 @@ XModel_Binary::XModel_Binary(const XBinary::DATA_RECORDS_OPTIONS &dataRecordsOpt
     g_dataRecordsOptions = dataRecordsOptions;
     g_pListDataRecords = pListDataRecords;
     g_pListTitles = pListTitles;
+    g_pListComments = nullptr;
 
-    _setColumnCount(pListTitles->count());
-    _setRowCount(dataRecordsOptions.dataHeader.nCount);
+    if (dataRecordsOptions.dataHeader.dhMode == XBinary::DHMODE_HEADER) {
+        _setRowCount(dataRecordsOptions.dataHeader.listRecords.count());
+        _setColumnCount(__HEADER_COLUMN_SIZE);
+
+        setColumnName(HEADER_COLUMN_NAME, tr("Name"));
+        setColumnName(HEADER_COLUMN_OFFSET, tr("Offset"));
+        setColumnName(HEADER_COLUMN_SIZE, tr("Size"));
+        setColumnName(HEADER_COLUMN_TYPE, tr("Type"));
+        setColumnName(HEADER_COLUMN_VALUE, tr("Value"));
+        setColumnName(HEADER_COLUMN_INFO, tr(""));
+        setColumnName(HEADER_COLUMN_COMMENT, tr("Comment"));
+        setColumnAlignment(HEADER_COLUMN_NAME, Qt::AlignVCenter | Qt::AlignLeft);
+        setColumnAlignment(HEADER_COLUMN_OFFSET, Qt::AlignVCenter | Qt::AlignRight);
+        setColumnAlignment(HEADER_COLUMN_SIZE, Qt::AlignVCenter | Qt::AlignRight);
+        setColumnAlignment(HEADER_COLUMN_TYPE, Qt::AlignVCenter | Qt::AlignLeft);
+        setColumnAlignment(HEADER_COLUMN_VALUE, Qt::AlignVCenter | Qt::AlignLeft);
+        setColumnAlignment(HEADER_COLUMN_INFO, Qt::AlignVCenter | Qt::AlignLeft);
+        setColumnAlignment(HEADER_COLUMN_COMMENT, Qt::AlignVCenter | Qt::AlignLeft);
+    } else if (dataRecordsOptions.dataHeader.dhMode == XBinary::DHMODE_TABLE) {
+        _setColumnCount(pListTitles->count());
+        _setRowCount(pListDataRecords->count());
+
+        qint32 nNumberOfColumns = g_pListTitles->count();
+
+        for (qint32 i = 0; i < nNumberOfColumns; i++) {
+            qint32 flag = Qt::AlignVCenter | Qt::AlignLeft;
+
+            XBinary::VT valType = dataRecordsOptions.dataHeader.listRecords.at(i).valType;
+
+            if (XBinary::isIntegerType(valType)) {
+                flag = Qt::AlignVCenter | Qt::AlignRight;
+            }
+
+            setColumnAlignment(i, flag);
+            setColumnName(i, g_pListTitles->at(i));
+        }
+    }
 }
 
 QVariant XModel_Binary::data(const QModelIndex &index, int nRole) const
 {
-    QVariant varResult;
+    QVariant result;
 
-    return varResult;
+    if (index.isValid()) {
+        qint32 nRow = index.row();
+
+        if (nRow >= 0) {
+            qint32 nColumn = index.column();
+
+            if (nRole == Qt::DisplayRole) {
+                if (g_dataRecordsOptions.dataHeader.dhMode == XBinary::DHMODE_HEADER) {
+                    if (nColumn == HEADER_COLUMN_NAME) {
+                        result = g_dataRecordsOptions.dataHeader.listRecords.at(nRow).sName;
+                    } else if (nColumn == HEADER_COLUMN_OFFSET) {
+                        result = QString::number(g_dataRecordsOptions.dataHeader.listRecords.at(nRow).nRelOffset, 16);
+                    } else if (nColumn == HEADER_COLUMN_SIZE) {
+                        result = QString::number(g_dataRecordsOptions.dataHeader.listRecords.at(nRow).nSize, 16);
+                    } else if (nColumn == HEADER_COLUMN_TYPE) {
+                        result = XBinary::valueTypeToString(g_dataRecordsOptions.dataHeader.listRecords.at(nRow).valType, g_dataRecordsOptions.dataHeader.listRecords.at(nRow).nSize);
+                    } else if (nColumn == HEADER_COLUMN_VALUE) {
+                        result = XBinary::getValueString(g_pListDataRecords->at(0).listValues.at(nRow), g_dataRecordsOptions.dataHeader.listRecords.at(nRow).valType, true);
+                    } else if (nColumn == HEADER_COLUMN_INFO) {
+                         // TODO
+                    } else if (nColumn == HEADER_COLUMN_COMMENT) {
+                        if (g_pListComments) {
+                            if (nRow < g_pListComments->count()) {
+                                result = g_pListComments->at(nRow);
+                            }
+                        }
+                    }
+                } else if (g_dataRecordsOptions.dataHeader.dhMode == XBinary::DHMODE_TABLE) {
+                    result = XBinary::getValueString(g_pListDataRecords->at(nRow).listValues.at(nColumn), g_dataRecordsOptions.dataHeader.listRecords.at(nColumn).valType, true);
+                }
+            } else if (nRole == Qt::TextAlignmentRole) {
+                result = getColumnAlignment(nColumn);
+            }
+        }
+    }
+
+    return result;
 }
 
 QVariant XModel_Binary::headerData(int nSection, Qt::Orientation orientation, int nRole) const
@@ -43,11 +115,16 @@ QVariant XModel_Binary::headerData(int nSection, Qt::Orientation orientation, in
 
     if (orientation == Qt::Horizontal) {
         if (nRole == Qt::DisplayRole) {
-            if (nSection < g_pListTitles->count()) {
-                result = g_pListTitles->at(nSection);
-            }
+            result = getColumnName(nSection);
+        } else if (nRole == Qt::TextAlignmentRole) {
+            result = getColumnAlignment(nSection);
         }
     }
 
     return result;
+}
+
+void XModel_Binary::setComments(QList<QString> *pListComments)
+{
+    g_pListComments = pListComments;
 }
