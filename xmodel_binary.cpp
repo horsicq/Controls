@@ -20,7 +20,9 @@
  */
 #include "xmodel_binary.h"
 
-XModel_Binary::XModel_Binary(const XBinary::DATA_RECORDS_OPTIONS &dataRecordsOptions, QList<XBinary::DATA_RECORD_ROW> *pListDataRecords, QList<QString> *pListTitles, QObject *pParent) : XModel(pParent)
+XModel_Binary::XModel_Binary(const XBinary::DATA_RECORDS_OPTIONS &dataRecordsOptions, QList<XBinary::DATA_RECORD_ROW> *pListDataRecords, QList<QString> *pListTitles,
+                             QObject *pParent)
+    : XModel(pParent)
 {
     g_dataRecordsOptions = dataRecordsOptions;
     g_pListDataRecords = pListDataRecords;
@@ -85,11 +87,13 @@ QVariant XModel_Binary::data(const QModelIndex &index, int nRole) const
                     } else if (nColumn == HEADER_COLUMN_SIZE) {
                         result = QString::number(g_dataRecordsOptions.dataHeader.listRecords.at(nRow).nSize, 16);
                     } else if (nColumn == HEADER_COLUMN_TYPE) {
-                        result = XBinary::valueTypeToString(g_dataRecordsOptions.dataHeader.listRecords.at(nRow).valType, g_dataRecordsOptions.dataHeader.listRecords.at(nRow).nSize);
+                        result = XBinary::valueTypeToString(g_dataRecordsOptions.dataHeader.listRecords.at(nRow).valType,
+                                                            g_dataRecordsOptions.dataHeader.listRecords.at(nRow).nSize);
                     } else if (nColumn == HEADER_COLUMN_VALUE) {
-                        result = XBinary::getValueString(g_pListDataRecords->at(0).listValues.at(nRow), g_dataRecordsOptions.dataHeader.listRecords.at(nRow).valType, true);
+                        result =
+                            XBinary::getValueString(g_pListDataRecords->at(0).listValues.at(nRow), g_dataRecordsOptions.dataHeader.listRecords.at(nRow).valType, true);
                     } else if (nColumn == HEADER_COLUMN_INFO) {
-                         // TODO
+                        // TODO
                     } else if (nColumn == HEADER_COLUMN_COMMENT) {
                         if (g_pListComments) {
                             if (nRow < g_pListComments->count()) {
@@ -98,7 +102,8 @@ QVariant XModel_Binary::data(const QModelIndex &index, int nRole) const
                         }
                     }
                 } else if (g_dataRecordsOptions.dataHeader.dhMode == XBinary::DHMODE_TABLE) {
-                    result = XBinary::getValueString(g_pListDataRecords->at(nRow).listValues.at(nColumn), g_dataRecordsOptions.dataHeader.listRecords.at(nColumn).valType, true);
+                    result = XBinary::getValueString(g_pListDataRecords->at(nRow).listValues.at(nColumn), g_dataRecordsOptions.dataHeader.listRecords.at(nColumn).valType,
+                                                     true);
                 }
             } else if (nRole == Qt::TextAlignmentRole) {
                 result = getColumnAlignment(nColumn);

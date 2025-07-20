@@ -39,7 +39,8 @@ class XModel_Binary : public XModel {
     };
 
 public:
-    XModel_Binary(const XBinary::DATA_RECORDS_OPTIONS &dataRecordsOptions, QList<XBinary::DATA_RECORD_ROW> *pListDataRecords, QList<QString> *pListTitles, QObject *pParent);
+    XModel_Binary(const XBinary::DATA_RECORDS_OPTIONS &dataRecordsOptions, QList<XBinary::DATA_RECORD_ROW> *pListDataRecords, QList<QString> *pListTitles,
+                  QObject *pParent);
 
     virtual QVariant data(const QModelIndex &index, int nRole = Qt::DisplayRole) const;
     virtual QVariant headerData(int nSection, Qt::Orientation orientation, int nRole = Qt::DisplayRole) const;
@@ -52,4 +53,4 @@ private:
     QList<QString> *g_pListComments;
 };
 
-#endif // XMODEL_BINARY_H
+#endif  // XMODEL_BINARY_H
