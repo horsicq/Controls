@@ -48,8 +48,10 @@ XModel_Binary::XModel_Binary(const XBinary::DATA_RECORDS_OPTIONS &dataRecordsOpt
         setColumnAlignment(HEADER_COLUMN_INFO, Qt::AlignVCenter | Qt::AlignLeft);
         setColumnAlignment(HEADER_COLUMN_COMMENT, Qt::AlignVCenter | Qt::AlignLeft);
     } else if (dataRecordsOptions.dataHeader.dhMode == XBinary::DHMODE_TABLE) {
-        _setColumnCount(pListTitles->count());
-        _setRowCount(pListDataRecords->count());
+        qint32 nColumnCount = pListTitles->count();
+        qint32 nRowCount = pListDataRecords->count();
+        _setColumnCount(nColumnCount);
+        _setRowCount(nRowCount);
 
         qint32 nNumberOfColumns = g_pListTitles->count();
 
@@ -64,6 +66,12 @@ XModel_Binary::XModel_Binary(const XBinary::DATA_RECORDS_OPTIONS &dataRecordsOpt
 
             setColumnAlignment(i, flag);
             setColumnName(i, g_pListTitles->at(i));
+
+            if (nRowCount > 0) {
+                qint32 nColumnSymbolSize = g_pListTitles->at(i).length();
+                nColumnSymbolSize = qMax(nColumnSymbolSize, XBinary::getValueSymbolSize(valType));
+                setColumnSymbolSize(i, nColumnSymbolSize);
+            }
         }
     }
 }
