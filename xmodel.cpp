@@ -23,38 +23,38 @@
 
 XModel::XModel(QObject *pParent) : QAbstractItemModel(pParent)
 {
-    g_nRowCount = 0;
-    g_nColumnCount = 0;
+    m_nRowCount = 0;
+    m_nColumnCount = 0;
 }
 
 void XModel::setColumnSymbolSize(qint32 nColumn, qint32 nValue)
 {
-    g_hashColumnSymbolSize[nColumn] = nValue;  // TODO optimize use allocated memory
+    m_hashColumnSymbolSize[nColumn] = nValue;  // TODO optimize use allocated memory
 }
 
 qint32 XModel::getColumnSymbolSize(qint32 nColumn) const
 {
-    return g_hashColumnSymbolSize.value(nColumn, 40);
+    return m_hashColumnSymbolSize.value(nColumn, 40);
 }
 
 void XModel::setColumnAlignment(qint32 nColumn, qint32 flag)
 {
-    g_hashColumnAlignment[nColumn] = flag;  // TODO optimize use allocated memory
+    m_hashColumnAlignment[nColumn] = flag;  // TODO optimize use allocated memory
 }
 
 qint32 XModel::getColumnAlignment(qint32 nColumn) const
 {
-    return g_hashColumnAlignment.value(nColumn, Qt::AlignVCenter | Qt::AlignLeft);
+    return m_hashColumnAlignment.value(nColumn, Qt::AlignVCenter | Qt::AlignLeft);
 }
 
 void XModel::setColumnName(qint32 nColumn, const QString &sName)
 {
-    g_hashColumnName[nColumn] = sName;  // TODO optimize use allocated memory
+    m_hashColumnName[nColumn] = sName;  // TODO optimize use allocated memory
 }
 
 QString XModel::getColumnName(qint32 nColumn) const
 {
-    return g_hashColumnName.value(nColumn, "");
+    return m_hashColumnName.value(nColumn, "");
 }
 
 bool XModel::isCustomFilter()
@@ -69,22 +69,22 @@ bool XModel::isCustomSort()
 
 void XModel::setRowHidden(qint32 nRow, bool bState)
 {
-    g_hashRowHidden[nRow] = bState;  // TODO optimize use allocated memory
+    m_hashRowHidden[nRow] = bState;  // TODO optimize use allocated memory
 }
 
 void XModel::setRowPrio(qint32 nRow, quint64 nPrio)
 {
-    g_hashRowPrio[nRow] = nPrio;
+    m_hashRowPrio[nRow] = nPrio;
 }
 
 bool XModel::isRowHidden(qint32 nRow)
 {
-    return g_hashRowHidden.value(nRow, false);
+    return m_hashRowHidden.value(nRow, false);
 }
 
 quint64 XModel::getRowPrio(qint32 nRow)
 {
-    return g_hashRowPrio.value(nRow, 0);
+    return m_hashRowPrio.value(nRow, 0);
 }
 
 QModelIndex XModel::index(int row, int column, const QModelIndex &parent) const
@@ -107,26 +107,26 @@ QModelIndex XModel::parent(const QModelIndex &child) const
 
 void XModel::_setRowCount(qint32 nRowCount)
 {
-    g_nRowCount = nRowCount;
+    m_nRowCount = nRowCount;
 }
 
 void XModel::_setColumnCount(qint32 nColumnCount)
 {
-    g_nColumnCount = nColumnCount;
+    m_nColumnCount = nColumnCount;
 }
 
 int XModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
 
-    return g_nRowCount;
+    return m_nRowCount;
 }
 
 int XModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
 
-    return g_nColumnCount;
+    return m_nColumnCount;
 }
 
 void XModel::adjustColumnToContent(qint32 nColumn, bool bHeader)

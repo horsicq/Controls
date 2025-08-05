@@ -68,13 +68,13 @@ public:
     void adjustColumnsToContent(bool bHeader);
 
 private:
-    QHash<qint32, bool> g_hashRowHidden;
-    QHash<qint32, quint64> g_hashRowPrio;
-    QHash<qint32, qint32> g_hashColumnSymbolSize;
-    QHash<qint32, qint32> g_hashColumnAlignment;
-    QHash<qint32, QString> g_hashColumnName;
-    qint32 g_nRowCount;
-    qint32 g_nColumnCount;
+    QHash<qint32, bool> m_hashRowHidden;
+    QHash<qint32, quint64> m_hashRowPrio;
+    QHash<qint32, qint32> m_hashColumnSymbolSize;
+    QHash<qint32, qint32> m_hashColumnAlignment;
+    QHash<qint32, QString> m_hashColumnName;
+    qint32 m_nRowCount;
+    qint32 m_nColumnCount;
 };
 
 #endif  // XMODEL_H

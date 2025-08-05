@@ -23,6 +23,8 @@
 
 #include <QDialog>
 #include <QToolButton>
+#include <QGroupBox>
+#include <QRegExp>
 #include "xlineeditvalidator.h"
 
 namespace Ui {
@@ -33,42 +35,63 @@ class DialogBits8 : public QDialog {
     Q_OBJECT
 
 public:
-    explicit DialogBits8(QWidget *pParent, bool bStayOnTop);
+    enum BitMode {
+        BIT_MODE_8 = 8,
+        BIT_MODE_16 = 16,
+        BIT_MODE_32 = 32,
+        BIT_MODE_64 = 64
+    };
+
+    explicit DialogBits8(QWidget *pParent = nullptr, bool bStayOnTop = false);
     ~DialogBits8();
 
     void setReadonly(bool bIsReadonly);
-    void setValue_uint8(quint8 nValue);
-    void setValue_uint16(quint16 nValue);
-    void setValue_uint32(quint32 nValue);
-    void setValue_uint64(quint64 nValue);
-    void reload();
-    quint8 getValue_uint8();
-    quint16 getValue_uint16();
-    quint32 getValue_uint32();
-    quint64 getValue_uint64();
+    void setValue(quint64 nValue, BitMode mode);
+    void setValue_uint8(quint8 nValue) { setValue(nValue, BIT_MODE_8); }
+    void setValue_uint16(quint16 nValue) { setValue(nValue, BIT_MODE_16); }
+    void setValue_uint32(quint32 nValue) { setValue(nValue, BIT_MODE_32); }
+    void setValue_uint64(quint64 nValue) { setValue(nValue, BIT_MODE_64); }
+    
+    quint64 getValue() const { return m_nValue; }
+    quint8 getValue_uint8() const { return static_cast<quint8>(m_nValue); }
+    quint16 getValue_uint16() const { return static_cast<quint16>(m_nValue); }
+    quint32 getValue_uint32() const { return static_cast<quint32>(m_nValue); }
+    quint64 getValue_uint64() const { return m_nValue; }
 
 private slots:
-    void _handleButton(QToolButton *pToolButton);
     void on_lineEditHex_textChanged(const QString &sString);
     void on_lineEditSigned_textChanged(const QString &sString);
     void on_lineEditUnsigned_textChanged(const QString &sString);
     void on_lineEditBin_textChanged(const QString &sString);
-    void toggledSlot(bool bState);
-    void enableControls(bool bState);
+    void onBitButtonToggled(bool bState);
     void on_pushButtonCancel_clicked();
-
     void on_pushButtonOK_clicked();
 
 private:
+    void setupValidators();
+    void setupBitButtons();
+    void configureForBitMode(BitMode mode);
+    void updateDisplays();
+    void updateBitButtons();
+    void updateTextFields();
+    void setControlsEnabled(bool bEnabled);
+    QToolButton* getBitButton(int bitIndex) const;
+    
+    static const int MAX_BITS = 64;
+    static const int BITS_PER_GROUP = 8;
+
     Ui::DialogBits8 *ui;
-    quint64 g_nValue;
-    bool g_bIsReadonly;
-    XLineEditValidator g_validatorHex;
-    XLineEditValidator g_validatorSigned;
-    XLineEditValidator g_validatorUnsigned;
-    XLineEditValidator g_validatorBin;
-    QList<QToolButton *> g_listButtons;
-    qint32 g_nBits;
+    quint64 m_nValue;
+    BitMode m_currentMode;
+    bool m_bIsReadonly;
+    bool m_bUpdating;
+    
+    XLineEditValidator m_validatorHex;
+    XLineEditValidator m_validatorSigned;
+    XLineEditValidator m_validatorUnsigned;
+    XLineEditValidator m_validatorBin;
+    
+    QList<QToolButton *> m_bitButtons;
 };
 
 #endif  // DIALOGBITS8_H
