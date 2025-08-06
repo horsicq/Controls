@@ -50,7 +50,7 @@ signals:
     void invalidateSignal();
 
 private:
-    void deleteOldModel(QAbstractItemModel **g_ppOldModel);
+    void deleteOldModel(QAbstractItemModel **ppOldModel);
     void handleFilter();
 
 private slots:
@@ -59,16 +59,16 @@ private slots:
     void horisontalScroll();
 
 private:
-    XHeaderView *g_pHeaderView;
-    XSortFilterProxyModel *g_pSortFilterProxyModel;
-    QAbstractItemModel *g_pOldModel;
-    QAbstractItemModel *g_pModel;
-    bool g_bIsXmodel;
-    bool g_bIsCustomFilter;
-    bool g_bIsCustomSort;
-    XModel *g_pXModel;
-    QFutureWatcher<void> g_watcher;
-    bool g_bIsStop;
+    XHeaderView *m_pHeaderView;
+    XSortFilterProxyModel *m_pSortFilterProxyModel;
+    QAbstractItemModel *m_pOldModel;
+    QAbstractItemModel *m_pModel;
+    bool m_bIsXmodel;
+    bool m_bIsCustomFilter;
+    bool m_bIsCustomSort;
+    XModel *m_pXModel;
+    QFutureWatcher<void> m_watcher;
+    bool m_bIsStop;
 };
 
 #endif  // XTABLEVIEW_H
