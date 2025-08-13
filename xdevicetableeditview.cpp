@@ -388,15 +388,6 @@ void XDeviceTableEditView::_bookmarkList()
     }
 }
 
-void XDeviceTableEditView::_structs()
-{
-    // DEVICESTATE deviceState = getDeviceState();
-
-    // DialogSetGenericWidget dialogSetGenericWidget(this);
-    // dialogSetGenericWidget.setData(getDevice(), deviceState.nSelectionDeviceOffset, deviceState.nSelectionSize);
-    // dialogSetGenericWidget.exec();
-}
-
 void XDeviceTableEditView::_copyDataSlot()
 {
     DEVICESTATE state = getDeviceState();

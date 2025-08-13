@@ -894,7 +894,19 @@ qint32 XAbstractTableView::getMapCount()
 
 void XAbstractTableView::_customContextMenu(const QPoint &pos)
 {
-    contextMenu(mapToGlobal(pos));
+    if (isContextMenuEnable()) {
+        QList<XShortcuts::MENUITEM> listMenuItems = getMenuItems();
+
+        if (listMenuItems.count()) {
+            QMenu contextMenu(this);
+
+            QList<QObject *> listObjects = getShortcuts()->adjustContextMenu(&contextMenu, &listMenuItems);
+
+            contextMenu.exec(mapToGlobal(pos));
+
+            XOptions::deleteQObjectList(&listObjects);
+        }
+    }
 }
 
 // void XAbstractTableView::updateBlink()
@@ -1189,9 +1201,11 @@ bool XAbstractTableView::_goToViewPos(qint64 nViewPos, bool bSaveCursor, bool bS
     return bResult;
 }
 
-void XAbstractTableView::contextMenu(const QPoint &pos)
+QList<XShortcuts::MENUITEM> XAbstractTableView::getMenuItems()
 {
-    Q_UNUSED(pos)
+    QList<XShortcuts::MENUITEM> listResult;
+
+    return listResult;
 }
 
 qint64 XAbstractTableView::getCurrentViewPosFromScroll()

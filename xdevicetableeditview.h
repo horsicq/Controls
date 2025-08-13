@@ -86,7 +86,6 @@ public slots:
     void _multisearch();
     void _bookmarkNew();
     void _bookmarkList();
-    void _structs();
     void _copyDataSlot();
     void _dumpToFileSlot();
     void _hexSignatureSlot();

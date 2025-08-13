@@ -170,6 +170,8 @@ public:
     void setMapCount(qint32 nMapCount);
     qint32 getMapCount();
 
+    virtual QList<XShortcuts::MENUITEM> getMenuItems();
+
 signals:
     void cursorViewPosChanged(qint64 nViewPos);
     void selectionChanged();
@@ -212,7 +214,6 @@ protected:
     virtual void paintTitle(QPainter *pPainter, qint32 nColumn, qint32 nLeft, qint32 nTop, qint32 nWidth, qint32 nHeight, const QString &sTitle);
     virtual void endPainting(QPainter *pPainter);
     virtual bool _goToViewPos(qint64 nViewPos, bool bSaveCursor = false, bool bShort = false, bool bAprox = false);
-    virtual void contextMenu(const QPoint &pos);
     virtual qint64 getCurrentViewPosFromScroll();
     virtual void setCurrentViewPosToScroll(qint64 nViewPos);
     virtual void adjustColumns();
