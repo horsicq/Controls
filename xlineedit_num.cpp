@@ -20,4 +20,6 @@
  */
 #include "xlineedit_num.h"
 
-XLineEdit_num::XLineEdit_num() {}
+XLineEdit_num::XLineEdit_num()
+{
+}

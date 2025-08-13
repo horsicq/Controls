@@ -20,6 +20,6 @@
  */
 #include "xlineedit_num_validator.h"
 
-XLineEdit_num_validator::XLineEdit_num_validator(QObject *parent)
-    : QValidator{parent}
-{}
+XLineEdit_num_validator::XLineEdit_num_validator(QObject *parent) : QValidator{parent}
+{
+}

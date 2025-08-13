@@ -24,10 +24,9 @@
 #include <QObject>
 #include <QValidator>
 
-class XLineEdit_num_validator : public QValidator
-{
+class XLineEdit_num_validator : public QValidator {
 public:
     explicit XLineEdit_num_validator(QObject *parent = nullptr);
 };
 
-#endif // XLINEEDIT_NUM_VALIDATOR_H
+#endif  // XLINEEDIT_NUM_VALIDATOR_H

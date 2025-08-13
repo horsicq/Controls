@@ -24,8 +24,7 @@
 #include <QLineEdit>
 #include <QObject>
 
-class XLineEdit_num : public QLineEdit
-{
+class XLineEdit_num : public QLineEdit {
 public:
     enum MODE {
         MODE_UNKNOWN = 0,
@@ -48,4 +47,4 @@ private:
     QVariant m_vValue;
 };
 
-#endif // XLINEEDIT_NUM_H
+#endif  // XLINEEDIT_NUM_H
