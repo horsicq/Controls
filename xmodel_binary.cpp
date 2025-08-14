@@ -31,22 +31,22 @@ XModel_Binary::XModel_Binary(const XBinary::DATA_RECORDS_OPTIONS &dataRecordsOpt
 
     if (dataRecordsOptions.dataHeaderFirst.dhMode == XBinary::DHMODE_HEADER) {
         _setRowCount(dataRecordsOptions.dataHeaderFirst.listRecords.count());
-        _setColumnCount(__HEADER_COLUMN_SIZE);
+        _setColumnCount(__COLUMN_HEADER_SIZE);
 
-        setColumnName(HEADER_COLUMN_NAME, tr("Name"));
-        setColumnName(HEADER_COLUMN_OFFSET, tr("Offset"));
-        setColumnName(HEADER_COLUMN_SIZE, tr("Size"));
-        setColumnName(HEADER_COLUMN_TYPE, tr("Type"));
-        setColumnName(HEADER_COLUMN_VALUE, tr("Value"));
-        setColumnName(HEADER_COLUMN_INFO, tr(""));
-        setColumnName(HEADER_COLUMN_COMMENT, tr("Comment"));
-        setColumnAlignment(HEADER_COLUMN_NAME, Qt::AlignVCenter | Qt::AlignLeft);
-        setColumnAlignment(HEADER_COLUMN_OFFSET, Qt::AlignVCenter | Qt::AlignRight);
-        setColumnAlignment(HEADER_COLUMN_SIZE, Qt::AlignVCenter | Qt::AlignRight);
-        setColumnAlignment(HEADER_COLUMN_TYPE, Qt::AlignVCenter | Qt::AlignLeft);
-        setColumnAlignment(HEADER_COLUMN_VALUE, Qt::AlignVCenter | Qt::AlignLeft);
-        setColumnAlignment(HEADER_COLUMN_INFO, Qt::AlignVCenter | Qt::AlignLeft);
-        setColumnAlignment(HEADER_COLUMN_COMMENT, Qt::AlignVCenter | Qt::AlignLeft);
+        setColumnName(COLUMN_HEADER_NAME, tr("Name"));
+        setColumnName(COLUMN_HEADER_OFFSET, tr("Offset"));
+        setColumnName(COLUMN_HEADER_SIZE, tr("Size"));
+        setColumnName(COLUMN_HEADER_TYPE, tr("Type"));
+        setColumnName(COLUMN_HEADER_VALUE, tr("Value"));
+        setColumnName(COLUMN_HEADER_INFO, tr(""));
+        setColumnName(COLUMN_HEADER_COMMENT, tr("Comment"));
+        setColumnAlignment(COLUMN_HEADER_NAME, Qt::AlignVCenter | Qt::AlignLeft);
+        setColumnAlignment(COLUMN_HEADER_OFFSET, Qt::AlignVCenter | Qt::AlignRight);
+        setColumnAlignment(COLUMN_HEADER_SIZE, Qt::AlignVCenter | Qt::AlignRight);
+        setColumnAlignment(COLUMN_HEADER_TYPE, Qt::AlignVCenter | Qt::AlignLeft);
+        setColumnAlignment(COLUMN_HEADER_VALUE, Qt::AlignVCenter | Qt::AlignLeft);
+        setColumnAlignment(COLUMN_HEADER_INFO, Qt::AlignVCenter | Qt::AlignLeft);
+        setColumnAlignment(COLUMN_HEADER_COMMENT, Qt::AlignVCenter | Qt::AlignLeft);
     } else if (dataRecordsOptions.dataHeaderFirst.dhMode == XBinary::DHMODE_TABLE) {
         qint32 nColumnCount = pListTitles->count();
         qint32 nRowCount = pListDataRecords->count();
@@ -88,21 +88,21 @@ QVariant XModel_Binary::data(const QModelIndex &index, int nRole) const
 
             if (nRole == Qt::DisplayRole) {
                 if (g_dataRecordsOptions.dataHeaderFirst.dhMode == XBinary::DHMODE_HEADER) {
-                    if (nColumn == HEADER_COLUMN_NAME) {
+                    if (nColumn == COLUMN_HEADER_NAME) {
                         result = g_dataRecordsOptions.dataHeaderFirst.listRecords.at(nRow).sName;
-                    } else if (nColumn == HEADER_COLUMN_OFFSET) {
+                    } else if (nColumn == COLUMN_HEADER_OFFSET) {
                         result = QString::number(g_dataRecordsOptions.dataHeaderFirst.listRecords.at(nRow).nRelOffset, 16);
-                    } else if (nColumn == HEADER_COLUMN_SIZE) {
+                    } else if (nColumn == COLUMN_HEADER_SIZE) {
                         result = QString::number(g_dataRecordsOptions.dataHeaderFirst.listRecords.at(nRow).nSize, 16);
-                    } else if (nColumn == HEADER_COLUMN_TYPE) {
+                    } else if (nColumn == COLUMN_HEADER_TYPE) {
                         result = XBinary::valueTypeToString(g_dataRecordsOptions.dataHeaderFirst.listRecords.at(nRow).valType,
                                                             g_dataRecordsOptions.dataHeaderFirst.listRecords.at(nRow).nSize);
-                    } else if (nColumn == HEADER_COLUMN_VALUE) {
+                    } else if (nColumn == COLUMN_HEADER_VALUE) {
                         result = XBinary::getValueString(g_pListDataRecords->at(0).listValues.at(nRow), g_dataRecordsOptions.dataHeaderFirst.listRecords.at(nRow).valType,
                                                          true);
-                    } else if (nColumn == HEADER_COLUMN_INFO) {
+                    } else if (nColumn == COLUMN_HEADER_INFO) {
                         // TODO
-                    } else if (nColumn == HEADER_COLUMN_COMMENT) {
+                    } else if (nColumn == COLUMN_HEADER_COMMENT) {
                         if (g_pListComments) {
                             if (nRow < g_pListComments->count()) {
                                 result = g_pListComments->at(nRow);

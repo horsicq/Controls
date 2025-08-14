@@ -27,15 +27,15 @@
 class XModel_Binary : public XModel {
     Q_OBJECT
 
-    enum HEADER_COLUMN {
-        HEADER_COLUMN_NAME = 0,
-        HEADER_COLUMN_OFFSET,
-        HEADER_COLUMN_SIZE,
-        HEADER_COLUMN_TYPE,
-        HEADER_COLUMN_VALUE,
-        HEADER_COLUMN_INFO,
-        HEADER_COLUMN_COMMENT,
-        __HEADER_COLUMN_SIZE
+    enum COLUMN_HEADER {
+        COLUMN_HEADER_NAME = 0,
+        COLUMN_HEADER_OFFSET,
+        COLUMN_HEADER_SIZE,
+        COLUMN_HEADER_TYPE,
+        COLUMN_HEADER_VALUE,
+        COLUMN_HEADER_INFO,
+        COLUMN_HEADER_COMMENT,
+        __COLUMN_HEADER_SIZE
     };
 
 public:
