@@ -592,11 +592,13 @@ void XAbstractTableView::verticalScroll()
     g_nViewPosStart = getCurrentViewPosFromScroll();
 
     adjust(true);
+    viewport()->update();
 }
 
 void XAbstractTableView::horisontalScroll()
 {
     adjust();
+    viewport()->update();
 }
 
 void XAbstractTableView::adjust(bool bUpdateData)
@@ -1086,6 +1088,7 @@ void XAbstractTableView::keyPressEvent(QKeyEvent *pEvent)
 
 void XAbstractTableView::wheelEvent(QWheelEvent *pEvent)
 {
+    viewport()->update();
     QAbstractScrollArea::wheelEvent(pEvent);
 }
 
