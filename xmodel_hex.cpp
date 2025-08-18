@@ -119,7 +119,8 @@ QString XModel_Hex::_bytesToAscii(const QByteArray &ba) const
     s.reserve(ba.size());
     for (int i = 0; i < ba.size(); ++i) {
         unsigned char c = (unsigned char)ba.at(i);
-        if (c >= 0x20 && c <= 0x7E) s.append(QChar(c)); else s.append('.');
+        if (c >= 0x20 && c <= 0x7E) s.append(QChar(c));
+        else s.append('.');
     }
     return s;
 }

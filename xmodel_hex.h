@@ -51,4 +51,4 @@ private:
     QString _bytesToAscii(const QByteArray &ba) const;
 };
 
-#endif // XMODEL_HEX_H
+#endif  // XMODEL_HEX_H
