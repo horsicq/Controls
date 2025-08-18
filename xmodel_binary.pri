@@ -2,10 +2,12 @@ INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
 
 HEADERS += \
-    $$PWD/xmodel_binary.h
+    $$PWD/xmodel_binary.h \
+    $$PWD/xmodel_hex.h
 
 SOURCES += \
-    $$PWD/xmodel_binary.cpp
+    $$PWD/xmodel_binary.cpp \
+    $$PWD/xmodel_hex.cpp
 
 DISTFILES += \
     $$PWD/LICENSE \
