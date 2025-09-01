@@ -42,7 +42,8 @@ public:
         USERROLE_STRING2
     };
 
-    XModel(QObject *pParent);
+    explicit XModel(QObject *pParent);
+    virtual ~XModel() override = default;
 
     void setColumnSymbolSize(qint32 nColumn, qint32 nValue);
     qint32 getColumnSymbolSize(qint32 nColumn) const;
@@ -57,12 +58,12 @@ public:
     void setRowPrio(qint32 nRow, quint64 nPrio);
     bool isRowHidden(qint32 nRow);
     quint64 getRowPrio(qint32 nRow);
-    virtual QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
-    virtual QModelIndex parent(const QModelIndex &child) const;
+    virtual QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
+    virtual QModelIndex parent(const QModelIndex &child) const override;
     void _setRowCount(qint32 nRowCount);
     void _setColumnCount(qint32 nColumnCount);
-    virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
-    virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
+    virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    virtual int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
     void adjustColumnToContent(qint32 nColumn, bool bHeader);
     void adjustColumnsToContent(bool bHeader);
