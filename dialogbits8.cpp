@@ -34,7 +34,7 @@ DialogBits8::DialogBits8(QWidget *pParent, bool bStayOnTop) : QDialog(pParent), 
     setWindowFlags(flags);
 
     g_nBits = 8;
-    g_nValue = 0;
+    m_nValue = 0;
     g_bIsReadonly = true;
 
     ui->lineEditHex->setValidator(&g_validatorHex);
@@ -124,7 +124,7 @@ void DialogBits8::setReadonly(bool bIsReadonly)
 void DialogBits8::setValue_uint8(quint8 nValue)
 {
     g_nBits = 8;
-    g_nValue = nValue;
+    m_nValue = nValue;
 
     g_validatorHex.setMode(XLineEditValidator::MODE_HEX_8);
     g_validatorSigned.setMode(XLineEditValidator::MODE_SIGN_DEC_8);
@@ -146,7 +146,7 @@ void DialogBits8::setValue_uint8(quint8 nValue)
 void DialogBits8::setValue_uint16(quint16 nValue)
 {
     g_nBits = 16;
-    g_nValue = nValue;
+    m_nValue = nValue;
 
     g_validatorHex.setMode(XLineEditValidator::MODE_HEX_16);
     g_validatorSigned.setMode(XLineEditValidator::MODE_SIGN_DEC_16);
@@ -168,7 +168,7 @@ void DialogBits8::setValue_uint16(quint16 nValue)
 void DialogBits8::setValue_uint32(quint32 nValue)
 {
     g_nBits = 32;
-    g_nValue = nValue;
+    m_nValue = nValue;
 
     g_validatorHex.setMode(XLineEditValidator::MODE_HEX_32);
     g_validatorSigned.setMode(XLineEditValidator::MODE_SIGN_DEC_32);
@@ -190,7 +190,7 @@ void DialogBits8::setValue_uint32(quint32 nValue)
 void DialogBits8::setValue_uint64(quint64 nValue)
 {
     g_nBits = 64;
-    g_nValue = nValue;
+    m_nValue = nValue;
 
     g_validatorHex.setMode(XLineEditValidator::MODE_HEX_64);
     g_validatorSigned.setMode(XLineEditValidator::MODE_SIGN_DEC_64);
@@ -215,52 +215,52 @@ void DialogBits8::reload()
 
     if (!(ui->lineEditHex->hasFocus())) {
         if (g_nBits == 8) {
-            ui->lineEditHex->setText(QString::number((quint8)g_nValue, 16));
+            ui->lineEditHex->setText(QString::number((quint8)m_nValue, 16));
         } else if (g_nBits == 16) {
-            ui->lineEditHex->setText(QString::number((quint16)g_nValue, 16));
+            ui->lineEditHex->setText(QString::number((quint16)m_nValue, 16));
         } else if (g_nBits == 32) {
-            ui->lineEditHex->setText(QString::number((quint32)g_nValue, 16));
+            ui->lineEditHex->setText(QString::number((quint32)m_nValue, 16));
         } else if (g_nBits == 64) {
-            ui->lineEditHex->setText(QString::number((quint64)g_nValue, 16));
+            ui->lineEditHex->setText(QString::number((quint64)m_nValue, 16));
         }
     }
     if (!(ui->lineEditSigned->hasFocus())) {
         if (g_nBits == 8) {
-            ui->lineEditSigned->setText(QString::number((qint8)g_nValue, 10));
+            ui->lineEditSigned->setText(QString::number((qint8)m_nValue, 10));
         } else if (g_nBits == 16) {
-            ui->lineEditSigned->setText(QString::number((qint16)g_nValue, 10));
+            ui->lineEditSigned->setText(QString::number((qint16)m_nValue, 10));
         } else if (g_nBits == 32) {
-            ui->lineEditSigned->setText(QString::number((qint32)g_nValue, 10));
+            ui->lineEditSigned->setText(QString::number((qint32)m_nValue, 10));
         } else if (g_nBits == 64) {
-            ui->lineEditSigned->setText(QString::number((qint64)g_nValue, 10));
+            ui->lineEditSigned->setText(QString::number((qint64)m_nValue, 10));
         }
     }
     if (!(ui->lineEditUnsigned->hasFocus())) {
         if (g_nBits == 8) {
-            ui->lineEditUnsigned->setText(QString::number((quint8)g_nValue, 10));
+            ui->lineEditUnsigned->setText(QString::number((quint8)m_nValue, 10));
         } else if (g_nBits == 16) {
-            ui->lineEditUnsigned->setText(QString::number((quint16)g_nValue, 10));
+            ui->lineEditUnsigned->setText(QString::number((quint16)m_nValue, 10));
         } else if (g_nBits == 32) {
-            ui->lineEditUnsigned->setText(QString::number((quint32)g_nValue, 10));
+            ui->lineEditUnsigned->setText(QString::number((quint32)m_nValue, 10));
         } else if (g_nBits == 64) {
-            ui->lineEditUnsigned->setText(QString::number((quint64)g_nValue, 10));
+            ui->lineEditUnsigned->setText(QString::number((quint64)m_nValue, 10));
         }
     }
     if (!(ui->lineEditBin->hasFocus())) {
         if (g_nBits == 8) {
-            ui->lineEditBin->setText(XLineEditValidator::value8ToBinString((quint8)g_nValue));
+            ui->lineEditBin->setText(XLineEditValidator::value8ToBinString((quint8)m_nValue));
         } else if (g_nBits == 16) {
-            ui->lineEditBin->setText(XLineEditValidator::value16ToBinString((quint16)g_nValue));
+            ui->lineEditBin->setText(XLineEditValidator::value16ToBinString((quint16)m_nValue));
         } else if (g_nBits == 32) {
-            ui->lineEditBin->setText(XLineEditValidator::value32ToBinString((quint32)g_nValue));
+            ui->lineEditBin->setText(XLineEditValidator::value32ToBinString((quint32)m_nValue));
         } else if (g_nBits == 64) {
-            ui->lineEditBin->setText(XLineEditValidator::value64ToBinString((quint64)g_nValue));
+            ui->lineEditBin->setText(XLineEditValidator::value64ToBinString((quint64)m_nValue));
         }
     }
 
     for (qint32 i = 0; i < g_nBits; i++) {
         if (!g_listButtons.at(i)->hasFocus()) {
-            bool bIsChecked = g_nValue & ((quint64)1 << i);
+            bool bIsChecked = m_nValue & ((quint64)1 << i);
             g_listButtons.at(i)->setChecked(bIsChecked);
 
             if (bIsChecked) {
@@ -276,22 +276,22 @@ void DialogBits8::reload()
 
 quint8 DialogBits8::getValue_uint8()
 {
-    return (quint8)g_nValue;
+    return (quint8)m_nValue;
 }
 
 quint16 DialogBits8::getValue_uint16()
 {
-    return (quint16)g_nValue;
+    return (quint16)m_nValue;
 }
 
 quint32 DialogBits8::getValue_uint32()
 {
-    return (quint32)g_nValue;
+    return (quint32)m_nValue;
 }
 
 quint64 DialogBits8::getValue_uint64()
 {
-    return g_nValue;
+    return m_nValue;
 }
 
 void DialogBits8::_handleButton(QToolButton *pToolButton)
@@ -302,25 +302,25 @@ void DialogBits8::_handleButton(QToolButton *pToolButton)
 
 void DialogBits8::on_lineEditHex_textChanged(const QString &sString)
 {
-    g_nValue = sString.toULongLong(0, 16);
+    m_nValue = sString.toULongLong(0, 16);
     reload();
 }
 
 void DialogBits8::on_lineEditSigned_textChanged(const QString &sString)
 {
-    g_nValue = sString.toLongLong(0, 10);
+    m_nValue = sString.toLongLong(0, 10);
     reload();
 }
 
 void DialogBits8::on_lineEditUnsigned_textChanged(const QString &sString)
 {
-    g_nValue = sString.toULongLong(0, 10);
+    m_nValue = sString.toULongLong(0, 10);
     reload();
 }
 
 void DialogBits8::on_lineEditBin_textChanged(const QString &sString)
 {
-    g_nValue = XLineEditValidator::binStringToValue(sString);
+    m_nValue = XLineEditValidator::binStringToValue(sString);
     reload();
 }
 
@@ -336,8 +336,8 @@ void DialogBits8::toggledSlot(bool bState)
         quint64 _nValue = (quint64)bBit;
         nFF = nFF << i;
         _nValue = _nValue << i;
-        g_nValue = g_nValue & (~nFF);
-        g_nValue = g_nValue | _nValue;
+        m_nValue = m_nValue & (~nFF);
+        m_nValue = m_nValue | _nValue;
     }
 
     reload();
