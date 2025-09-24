@@ -62,7 +62,7 @@ private slots:
 private:
     Ui::DialogBits8 *ui;
     quint64 m_nValue;
-    bool g_bIsReadonly;
+    bool m_bIsReadonly;
     XLineEditValidator g_validatorHex;
     XLineEditValidator g_validatorSigned;
     XLineEditValidator g_validatorUnsigned;

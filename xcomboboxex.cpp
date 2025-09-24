@@ -22,7 +22,7 @@
 
 XComboBoxEx::XComboBoxEx(QWidget *pParent) : QComboBox(pParent)
 {
-    g_bIsReadOnly = false;
+    m_bIsReadonly = false;
     g_cbtype = CBTYPE_LIST;
 
     SubclassOfQStyledItemDelegate *pDelegate = new SubclassOfQStyledItemDelegate(this);
@@ -141,7 +141,7 @@ QVariant XComboBoxEx::getValue()
 
 void XComboBoxEx::setReadOnly(bool bIsReadOnly)
 {
-    this->g_bIsReadOnly = bIsReadOnly;
+    this->m_bIsReadonly = bIsReadOnly;
 
     qint32 nNumberOfItems = g_model.rowCount();
 
@@ -266,7 +266,7 @@ void XComboBoxEx::currentIndexChangedSlot(int nIndex)
             setCurrentIndex(0);
         }
     } else if (g_cbtype == CBTYPE_ELIST) {
-        if (!g_bIsReadOnly) {
+        if (!m_bIsReadonly) {
             if (nIndex) {
                 quint64 nCurrentValue = itemData(nIndex).toULongLong();
 
@@ -286,7 +286,7 @@ void XComboBoxEx::currentIndexChangedSlot(int nIndex)
             setValue(g_varValue);
         }
     } else if (g_cbtype == CBTYPE_LIST) {
-        if (!g_bIsReadOnly) {
+        if (!m_bIsReadonly) {
             if (nIndex) {
                 QVariant vCurrentValue = itemData(nIndex);
 

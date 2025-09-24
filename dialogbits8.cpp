@@ -35,7 +35,7 @@ DialogBits8::DialogBits8(QWidget *pParent, bool bStayOnTop) : QDialog(pParent), 
 
     g_nBits = 8;
     m_nValue = 0;
-    g_bIsReadonly = true;
+    m_bIsReadonly = true;
 
     ui->lineEditHex->setValidator(&g_validatorHex);
     ui->lineEditSigned->setValidator(&g_validatorSigned);
@@ -117,8 +117,8 @@ DialogBits8::~DialogBits8()
 
 void DialogBits8::setReadonly(bool bIsReadonly)
 {
-    g_bIsReadonly = bIsReadonly;
-    ui->pushButtonOK->setEnabled(!g_bIsReadonly);
+    m_bIsReadonly = bIsReadonly;
+    ui->pushButtonOK->setEnabled(!m_bIsReadonly);
 }
 
 void DialogBits8::setValue_uint8(quint8 nValue)
