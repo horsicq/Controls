@@ -8,4 +8,6 @@ set(XMODEL_BINARY_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/xmodel_fparts.h
     ${CMAKE_CURRENT_LIST_DIR}/xmodel_hex.cpp
     ${CMAKE_CURRENT_LIST_DIR}/xmodel_hex.h
+    ${CMAKE_CURRENT_LIST_DIR}/xmodel_streams.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/xmodel_streams.h
 )
