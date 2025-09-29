@@ -69,7 +69,7 @@ signals:
 private:
     QVariant g_varValue;
     bool m_bIsReadonly;
-    QStandardItemModel g_model;
+    QStandardItemModel m_model;
     CBTYPE g_cbtype;
     quint64 g_nMask;
     QMap<quint64, QString> g_mapData;
