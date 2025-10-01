@@ -33,9 +33,7 @@ public:
         COLUMN_OFFSET,
         COLUMN_SIZE,
         COLUMN_COMPRESSMETHOD,
-        COLUMN_CRC,
         COLUMN_UNCOMPRESSEDSIZE,
-        COLUMN_DATETIME,
         __COLUMN_COUNT
     };
 

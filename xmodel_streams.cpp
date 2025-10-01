@@ -38,25 +38,19 @@ void XModel_Streams::_initColumns()
     setColumnName(COLUMN_OFFSET, QObject::tr("Offset"));
     setColumnName(COLUMN_SIZE, QObject::tr("Size"));
     setColumnName(COLUMN_COMPRESSMETHOD, QObject::tr("Compress"));
-    setColumnName(COLUMN_CRC, QObject::tr("CRC"));
     setColumnName(COLUMN_UNCOMPRESSEDSIZE, QObject::tr("U.Size"));
-    setColumnName(COLUMN_DATETIME, QObject::tr("Date"));
 
     setColumnAlignment(COLUMN_NAME, Qt::AlignVCenter | Qt::AlignLeft);
     setColumnAlignment(COLUMN_OFFSET, Qt::AlignVCenter | Qt::AlignRight);
     setColumnAlignment(COLUMN_SIZE, Qt::AlignVCenter | Qt::AlignRight);
     setColumnAlignment(COLUMN_COMPRESSMETHOD, Qt::AlignVCenter | Qt::AlignLeft);
-    setColumnAlignment(COLUMN_CRC, Qt::AlignVCenter | Qt::AlignRight);
     setColumnAlignment(COLUMN_UNCOMPRESSEDSIZE, Qt::AlignVCenter | Qt::AlignRight);
-    setColumnAlignment(COLUMN_DATETIME, Qt::AlignVCenter | Qt::AlignLeft);
 
     setColumnSymbolSize(COLUMN_NAME, 20);
     setColumnSymbolSize(COLUMN_OFFSET, 16);
     setColumnSymbolSize(COLUMN_SIZE, 16);
     setColumnSymbolSize(COLUMN_COMPRESSMETHOD, 10);
-    setColumnSymbolSize(COLUMN_CRC, 8);
     setColumnSymbolSize(COLUMN_UNCOMPRESSEDSIZE, 16);
-    setColumnSymbolSize(COLUMN_DATETIME, 19);
 }
 
 QVariant XModel_Streams::data(const QModelIndex &index, int nRole) const
@@ -74,7 +68,7 @@ QVariant XModel_Streams::data(const QModelIndex &index, int nRole) const
             const XBinary::FPART &rec = g_pListFParts->at(nRow);
             if (nRole == Qt::DisplayRole) {
                 if (nColumn == COLUMN_NAME) {
-                    result = rec.sOriginalName;
+                    result = rec.sName;
                 } else if (nColumn == COLUMN_OFFSET) {
                     result = QString::number(rec.nFileOffset, 16);
                 } else if (nColumn == COLUMN_SIZE) {
@@ -84,22 +78,10 @@ QVariant XModel_Streams::data(const QModelIndex &index, int nRole) const
                         XBinary::COMPRESS_METHOD cm = (XBinary::COMPRESS_METHOD)rec.mapProperties.value(XBinary::FPART_PROP_COMPRESSMETHOD).toInt();
                         result = XBinary::compressMethodToString(cm);
                     }
-                } else if (nColumn == COLUMN_CRC) {
-                    if (rec.mapProperties.contains(XBinary::FPART_PROP_CRC_VALUE)) {
-                        quint32 nCRC = rec.mapProperties.value(XBinary::FPART_PROP_CRC_VALUE).toUInt();
-                        result = QString::number(nCRC, 16);
-                    }
                 } else if (nColumn == COLUMN_UNCOMPRESSEDSIZE) {
                     if (rec.mapProperties.contains(XBinary::FPART_PROP_UNCOMPRESSEDSIZE)) {
                         quint64 nUSz = rec.mapProperties.value(XBinary::FPART_PROP_UNCOMPRESSEDSIZE).toULongLong();
                         result = QString::number(nUSz, 16);
-                    }
-                } else if (nColumn == COLUMN_DATETIME) {
-                    if (rec.mapProperties.contains(XBinary::FPART_PROP_DATETIME)) {
-                        QDateTime dt = rec.mapProperties.value(XBinary::FPART_PROP_DATETIME).toDateTime();
-                        if (dt.isValid()) {
-                            result = dt.toString("yyyy-MM-dd HH:mm:ss");
-                        }
                     }
                 }
             } else if (nRole == Qt::TextAlignmentRole) {
