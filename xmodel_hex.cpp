@@ -23,16 +23,16 @@
 #include <QtGlobal>
 
 XModel_Hex::XModel_Hex(QIODevice *pDevice, qint64 nOffset, qint64 nSize, quint64 nStartAddress, qint32 nBytesPerLine, QObject *pParent)
-    : XModel(pParent), g_pDevice(pDevice), g_nOffset(nOffset), g_nSize(nSize), g_nStartAddress(nStartAddress), g_nBytesPerLine(nBytesPerLine)
+    : XModel(pParent), m_pDevice(pDevice), g_nOffset(nOffset), g_nSize(nSize), g_nStartAddress(nStartAddress), g_nBytesPerLine(nBytesPerLine)
 {
-    if (!g_pDevice) {
+    if (!m_pDevice) {
         _setRowCount(0);
         _setColumnCount(0);
         return;
     }
 
     if (g_nSize < 0) {
-        g_nSize = g_pDevice->size() - g_nOffset;
+        g_nSize = m_pDevice->size() - g_nOffset;
         if (g_nSize < 0) g_nSize = 0;
     }
 
@@ -65,11 +65,11 @@ QVariant XModel_Hex::data(const QModelIndex &index, int nRole) const
         int bytesThisLine = (int)qMin<qint64>(g_nBytesPerLine, g_nSize - (row * (qint64)g_nBytesPerLine));
         if (bytesThisLine < 0) bytesThisLine = 0;
 
-        if (!g_pDevice->isSequential()) {
-            qint64 prev = g_pDevice->pos();
-            g_pDevice->seek(lineOffset);
-            QByteArray chunk = g_pDevice->read(bytesThisLine);
-            g_pDevice->seek(prev);
+        if (!m_pDevice->isSequential()) {
+            qint64 prev = m_pDevice->pos();
+            m_pDevice->seek(lineOffset);
+            QByteArray chunk = m_pDevice->read(bytesThisLine);
+            m_pDevice->seek(prev);
 
             if (column == COLUMN_ADDRESS) {
                 result = QString::number((qulonglong)(g_nStartAddress + (quint64)(row * g_nBytesPerLine)), 16).rightJustified(8, '0');

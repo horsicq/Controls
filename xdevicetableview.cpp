@@ -23,7 +23,7 @@
 XDeviceTableView::XDeviceTableView(QWidget *pParent) : XAbstractTableView(pParent)
 {
     g_pXInfoDB = nullptr;
-    g_pDevice = nullptr;
+    m_pDevice = nullptr;
     g_nViewSize = 0;
     g_searchData = {};
     g_locationMode = LOCMODE_ADDRESS;
@@ -66,14 +66,14 @@ void XDeviceTableView::setMode(XBinary::FT fileType, XBinary::DM disasmMode, boo
 
     g_disasmCore.setMode(disasmMode);
 
-    g_memoryMap = XFormats::getMemoryMap(fileType, XBinary::MAPMODE_UNKNOWN, g_pDevice);
+    g_memoryMap = XFormats::getMemoryMap(fileType, XBinary::MAPMODE_UNKNOWN, m_pDevice);
 
     qint64 nViewPos = 0;
 
     bool bAll = false;
 
-    if (g_pDevice) {
-        if ((g_nStartOffset == 0) && (g_nTotalSize == g_pDevice->size())) {
+    if (m_pDevice) {
+        if ((g_nStartOffset == 0) && (g_nTotalSize == m_pDevice->size())) {
             bAll = true;
         }
     }
@@ -142,7 +142,7 @@ void XDeviceTableView::setMode(XBinary::FT fileType, XBinary::DM disasmMode, boo
 
 void XDeviceTableView::setDevice(QIODevice *pDevice, qint64 nStartOffset, qint64 nTotalSize)
 {
-    g_pDevice = pDevice;
+    m_pDevice = pDevice;
     g_nStartOffset = nStartOffset;
 
     g_nTotalSize = nTotalSize;
@@ -176,7 +176,7 @@ void XDeviceTableView::setDevice(QIODevice *pDevice, qint64 nStartOffset, qint64
 
 QIODevice *XDeviceTableView::getDevice()
 {
-    return g_pDevice;
+    return m_pDevice;
 }
 
 void XDeviceTableView::setViewSize(qint64 nViewSize)

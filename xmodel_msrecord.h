@@ -53,7 +53,7 @@ public:
     virtual bool isCustomSort();
 
 private:
-    QIODevice *g_pDevice;
+    QIODevice *m_pDevice;
     XBinary::_MEMORY_MAP g_memoryMap;
     QVector<XBinary::MS_RECORD> *g_pListRecords;
     XBinary::MODE g_modeAddress;

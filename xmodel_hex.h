@@ -41,7 +41,7 @@ public:
     QVariant headerData(int nSection, Qt::Orientation orientation, int nRole = Qt::DisplayRole) const override;
 
 private:
-    QIODevice *g_pDevice;
+    QIODevice *m_pDevice;
     qint64 g_nOffset;
     qint64 g_nSize;
     quint64 g_nStartAddress;

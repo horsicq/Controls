@@ -149,7 +149,7 @@ private:
     static const qint32 N_MAX_VISITED = 100;
     XInfoDB g_emptyXInfoDB;
     XInfoDB *g_pXInfoDB;
-    QIODevice *g_pDevice;
+    QIODevice *m_pDevice;
     qint64 g_nStartOffset;
     qint64 g_nTotalSize;
     qint64 g_nViewSize;

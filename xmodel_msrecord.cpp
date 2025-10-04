@@ -25,7 +25,7 @@ XModel_MSRecord::XModel_MSRecord(QIODevice *pDevice, const XBinary::_MEMORY_MAP 
                                  QObject *pParent)
     : XModel(pParent)
 {
-    g_pDevice = pDevice;
+    m_pDevice = pDevice;
     g_memoryMap = memoryMap;
     g_pListRecords = pListRecods;
     g_pListSignatureRecords = nullptr;
@@ -125,7 +125,7 @@ QVariant XModel_MSRecord::data(const QModelIndex &index, int nRole) const
                 } else if (nColumn == COLUMN_VALUE) {
                     if ((g_valueType == XBinary::VT_STRING) || (g_valueType == XBinary::VT_A_I) || (g_valueType == XBinary::VT_U_I) ||
                         (g_valueType == XBinary::VT_UTF8_I)) {
-                        XBinary binary(g_pDevice);
+                        XBinary binary(m_pDevice);
                         XBinary::VT valueType = g_valueType;
                         if (g_valueType == XBinary::VT_STRING) {
                             valueType = (XBinary::VT)(g_pListRecords->at(nRow).nValueType);
