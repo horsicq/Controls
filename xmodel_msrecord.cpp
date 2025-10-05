@@ -38,12 +38,12 @@ XModel_MSRecord::XModel_MSRecord(QIODevice *pDevice, const XBinary::_MEMORY_MAP 
     _setRowCount(nRowCount);
     _setColumnCount(__COLUMN_SIZE);
 
-    g_modeAddress = XBinary::getWidthModeFromSize(memoryMap.nModuleAddress + memoryMap.nImageSize);
-    g_modeOffset = XBinary::getWidthModeFromSize(memoryMap.nBinarySize);
+    m_modeAddress = XBinary::getWidthModeFromSize(memoryMap.nModuleAddress + memoryMap.nImageSize);
+    m_modeOffset = XBinary::getWidthModeFromSize(memoryMap.nBinarySize);
 
     setColumnSymbolSize(COLUMN_NUMBER, QString::number(nRowCount).length());
-    setColumnSymbolSize(COLUMN_OFFSET, XBinary::getByteSizeFromWidthMode(g_modeOffset) * 2);
-    setColumnSymbolSize(COLUMN_ADDRESS, XBinary::getByteSizeFromWidthMode(g_modeAddress) * 2);
+    setColumnSymbolSize(COLUMN_OFFSET, XBinary::getByteSizeFromWidthMode(m_modeOffset) * 2);
+    setColumnSymbolSize(COLUMN_ADDRESS, XBinary::getByteSizeFromWidthMode(m_modeAddress) * 2);
     setColumnSymbolSize(COLUMN_REGION, 1);
     setColumnSymbolSize(COLUMN_SIZE, 4);
     setColumnSymbolSize(COLUMN_INFO, 8);
@@ -90,16 +90,16 @@ QVariant XModel_MSRecord::data(const QModelIndex &index, int nRole) const
                     qint16 nRegionIndex = g_pListRecords->at(nRow).nRegionIndex;
                     if (nRegionIndex != -1) {
                         if (g_memoryMap.listRecords.at(nRegionIndex).nOffset != -1) {
-                            result = XBinary::valueToHex(g_modeOffset, g_memoryMap.listRecords.at(nRegionIndex).nOffset + g_pListRecords->at(nRow).nRelOffset);
+                            result = XBinary::valueToHex(m_modeOffset, g_memoryMap.listRecords.at(nRegionIndex).nOffset + g_pListRecords->at(nRow).nRelOffset);
                         }
                     } else {
-                        result = XBinary::valueToHex(g_modeOffset, g_pListRecords->at(nRow).nRelOffset);
+                        result = XBinary::valueToHex(m_modeOffset, g_pListRecords->at(nRow).nRelOffset);
                     }
                 } else if (nColumn == COLUMN_ADDRESS) {
                     qint16 nRegionIndex = g_pListRecords->at(nRow).nRegionIndex;
                     if (nRegionIndex != -1) {
                         if (g_memoryMap.listRecords.at(nRegionIndex).nAddress != (XADDR)-1) {
-                            result = XBinary::valueToHex(g_modeAddress, g_memoryMap.listRecords.at(nRegionIndex).nAddress + g_pListRecords->at(nRow).nRelOffset);
+                            result = XBinary::valueToHex(m_modeAddress, g_memoryMap.listRecords.at(nRegionIndex).nAddress + g_pListRecords->at(nRow).nRelOffset);
                         }
                     }
                 } else if (nColumn == COLUMN_REGION) {

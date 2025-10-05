@@ -56,8 +56,8 @@ private:
     QIODevice *m_pDevice;
     XBinary::_MEMORY_MAP g_memoryMap;
     QVector<XBinary::MS_RECORD> *g_pListRecords;
-    XBinary::MODE g_modeAddress;
-    XBinary::MODE g_modeOffset;
+    XBinary::MODE m_modeAddress;
+    XBinary::MODE m_modeOffset;
     XBinary::ENDIAN g_endian;
     QVariant g_varValue;
     XBinary::VT g_valueType;

@@ -128,7 +128,7 @@ private:
     XLineEditValidator g_validator;
     bool g_bIsColon;
     bool g_bIsFocused;
-    _MODE g_mode;
+    _MODE m_mode;
 };
 
 #define PXLineEditHEX XLineEditHEX *

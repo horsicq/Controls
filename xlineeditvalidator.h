@@ -68,7 +68,7 @@ public:
     static qint32 getNumberOfBits(MODE mode);
 
 private:
-    MODE g_mode;
+    MODE m_mode;
     qint64 g_nMaxValue;
 };
 

@@ -22,13 +22,13 @@
 
 XLineEditValidator::XLineEditValidator(QObject *pParent) : QValidator(pParent)
 {
-    g_mode = MODE_HEX_32;
+    m_mode = MODE_HEX_32;
     g_nMaxValue = 0x7FFFFFFFFFFFFFFF;
 }
 
 void XLineEditValidator::setMode(XLineEditValidator::MODE mode)
 {
-    g_mode = mode;
+    m_mode = mode;
 }
 
 void XLineEditValidator::setMaxValue(qint64 nValue)
@@ -38,7 +38,7 @@ void XLineEditValidator::setMaxValue(qint64 nValue)
 
 XLineEditValidator::MODE XLineEditValidator::getMode()
 {
-    return g_mode;
+    return m_mode;
 }
 
 QValidator::State XLineEditValidator::validate(QString &sInput, int &nPos) const
@@ -48,38 +48,38 @@ QValidator::State XLineEditValidator::validate(QString &sInput, int &nPos) const
     QValidator::State result = Acceptable;
 
     if (!sInput.isEmpty()) {
-        if ((g_mode == MODE_HEX_8) || (g_mode == MODE_DEC_8) || (g_mode == MODE_SIGN_DEC_8) || (g_mode == MODE_BIN_8) || (g_mode == MODE_HEX_16) ||
-            (g_mode == MODE_DEC_16) || (g_mode == MODE_SIGN_DEC_16) || (g_mode == MODE_BIN_16) || (g_mode == MODE_HEX_32) || (g_mode == MODE_DEC_32) ||
-            (g_mode == MODE_SIGN_DEC_32) || (g_mode == MODE_BIN_32) || (g_mode == MODE_HEX_64) || (g_mode == MODE_DEC_64) || (g_mode == MODE_SIGN_DEC_64) ||
-            (g_mode == MODE_BIN_64)) {
+        if ((m_mode == MODE_HEX_8) || (m_mode == MODE_DEC_8) || (m_mode == MODE_SIGN_DEC_8) || (m_mode == MODE_BIN_8) || (m_mode == MODE_HEX_16) ||
+            (m_mode == MODE_DEC_16) || (m_mode == MODE_SIGN_DEC_16) || (m_mode == MODE_BIN_16) || (m_mode == MODE_HEX_32) || (m_mode == MODE_DEC_32) ||
+            (m_mode == MODE_SIGN_DEC_32) || (m_mode == MODE_BIN_32) || (m_mode == MODE_HEX_64) || (m_mode == MODE_DEC_64) || (m_mode == MODE_SIGN_DEC_64) ||
+            (m_mode == MODE_BIN_64)) {
             qint64 nMax = 0;
             qint64 nMin = 0;
             qint32 nLenght = 0;
             // TODO Dec Lenght !!!
 
             // TODO optimize!
-            if ((g_mode == MODE_HEX_8) || (g_mode == MODE_DEC_8) || (g_mode == MODE_BIN_8)) {
+            if ((m_mode == MODE_HEX_8) || (m_mode == MODE_DEC_8) || (m_mode == MODE_BIN_8)) {
                 nMax = UCHAR_MAX;
                 nMin = 0;
-            } else if (g_mode == MODE_SIGN_DEC_8) {
+            } else if (m_mode == MODE_SIGN_DEC_8) {
                 nMax = SCHAR_MAX;
                 nMin = SCHAR_MIN;
-            } else if ((g_mode == MODE_HEX_16) || (g_mode == MODE_DEC_16) || (g_mode == MODE_BIN_16)) {
+            } else if ((m_mode == MODE_HEX_16) || (m_mode == MODE_DEC_16) || (m_mode == MODE_BIN_16)) {
                 nMax = USHRT_MAX;
                 nMin = 0;
-            } else if (g_mode == MODE_SIGN_DEC_16) {
+            } else if (m_mode == MODE_SIGN_DEC_16) {
                 nMax = SHRT_MAX;
                 nMin = SHRT_MIN;
-            } else if ((g_mode == MODE_HEX_32) || (g_mode == MODE_DEC_32) || (g_mode == MODE_BIN_32)) {
+            } else if ((m_mode == MODE_HEX_32) || (m_mode == MODE_DEC_32) || (m_mode == MODE_BIN_32)) {
                 nMax = UINT_MAX;
                 nMin = 0;
-            } else if (g_mode == MODE_SIGN_DEC_32) {
+            } else if (m_mode == MODE_SIGN_DEC_32) {
                 nMax = INT_MAX;
                 nMin = INT_MIN;
-            } else if ((g_mode == MODE_HEX_64) || (g_mode == MODE_DEC_64) || (g_mode == MODE_BIN_64)) {
+            } else if ((m_mode == MODE_HEX_64) || (m_mode == MODE_DEC_64) || (m_mode == MODE_BIN_64)) {
                 nMax = ULLONG_MAX;
                 nMin = 0;
-            } else if (g_mode == MODE_SIGN_DEC_64) {
+            } else if (m_mode == MODE_SIGN_DEC_64) {
                 // TODO Check
 #ifdef LLONG_MAX
                 nMax = LLONG_MAX;
@@ -93,32 +93,32 @@ QValidator::State XLineEditValidator::validate(QString &sInput, int &nPos) const
 
             nMax = qMin(g_nMaxValue, nMax);
 
-            if (g_mode == MODE_HEX_8) {
+            if (m_mode == MODE_HEX_8) {
                 nLenght = 2;
-            } else if (g_mode == MODE_HEX_16) {
+            } else if (m_mode == MODE_HEX_16) {
                 nLenght = 4;
-            } else if (g_mode == MODE_HEX_32) {
+            } else if (m_mode == MODE_HEX_32) {
                 nLenght = 8;
-            } else if (g_mode == MODE_HEX_64) {
+            } else if (m_mode == MODE_HEX_64) {
                 nLenght = 16;
-            } else if (g_mode == MODE_BIN_8) {
+            } else if (m_mode == MODE_BIN_8) {
                 nLenght = 8;
-            } else if (g_mode == MODE_BIN_16) {
+            } else if (m_mode == MODE_BIN_16) {
                 nLenght = 16;
-            } else if (g_mode == MODE_BIN_32) {
+            } else if (m_mode == MODE_BIN_32) {
                 nLenght = 32;
-            } else if (g_mode == MODE_BIN_64) {
+            } else if (m_mode == MODE_BIN_64) {
                 nLenght = 64;
             }
 
-            if ((g_mode == MODE_HEX_8) || (g_mode == MODE_HEX_16) || (g_mode == MODE_HEX_32) || (g_mode == MODE_HEX_64)) {
+            if ((m_mode == MODE_HEX_8) || (m_mode == MODE_HEX_16) || (m_mode == MODE_HEX_32) || (m_mode == MODE_HEX_64)) {
                 result = Invalid;
 
                 bool bSuccess = false;
                 quint64 nValue = sInput.toULongLong(&bSuccess, 16);
 
                 if (bSuccess && (sInput.length() <= nLenght)) {
-                    if (g_mode != MODE_HEX_64) {
+                    if (m_mode != MODE_HEX_64) {
                         if ((qint64)nValue <= nMax) {
                             result = Acceptable;
                         }
@@ -126,14 +126,14 @@ QValidator::State XLineEditValidator::validate(QString &sInput, int &nPos) const
                         result = Acceptable;
                     }
                 }
-            } else if ((g_mode == MODE_DEC_8) || (g_mode == MODE_DEC_16) || (g_mode == MODE_DEC_32) || (g_mode == MODE_DEC_64)) {
+            } else if ((m_mode == MODE_DEC_8) || (m_mode == MODE_DEC_16) || (m_mode == MODE_DEC_32) || (m_mode == MODE_DEC_64)) {
                 result = Invalid;
 
                 bool bSuccess = false;
                 quint64 nValue = sInput.toULongLong(&bSuccess, 10);
 
                 if (bSuccess) {
-                    if (g_mode != MODE_DEC_64) {
+                    if (m_mode != MODE_DEC_64) {
                         if ((qint64)nValue <= nMax) {
                             result = Acceptable;
                         }
@@ -141,7 +141,7 @@ QValidator::State XLineEditValidator::validate(QString &sInput, int &nPos) const
                         result = Acceptable;
                     }
                 }
-            } else if ((g_mode == MODE_SIGN_DEC_8) || (g_mode == MODE_SIGN_DEC_16) || (g_mode == MODE_SIGN_DEC_32) || (g_mode == MODE_SIGN_DEC_64)) {
+            } else if ((m_mode == MODE_SIGN_DEC_8) || (m_mode == MODE_SIGN_DEC_16) || (m_mode == MODE_SIGN_DEC_32) || (m_mode == MODE_SIGN_DEC_64)) {
                 result = Invalid;
 
                 bool bSuccess = false;
@@ -152,14 +152,14 @@ QValidator::State XLineEditValidator::validate(QString &sInput, int &nPos) const
                 } else if (sInput == "-") {
                     result = Intermediate;
                 }
-            } else if ((g_mode == MODE_BIN_8) || (g_mode == MODE_BIN_16) || (g_mode == MODE_BIN_32) || (g_mode == MODE_BIN_64)) {
+            } else if ((m_mode == MODE_BIN_8) || (m_mode == MODE_BIN_16) || (m_mode == MODE_BIN_32) || (m_mode == MODE_BIN_64)) {
                 result = Invalid;
 
                 bool bSuccess = false;
                 quint64 nValue = binStringToValue(sInput, &bSuccess);
 
                 if (bSuccess && (sInput.length() <= nLenght)) {
-                    if (g_mode != MODE_BIN_64) {
+                    if (m_mode != MODE_BIN_64) {
                         if ((qint64)nValue <= nMax) {
                             result = Acceptable;
                         }
@@ -168,12 +168,12 @@ QValidator::State XLineEditValidator::validate(QString &sInput, int &nPos) const
                     }
                 }
             }
-        } else if (g_mode == MODE_DOUBLE) {
+        } else if (m_mode == MODE_DOUBLE) {
             QDoubleValidator val;
             val.setLocale(QLocale::C);
             val.setNotation(QDoubleValidator::StandardNotation);
             result = val.validate(sInput, nPos);
-        } else if (g_mode == MODE_UUID) {
+        } else if (m_mode == MODE_UUID) {
             // TODO
             // NNNNNNNN-NNNN-NNNN-NNNN-NNNNNNNNNNNN
             // As 5 uints
