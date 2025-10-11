@@ -46,7 +46,7 @@ public:
     QVariant headerData(int nSection, Qt::Orientation orientation, int nRole = Qt::DisplayRole) const override;
 
 private:
-    QList<XBinary::ARCHIVERECORD> *g_pListArchiveRecords;
+    QList<XBinary::ARCHIVERECORD> *m_pListArchiveRecords;
     void _initColumns();
 };
 

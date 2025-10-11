@@ -22,7 +22,7 @@
 
 XModel_ArchiveRecords::XModel_ArchiveRecords(QList<XBinary::ARCHIVERECORD> *pListArchiveRecords, QObject *pParent) : XModel(pParent)
 {
-    g_pListArchiveRecords = pListArchiveRecords;
+    m_pListArchiveRecords = pListArchiveRecords;
     if (pListArchiveRecords) {
         _setRowCount(pListArchiveRecords->count());
     } else {
@@ -66,15 +66,15 @@ QVariant XModel_ArchiveRecords::data(const QModelIndex &index, int nRole) const
 {
     QVariant result;
 
-    if (!g_pListArchiveRecords) {
+    if (!m_pListArchiveRecords) {
         return result;
     }
 
     if (index.isValid()) {
         qint32 nRow = index.row();
-        if (nRow >= 0 && nRow < g_pListArchiveRecords->count()) {
+        if (nRow >= 0 && nRow < m_pListArchiveRecords->count()) {
             qint32 nColumn = index.column();
-            const XBinary::ARCHIVERECORD &rec = g_pListArchiveRecords->at(nRow);
+            const XBinary::ARCHIVERECORD &rec = m_pListArchiveRecords->at(nRow);
             if (nRole == Qt::DisplayRole) {
                 if (nColumn == COLUMN_NAME) {
                     if (rec.mapProperties.contains(XBinary::FPART_PROP_ORIGINALNAME)) {
