@@ -23,44 +23,44 @@
 
 XSortFilterProxyModel::XSortFilterProxyModel(QObject *pParent) : QSortFilterProxyModel(pParent)
 {
-    g_bIsXmodel = false;
-    g_bIsCustomFilter = false;
-    g_bIsCustomSort = false;
-    g_pXModel = nullptr;
+    m_bIsXmodel = false;
+    m_bIsCustomFilter = false;
+    m_bIsCustomSort = false;
+    m_pXModel = nullptr;
 }
 
 void XSortFilterProxyModel::setFilters(const QList<QString> &listFilters)
 {
-    g_listFilters = listFilters;
+    m_listFilters = listFilters;
 }
 
 void XSortFilterProxyModel::setSortMethod(qint32 nColumn, XModel::SORT_METHOD sortMethod)
 {
-    g_mapSortMethods.insert(nColumn, sortMethod);
+    m_mapSortMethods.insert(nColumn, sortMethod);
 }
 
 void XSortFilterProxyModel::setSourceModel(QAbstractItemModel *sourceModel)
 {
-    g_listFilters.clear();
+    m_listFilters.clear();
 
-    g_pXModel = dynamic_cast<XModel *>(sourceModel);
+    m_pXModel = dynamic_cast<XModel *>(sourceModel);
 
-    if (g_pXModel) {
-        qint32 nNumberOfColumns = g_pXModel->columnCount();
+    if (m_pXModel) {
+        qint32 nNumberOfColumns = m_pXModel->columnCount();
 
         for (qint32 i = 0; i < nNumberOfColumns; i++) {
-            XModel::SORT_METHOD sortMethod = g_pXModel->getSortMethod(i);
+            XModel::SORT_METHOD sortMethod = m_pXModel->getSortMethod(i);
 
             setSortMethod(i, sortMethod);
         }
 
-        g_bIsXmodel = true;
-        g_bIsCustomFilter = g_pXModel->isCustomFilter();
-        g_bIsCustomSort = g_pXModel->isCustomSort();
+        m_bIsXmodel = true;
+        m_bIsCustomFilter = m_pXModel->isCustomFilter();
+        m_bIsCustomSort = m_pXModel->isCustomSort();
     } else {
-        g_bIsXmodel = false;
-        g_bIsCustomFilter = false;
-        g_bIsCustomSort = false;
+        m_bIsXmodel = false;
+        m_bIsCustomFilter = false;
+        m_bIsCustomSort = false;
     }
 
     QSortFilterProxyModel::setSourceModel(sourceModel);
@@ -80,13 +80,13 @@ bool XSortFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &s
 {
     bool bResult = true;
 
-    if (g_bIsCustomFilter) {
-        bResult = !(g_pXModel->isRowHidden(sourceRow));
+    if (m_bIsCustomFilter) {
+        bResult = !(m_pXModel->isRowHidden(sourceRow));
     } else {
-        qint32 nCount = g_listFilters.count();
+        qint32 nCount = m_listFilters.count();
 
         for (qint32 i = 0; i < nCount; i++) {
-            QString sFilter = g_listFilters.at(i);
+            QString sFilter = m_listFilters.at(i);
             if (sFilter != "") {
                 QModelIndex index = sourceModel()->index(sourceRow, i, sourceParent);
 
@@ -109,12 +109,12 @@ bool XSortFilterProxyModel::lessThan(const QModelIndex &left, const QModelIndex 
 {
     bool bResult = false;
 
-    if (g_bIsCustomSort) {
-        bResult = (g_pXModel->getRowPrio(left.row()) < g_pXModel->getRowPrio(right.row()));
+    if (m_bIsCustomSort) {
+        bResult = (m_pXModel->getRowPrio(left.row()) < m_pXModel->getRowPrio(right.row()));
     } else {
         qint32 nColumn = left.column();
 
-        XModel::SORT_METHOD sortMethod = g_mapSortMethods.value(nColumn, XModel::SORT_METHOD_DEFAULT);
+        XModel::SORT_METHOD sortMethod = m_mapSortMethods.value(nColumn, XModel::SORT_METHOD_DEFAULT);
 
         if (sortMethod == XModel::SORT_METHOD_HEX) {
             QString sLeft = left.data().toString();

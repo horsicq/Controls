@@ -39,12 +39,12 @@ protected:
     bool lessThan(const QModelIndex &left, const QModelIndex &right) const override;
 
 private:
-    bool g_bIsXmodel;
-    bool g_bIsCustomFilter;
-    bool g_bIsCustomSort;
-    XModel *g_pXModel;
-    QList<QString> g_listFilters;
-    QMap<qint32, XModel::SORT_METHOD> g_mapSortMethods;
+    bool m_bIsXmodel;
+    bool m_bIsCustomFilter;
+    bool m_bIsCustomSort;
+    XModel *m_pXModel;
+    QList<QString> m_listFilters;
+    QMap<qint32, XModel::SORT_METHOD> m_mapSortMethods;
 };
 
 #endif  // XSORTFILTERPROXYMODEL_H
