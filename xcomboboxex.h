@@ -67,12 +67,12 @@ signals:
     void valueChanged(QVariant vValue);
 
 private:
-    QVariant g_varValue;
+    QVariant m_varValue;
     bool m_bIsReadonly;
     QStandardItemModel m_model;
-    CBTYPE g_cbtype;
-    quint64 g_nMask;
-    QMap<quint64, QString> g_mapData;
+    CBTYPE m_cbtype;
+    quint64 m_nMask;
+    QMap<quint64, QString> m_mapData;
 };
 
 #define PXComboBoxEx XComboBoxEx *
