@@ -22,20 +22,20 @@
 
 XDeviceTableView::XDeviceTableView(QWidget *pParent) : XAbstractTableView(pParent)
 {
-    g_pXInfoDB = nullptr;
+    m_pXInfoDB = nullptr;
     m_pDevice = nullptr;
-    g_nViewSize = 0;
-    g_searchData = {};
-    g_locationMode = LOCMODE_ADDRESS;
-    g_nLocationBase = 16;
-    g_nVisitedIndex = 0;
-    g_fileType = XBinary::FT_UNKNOWN;
-    g_disasmMode = XBinary::DM_UNKNOWN;
-    g_nStartOffset = 0;
-    g_nTotalSize = -1;
+    m_nViewSize = 0;
+    m_searchData = {};
+    m_locationMode = LOCMODE_ADDRESS;
+    m_nLocationBase = 16;
+    m_nVisitedIndex = 0;
+    m_fileType = XBinary::FT_UNKNOWN;
+    m_disasmMode = XBinary::DM_UNKNOWN;
+    m_nStartOffset = 0;
+    m_nTotalSize = -1;
 
     connect(this, SIGNAL(selectionChanged()), this, SLOT(selectionChangedSlot()));
-    setXInfoDB(&g_emptyXInfoDB);
+    setXInfoDB(&m_emptyXInfoDB);
 }
 
 XDeviceTableView::~XDeviceTableView()
@@ -45,40 +45,40 @@ XDeviceTableView::~XDeviceTableView()
 
 void XDeviceTableView::setXInfoDB(XInfoDB *pXInfoDB)
 {
-    if (g_pXInfoDB != pXInfoDB) {
-        g_pXInfoDB = pXInfoDB;
+    if (m_pXInfoDB != pXInfoDB) {
+        m_pXInfoDB = pXInfoDB;
 
         if (pXInfoDB) {
-            connect(g_pXInfoDB, SIGNAL(reloadViewSignal()), this, SLOT(reloadView()));
+            connect(m_pXInfoDB, SIGNAL(reloadViewSignal()), this, SLOT(reloadView()));
         }
     }
 }
 
 XInfoDB *XDeviceTableView::getXInfoDB()
 {
-    return g_pXInfoDB;
+    return m_pXInfoDB;
 }
 
 void XDeviceTableView::setMode(XBinary::FT fileType, XBinary::DM disasmMode, bool bShowVirtual)
 {
-    g_fileType = fileType;
-    g_disasmMode = disasmMode;
+    m_fileType = fileType;
+    m_disasmMode = disasmMode;
 
-    g_disasmCore.setMode(disasmMode);
+    m_disasmCore.setMode(disasmMode);
 
-    g_memoryMap = XFormats::getMemoryMap(fileType, XBinary::MAPMODE_UNKNOWN, m_pDevice);
+    m_memoryMap = XFormats::getMemoryMap(fileType, XBinary::MAPMODE_UNKNOWN, m_pDevice);
 
     qint64 nViewPos = 0;
 
     bool bAll = false;
 
     if (m_pDevice) {
-        if ((g_nStartOffset == 0) && (g_nTotalSize == m_pDevice->size())) {
+        if ((m_nStartOffset == 0) && (m_nTotalSize == m_pDevice->size())) {
             bAll = true;
         }
     }
 
-    g_listViewStruct.clear();
+    m_listViewStruct.clear();
 
     qint32 nNumberOfRecords = getMemoryMap()->listRecords.count();
     for (qint32 i = 0; i < nNumberOfRecords; i++) {
@@ -103,10 +103,10 @@ void XDeviceTableView::setMode(XBinary::FT fileType, XBinary::DM disasmMode, boo
             }
         }
 
-        // Add if g_nStartOffset and qint64 g_nTotalSize in this viewStruct
+        // Add if m_nStartOffset and qint64 m_nTotalSize in this viewStruct
         if (!bAll) {
             if (record.nOffset != -1) {
-                if (record.nOffset >= g_nStartOffset && (record.nOffset + record.nSize <= g_nStartOffset + g_nTotalSize)) {
+                if (record.nOffset >= m_nStartOffset && (record.nOffset + record.nSize <= m_nStartOffset + m_nTotalSize)) {
                     bAdd = true;
                 } else {
                     bAdd = false;
@@ -114,17 +114,17 @@ void XDeviceTableView::setMode(XBinary::FT fileType, XBinary::DM disasmMode, boo
             }
         }
 
-        // Add if g_nStartOffset and qint64 g_nTotalSize partially in this viewStruct, correct nAddress, nOffset, nSize
+        // Add if m_nStartOffset and qint64 m_nTotalSize partially in this viewStruct, correct nAddress, nOffset, nSize
         if (!bAll) {
             if (record.nOffset != -1) {
-                if (record.nOffset < g_nStartOffset && (record.nOffset + record.nSize > g_nStartOffset)) {
-                    record.nAddress += g_nStartOffset - record.nOffset;
-                    record.nOffset = g_nStartOffset;
-                    record.nSize -= g_nStartOffset - record.nOffset;
+                if (record.nOffset < m_nStartOffset && (record.nOffset + record.nSize > m_nStartOffset)) {
+                    record.nAddress += m_nStartOffset - record.nOffset;
+                    record.nOffset = m_nStartOffset;
+                    record.nSize -= m_nStartOffset - record.nOffset;
                     bAdd = true;
                 }
-                if (record.nOffset < g_nStartOffset + g_nTotalSize && (record.nOffset + record.nSize > g_nStartOffset + g_nTotalSize)) {
-                    record.nSize = g_nStartOffset + g_nTotalSize - record.nOffset;
+                if (record.nOffset < m_nStartOffset + m_nTotalSize && (record.nOffset + record.nSize > m_nStartOffset + m_nTotalSize)) {
+                    record.nSize = m_nStartOffset + m_nTotalSize - record.nOffset;
                     bAdd = true;
                 }
             }
@@ -133,7 +133,7 @@ void XDeviceTableView::setMode(XBinary::FT fileType, XBinary::DM disasmMode, boo
         if (bAdd) {
             nViewPos += record.nSize;
 
-            g_listViewStruct.append(record);
+            m_listViewStruct.append(record);
         }
     }
 
@@ -143,25 +143,25 @@ void XDeviceTableView::setMode(XBinary::FT fileType, XBinary::DM disasmMode, boo
 void XDeviceTableView::setDevice(QIODevice *pDevice, qint64 nStartOffset, qint64 nTotalSize)
 {
     m_pDevice = pDevice;
-    g_nStartOffset = nStartOffset;
+    m_nStartOffset = nStartOffset;
 
-    g_nTotalSize = nTotalSize;
+    m_nTotalSize = nTotalSize;
 
     if ((nTotalSize == -1) || (nTotalSize == 0)) {
         if (pDevice) {
-            g_nTotalSize = pDevice->size() - nStartOffset;
+            m_nTotalSize = pDevice->size() - nStartOffset;
         } else {
-            g_nTotalSize = 0;
+            m_nTotalSize = 0;
         }
     }
 
     if (pDevice) {
         if (nStartOffset + nTotalSize > pDevice->size()) {
-            g_nTotalSize = pDevice->size() - nStartOffset;
+            m_nTotalSize = pDevice->size() - nStartOffset;
         }
     }
 
-    g_listVisited.clear();
+    m_listVisited.clear();
 
     if (pDevice) {
         setMode(XBinary::FT_BINARY, XBinary::DM_UNKNOWN, false);
@@ -181,22 +181,22 @@ QIODevice *XDeviceTableView::getDevice()
 
 void XDeviceTableView::setViewSize(qint64 nViewSize)
 {
-    g_nViewSize = nViewSize;
+    m_nViewSize = nViewSize;
 }
 
 qint64 XDeviceTableView::getViewSize()
 {
-    return g_nViewSize;
+    return m_nViewSize;
 }
 
 XBinary::_MEMORY_MAP *XDeviceTableView::getMemoryMap()
 {
-    return &g_memoryMap;
+    return &m_memoryMap;
 }
 
 void XDeviceTableView::setLocationMode(XDeviceTableView::LOCMODE locationMode)
 {
-    g_locationMode = locationMode;
+    m_locationMode = locationMode;
 
     adjust(true);
     viewport()->update();
@@ -205,12 +205,12 @@ void XDeviceTableView::setLocationMode(XDeviceTableView::LOCMODE locationMode)
 
 XDeviceTableView::LOCMODE XDeviceTableView::getlocationMode()
 {
-    return g_locationMode;
+    return m_locationMode;
 }
 
 void XDeviceTableView::setLocationBase(qint32 nBase)
 {
-    g_nLocationBase = nBase;
+    m_nLocationBase = nBase;
 
     adjust(true);
     viewport()->update();
@@ -219,7 +219,7 @@ void XDeviceTableView::setLocationBase(qint32 nBase)
 
 qint32 XDeviceTableView::getLocationBase()
 {
-    return g_nLocationBase;
+    return m_nLocationBase;
 }
 
 void XDeviceTableView::adjustScrollCount()
@@ -338,19 +338,19 @@ void XDeviceTableView::setDeviceSelection(qint64 nOffset, qint64 nSize)
 
 bool XDeviceTableView::isPrevVisitedAvailable()
 {
-    return g_nVisitedIndex > 0;
+    return m_nVisitedIndex > 0;
 }
 
 bool XDeviceTableView::isNextVisitedAvailable()
 {
-    return g_nVisitedIndex < (g_listVisited.count() - 1);
+    return m_nVisitedIndex < (m_listVisited.count() - 1);
 }
 
 void XDeviceTableView::goToNextVisited()
 {
     if (isNextVisitedAvailable()) {
-        g_nVisitedIndex++;
-        qint64 nViewPos = g_listVisited.at(g_nVisitedIndex);
+        m_nVisitedIndex++;
+        qint64 nViewPos = m_listVisited.at(m_nVisitedIndex);
 
         if (_goToViewPos(nViewPos)) {
             _initSetSelection(nViewPos, getViewSizeByViewPos(nViewPos));
@@ -363,8 +363,8 @@ void XDeviceTableView::goToNextVisited()
 void XDeviceTableView::goToPrevVisited()
 {
     if (isPrevVisitedAvailable()) {
-        g_nVisitedIndex--;
-        qint64 nViewPos = g_listVisited.at(g_nVisitedIndex);
+        m_nVisitedIndex--;
+        qint64 nViewPos = m_listVisited.at(m_nVisitedIndex);
 
         if (_goToViewPos(nViewPos)) {
             _initSetSelection(nViewPos, getViewSizeByViewPos(nViewPos));
@@ -380,20 +380,20 @@ void XDeviceTableView::addVisited(qint64 nViewPos)
     //     qDebug("Add visited %s", XBinary::valueToHex(nViewPos).toLatin1().data());
     // #endif
 
-    if ((g_listVisited.empty()) || (g_listVisited.last() != nViewPos)) {
-        qint32 nNumberOfVisited = g_listVisited.count();
+    if ((m_listVisited.empty()) || (m_listVisited.last() != nViewPos)) {
+        qint32 nNumberOfVisited = m_listVisited.count();
 
-        for (qint32 i = nNumberOfVisited - 1; i > g_nVisitedIndex; i--) {
-            g_listVisited.removeAt(i);
+        for (qint32 i = nNumberOfVisited - 1; i > m_nVisitedIndex; i--) {
+            m_listVisited.removeAt(i);
         }
 
-        g_listVisited.append(nViewPos);
+        m_listVisited.append(nViewPos);
 
-        if (g_listVisited.count() > N_MAX_VISITED) {
-            g_listVisited.removeFirst();
+        if (m_listVisited.count() > N_MAX_VISITED) {
+            m_listVisited.removeFirst();
         }
 
-        g_nVisitedIndex = g_listVisited.count() - 1;
+        m_nVisitedIndex = m_listVisited.count() - 1;
 
         emit visitedStateChanged();
     }
@@ -401,7 +401,7 @@ void XDeviceTableView::addVisited(qint64 nViewPos)
 
 void XDeviceTableView::clearVisited()
 {
-    g_listVisited.clear();
+    m_listVisited.clear();
 }
 
 void XDeviceTableView::setLocation(quint64 nLocation, qint32 nLocationType, qint64 nSize)
@@ -412,18 +412,18 @@ void XDeviceTableView::setLocation(quint64 nLocation, qint32 nLocationType, qint
 
 XDisasmCore *XDeviceTableView::getDisasmCore()
 {
-    return &g_disasmCore;
+    return &m_disasmCore;
 }
 
 XDeviceTableView::VIEWSTRUCT XDeviceTableView::_getViewStructByViewPos(qint64 nViewPos)
 {
     VIEWSTRUCT result = {};
 
-    qint32 nNumberOfRecords = g_listViewStruct.count();
+    qint32 nNumberOfRecords = m_listViewStruct.count();
 
     for (qint32 i = 0; i < nNumberOfRecords; i++) {
-        if ((g_listViewStruct.at(i).nViewPos <= nViewPos) && (nViewPos < (g_listViewStruct.at(i).nViewPos + g_listViewStruct.at(i).nSize))) {
-            result = g_listViewStruct.at(i);
+        if ((m_listViewStruct.at(i).nViewPos <= nViewPos) && (nViewPos < (m_listViewStruct.at(i).nViewPos + m_listViewStruct.at(i).nSize))) {
+            result = m_listViewStruct.at(i);
             break;
         }
     }
@@ -435,12 +435,12 @@ XDeviceTableView::VIEWSTRUCT XDeviceTableView::_getViewStructByAddress(XADDR nAd
 {
     VIEWSTRUCT result = {};
 
-    qint32 nNumberOfRecords = g_listViewStruct.count();
+    qint32 nNumberOfRecords = m_listViewStruct.count();
 
     for (qint32 i = 0; i < nNumberOfRecords; i++) {
-        if ((g_listViewStruct.at(i).nAddress != (XADDR)-1) && (g_listViewStruct.at(i).nAddress <= nAddress) &&
-            (nAddress < (g_listViewStruct.at(i).nAddress + g_listViewStruct.at(i).nSize))) {
-            result = g_listViewStruct.at(i);
+        if ((m_listViewStruct.at(i).nAddress != (XADDR)-1) && (m_listViewStruct.at(i).nAddress <= nAddress) &&
+            (nAddress < (m_listViewStruct.at(i).nAddress + m_listViewStruct.at(i).nSize))) {
+            result = m_listViewStruct.at(i);
             break;
         }
     }
@@ -452,12 +452,12 @@ XDeviceTableView::VIEWSTRUCT XDeviceTableView::_getViewStructByOffset(qint64 nOf
 {
     VIEWSTRUCT result = {};
 
-    qint32 nNumberOfRecords = g_listViewStruct.count();
+    qint32 nNumberOfRecords = m_listViewStruct.count();
 
     for (qint32 i = 0; i < nNumberOfRecords; i++) {
-        if ((g_listViewStruct.at(i).nOffset != -1) && (g_listViewStruct.at(i).nOffset <= nOffset) &&
-            (nOffset < (g_listViewStruct.at(i).nOffset + g_listViewStruct.at(i).nSize))) {
-            result = g_listViewStruct.at(i);
+        if ((m_listViewStruct.at(i).nOffset != -1) && (m_listViewStruct.at(i).nOffset <= nOffset) &&
+            (nOffset < (m_listViewStruct.at(i).nOffset + m_listViewStruct.at(i).nSize))) {
+            result = m_listViewStruct.at(i);
             break;
         }
     }
@@ -593,8 +593,8 @@ void XDeviceTableView::setEdited(qint64 nDeviceOffset, qint64 nDeviceSize)
 
     updateData();
 
-    if (g_pXInfoDB) {
-        g_pXInfoDB->setEdited(nDeviceOffset, nDeviceSize);
+    if (m_pXInfoDB) {
+        m_pXInfoDB->setEdited(nDeviceOffset, nDeviceSize);
     }
 
     viewport()->update();
@@ -612,7 +612,7 @@ bool XDeviceTableView::isViewPosValid(qint64 nViewPos)
 {
     bool bResult = false;
 
-    if ((nViewPos >= 0) && (nViewPos < g_nViewSize)) {
+    if ((nViewPos >= 0) && (nViewPos < m_nViewSize)) {
         bResult = true;
     }
 
@@ -621,7 +621,7 @@ bool XDeviceTableView::isViewPosValid(qint64 nViewPos)
 
 bool XDeviceTableView::isEnd(qint64 nOffset)
 {
-    return (nOffset == g_nViewSize);
+    return (nOffset == m_nViewSize);
 }
 
 void XDeviceTableView::_goToAddressSlot()
@@ -631,7 +631,7 @@ void XDeviceTableView::_goToAddressSlot()
 
     DialogGoToAddress::TYPE type = DialogGoToAddress::TYPE_VIRTUALADDRESS;
 
-    if (g_locationMode == LOCMODE_RELADDRESS) {
+    if (m_locationMode == LOCMODE_RELADDRESS) {
         nAddress = XBinary::offsetToRelAddress(getMemoryMap(), state.nSelectionDeviceOffset);
     } else {
         nAddress = XBinary::offsetToAddress(getMemoryMap(), state.nSelectionDeviceOffset);
@@ -711,27 +711,27 @@ void XDeviceTableView::_findSlot(XBinary::SEARCHMODE mode)
 {
     DEVICESTATE state = getDeviceState();
 
-    g_searchData = {};
-    g_searchData.nResultOffset = -1;
-    g_searchData.nCurrentOffset = state.nSelectionDeviceOffset;
+    m_searchData = {};
+    m_searchData.nResultOffset = -1;
+    m_searchData.nCurrentOffset = state.nSelectionDeviceOffset;
 
     DialogSearch::OPTIONS options = {};
     options.bShowBegin = true;
 
-    DialogSearch dialogSearch(this, getDevice(), &g_searchData, mode, options);
+    DialogSearch dialogSearch(this, getDevice(), &m_searchData, mode, options);
 
     if (dialogSearch.exec() == QDialog::Accepted)  // TODO use status
     {
         SearchProcess searchProcess;
         XDialogProcess dsp(this, &searchProcess);
         dsp.setGlobal(getShortcuts(), getGlobalOptions());
-        searchProcess.setData(getDevice(), &g_searchData, dsp.getPdStruct());
+        searchProcess.setData(getDevice(), &m_searchData, dsp.getPdStruct());
         dsp.start();
         dsp.showDialogDelay();
 
-        if (g_searchData.nResultOffset != -1) {
-            qint64 nViewPos = deviceOffsetToViewPos(g_searchData.nResultOffset);
-            qint64 nViewSize = g_searchData.nResultSize;
+        if (m_searchData.nResultOffset != -1) {
+            qint64 nViewPos = deviceOffsetToViewPos(m_searchData.nResultOffset);
+            qint64 nViewSize = m_searchData.nResultSize;
 
             _goToViewPos(nViewPos);
             _initSetSelection(nViewPos, nViewSize);
@@ -745,27 +745,27 @@ void XDeviceTableView::_findSlot(XBinary::SEARCHMODE mode)
 
 void XDeviceTableView::_findNextSlot()
 {
-    if (g_searchData.bIsInit) {
-        g_searchData.nCurrentOffset = g_searchData.nResultOffset + 1;
-        g_searchData.startFrom = XBinary::SF_CURRENTOFFSET;
+    if (m_searchData.bIsInit) {
+        m_searchData.nCurrentOffset = m_searchData.nResultOffset + 1;
+        m_searchData.startFrom = XBinary::SF_CURRENTOFFSET;
 
         SearchProcess searchProcess;
         XDialogProcess dsp(this, &searchProcess);
         dsp.setGlobal(getShortcuts(), getGlobalOptions());
-        searchProcess.setData(getDevice(), &g_searchData, dsp.getPdStruct());
+        searchProcess.setData(getDevice(), &m_searchData, dsp.getPdStruct());
         dsp.start();
         dsp.showDialogDelay();
 
         if (dsp.isSuccess())  // TODO use status
         {
-            qint64 nViewPos = deviceOffsetToViewPos(g_searchData.nResultOffset);
-            qint64 nViewSize = g_searchData.nResultSize;
+            qint64 nViewPos = deviceOffsetToViewPos(m_searchData.nResultOffset);
+            qint64 nViewSize = m_searchData.nResultSize;
 
             _goToViewPos(nViewPos);
             _initSetSelection(nViewPos, nViewSize);
             setFocus();
             viewport()->update();
-        } else if (g_searchData.valueType != XBinary::VT_UNKNOWN) {
+        } else if (m_searchData.valueType != XBinary::VT_UNKNOWN) {
             emit errorMessage(tr("Nothing found"));
         }
     }

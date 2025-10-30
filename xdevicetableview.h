@@ -147,23 +147,23 @@ public slots:
 
 private:
     static const qint32 N_MAX_VISITED = 100;
-    XInfoDB g_emptyXInfoDB;
-    XInfoDB *g_pXInfoDB;
+    XInfoDB m_emptyXInfoDB;
+    XInfoDB *m_pXInfoDB;
     QIODevice *m_pDevice;
-    qint64 g_nStartOffset;
-    qint64 g_nTotalSize;
-    qint64 g_nViewSize;
-    XBinary::SEARCHDATA g_searchData;
-    LOCMODE g_locationMode;
-    qint32 g_nLocationBase;
-    QList<qint64> g_listVisited;
-    qint32 g_nVisitedIndex;
+    qint64 m_nStartOffset;
+    qint64 m_nTotalSize;
+    qint64 m_nViewSize;
+    XBinary::SEARCHDATA m_searchData;
+    LOCMODE m_locationMode;
+    qint32 m_nLocationBase;
+    QList<qint64> m_listVisited;
+    qint32 m_nVisitedIndex;
 
-    XBinary::FT g_fileType;
-    XBinary::DM g_disasmMode;
-    XBinary::_MEMORY_MAP g_memoryMap;
-    QList<VIEWSTRUCT> g_listViewStruct;
-    XDisasmCore g_disasmCore;
+    XBinary::FT m_fileType;
+    XBinary::DM m_disasmMode;
+    XBinary::_MEMORY_MAP m_memoryMap;
+    QList<VIEWSTRUCT> m_listViewStruct;
+    XDisasmCore m_disasmCore;
 };
 
 #endif  // XDEVICETABLEVIEW_H
