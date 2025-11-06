@@ -902,11 +902,9 @@ void XAbstractTableView::_customContextMenu(const QPoint &pos)
         if (listMenuItems.count()) {
             QMenu contextMenu(this);
 
-            QList<QObject *> listObjects = getShortcuts()->adjustContextMenu(&contextMenu, &listMenuItems);
+            getShortcuts()->adjustContextMenu(&contextMenu, &listMenuItems);
 
             contextMenu.exec(mapToGlobal(pos));
-
-            XOptions::deleteQObjectList(&listObjects);
         }
     }
 }
