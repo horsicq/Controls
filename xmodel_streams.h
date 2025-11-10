@@ -43,7 +43,7 @@ public:
     QVariant headerData(int nSection, Qt::Orientation orientation, int nRole = Qt::DisplayRole) const override;
 
 private:
-    QList<XBinary::FPART> *g_pListFParts;
+    QList<XBinary::FPART> *m_pListFParts;
     void _initColumns();
 };
 
