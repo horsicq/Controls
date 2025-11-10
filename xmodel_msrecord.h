@@ -54,15 +54,15 @@ public:
 
 private:
     QIODevice *m_pDevice;
-    XBinary::_MEMORY_MAP g_memoryMap;
-    QVector<XBinary::MS_RECORD> *g_pListRecords;
+    XBinary::_MEMORY_MAP m_memoryMap;
+    QVector<XBinary::MS_RECORD> *m_pListRecords;
     XBinary::MODE m_modeAddress;
     XBinary::MODE m_modeOffset;
-    XBinary::ENDIAN g_endian;
-    QVariant g_varValue;
-    XBinary::VT g_valueType;
-    QString g_sValue;
-    QList<XBinary::SIGNATUREDB_RECORD> *g_pListSignatureRecords;
+    XBinary::ENDIAN m_endian;
+    QVariant m_varValue;
+    XBinary::VT m_valueType;
+    QString m_sValue;
+    QList<XBinary::SIGNATUREDB_RECORD> *m_pListSignatureRecords;
 };
 
 #endif  // XMODEL_MSRECORD_H
