@@ -23,7 +23,7 @@
 #include <QtGlobal>
 
 XModel_Hex::XModel_Hex(QIODevice *pDevice, qint64 nOffset, qint64 nSize, quint64 nStartAddress, qint32 nBytesPerLine, QObject *pParent)
-    : XModel(pParent), m_pDevice(pDevice), g_nOffset(nOffset), g_nSize(nSize), g_nStartAddress(nStartAddress), g_nBytesPerLine(nBytesPerLine)
+    : XModel(pParent), m_pDevice(pDevice), m_nOffset(nOffset), m_nSize(nSize), m_nStartAddress(nStartAddress), m_nBytesPerLine(nBytesPerLine)
 {
     if (!m_pDevice) {
         _setRowCount(0);
@@ -31,14 +31,14 @@ XModel_Hex::XModel_Hex(QIODevice *pDevice, qint64 nOffset, qint64 nSize, quint64
         return;
     }
 
-    if (g_nSize < 0) {
-        g_nSize = m_pDevice->size() - g_nOffset;
-        if (g_nSize < 0) g_nSize = 0;
+    if (m_nSize < 0) {
+        m_nSize = m_pDevice->size() - m_nOffset;
+        if (m_nSize < 0) m_nSize = 0;
     }
 
-    if (g_nBytesPerLine <= 0) g_nBytesPerLine = 16;
+    if (m_nBytesPerLine <= 0) m_nBytesPerLine = 16;
 
-    qint32 rows = (qint32)((g_nSize + g_nBytesPerLine - 1) / g_nBytesPerLine);
+    qint32 rows = (qint32)((m_nSize + m_nBytesPerLine - 1) / m_nBytesPerLine);
     _setRowCount(rows);
     _setColumnCount(__COLUMN_COUNT);
 
@@ -61,8 +61,8 @@ QVariant XModel_Hex::data(const QModelIndex &index, int nRole) const
     int column = index.column();
 
     if (nRole == Qt::DisplayRole) {
-        qint64 lineOffset = g_nOffset + (qint64)row * g_nBytesPerLine;
-        int bytesThisLine = (int)qMin<qint64>(g_nBytesPerLine, g_nSize - (row * (qint64)g_nBytesPerLine));
+        qint64 lineOffset = m_nOffset + (qint64)row * m_nBytesPerLine;
+        int bytesThisLine = (int)qMin<qint64>(m_nBytesPerLine, m_nSize - (row * (qint64)m_nBytesPerLine));
         if (bytesThisLine < 0) bytesThisLine = 0;
 
         if (!m_pDevice->isSequential()) {
@@ -72,7 +72,7 @@ QVariant XModel_Hex::data(const QModelIndex &index, int nRole) const
             m_pDevice->seek(prev);
 
             if (column == COLUMN_ADDRESS) {
-                result = QString::number((qulonglong)(g_nStartAddress + (quint64)(row * g_nBytesPerLine)), 16).rightJustified(8, '0');
+                result = QString::number((qulonglong)(m_nStartAddress + (quint64)(row * m_nBytesPerLine)), 16).rightJustified(8, '0');
             } else if (column == COLUMN_HEX) {
                 result = _bytesToHex(chunk);
             } else if (column == COLUMN_ASCII) {

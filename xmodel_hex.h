@@ -42,10 +42,10 @@ public:
 
 private:
     QIODevice *m_pDevice;
-    qint64 g_nOffset;
-    qint64 g_nSize;
-    quint64 g_nStartAddress;
-    qint32 g_nBytesPerLine;
+    qint64 m_nOffset;
+    qint64 m_nSize;
+    quint64 m_nStartAddress;
+    qint32 m_nBytesPerLine;
 
     QString _bytesToHex(const QByteArray &ba) const;
     QString _bytesToAscii(const QByteArray &ba) const;
