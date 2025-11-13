@@ -42,6 +42,9 @@ public:
 
     QVariant data(const QModelIndex &index, int nRole = Qt::DisplayRole) const override;
     QVariant headerData(int nSection, Qt::Orientation orientation, int nRole = Qt::DisplayRole) const override;
+    virtual SORT_METHOD getSortMethod(qint32 nColumn) override;
+    virtual bool isCustomFilter() override;
+    virtual bool isCustomSort() override;
 
 private:
     QList<XBinary::FPART> *g_pListFParts;

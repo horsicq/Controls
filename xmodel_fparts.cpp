@@ -125,3 +125,24 @@ QVariant XModel_FPARTS::headerData(int nSection, Qt::Orientation orientation, in
 
     return result;
 }
+
+XModel::SORT_METHOD XModel_FPARTS::getSortMethod(qint32 nColumn)
+{
+    SORT_METHOD result = SORT_METHOD_DEFAULT;
+
+    if ((nColumn == COLUMN_OFFSET) || (nColumn == COLUMN_SIZE) || (nColumn == COLUMN_VADDRESS) || (nColumn == COLUMN_VSIZE)) {
+        result = SORT_METHOD_HEX;
+    }
+
+    return result;
+}
+
+bool XModel_FPARTS::isCustomFilter()
+{
+    return false;
+}
+
+bool XModel_FPARTS::isCustomSort()
+{
+    return false;
+}
