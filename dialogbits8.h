@@ -63,12 +63,12 @@ private:
     Ui::DialogBits8 *ui;
     quint64 m_nValue;
     bool m_bIsReadonly;
-    XLineEditValidator g_validatorHex;
-    XLineEditValidator g_validatorSigned;
-    XLineEditValidator g_validatorUnsigned;
-    XLineEditValidator g_validatorBin;
-    QList<QToolButton *> g_listButtons;
-    qint32 g_nBits;
+    XLineEditValidator m_validatorHex;
+    XLineEditValidator m_validatorSigned;
+    XLineEditValidator m_validatorUnsigned;
+    XLineEditValidator m_validatorBin;
+    QList<QToolButton *> m_listButtons;
+    qint32 m_nBits;
 };
 
 #endif  // DIALOGBITS8_H
