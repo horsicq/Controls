@@ -47,7 +47,7 @@ public:
     virtual bool isCustomSort() override;
 
 private:
-    QList<XBinary::FPART> *g_pListFParts;
+    QList<XBinary::FPART> *m_pListFParts;
     void _initColumns();
 };
 

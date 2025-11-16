@@ -22,7 +22,7 @@
 
 XModel_FPARTS::XModel_FPARTS(QList<XBinary::FPART> *pListFParts, QObject *pParent) : XModel(pParent)
 {
-    g_pListFParts = pListFParts;
+    m_pListFParts = pListFParts;
     if (pListFParts) {
         _setRowCount(pListFParts->count());
     } else {
@@ -60,15 +60,15 @@ QVariant XModel_FPARTS::data(const QModelIndex &index, int nRole) const
 {
     QVariant result;
 
-    if (!g_pListFParts) {
+    if (!m_pListFParts) {
         return result;
     }
 
     if (index.isValid()) {
         qint32 nRow = index.row();
-        if (nRow >= 0 && nRow < g_pListFParts->count()) {
+        if (nRow >= 0 && nRow < m_pListFParts->count()) {
             qint32 nColumn = index.column();
-            const XBinary::FPART &rec = g_pListFParts->at(nRow);
+            const XBinary::FPART &rec = m_pListFParts->at(nRow);
             if (nRole == Qt::DisplayRole) {
                 if (nColumn == COLUMN_NAME) {
                     result = rec.sName;
