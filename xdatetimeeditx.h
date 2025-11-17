@@ -44,8 +44,8 @@ signals:
     void valueChanged(QVariant vValue);
 
 private:
-    QVariant g_vValue;
-    DT_TYPE g_dtType;
+    QVariant m_vValue;
+    DT_TYPE m_dtType;
 };
 
 #endif  // XDATETIMEEDITX_H

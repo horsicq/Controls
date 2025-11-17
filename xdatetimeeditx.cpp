@@ -22,31 +22,30 @@
 
 XDateTimeEditX::XDateTimeEditX(QWidget *pParent) : QDateTimeEdit(pParent)
 {
-    g_dtType = DT_TYPE_UNKNOWN;
+    m_dtType = DT_TYPE_UNKNOWN;
 
     connect(this, SIGNAL(dateTimeChanged(QDateTime)), this, SLOT(_setDateTime(QDateTime)));
 }
 
 void XDateTimeEditX::setValue(QVariant vValue, DT_TYPE dtType)
 {
-    if (this->g_vValue != vValue) {
-        this->g_vValue = vValue;
+    if (m_vValue != vValue) {
+        m_vValue = vValue;
         emit valueChanged(vValue);
     }
 
-    if (this->g_dtType != dtType) {
-        this->g_dtType = dtType;
+    if (m_dtType != dtType) {
+        m_dtType = dtType;
 
         if (dtType == DT_TYPE_POSIX) {
             setDisplayFormat("yyyy-MM-dd hh:mm:ss");
-            QDateTime dt;
-            dt = dt.fromString("1970-01-01 00:00:00", "yyyy-MM-dd hh:mm:ss");
+            QDateTime dt = QDateTime::fromString("1970-01-01 00:00:00", "yyyy-MM-dd hh:mm:ss");
             setMinimumDateTime(QDateTime(dt));
             setDateTime(dt);
         }
     }
 
-    if (g_dtType == DT_TYPE_POSIX) {
+    if (m_dtType == DT_TYPE_POSIX) {
         QDateTime dt;
         dt.setMSecsSinceEpoch((quint64)vValue.toULongLong() * 1000);
 
@@ -56,21 +55,21 @@ void XDateTimeEditX::setValue(QVariant vValue, DT_TYPE dtType)
 
 QVariant XDateTimeEditX::getValue()
 {
-    return g_vValue;
+    return m_vValue;
 }
 
 void XDateTimeEditX::_setDateTime(const QDateTime &dtValue)
 {
     quint64 nCurrentValue = 0;
 
-    if (g_dtType == DT_TYPE_POSIX) {
+    if (m_dtType == DT_TYPE_POSIX) {
         nCurrentValue = (quint64)dtValue.toMSecsSinceEpoch() / 1000;
     }
 
     QVariant vValue = nCurrentValue;
 
-    if (g_vValue != vValue) {
-        g_vValue = vValue;
+    if (m_vValue != vValue) {
+        m_vValue = vValue;
 
         emit valueChanged(vValue);
     }
