@@ -27,9 +27,9 @@ XDeviceTableEditView::XDeviceTableEditView(QWidget *pParent) : XDeviceTableView(
 void XDeviceTableEditView::setViewWidgetState(VIEWWIDGET viewWidget, bool bState)
 {
     if (bState) {
-        g_stViewWidgetState.insert(viewWidget);
+        m_stViewWidgetState.insert(viewWidget);
     } else {
-        g_stViewWidgetState.remove(viewWidget);
+        m_stViewWidgetState.remove(viewWidget);
     }
 
     emit viewWidgetsStateChanged();
@@ -37,7 +37,7 @@ void XDeviceTableEditView::setViewWidgetState(VIEWWIDGET viewWidget, bool bState
 
 bool XDeviceTableEditView::getViewWidgetState(VIEWWIDGET viewWidget)
 {
-    return g_stViewWidgetState.contains(viewWidget);
+    return m_stViewWidgetState.contains(viewWidget);
 }
 
 void XDeviceTableEditView::dumpMemory(const QString &sDumpName, qint64 nOffset, qint64 nSize)

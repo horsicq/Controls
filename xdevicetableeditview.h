@@ -106,7 +106,7 @@ signals:
 #endif
 
 private:
-    QSet<VIEWWIDGET> g_stViewWidgetState;
+    QSet<VIEWWIDGET> m_stViewWidgetState;
 };
 
 #endif  // XDEVICETABLEEDITVIEW_H
