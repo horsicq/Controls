@@ -22,20 +22,29 @@
 
 XHeaderView::XHeaderView(QWidget *pParent) : QHeaderView(Qt::Horizontal, pParent)
 {
-    // g_pProgressBar = nullptr;
-
     connect(this, SIGNAL(sectionResized(int, int, int)), this, SLOT(onSectionResized(int, int, int)));
     connect(this, SIGNAL(sectionClicked(int)), this, SLOT(onSectionClicked(int)));
 
     setSectionsClickable(true);
 }
 
+XHeaderView::~XHeaderView()
+{
+    qint32 nCount = m_listLineEdits.count();
+
+    for (qint32 i = 0; i < nCount; i++) {
+        delete m_listLineEdits.at(i);
+    }
+
+    m_listLineEdits.clear();
+}
+
 QSize XHeaderView::sizeHint() const
 {
     QSize baseSize = QHeaderView::sizeHint();
 
-    if (g_listLineEdits.count()) {
-        baseSize.setHeight(baseSize.height() + 4 + g_listLineEdits.at(0)->sizeHint().height());
+    if (m_listLineEdits.count()) {
+        baseSize.setHeight(baseSize.height() + 4 + m_listLineEdits.at(0)->sizeHint().height());
     }
 
     return baseSize;
@@ -43,40 +52,38 @@ QSize XHeaderView::sizeHint() const
 
 void XHeaderView::setNumberOfFilters(qint32 nNumberOfFilters)
 {
-    qint32 nOldCount = g_listLineEdits.count();
+    qint32 nOldCount = m_listLineEdits.count();
 
     for (qint32 i = 0; i < nOldCount; i++) {
-        delete g_listLineEdits.at(i);
+        delete m_listLineEdits.at(i);
     }
 
-    g_listLineEdits.clear();
+    m_listLineEdits.clear();
 
     for (qint32 i = 0; i < nNumberOfFilters; i++) {
         QLineEdit *pLineEdit = new QLineEdit(this);
         pLineEdit->setPlaceholderText(tr("Filter"));
         pLineEdit->setToolTip(tr("Filter"));
         connect(pLineEdit, SIGNAL(textChanged(QString)), this, SLOT(_textChanged(QString)));
-        g_listLineEdits.append(pLineEdit);
+        m_listLineEdits.append(pLineEdit);
     }
-
-    // g_pProgressBar = new QProgressBar(this);
 
     adjustPositions();
 }
 
 void XHeaderView::clearFilters()
 {
-    qint32 nCount = g_listLineEdits.count();
+    qint32 nCount = m_listLineEdits.count();
 
     for (qint32 i = 0; i < nCount; i++) {
-        g_listLineEdits.at(i)->clear();
+        m_listLineEdits.at(i)->clear();
     }
 }
 
 void XHeaderView::updateGeometries()
 {
-    if (g_listLineEdits.count()) {
-        qint32 nLineEditHeight = g_listLineEdits.at(0)->sizeHint().height();
+    if (m_listLineEdits.count()) {
+        qint32 nLineEditHeight = m_listLineEdits.at(0)->sizeHint().height();
         setViewportMargins(0, 0, 0, nLineEditHeight + 4);
     } else {
         setViewportMargins(0, 0, 0, 0);
@@ -88,22 +95,16 @@ void XHeaderView::updateGeometries()
 
 void XHeaderView::adjustPositions()
 {
-    qint32 nCount = g_listLineEdits.count();
+    qint32 nCount = m_listLineEdits.count();
 
     QSize baseSize = QHeaderView::sizeHint();
 
     for (qint32 i = 0; i < nCount; i++) {
-        qint32 nLineEditHeight = g_listLineEdits.at(i)->sizeHint().height();
+        qint32 nLineEditHeight = m_listLineEdits.at(i)->sizeHint().height();
 
-        g_listLineEdits.at(i)->move(sectionPosition(i) - offset(), baseSize.height() + 2);
-        g_listLineEdits.at(i)->resize(sectionSize(i) - 2, nLineEditHeight);
-        g_listLineEdits.at(i)->show();
-
-        // qint32 nProgressBarHeight = g_pProgressBar->sizeHint().height();
-
-        // g_pProgressBar->move(sectionPosition(i) - offset(), baseSize.height() + nLineEditHeight + 4);
-        // g_pProgressBar->resize(sectionSize(i) - 2, nProgressBarHeight);
-        // g_pProgressBar->show();
+        m_listLineEdits.at(i)->move(sectionPosition(i) - offset(), baseSize.height() + 2);
+        m_listLineEdits.at(i)->resize(sectionSize(i) - 2, nLineEditHeight);
+        m_listLineEdits.at(i)->show();
     }
 }
 
@@ -111,10 +112,10 @@ QList<QString> XHeaderView::getFilters()
 {
     QList<QString> listResult;
 
-    qint32 nCount = g_listLineEdits.count();
+    qint32 nCount = m_listLineEdits.count();
 
     for (qint32 i = 0; i < nCount; i++) {
-        listResult.append(g_listLineEdits.at(i)->text());
+        listResult.append(m_listLineEdits.at(i)->text());
     }
 
     return listResult;
@@ -123,8 +124,8 @@ QList<QString> XHeaderView::getFilters()
 void XHeaderView::setFilterEnabled(qint32 nColumn, bool bFilterEnabled)
 {
     // TODO
-    if ((nColumn >= 0) && (nColumn < g_listLineEdits.count())) {
-        g_listLineEdits.at(nColumn)->setReadOnly(!bFilterEnabled);
+    if ((nColumn >= 0) && (nColumn < m_listLineEdits.count())) {
+        m_listLineEdits.at(nColumn)->setReadOnly(!bFilterEnabled);
     }
 }
 

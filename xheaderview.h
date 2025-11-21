@@ -24,14 +24,13 @@
 #include <QHeaderView>
 #include <QLineEdit>
 #include <QObject>
-#include <QPainter>
-#include <QProgressBar>
 
 class XHeaderView : public QHeaderView {
     Q_OBJECT
 
 public:
     XHeaderView(QWidget *pParent = nullptr);
+    ~XHeaderView();
 
     QSize sizeHint() const override;
     void setNumberOfFilters(qint32 nNumberOfFilters);
@@ -50,8 +49,7 @@ signals:
     void filterChanged();
 
 private:
-    QList<QLineEdit *> g_listLineEdits;
-    // QProgressBar *g_pProgressBar;
+    QList<QLineEdit *> m_listLineEdits;
 };
 
 #endif  // XHEADERVIEW_H
