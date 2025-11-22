@@ -26,12 +26,12 @@ XHtml::XHtml(QObject *pParent) : QObject(pParent)
 
 void XHtml::appendText(const QString &sText)
 {
-    g_sString.append(sText);
+    m_sString.append(sText);
 }
 
 void XHtml::addTableBegin()
 {
-    g_sString.append(
+    m_sString.append(
         "<table border=\"1\" style=\"border-style:solid;\" cellspacing=\"-1\" "
         "cellpadding=\"5\">");  // TODO cellpadding consts
 }
@@ -41,10 +41,10 @@ void XHtml::addTableRow(QList<TABLECELL> listTableCells)
     qint32 nNumbersOfCell = listTableCells.count();
 
     if (nNumbersOfCell) {
-        g_sString.append("<tr>");
+        m_sString.append("<tr>");
 
         for (qint32 i = 0; i < nNumbersOfCell; i++) {
-            g_sString.append("<td align=\"center\">");  // TODO align
+            m_sString.append("<td align=\"center\">");  // TODO align
 
             QString sCellText;
 
@@ -54,25 +54,25 @@ void XHtml::addTableRow(QList<TABLECELL> listTableCells)
                 sCellText = listTableCells.at(i).sText;
             }
 
-            g_sString.append(sCellText);
-            g_sString.append("</td>");
+            m_sString.append(sCellText);
+            m_sString.append("</td>");
         }
 
-        g_sString.append("</tr>");
+        m_sString.append("</tr>");
     }
 }
 
 void XHtml::addTableEnd()
 {
-    g_sString.append("</table>");
+    m_sString.append("</table>");
 }
 
 QString XHtml::toString()
 {
-    return g_sString;
+    return m_sString;
 }
 
-QString XHtml::makeLink(QString sText, QString sLink)
+QString XHtml::makeLink(const QString &sText, const QString &sLink)
 {
     QString sResult;
 

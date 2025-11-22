@@ -41,10 +41,10 @@ public:
     void addTableRow(QList<TABLECELL> listTableCells);
     void addTableEnd();
     QString toString();
-    static QString makeLink(QString sText, QString sLink);
+    static QString makeLink(const QString &sText, const QString &sLink);
 
 private:
-    QString g_sString;
+    QString m_sString;
 };
 
 #endif  // XHTML_H
