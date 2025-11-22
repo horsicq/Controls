@@ -124,10 +124,10 @@ signals:
     void focused(bool bState);
 
 private:
-    QVariant g_vValue;
-    XLineEditValidator g_validator;
-    bool g_bIsColon;
-    bool g_bIsFocused;
+    QVariant m_vValue;
+    XLineEditValidator m_validator;
+    bool m_bIsColon;
+    bool m_bIsFocused;
     _MODE m_mode;
 };
 
