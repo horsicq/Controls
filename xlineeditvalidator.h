@@ -69,7 +69,7 @@ public:
 
 private:
     MODE m_mode;
-    qint64 g_nMaxValue;
+    qint64 m_nMaxValue;
 };
 
 #endif  // XLINEEDITVALIDATOR_H
