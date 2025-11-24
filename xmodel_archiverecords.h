@@ -28,12 +28,13 @@ class XModel_ArchiveRecords : public XModel {
     Q_OBJECT
 
 public:
+    // Make dynamic
     enum COLUMN {
         COLUMN_NAME = 0,
         COLUMN_STREAMOFFSET,
         COLUMN_STREAMSIZE,
-        COLUMN_DECOMPRESSEDOFFSET,
-        COLUMN_DECOMPRESSEDSIZE,
+        // COLUMN_DECOMPRESSEDOFFSET,
+        // COLUMN_DECOMPRESSEDSIZE,
         COLUMN_COMPRESSMETHOD,
         COLUMN_CRC,
         COLUMN_DATETIME,
