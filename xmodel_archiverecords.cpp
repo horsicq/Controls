@@ -28,38 +28,52 @@ XModel_ArchiveRecords::XModel_ArchiveRecords(QList<XBinary::ARCHIVERECORD> *pLis
     } else {
         _setRowCount(0);
     }
-    _setColumnCount(__COLUMN_COUNT);
+
+    m_listColumns.clear();
+
+    if (pListArchiveRecords->count() > 0) {
+        if (pListArchiveRecords->at(0).mapProperties.contains(XBinary::FPART_PROP_ORIGINALNAME)) m_listColumns.append(XBinary::FPART_PROP_ORIGINALNAME);
+        if (pListArchiveRecords->at(0).mapProperties.contains(XBinary::FPART_PROP_COMPRESSEDSIZE)) m_listColumns.append(XBinary::FPART_PROP_COMPRESSEDSIZE);
+        if (pListArchiveRecords->at(0).mapProperties.contains(XBinary::FPART_PROP_UNCOMPRESSEDSIZE)) m_listColumns.append(XBinary::FPART_PROP_UNCOMPRESSEDSIZE);
+        m_listColumns.append(XBinary::FPART_PROP_STREAMOFFSET);
+        m_listColumns.append(XBinary::FPART_PROP_STREAMSIZE);
+        if (pListArchiveRecords->at(0).mapProperties.contains(XBinary::FPART_PROP_COMPRESSMETHOD)) m_listColumns.append(XBinary::FPART_PROP_COMPRESSMETHOD);
+    }
+
+    _setColumnCount(m_listColumns.count());
     _initColumns();
 }
 
 void XModel_ArchiveRecords::_initColumns()
 {
-    setColumnName(COLUMN_NAME, QObject::tr("Name"));
-    setColumnName(COLUMN_STREAMOFFSET, QObject::tr("Stream offset"));
-    setColumnName(COLUMN_STREAMSIZE, QObject::tr("Stream size"));
-    // setColumnName(COLUMN_DECOMPRESSEDOFFSET, QObject::tr("Decompressed offset"));
-    // setColumnName(COLUMN_DECOMPRESSEDSIZE, QObject::tr("Decompressed size"));
-    setColumnName(COLUMN_COMPRESSMETHOD, QObject::tr("Compress"));
-    setColumnName(COLUMN_CRC, QObject::tr("CRC"));
-    setColumnName(COLUMN_DATETIME, QObject::tr("Date"));
+    qint32 nNumberOfRecords = m_listColumns.count();
 
-    setColumnAlignment(COLUMN_NAME, Qt::AlignVCenter | Qt::AlignLeft);
-    setColumnAlignment(COLUMN_STREAMOFFSET, Qt::AlignVCenter | Qt::AlignRight);
-    setColumnAlignment(COLUMN_STREAMSIZE, Qt::AlignVCenter | Qt::AlignRight);
-    // setColumnAlignment(COLUMN_DECOMPRESSEDOFFSET, Qt::AlignVCenter | Qt::AlignRight);
-    // setColumnAlignment(COLUMN_DECOMPRESSEDSIZE, Qt::AlignVCenter | Qt::AlignRight);
-    setColumnAlignment(COLUMN_COMPRESSMETHOD, Qt::AlignVCenter | Qt::AlignLeft);
-    setColumnAlignment(COLUMN_CRC, Qt::AlignVCenter | Qt::AlignRight);
-    setColumnAlignment(COLUMN_DATETIME, Qt::AlignVCenter | Qt::AlignLeft);
+    for (qint32 i = 0; i < nNumberOfRecords; i++) {
+        XBinary::FPART_PROP fpartProp = m_listColumns.at(i);
 
-    setColumnSymbolSize(COLUMN_NAME, 20);
-    setColumnSymbolSize(COLUMN_STREAMOFFSET, 16);
-    setColumnSymbolSize(COLUMN_STREAMSIZE, 16);
-    // setColumnSymbolSize(COLUMN_DECOMPRESSEDOFFSET, 16);
-    // setColumnSymbolSize(COLUMN_DECOMPRESSEDSIZE, 16);
-    setColumnSymbolSize(COLUMN_COMPRESSMETHOD, 10);
-    setColumnSymbolSize(COLUMN_CRC, 8);
-    setColumnSymbolSize(COLUMN_DATETIME, 19);
+        QString sName;
+        qint32 nFlags = Qt::AlignVCenter | Qt::AlignLeft;
+        qint32 nSymbolSize = 16;
+
+        if (fpartProp == XBinary::FPART_PROP_ORIGINALNAME) sName = QObject::tr("Name");
+        else if (fpartProp == XBinary::FPART_PROP_COMPRESSEDSIZE) sName = QObject::tr("Compressed size");
+        else if (fpartProp == XBinary::FPART_PROP_UNCOMPRESSEDSIZE) sName = QObject::tr("Size");
+        else if (fpartProp == XBinary::FPART_PROP_STREAMOFFSET) sName = QObject::tr("Stream offset");
+        else if (fpartProp == XBinary::FPART_PROP_STREAMSIZE) sName = QObject::tr("Stream size");
+        else if (fpartProp == XBinary::FPART_PROP_COMPRESSMETHOD) sName = QObject::tr("Method");
+
+        if ((fpartProp == XBinary::FPART_PROP_ORIGINALNAME) ||
+            (fpartProp == XBinary::FPART_PROP_COMPRESSMETHOD))
+                nFlags = Qt::AlignVCenter | Qt::AlignLeft;
+        else nFlags = Qt::AlignVCenter | Qt::AlignRight;
+
+        if (fpartProp == XBinary::FPART_PROP_ORIGINALNAME) nSymbolSize = 20;
+        else nSymbolSize = 16;
+
+        setColumnName(i, sName);
+        setColumnAlignment(i, nFlags);
+        setColumnSymbolSize(i, nSymbolSize);
+    }
 }
 
 QVariant XModel_ArchiveRecords::data(const QModelIndex &index, int nRole) const
@@ -76,36 +90,54 @@ QVariant XModel_ArchiveRecords::data(const QModelIndex &index, int nRole) const
             qint32 nColumn = index.column();
             const XBinary::ARCHIVERECORD &rec = m_pListArchiveRecords->at(nRow);
             if (nRole == Qt::DisplayRole) {
-                if (nColumn == COLUMN_NAME) {
-                    if (rec.mapProperties.contains(XBinary::FPART_PROP_ORIGINALNAME)) {
-                        result = rec.mapProperties.value(XBinary::FPART_PROP_ORIGINALNAME).toString();
-                    }
-                } else if (nColumn == COLUMN_STREAMOFFSET) {
-                    result = QString::number(rec.nStreamOffset, 16);
-                } else if (nColumn == COLUMN_STREAMSIZE) {
-                    result = QString::number(rec.nStreamSize, 16);
-                // } else if (nColumn == COLUMN_DECOMPRESSEDOFFSET) {
-                //     result = QString::number(rec.nDecompressedOffset, 16);
-                // } else if (nColumn == COLUMN_DECOMPRESSEDSIZE) {
-                //     result = QString::number(rec.nDecompressedSize, 16);
-                } else if (nColumn == COLUMN_COMPRESSMETHOD) {
-                    if (rec.mapProperties.contains(XBinary::FPART_PROP_COMPRESSMETHOD)) {
-                        XBinary::COMPRESS_METHOD cm = (XBinary::COMPRESS_METHOD)rec.mapProperties.value(XBinary::FPART_PROP_COMPRESSMETHOD).toInt();
-                        result = XBinary::compressMethodToString(cm);
-                    }
-                } else if (nColumn == COLUMN_CRC) {
-                    if (rec.mapProperties.contains(XBinary::FPART_PROP_CRC_VALUE)) {
-                        quint32 nCRC = rec.mapProperties.value(XBinary::FPART_PROP_CRC_VALUE).toUInt();
-                        result = QString::number(nCRC, 16);
-                    }
-                } else if (nColumn == COLUMN_DATETIME) {
-                    if (rec.mapProperties.contains(XBinary::FPART_PROP_DATETIME)) {
-                        QDateTime dt = rec.mapProperties.value(XBinary::FPART_PROP_DATETIME).toDateTime();
-                        if (dt.isValid()) {
-                            result = dt.toString("yyyy-MM-dd HH:mm:ss");
-                        }
+                if (nColumn < m_listColumns.count()) {
+                    XBinary::FPART_PROP fpartProp = m_listColumns.at(nColumn);
+
+                    if (fpartProp == XBinary::FPART_PROP_ORIGINALNAME) {
+                        result = rec.mapProperties.value(fpartProp).toString();
+                    } else if ( (fpartProp == XBinary::FPART_PROP_COMPRESSEDSIZE) ||
+                                (fpartProp == XBinary::FPART_PROP_UNCOMPRESSEDSIZE)) {
+                        result = rec.mapProperties.value(fpartProp).toLongLong();
+                    } else if (fpartProp == XBinary::FPART_PROP_STREAMOFFSET) {
+                        result = rec.nStreamOffset;
+                    } else if (fpartProp == XBinary::FPART_PROP_STREAMSIZE) {
+                        result = rec.nStreamSize;
+                    } else if (fpartProp == XBinary::FPART_PROP_COMPRESSMETHOD) {
+                        result = XBinary::compressMethodToString((XBinary::COMPRESS_METHOD)rec.mapProperties.value(fpartProp).toInt());
                     }
                 }
+
+
+                // if (nColumn == COLUMN_NAME) {
+                //     if (rec.mapProperties.contains(XBinary::FPART_PROP_ORIGINALNAME)) {
+                //         result = rec.mapProperties.value(XBinary::FPART_PROP_ORIGINALNAME).toString();
+                //     }
+                // } else if (nColumn == COLUMN_STREAMOFFSET) {
+                //     result = QString::number(rec.nStreamOffset, 16);
+                // } else if (nColumn == COLUMN_STREAMSIZE) {
+                //     result = QString::number(rec.nStreamSize, 16);
+                // // } else if (nColumn == COLUMN_DECOMPRESSEDOFFSET) {
+                // //     result = QString::number(rec.nDecompressedOffset, 16);
+                // // } else if (nColumn == COLUMN_DECOMPRESSEDSIZE) {
+                // //     result = QString::number(rec.nDecompressedSize, 16);
+                // } else if (nColumn == COLUMN_COMPRESSMETHOD) {
+                //     if (rec.mapProperties.contains(XBinary::FPART_PROP_COMPRESSMETHOD)) {
+                //         XBinary::COMPRESS_METHOD cm = (XBinary::COMPRESS_METHOD)rec.mapProperties.value(XBinary::FPART_PROP_COMPRESSMETHOD).toInt();
+                //         result = XBinary::compressMethodToString(cm);
+                //     }
+                // } else if (nColumn == COLUMN_CRC) {
+                //     if (rec.mapProperties.contains(XBinary::FPART_PROP_CRC_VALUE)) {
+                //         quint32 nCRC = rec.mapProperties.value(XBinary::FPART_PROP_CRC_VALUE).toUInt();
+                //         result = QString::number(nCRC, 16);
+                //     }
+                // } else if (nColumn == COLUMN_DATETIME) {
+                //     if (rec.mapProperties.contains(XBinary::FPART_PROP_DATETIME)) {
+                //         QDateTime dt = rec.mapProperties.value(XBinary::FPART_PROP_DATETIME).toDateTime();
+                //         if (dt.isValid()) {
+                //             result = dt.toString("yyyy-MM-dd HH:mm:ss");
+                //         }
+                //     }
+                // }
             } else if (nRole == Qt::TextAlignmentRole) {
                 result = getColumnAlignment(nColumn);
             } else if (nRole >= Qt::UserRole) {

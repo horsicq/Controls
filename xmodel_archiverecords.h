@@ -28,19 +28,6 @@ class XModel_ArchiveRecords : public XModel {
     Q_OBJECT
 
 public:
-    // Make dynamic
-    enum COLUMN {
-        COLUMN_NAME = 0,
-        COLUMN_STREAMOFFSET,
-        COLUMN_STREAMSIZE,
-        // COLUMN_DECOMPRESSEDOFFSET,
-        // COLUMN_DECOMPRESSEDSIZE,
-        COLUMN_COMPRESSMETHOD,
-        COLUMN_CRC,
-        COLUMN_DATETIME,
-        __COLUMN_COUNT
-    };
-
     explicit XModel_ArchiveRecords(QList<XBinary::ARCHIVERECORD> *pListArchiveRecords, QObject *pParent = nullptr);
 
     QVariant data(const QModelIndex &index, int nRole = Qt::DisplayRole) const override;
@@ -49,6 +36,7 @@ public:
 private:
     QList<XBinary::ARCHIVERECORD> *m_pListArchiveRecords;
     void _initColumns();
+    QList<XBinary::FPART_PROP> m_listColumns;
 };
 
 #endif  // XMODEL_ARCHIVERECORDS_H
