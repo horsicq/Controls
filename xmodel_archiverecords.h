@@ -28,7 +28,7 @@ class XModel_ArchiveRecords : public XModel {
     Q_OBJECT
 
 public:
-    explicit XModel_ArchiveRecords(QList<XBinary::ARCHIVERECORD> *pListArchiveRecords, QObject *pParent = nullptr);
+    explicit XModel_ArchiveRecords(const QList<XBinary::FPART_PROP> &listColumns, QList<XBinary::ARCHIVERECORD> *pListArchiveRecords, QObject *pParent = nullptr);
 
     QVariant data(const QModelIndex &index, int nRole = Qt::DisplayRole) const override;
     QVariant headerData(int nSection, Qt::Orientation orientation, int nRole = Qt::DisplayRole) const override;

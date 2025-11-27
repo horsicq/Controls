@@ -20,24 +20,15 @@
  */
 #include "xmodel_archiverecords.h"
 
-XModel_ArchiveRecords::XModel_ArchiveRecords(QList<XBinary::ARCHIVERECORD> *pListArchiveRecords, QObject *pParent) : XModel(pParent)
+XModel_ArchiveRecords::XModel_ArchiveRecords(const QList<XBinary::FPART_PROP> &listColumns, QList<XBinary::ARCHIVERECORD> *pListArchiveRecords, QObject *pParent) : XModel(pParent)
 {
+    m_listColumns = listColumns;
+    
     m_pListArchiveRecords = pListArchiveRecords;
     if (pListArchiveRecords) {
         _setRowCount(pListArchiveRecords->count());
     } else {
         _setRowCount(0);
-    }
-
-    m_listColumns.clear();
-
-    if (pListArchiveRecords->count() > 0) {
-        if (pListArchiveRecords->at(0).mapProperties.contains(XBinary::FPART_PROP_ORIGINALNAME)) m_listColumns.append(XBinary::FPART_PROP_ORIGINALNAME);
-        if (pListArchiveRecords->at(0).mapProperties.contains(XBinary::FPART_PROP_COMPRESSEDSIZE)) m_listColumns.append(XBinary::FPART_PROP_COMPRESSEDSIZE);
-        if (pListArchiveRecords->at(0).mapProperties.contains(XBinary::FPART_PROP_UNCOMPRESSEDSIZE)) m_listColumns.append(XBinary::FPART_PROP_UNCOMPRESSEDSIZE);
-        m_listColumns.append(XBinary::FPART_PROP_STREAMOFFSET);
-        m_listColumns.append(XBinary::FPART_PROP_STREAMSIZE);
-        if (pListArchiveRecords->at(0).mapProperties.contains(XBinary::FPART_PROP_COMPRESSMETHOD)) m_listColumns.append(XBinary::FPART_PROP_COMPRESSMETHOD);
     }
 
     _setColumnCount(m_listColumns.count());
