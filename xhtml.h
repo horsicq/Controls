@@ -31,20 +31,36 @@ public:
     struct TABLECELL {
         QString sText;
         bool bBold;
-        Qt::AlignmentFlag alignmentFlag;
+        Qt::Alignment alignment;
     };
 
     explicit XHtml(QObject *pParent = nullptr);
 
     void appendText(const QString &sText);
-    void addTableBegin();
-    void addTableRow(QList<TABLECELL> listTableCells);
+    void appendHtml(const QString &sHtml);
+    void appendParagraph(const QString &sText);
+    void appendHeading(qint32 nLevel, const QString &sText);
+    void appendLineBreak();
+    void appendHorizontalRule();
+    void addTableBegin(qint32 nBorder = 1, qint32 nCellPadding = 5);
+    void addTableRow(const QList<TABLECELL> &listTableCells);
     void addTableEnd();
-    QString toString();
+    void addListBegin(bool bOrdered = false);
+    void addListItem(const QString &sText);
+    void addListEnd();
+    void clear();
+    QString toString() const;
     static QString makeLink(const QString &sText, const QString &sLink);
+    static QString escapeHtml(const QString &sText);
+    static QString makeBold(const QString &sText);
+    static QString makeItalic(const QString &sText);
+
+private:
+    static QString alignmentToString(Qt::Alignment alignment);
 
 private:
     QString m_sString;
+    bool m_bInList;
 };
 
 #endif  // XHTML_H
