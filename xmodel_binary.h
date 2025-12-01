@@ -47,10 +47,10 @@ public:
     void setComments(QList<QString> *pListComments);
 
 private:
-    XBinary::DATA_RECORDS_OPTIONS g_dataRecordsOptions;
-    QList<XBinary::DATA_RECORD_ROW> *g_pListDataRecords;
-    QList<QString> *g_pListTitles;
-    QList<QString> *g_pListComments;
+    XBinary::DATA_RECORDS_OPTIONS m_dataRecordsOptions;
+    QList<XBinary::DATA_RECORD_ROW> *m_pListDataRecords;
+    QList<QString> *m_pListTitles;
+    QList<QString> *m_pListComments;
 };
 
 #endif  // XMODEL_BINARY_H

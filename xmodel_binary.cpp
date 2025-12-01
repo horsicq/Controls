@@ -24,10 +24,10 @@ XModel_Binary::XModel_Binary(const XBinary::DATA_RECORDS_OPTIONS &dataRecordsOpt
                              QObject *pParent)
     : XModel(pParent)
 {
-    g_dataRecordsOptions = dataRecordsOptions;
-    g_pListDataRecords = pListDataRecords;
-    g_pListTitles = pListTitles;
-    g_pListComments = nullptr;
+    m_dataRecordsOptions = dataRecordsOptions;
+    m_pListDataRecords = pListDataRecords;
+    m_pListTitles = pListTitles;
+    m_pListComments = nullptr;
 
     if (dataRecordsOptions.dataHeaderFirst.dhMode == XBinary::DHMODE_HEADER) {
         _setRowCount(dataRecordsOptions.dataHeaderFirst.listRecords.count());
@@ -53,7 +53,7 @@ XModel_Binary::XModel_Binary(const XBinary::DATA_RECORDS_OPTIONS &dataRecordsOpt
         _setColumnCount(nColumnCount);
         _setRowCount(nRowCount);
 
-        qint32 nNumberOfColumns = g_pListTitles->count();
+        qint32 nNumberOfColumns = m_pListTitles->count();
 
         for (qint32 i = 0; i < nNumberOfColumns; i++) {
             qint32 flag = Qt::AlignVCenter | Qt::AlignLeft;
@@ -65,10 +65,10 @@ XModel_Binary::XModel_Binary(const XBinary::DATA_RECORDS_OPTIONS &dataRecordsOpt
             }
 
             setColumnAlignment(i, flag);
-            setColumnName(i, g_pListTitles->at(i));
+            setColumnName(i, m_pListTitles->at(i));
 
             if (nRowCount > 0) {
-                qint32 nColumnSymbolSize = g_pListTitles->at(i).length();
+                qint32 nColumnSymbolSize = m_pListTitles->at(i).length();
                 nColumnSymbolSize = qMax(nColumnSymbolSize, XBinary::getValueSymbolSize(valType));
                 setColumnSymbolSize(i, nColumnSymbolSize);
             }
@@ -87,31 +87,31 @@ QVariant XModel_Binary::data(const QModelIndex &index, int nRole) const
             qint32 nColumn = index.column();
 
             if (nRole == Qt::DisplayRole) {
-                if (g_dataRecordsOptions.dataHeaderFirst.dhMode == XBinary::DHMODE_HEADER) {
+                if (m_dataRecordsOptions.dataHeaderFirst.dhMode == XBinary::DHMODE_HEADER) {
                     if (nColumn == COLUMN_HEADER_NAME) {
-                        result = g_dataRecordsOptions.dataHeaderFirst.listRecords.at(nRow).sName;
+                        result = m_dataRecordsOptions.dataHeaderFirst.listRecords.at(nRow).sName;
                     } else if (nColumn == COLUMN_HEADER_OFFSET) {
-                        result = QString::number(g_dataRecordsOptions.dataHeaderFirst.listRecords.at(nRow).nRelOffset, 16);
+                        result = QString::number(m_dataRecordsOptions.dataHeaderFirst.listRecords.at(nRow).nRelOffset, 16);
                     } else if (nColumn == COLUMN_HEADER_SIZE) {
-                        result = QString::number(g_dataRecordsOptions.dataHeaderFirst.listRecords.at(nRow).nSize, 16);
+                        result = QString::number(m_dataRecordsOptions.dataHeaderFirst.listRecords.at(nRow).nSize, 16);
                     } else if (nColumn == COLUMN_HEADER_TYPE) {
-                        result = XBinary::valueTypeToString(g_dataRecordsOptions.dataHeaderFirst.listRecords.at(nRow).valType,
-                                                            g_dataRecordsOptions.dataHeaderFirst.listRecords.at(nRow).nSize);
+                        result = XBinary::valueTypeToString(m_dataRecordsOptions.dataHeaderFirst.listRecords.at(nRow).valType,
+                                                            m_dataRecordsOptions.dataHeaderFirst.listRecords.at(nRow).nSize);
                     } else if (nColumn == COLUMN_HEADER_VALUE) {
-                        result = XBinary::getValueString(g_pListDataRecords->at(0).listValues.at(nRow), g_dataRecordsOptions.dataHeaderFirst.listRecords.at(nRow).valType,
+                        result = XBinary::getValueString(m_pListDataRecords->at(0).listValues.at(nRow), m_dataRecordsOptions.dataHeaderFirst.listRecords.at(nRow).valType,
                                                          true);
                     } else if (nColumn == COLUMN_HEADER_INFO) {
                         // TODO
                     } else if (nColumn == COLUMN_HEADER_COMMENT) {
-                        if (g_pListComments) {
-                            if (nRow < g_pListComments->count()) {
-                                result = g_pListComments->at(nRow);
+                        if (m_pListComments) {
+                            if (nRow < m_pListComments->count()) {
+                                result = m_pListComments->at(nRow);
                             }
                         }
                     }
-                } else if (g_dataRecordsOptions.dataHeaderFirst.dhMode == XBinary::DHMODE_TABLE) {
-                    result = XBinary::getValueString(g_pListDataRecords->at(nRow).listValues.at(nColumn),
-                                                     g_dataRecordsOptions.dataHeaderFirst.listRecords.at(nColumn).valType, true);
+                } else if (m_dataRecordsOptions.dataHeaderFirst.dhMode == XBinary::DHMODE_TABLE) {
+                    result = XBinary::getValueString(m_pListDataRecords->at(nRow).listValues.at(nColumn),
+                                                     m_dataRecordsOptions.dataHeaderFirst.listRecords.at(nColumn).valType, true);
                 }
             } else if (nRole == Qt::TextAlignmentRole) {
                 result = getColumnAlignment(nColumn);
@@ -139,5 +139,5 @@ QVariant XModel_Binary::headerData(int nSection, Qt::Orientation orientation, in
 
 void XModel_Binary::setComments(QList<QString> *pListComments)
 {
-    g_pListComments = pListComments;
+    m_pListComments = pListComments;
 }
