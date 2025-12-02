@@ -90,6 +90,14 @@ public:
         XCOLOR_NORMALTEXTBACKGROUND
     };
 
+    struct PAINT_STATISTICS {
+        qint64 nPaintCount;
+        qint64 nTotalPaintTime;
+        qint64 nMinPaintTime;
+        qint64 nMaxPaintTime;
+        qint64 nLastPaintTime;
+    };
+
     explicit XAbstractTableView(QWidget *pParent = nullptr);
     ~XAbstractTableView();
 
@@ -169,6 +177,11 @@ public:
     qreal getMapWidth();
     void setMapCount(qint32 nMapCount);
     qint32 getMapCount();
+
+    void enablePaintStatistics(bool bEnable);
+    bool isPaintStatisticsEnabled() const;
+    PAINT_STATISTICS getPaintStatistics() const;
+    void resetPaintStatistics();
 
     virtual QList<XShortcuts::MENUITEM> getMenuItems();
 
@@ -272,6 +285,8 @@ private:
     qint64 m_nCurrentBlockViewSize;
     bool m_bIsSelectionEnable;
     bool m_bIsContextMenuEnable;
+    bool m_bPaintStatisticsEnabled;
+    PAINT_STATISTICS m_paintStatistics;
 };
 
 #endif  // XABSTRACTTABLEVIEW_H

@@ -65,6 +65,8 @@ XAbstractTableView::XAbstractTableView(QWidget *pParent) : XShortcutstScrollArea
     m_bIsSelectionEnable = true;
     m_nMaxSelectionViewSize = 0;
     m_bIsContextMenuEnable = true;
+    m_bPaintStatisticsEnabled = false;
+    m_paintStatistics = {};
 
     setContextMenuPolicy(Qt::CustomContextMenu);
 
@@ -177,138 +179,133 @@ void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
 //    QElapsedTimer timer;
 //    timer.start();
 #endif
-    QPainter *pPainter = new QPainter(this->viewport());
-    pPainter->setFont(m_fontText);
-    pPainter->setPen(viewport()->palette().color(QPalette::WindowText));
-    pPainter->setBackgroundMode(Qt::TransparentMode);
-
-    if (isActive()) {
-        //        if (m_rectCursorSquare != pEvent->rect())
-        {
-            startPainting(pPainter);
-            // TODO paint visible only
-
-            qint32 nTopLeftY = pEvent->rect().topLeft().y();
-            qint32 nTopLeftX = pEvent->rect().topLeft().x() - m_nXViewPos;
-            qint32 nScreenWidth = pEvent->rect().width();
-            qint32 nHeight = pEvent->rect().height();
-
-            if (isMapEnable()) {
-                nScreenWidth -= getMapWidth();
-            }
-
-            qint32 nNumberOfColumns = m_listColumns.count();
-
-            if (nNumberOfColumns) {
-                qint32 nX = nTopLeftX;
-
-                qint32 nHeaderHeight = (m_bHeaderVisible) ? (m_nHeaderHeight) : (0);
-
-                for (qint32 i = 0; i < nNumberOfColumns; i++) {
-                    if (m_listColumns.at(i).bEnable) {
-                        qint32 nColumnWidth = m_listColumns.at(i).nWidth;
-
-                        pPainter->fillRect(nX, nTopLeftY + nHeaderHeight, nColumnWidth, nHeight - nHeaderHeight, viewport()->palette().color(QPalette::Base));
-
-                        paintColumn(pPainter, i, nX, nTopLeftY + nHeaderHeight, nColumnWidth, nHeight - nHeaderHeight);
-
-                        for (qint32 j = 0; j < m_nLinesProPage; j++) {
-                            paintCell(pPainter, j, i, nX, nTopLeftY + nHeaderHeight + (j * m_nLineHeight), nColumnWidth, m_nLineHeight);
-                        }
-
-                        nX += nColumnWidth;
-                    }
-                }
-
-                // Rest
-                if (nScreenWidth - nX > 0) {
-                    pPainter->fillRect(nX, nTopLeftY, nScreenWidth - nX, nHeight, viewport()->palette().color(QPalette::Base));
-                }
-
-                nX = nTopLeftX;
-
-                // Draw lines and headers
-                for (qint32 i = 0; i < nNumberOfColumns; i++) {
-                    qint32 nColumnWidth = m_listColumns.at(i).nWidth;
-
-                    if (m_listColumns.at(i).bEnable) {
-                        if (nHeaderHeight > 0) {
-                            QStyleOptionButton styleOptionButton;
-
-                            if ((m_bHeaderClickButton) && (m_nHeaderClickColumnNumber == i)) {
-                                styleOptionButton.state = QStyle::State_Raised;  // TODO Check
-                            } else {
-                                styleOptionButton.state = QStyle::State_Enabled;
-                            }
-
-                            styleOptionButton.rect = QRect(nX, nTopLeftY, nColumnWidth, nHeaderHeight);
-
-                            m_pushButtonHeader.style()->drawControl(QStyle::CE_PushButton, &styleOptionButton, pPainter, &m_pushButtonHeader);
-
-                            paintTitle(pPainter, i, nX, nTopLeftY, nColumnWidth, nHeaderHeight, m_listColumns.at(i).sTitle);
-                        }
-
-                        if (m_bVerticalLinesVisible) {
-                            pPainter->drawLine(nX + nColumnWidth, nTopLeftY + nHeaderHeight, nX + nColumnWidth, nTopLeftY + nHeight);
-                        }
-
-                        if (m_bHorisontalLinesVisible) {
-                            for (qint32 j = 0; j < m_nLinesProPage; j++) {
-                                pPainter->drawLine(nX, nTopLeftY + nHeaderHeight + ((j + 1) * m_nLineHeight), nX + nColumnWidth,
-                                                   nTopLeftY + nHeaderHeight + (j + 1) * m_nLineHeight);
-                            }
-                        }
-
-                        nX += nColumnWidth;
-                    }
-                }
-
-                if (isMapEnable()) {
-                    qint32 nMapWidth = getMapWidth();
-                    qint32 _nX = nScreenWidth;
-                    pPainter->fillRect(_nX, nTopLeftY + nHeaderHeight, nMapWidth, nHeight - nHeaderHeight, viewport()->palette().color(QPalette::Base));
-
-                    paintMap(pPainter, _nX, nTopLeftY + nHeaderHeight, nMapWidth, nHeight - nHeaderHeight);
-
-                    if (nHeaderHeight > 0) {
-                        QStyleOptionButton styleOptionButton;
-                        styleOptionButton.state = QStyle::State_Enabled;
-                        styleOptionButton.rect = QRect(_nX, nTopLeftY, nMapWidth, nHeaderHeight);
-
-                        m_pushButtonHeader.style()->drawControl(QStyle::CE_PushButton, &styleOptionButton, pPainter, &m_pushButtonHeader);
-                    }
-                }
-            }
-
-            endPainting(pPainter);
-        }
-
-        //        // Draw cursor
-        //        // TODO Cursor off
-        //        if (m_rectCursorSquare.width() && m_rectCursorSquare.height()) {
-        //            if (m_bBlink) {
-        //                pPainter->setPen(viewport()->palette().color(QPalette::Highlight));
-        //                pPainter->fillRect(m_rectCursorSquare, this->palette().color(QPalette::WindowText));
-        //            } else {
-        //                pPainter->setPen(viewport()->palette().color(QPalette::WindowText));
-        //                pPainter->fillRect(m_rectCursorSquare, this->palette().color(QPalette::Base));
-        //            }
-
-        //            if (m_rectCursorText.width() && m_rectCursorText.height()) {
-        //                pPainter->save();
-
-        //                QFont font = pPainter->font();
-        //                font.setBold(true);
-        //                pPainter->setFont(font);
-
-        //                pPainter->drawText(m_rectCursorText, m_sCursorText);
-
-        //                pPainter->restore();
-        //            }
-        //        }
+    QElapsedTimer paintTimer;
+    if (m_bPaintStatisticsEnabled) {
+        paintTimer.start();
     }
 
-    delete pPainter;
+    QPainter painter(this->viewport());
+    painter.setFont(m_fontText);
+    painter.setPen(viewport()->palette().color(QPalette::WindowText));
+    painter.setBackgroundMode(Qt::TransparentMode);
+
+    if (isActive()) {
+        startPainting(&painter);
+
+        // Cache frequently accessed values
+        const qint32 nTopLeftY = pEvent->rect().topLeft().y();
+        const qint32 nTopLeftX = pEvent->rect().topLeft().x() - m_nXViewPos;
+        qint32 nScreenWidth = pEvent->rect().width();
+        const qint32 nHeight = pEvent->rect().height();
+        const qint32 nHeaderHeight = (m_bHeaderVisible) ? (m_nHeaderHeight) : (0);
+        const QColor colorBase = viewport()->palette().color(QPalette::Base);
+        const qint32 nNumberOfColumns = m_listColumns.count();
+
+        if (isMapEnable()) {
+            nScreenWidth -= getMapWidth();
+        }
+
+        if (nNumberOfColumns) {
+            qint32 nX = nTopLeftX;
+
+            // Single pass: paint columns, cells, headers, and lines together
+            for (qint32 i = 0; i < nNumberOfColumns; i++) {
+                if (m_listColumns.at(i).bEnable) {
+                    const qint32 nColumnWidth = m_listColumns.at(i).nWidth;
+                    const qint32 nContentTop = nTopLeftY + nHeaderHeight;
+                    const qint32 nContentHeight = nHeight - nHeaderHeight;
+
+                    // Fill background
+                    painter.fillRect(nX, nContentTop, nColumnWidth, nContentHeight, colorBase);
+
+                    // Paint column background
+                    paintColumn(&painter, i, nX, nContentTop, nColumnWidth, nContentHeight);
+
+                    // Paint cells
+                    for (qint32 j = 0; j < m_nLinesProPage; j++) {
+                        paintCell(&painter, j, i, nX, nContentTop + (j * m_nLineHeight), nColumnWidth, m_nLineHeight);
+                    }
+
+                    // Paint header if visible
+                    if (nHeaderHeight > 0) {
+                        QStyleOptionButton styleOptionButton;
+
+                        if ((m_bHeaderClickButton) && (m_nHeaderClickColumnNumber == i)) {
+                            styleOptionButton.state = QStyle::State_Raised;
+                        } else {
+                            styleOptionButton.state = QStyle::State_Enabled;
+                        }
+
+                        styleOptionButton.rect = QRect(nX, nTopLeftY, nColumnWidth, nHeaderHeight);
+
+                        m_pushButtonHeader.style()->drawControl(QStyle::CE_PushButton, &styleOptionButton, &painter, &m_pushButtonHeader);
+
+                        paintTitle(&painter, i, nX, nTopLeftY, nColumnWidth, nHeaderHeight, m_listColumns.at(i).sTitle);
+                    }
+
+                    // Draw vertical line
+                    if (m_bVerticalLinesVisible) {
+                        painter.drawLine(nX + nColumnWidth, nContentTop, nX + nColumnWidth, nTopLeftY + nHeight);
+                    }
+
+                    // Draw horizontal lines
+                    if (m_bHorisontalLinesVisible) {
+                        for (qint32 j = 0; j < m_nLinesProPage; j++) {
+                            painter.drawLine(nX, nContentTop + ((j + 1) * m_nLineHeight), nX + nColumnWidth, nContentTop + (j + 1) * m_nLineHeight);
+                        }
+                    }
+
+                    nX += nColumnWidth;
+                }
+            }
+
+            // Fill remaining area
+            if (nScreenWidth - nX > 0) {
+                painter.fillRect(nX, nTopLeftY, nScreenWidth - nX, nHeight, colorBase);
+            }
+
+            // Paint map if enabled
+            if (isMapEnable()) {
+                const qint32 nMapWidth = getMapWidth();
+                const qint32 nMapX = nScreenWidth;
+                const qint32 nContentTop = nTopLeftY + nHeaderHeight;
+                const qint32 nContentHeight = nHeight - nHeaderHeight;
+
+                painter.fillRect(nMapX, nContentTop, nMapWidth, nContentHeight, colorBase);
+
+                paintMap(&painter, nMapX, nContentTop, nMapWidth, nContentHeight);
+
+                if (nHeaderHeight > 0) {
+                    QStyleOptionButton styleOptionButton;
+                    styleOptionButton.state = QStyle::State_Enabled;
+                    styleOptionButton.rect = QRect(nMapX, nTopLeftY, nMapWidth, nHeaderHeight);
+
+                    m_pushButtonHeader.style()->drawControl(QStyle::CE_PushButton, &styleOptionButton, &painter, &m_pushButtonHeader);
+                }
+            }
+        }
+
+        endPainting(&painter);
+    }
+
+    if (m_bPaintStatisticsEnabled) {
+        qint64 nElapsed = paintTimer.elapsed();
+        m_paintStatistics.nPaintCount++;
+        m_paintStatistics.nTotalPaintTime += nElapsed;
+        m_paintStatistics.nLastPaintTime = nElapsed;
+        
+        if (m_paintStatistics.nPaintCount == 1) {
+            m_paintStatistics.nMinPaintTime = nElapsed;
+            m_paintStatistics.nMaxPaintTime = nElapsed;
+        } else {
+            if (nElapsed < m_paintStatistics.nMinPaintTime) {
+                m_paintStatistics.nMinPaintTime = nElapsed;
+            }
+            if (nElapsed > m_paintStatistics.nMaxPaintTime) {
+                m_paintStatistics.nMaxPaintTime = nElapsed;
+            }
+        }
+    }
 
 #ifdef QT_DEBUG
 //    qDebug("Elapsed XAbstractTableView::paintEvent %lld", timer.elapsed());
@@ -1219,4 +1216,31 @@ void XAbstractTableView::setCurrentViewPosToScroll(qint64 nViewPos)
     setViewPosStart(nViewPos);
     verticalScrollBar()->setValue((qint32)nViewPos);  // TODO Check large files
     adjust(true);
+}
+
+void XAbstractTableView::enablePaintStatistics(bool bEnable)
+{
+    m_bPaintStatisticsEnabled = bEnable;
+    if (bEnable) {
+        resetPaintStatistics();
+    }
+}
+
+bool XAbstractTableView::isPaintStatisticsEnabled() const
+{
+    return m_bPaintStatisticsEnabled;
+}
+
+XAbstractTableView::PAINT_STATISTICS XAbstractTableView::getPaintStatistics() const
+{
+    return m_paintStatistics;
+}
+
+void XAbstractTableView::resetPaintStatistics()
+{
+    m_paintStatistics.nPaintCount = 0;
+    m_paintStatistics.nTotalPaintTime = 0;
+    m_paintStatistics.nMinPaintTime = 0;
+    m_paintStatistics.nMaxPaintTime = 0;
+    m_paintStatistics.nLastPaintTime = 0;
 }
