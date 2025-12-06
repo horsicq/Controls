@@ -50,7 +50,7 @@ void XBinaryView::setData(XBinary::FT fileType, QIODevice *pDevice, bool bIsImag
 
     if (pDevice) {
         hexOptions.nTotalSize = pDevice->size();
-        
+
         if (bIsImage) {
             hexOptions.addressMode = XHexView::LOCMODE_ADDRESS;
         }

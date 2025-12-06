@@ -20,10 +20,11 @@
  */
 #include "xmodel_archiverecords.h"
 
-XModel_ArchiveRecords::XModel_ArchiveRecords(const QList<XBinary::FPART_PROP> &listColumns, QList<XBinary::ARCHIVERECORD> *pListArchiveRecords, QObject *pParent) : XModel(pParent)
+XModel_ArchiveRecords::XModel_ArchiveRecords(const QList<XBinary::FPART_PROP> &listColumns, QList<XBinary::ARCHIVERECORD> *pListArchiveRecords, QObject *pParent)
+    : XModel(pParent)
 {
     m_listColumns = listColumns;
-    
+
     m_pListArchiveRecords = pListArchiveRecords;
     if (pListArchiveRecords) {
         _setRowCount(pListArchiveRecords->count());
@@ -53,9 +54,7 @@ void XModel_ArchiveRecords::_initColumns()
         else if (fpartProp == XBinary::FPART_PROP_STREAMSIZE) sName = QObject::tr("Stream size");
         else if (fpartProp == XBinary::FPART_PROP_COMPRESSMETHOD) sName = QObject::tr("Method");
 
-        if ((fpartProp == XBinary::FPART_PROP_ORIGINALNAME) ||
-            (fpartProp == XBinary::FPART_PROP_COMPRESSMETHOD))
-                nFlags = Qt::AlignVCenter | Qt::AlignLeft;
+        if ((fpartProp == XBinary::FPART_PROP_ORIGINALNAME) || (fpartProp == XBinary::FPART_PROP_COMPRESSMETHOD)) nFlags = Qt::AlignVCenter | Qt::AlignLeft;
         else nFlags = Qt::AlignVCenter | Qt::AlignRight;
 
         if (fpartProp == XBinary::FPART_PROP_ORIGINALNAME) nSymbolSize = 20;
@@ -86,8 +85,7 @@ QVariant XModel_ArchiveRecords::data(const QModelIndex &index, int nRole) const
 
                     if (fpartProp == XBinary::FPART_PROP_ORIGINALNAME) {
                         result = rec.mapProperties.value(fpartProp).toString();
-                    } else if ( (fpartProp == XBinary::FPART_PROP_COMPRESSEDSIZE) ||
-                                (fpartProp == XBinary::FPART_PROP_UNCOMPRESSEDSIZE)) {
+                    } else if ((fpartProp == XBinary::FPART_PROP_COMPRESSEDSIZE) || (fpartProp == XBinary::FPART_PROP_UNCOMPRESSEDSIZE)) {
                         result = rec.mapProperties.value(fpartProp).toLongLong();
                     } else if (fpartProp == XBinary::FPART_PROP_STREAMOFFSET) {
                         result = rec.nStreamOffset;
@@ -97,7 +95,6 @@ QVariant XModel_ArchiveRecords::data(const QModelIndex &index, int nRole) const
                         result = XBinary::compressMethodToString((XBinary::COMPRESS_METHOD)rec.mapProperties.value(fpartProp).toInt());
                     }
                 }
-
 
                 // if (nColumn == COLUMN_NAME) {
                 //     if (rec.mapProperties.contains(XBinary::FPART_PROP_ORIGINALNAME)) {

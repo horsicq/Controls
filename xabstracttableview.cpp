@@ -293,7 +293,7 @@ void XAbstractTableView::paintEvent(QPaintEvent *pEvent)
         m_paintStatistics.nPaintCount++;
         m_paintStatistics.nTotalPaintTime += nElapsed;
         m_paintStatistics.nLastPaintTime = nElapsed;
-        
+
         if (m_paintStatistics.nPaintCount == 1) {
             m_paintStatistics.nMinPaintTime = nElapsed;
             m_paintStatistics.nMaxPaintTime = nElapsed;
