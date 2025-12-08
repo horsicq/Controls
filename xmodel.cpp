@@ -27,6 +27,10 @@ XModel::XModel(QObject *pParent) : QAbstractItemModel(pParent)
     m_nColumnCount = 0;
 }
 
+XModel::~XModel()
+{
+}
+
 void XModel::setColumnSymbolSize(qint32 nColumn, qint32 nValue)
 {
     m_hashColumnSymbolSize[nColumn] = nValue;  // TODO optimize use allocated memory

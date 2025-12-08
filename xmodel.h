@@ -43,7 +43,7 @@ public:
     };
 
     explicit XModel(QObject *pParent);
-    virtual ~XModel() override = default;
+    virtual ~XModel() override;
 
     void setColumnSymbolSize(qint32 nColumn, qint32 nValue);
     qint32 getColumnSymbolSize(qint32 nColumn) const;
