@@ -7,7 +7,3 @@ HEADERS += \
 SOURCES += \
     $$PWD/xbinaryview.cpp
 
-!contains(XCONFIG, xhexview) {
-    XCONFIG += xhexview
-    include($$PWD/../XHexView/xhexview.pri)
-}
