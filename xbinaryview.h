@@ -21,20 +21,21 @@
 #ifndef XBINARYVIEW_H
 #define XBINARYVIEW_H
 
-#include "xhexview.h"
 #include "xbinary.h"
 
-class XBinaryView : public XHexView {
+class XBinaryView : public QObject {
     Q_OBJECT
 
 public:
-    explicit XBinaryView(QWidget *pParent = nullptr);
+    explicit XBinaryView(QObject *pParent = nullptr);
     virtual ~XBinaryView();
 
     void setData(XBinary::FT fileType, QIODevice *pDevice, bool bIsImage = false, XADDR nModuleAddress = -1);
+    QIODevice *getDevice();
 
 private:
     XBinary::FT m_fileType;
+    QIODevice *m_pDevice;
     bool m_bIsImage;
     XADDR m_nModuleAddress;
 };

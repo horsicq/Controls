@@ -36,6 +36,11 @@ SOURCES += \
     include($$PWD/../XInfoDB/xinfodb.pri)
 }
 
+!contains(XCONFIG, xbinaryview) {
+    XCONFIG += xbinaryview
+    include($$PWD/xbinaryview.pri)
+}
+
 DISTFILES += \
     $$PWD/LICENSE \
     $$PWD/README.md \

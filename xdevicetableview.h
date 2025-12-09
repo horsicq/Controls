@@ -30,13 +30,14 @@
 #include "xcapstone.h"
 #include "xdialogprocess.h"
 #include "searchprocess.h"
+#include "xbinaryview.h"
 
 class XDeviceTableView : public XAbstractTableView {
     Q_OBJECT
 
 public:
     struct VIEWSTRUCT {
-        qint64 nViewPos;
+        XVPOS nViewPos;
         XADDR nAddress;
         qint64 nOffset;
         qint64 nSize;
@@ -85,9 +86,9 @@ public:
     void adjustAfterAnalysis();  // TODO Check mb remove
     virtual DEVICESTATE getDeviceState();
     virtual void setDeviceState(const DEVICESTATE &deviceState);
-    qint64 deviceOffsetToViewPos(qint64 nOffset);
-    qint64 viewPosToDeviceOffset(qint64 nViewPos);
-    XADDR viewPosToAddress(qint64 nViewPos);
+    XVPOS deviceOffsetToViewPos(qint64 nOffset);
+    qint64 viewPosToDeviceOffset(XVPOS nViewPos);
+    XADDR viewPosToAddress(XVPOS nViewPos);
     void setDeviceSelection(qint64 nOffset, qint64 nSize);
     bool isPrevVisitedAvailable();
     bool isNextVisitedAvailable();
@@ -101,7 +102,7 @@ public:
     VIEWSTRUCT _getViewStructByOffset(qint64 nOffset);
     VIEWSTRUCT _getViewStructByAddress(XADDR nAddress);
     // VIEWSTRUCT _getViewStructByScroll(qint64 nValue);
-    VIEWSTRUCT _getViewStructByViewPos(qint64 nViewPos);
+    VIEWSTRUCT _getViewStructByViewPos(XVPOS nViewPos);
 
     XDisasmCore *getDisasmCore();
 
@@ -149,7 +150,6 @@ private:
     static const qint32 N_MAX_VISITED = 100;
     XInfoDB m_emptyXInfoDB;
     XInfoDB *m_pXInfoDB;
-    QIODevice *m_pDevice;
     qint64 m_nStartOffset;
     qint64 m_nTotalSize;
     qint64 m_nViewSize;
@@ -164,6 +164,8 @@ private:
     XBinary::_MEMORY_MAP m_memoryMap;
     QList<VIEWSTRUCT> m_listViewStruct;
     XDisasmCore m_disasmCore;
+
+    XBinaryView m_binaryView;
 };
 
 #endif  // XDEVICETABLEVIEW_H

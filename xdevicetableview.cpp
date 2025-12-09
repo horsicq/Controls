@@ -23,7 +23,6 @@
 XDeviceTableView::XDeviceTableView(QWidget *pParent) : XAbstractTableView(pParent)
 {
     m_pXInfoDB = nullptr;
-    m_pDevice = nullptr;
     m_nViewSize = 0;
     m_searchData = {};
     m_locationMode = LOCMODE_ADDRESS;
@@ -66,14 +65,14 @@ void XDeviceTableView::setMode(XBinary::FT fileType, XBinary::DM disasmMode, boo
 
     m_disasmCore.setMode(disasmMode);
 
-    m_memoryMap = XFormats::getMemoryMap(fileType, XBinary::MAPMODE_UNKNOWN, m_pDevice);
+    m_memoryMap = XFormats::getMemoryMap(fileType, XBinary::MAPMODE_UNKNOWN, m_binaryView.getDevice());
 
-    qint64 nViewPos = 0;
+    XVPOS nViewPos = 0;
 
     bool bAll = false;
 
-    if (m_pDevice) {
-        if ((m_nStartOffset == 0) && (m_nTotalSize == m_pDevice->size())) {
+    if (m_binaryView.getDevice()) {
+        if ((m_nStartOffset == 0) && (m_nTotalSize == m_binaryView.getDevice()->size())) {
             bAll = true;
         }
     }
@@ -142,7 +141,7 @@ void XDeviceTableView::setMode(XBinary::FT fileType, XBinary::DM disasmMode, boo
 
 void XDeviceTableView::setDevice(QIODevice *pDevice, qint64 nStartOffset, qint64 nTotalSize)
 {
-    m_pDevice = pDevice;
+    m_binaryView.setData(XBinary::FT_BINARY, pDevice, false, -1);
     m_nStartOffset = nStartOffset;
 
     m_nTotalSize = nTotalSize;
@@ -176,7 +175,7 @@ void XDeviceTableView::setDevice(QIODevice *pDevice, qint64 nStartOffset, qint64
 
 QIODevice *XDeviceTableView::getDevice()
 {
-    return m_pDevice;
+    return m_binaryView.getDevice();
 }
 
 void XDeviceTableView::setViewSize(qint64 nViewSize)
@@ -285,9 +284,9 @@ void XDeviceTableView::setDeviceState(const DEVICESTATE &deviceState)
     viewport()->update();
 }
 
-qint64 XDeviceTableView::deviceOffsetToViewPos(qint64 nOffset)
+XVPOS XDeviceTableView::deviceOffsetToViewPos(qint64 nOffset)
 {
-    qint64 nResult = 0;
+    XVPOS nResult = 0;
 
     VIEWSTRUCT viewStruct = _getViewStructByOffset(nOffset);
 
@@ -298,7 +297,7 @@ qint64 XDeviceTableView::deviceOffsetToViewPos(qint64 nOffset)
     return nResult;
 }
 
-qint64 XDeviceTableView::viewPosToDeviceOffset(qint64 nViewPos)
+qint64 XDeviceTableView::viewPosToDeviceOffset(XVPOS nViewPos)
 {
     qint64 nResult = -1;
 
@@ -311,7 +310,7 @@ qint64 XDeviceTableView::viewPosToDeviceOffset(qint64 nViewPos)
     return nResult;
 }
 
-XADDR XDeviceTableView::viewPosToAddress(qint64 nViewPos)
+XADDR XDeviceTableView::viewPosToAddress(XVPOS nViewPos)
 {
     XADDR nResult = -1;
 
@@ -415,7 +414,7 @@ XDisasmCore *XDeviceTableView::getDisasmCore()
     return &m_disasmCore;
 }
 
-XDeviceTableView::VIEWSTRUCT XDeviceTableView::_getViewStructByViewPos(qint64 nViewPos)
+XDeviceTableView::VIEWSTRUCT XDeviceTableView::_getViewStructByViewPos(XVPOS nViewPos)
 {
     VIEWSTRUCT result = {};
 

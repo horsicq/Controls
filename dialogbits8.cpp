@@ -333,11 +333,11 @@ void DialogBits8::toggledSlot(bool bState)
     for (qint32 i = 0; i < m_nBits; i++) {
         bool bBit = m_listButtons.at(i)->isChecked();
         quint64 nFF = 0x01;
-        quint64 _nValue = (quint64)bBit;
+        quint64 nBitValue = (quint64)bBit;
         nFF = nFF << i;
-        _nValue = _nValue << i;
+        nBitValue = nBitValue << i;
         m_nValue = m_nValue & (~nFF);
-        m_nValue = m_nValue | _nValue;
+        m_nValue = m_nValue | nBitValue;
     }
 
     reload();

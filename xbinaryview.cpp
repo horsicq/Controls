@@ -20,9 +20,10 @@
  */
 #include "xbinaryview.h"
 
-XBinaryView::XBinaryView(QWidget *pParent) : XHexView(pParent)
+XBinaryView::XBinaryView(QObject *pParent) : QObject(pParent)
 {
     m_fileType = XBinary::FT_UNKNOWN;
+    m_pDevice = nullptr;
     m_bIsImage = false;
     m_nModuleAddress = -1;
 }
@@ -34,27 +35,12 @@ XBinaryView::~XBinaryView()
 void XBinaryView::setData(XBinary::FT fileType, QIODevice *pDevice, bool bIsImage, XADDR nModuleAddress)
 {
     m_fileType = fileType;
+    m_pDevice = pDevice;
     m_bIsImage = bIsImage;
     m_nModuleAddress = nModuleAddress;
+}
 
-    XHexView::OPTIONS hexOptions = {};
-    hexOptions.nStartOffset = 0;
-    hexOptions.nTotalSize = 0;
-    hexOptions.nStartSelectionOffset = -1;
-    hexOptions.nSizeOfSelection = 0;
-    hexOptions.bMenu_Disasm = false;
-    hexOptions.bMenu_MemoryMap = false;
-    hexOptions.bMenu_MainHex = false;
-    hexOptions.sTitle = "";
-    hexOptions.addressMode = XHexView::LOCMODE_OFFSET;
-
-    if (pDevice) {
-        hexOptions.nTotalSize = pDevice->size();
-
-        if (bIsImage) {
-            hexOptions.addressMode = XHexView::LOCMODE_ADDRESS;
-        }
-    }
-
-    XHexView::setData(pDevice, hexOptions, true, nullptr);
+QIODevice *XBinaryView::getDevice()
+{
+    return m_pDevice;
 }

@@ -405,7 +405,7 @@ void XAbstractTableView::setViewPosStart(qint64 nValue)
     m_nViewPosStart = nValue;
 }
 
-qint64 XAbstractTableView::getViewPosStart()
+XVPOS XAbstractTableView::getViewPosStart()
 {
     return m_nViewPosStart;
 }
@@ -701,7 +701,7 @@ void XAbstractTableView::_cellDoubleClicked(qint32 nRow, qint32 nColumn)
     emit cellDoubleClicked(nRow, nColumn);
 }
 
-qint64 XAbstractTableView::getFixViewPos(qint64 nViewPos)
+qint64 XAbstractTableView::getFixViewPos(XVPOS nViewPos)
 {
     return nViewPos;
 }
@@ -1087,14 +1087,14 @@ void XAbstractTableView::wheelEvent(QWheelEvent *pEvent)
     QAbstractScrollArea::wheelEvent(pEvent);
 }
 
-bool XAbstractTableView::isViewPosValid(qint64 nViewPos)
+bool XAbstractTableView::isViewPosValid(XVPOS nViewPos)
 {
     Q_UNUSED(nViewPos)
 
     return false;
 }
 
-bool XAbstractTableView::isEnd(qint64 nViewPos)
+bool XAbstractTableView::isEnd(XVPOS nViewPos)
 {
     Q_UNUSED(nViewPos)
 
@@ -1162,7 +1162,7 @@ void XAbstractTableView::endPainting(QPainter *pPainter)
     Q_UNUSED(pPainter)
 }
 
-bool XAbstractTableView::_goToViewPos(qint64 nViewPos, bool bSaveCursor, bool bShort, bool bAprox)
+bool XAbstractTableView::_goToViewPos(XVPOS nViewPos, bool bSaveCursor, bool bShort, bool bAprox)
 {
     Q_UNUSED(bSaveCursor)
 
@@ -1206,12 +1206,12 @@ QList<XShortcuts::MENUITEM> XAbstractTableView::getMenuItems()
     return listResult;
 }
 
-qint64 XAbstractTableView::getCurrentViewPosFromScroll()
+XVPOS XAbstractTableView::getCurrentViewPosFromScroll()
 {
-    return verticalScrollBar()->value();
+    return verticalScrollBar()->value();  // TODO Check large files
 }
 
-void XAbstractTableView::setCurrentViewPosToScroll(qint64 nViewPos)
+void XAbstractTableView::setCurrentViewPosToScroll(XVPOS nViewPos)
 {
     setViewPosStart(nViewPos);
     verticalScrollBar()->setValue((qint32)nViewPos);  // TODO Check large files

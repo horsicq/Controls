@@ -127,7 +127,7 @@ public:
     qint32 getLinesProPage();
 
     void setViewPosStart(qint64 nValue);
-    qint64 getViewPosStart();
+    XVPOS getViewPosStart();
 
     qreal getCharWidth();
 
@@ -216,8 +216,8 @@ protected:
     virtual void mouseDoubleClickEvent(QMouseEvent *pEvent) override;
     virtual void keyPressEvent(QKeyEvent *pEvent) override;
     virtual void wheelEvent(QWheelEvent *pEvent) override;
-    virtual bool isViewPosValid(qint64 nViewPos);
-    virtual bool isEnd(qint64 nViewPos);
+    virtual bool isViewPosValid(XVPOS nViewPos);
+    virtual bool isEnd(XVPOS nViewPos);
     virtual OS cursorPositionToOS(const CURSOR_POSITION &cursorPosition);
     virtual void updateData();
     virtual void startPainting(QPainter *pPainter);
@@ -226,14 +226,14 @@ protected:
     virtual void paintCell(QPainter *pPainter, qint32 nRow, qint32 nColumn, qint32 nLeft, qint32 nTop, qint32 nWidth, qint32 nHeight);
     virtual void paintTitle(QPainter *pPainter, qint32 nColumn, qint32 nLeft, qint32 nTop, qint32 nWidth, qint32 nHeight, const QString &sTitle);
     virtual void endPainting(QPainter *pPainter);
-    virtual bool _goToViewPos(qint64 nViewPos, bool bSaveCursor = false, bool bShort = false, bool bAprox = false);
-    virtual qint64 getCurrentViewPosFromScroll();
-    virtual void setCurrentViewPosToScroll(qint64 nViewPos);
+    virtual bool _goToViewPos(XVPOS nViewPos, bool bSaveCursor = false, bool bShort = false, bool bAprox = false);
+    virtual XVPOS getCurrentViewPosFromScroll();
+    virtual void setCurrentViewPosToScroll(XVPOS nViewPos);
     virtual void adjustColumns();
     virtual void adjustHeader();
     virtual void _headerClicked(qint32 nNumber);
     virtual void _cellDoubleClicked(qint32 nRow, qint32 nColumn);
-    virtual qint64 getFixViewPos(qint64 nViewPos);
+    virtual qint64 getFixViewPos(XVPOS nViewPos);
     virtual void adjustMap();
 
 private:
@@ -244,7 +244,7 @@ private:
     qreal m_nHeaderHeight;
     QPushButton m_pushButtonHeader;
     qint32 m_nXViewPos;
-    qint64 m_nViewPosStart;  // TODO move to state
+    XVPOS m_nViewPosStart;  // TODO move to state
     qreal m_nCharWidth;
     qreal m_nCharHeight;
     qint32 m_nLinesProPage;
