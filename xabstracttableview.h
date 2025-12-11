@@ -80,7 +80,7 @@ public:
     };
 
     struct OS {
-        qint64 nViewPos;
+        XVPOS nViewPos;
         qint64 nSize;
         QVariant varData;
     };
@@ -194,9 +194,9 @@ signals:
     void cellDoubleClicked(qint32 nRow, qint32 nColumn);
 
 protected:
-    void _initSelection(qint64 nViewPos, qint64 nSize);
-    void _setSelection(qint64 nViewPos, qint64 nSize);
-    void _initSetSelection(qint64 nViewPos, qint64 nSize);
+    void _initSelection(XVPOS nViewPos, qint64 nSize);
+    void _setSelection(XVPOS nViewPos, qint64 nSize);
+    void _initSetSelection(XVPOS nViewPos, qint64 nSize);
 
 private slots:
     void verticalScroll();

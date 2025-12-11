@@ -112,8 +112,8 @@ public slots:
     void _goToOffsetSlot();
 
 protected:
-    virtual bool isViewPosValid(qint64 nViewPos);
-    virtual bool isEnd(qint64 nOffset);
+    virtual bool isViewPosValid(XVPOS nViewPos);
+    virtual bool isEnd(XVPOS nOffset);
     virtual void adjustScrollCount();
     virtual qint64 getViewSizeByViewPos(qint64 nViewPos);
     virtual qint64 addressToViewPos(XADDR nAddress);

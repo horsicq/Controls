@@ -607,7 +607,7 @@ void XDeviceTableView::adjustAfterAnalysis()
     reload(true);
 }
 
-bool XDeviceTableView::isViewPosValid(qint64 nViewPos)
+bool XDeviceTableView::isViewPosValid(XVPOS nViewPos)
 {
     bool bResult = false;
 
@@ -618,7 +618,7 @@ bool XDeviceTableView::isViewPosValid(qint64 nViewPos)
     return bResult;
 }
 
-bool XDeviceTableView::isEnd(qint64 nOffset)
+bool XDeviceTableView::isEnd(XVPOS nOffset)
 {
     return (nOffset == m_nViewSize);
 }

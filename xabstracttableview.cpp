@@ -533,7 +533,7 @@ void XAbstractTableView::setState(STATE state)
 //    }
 //}
 
-void XAbstractTableView::_initSelection(qint64 nViewPos, qint64 nSize)
+void XAbstractTableView::_initSelection(XVPOS nViewPos, qint64 nSize)
 {
     // #ifdef QT_DEBUG
     //     qDebug("_initSelection %llx, %llx", nViewPos, nSize);
@@ -550,7 +550,7 @@ void XAbstractTableView::_initSelection(qint64 nViewPos, qint64 nSize)
     }
 }
 
-void XAbstractTableView::_setSelection(qint64 nViewPos, qint64 nSize)
+void XAbstractTableView::_setSelection(XVPOS nViewPos, qint64 nSize)
 {
     // #ifdef QT_DEBUG
     //     qDebug("_setSelection %llx, %llx", nViewPos, nSize);
@@ -576,7 +576,7 @@ void XAbstractTableView::_setSelection(qint64 nViewPos, qint64 nSize)
     }
 }
 
-void XAbstractTableView::_initSetSelection(qint64 nViewPos, qint64 nSize)
+void XAbstractTableView::_initSetSelection(XVPOS nViewPos, qint64 nSize)
 {
     if (nViewPos != -1) {
         _initSelection(nViewPos, nSize);
