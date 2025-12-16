@@ -74,7 +74,7 @@ public:
     struct STATE {
         //        qint64 nCursorViewPos;
         QVariant varCursorExtraInfo;
-        qint64 nSelectionViewPos;
+        XVPOS nSelectionViewPos;
         qint64 nSelectionViewSize;
         CURSOR_POSITION cursorPosition;
     };
@@ -133,7 +133,7 @@ public:
 
     CURSOR_POSITION getCursorPosition(const QPoint &pos);
 
-    bool isViewPosSelected(qint64 nViewPos);
+    bool isViewPosSelected(XVPOS nViewPos);
     QPainter *getBoldTextPointer();
     qint32 getLineDelta();
     qint32 getSideDelta();
@@ -259,7 +259,7 @@ private:
 
     STATE m_state;
     bool m_bMouseSelection;
-    qint64 m_nSelectionInitOffset;
+    XVPOS m_nSelectionInitOffset;
     qint64 m_nSelectionInitSize;
     qint64 m_nMaxSelectionViewSize;
     bool m_bMouseResizeColumn;

@@ -480,7 +480,7 @@ XAbstractTableView::CURSOR_POSITION XAbstractTableView::getCursorPosition(const 
     return result;
 }
 
-bool XAbstractTableView::isViewPosSelected(qint64 nViewPos)
+bool XAbstractTableView::isViewPosSelected(XVPOS nViewPos)
 {
     bool bResult = false;
 
@@ -565,7 +565,7 @@ void XAbstractTableView::_setSelection(XVPOS nViewPos, qint64 nSize)
         }
 
         if (m_nMaxSelectionViewSize) {
-            m_state.nSelectionViewSize = qMin(m_state.nSelectionViewSize, m_nMaxSelectionViewSize - m_state.nSelectionViewPos);
+            m_state.nSelectionViewSize = qMin(m_state.nSelectionViewSize, m_nMaxSelectionViewSize - (qint64)m_state.nSelectionViewPos);
         }
 
         if (m_state.nSelectionViewSize == 0) {
