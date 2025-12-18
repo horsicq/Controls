@@ -26,8 +26,6 @@
 #include "dialogsearch.h"
 #include "xabstracttableview.h"
 #include "xformats.h"
-#include "xinfodb.h"
-#include "xcapstone.h"
 #include "xdialogprocess.h"
 #include "searchprocess.h"
 #include "xbinaryview.h"
@@ -36,20 +34,6 @@ class XDeviceTableView : public XAbstractTableView {
     Q_OBJECT
 
 public:
-    struct VIEWSTRUCT {
-        XVPOS nViewPos;
-        XADDR nAddress;
-        qint64 nOffset;
-        qint64 nSize;
-    };
-
-    enum LOCMODE {
-        LOCMODE_OFFSET = 0,
-        LOCMODE_ADDRESS,
-        LOCMODE_RELADDRESS,
-        LOCMODE_THIS
-    };
-
     struct DEVICESTATE {
         quint64 nSelectionDeviceOffset;
         qint64 nSelectionSize;
@@ -62,14 +46,12 @@ public:
 
     void setXInfoDB(XInfoDB *pXInfoDB);
     XInfoDB *getXInfoDB();
-    void setMode(XBinary::FT fileType, XBinary::DM disasmMode, bool bShowVirtual);
-    void setDevice(QIODevice *pDevice, qint64 nStartOffset, qint64 nTotalSize);
+    void setData(QIODevice *pDevice, const XBinaryView::OPTIONS &options);
+    void reset();
     QIODevice *getDevice();
-    void setViewSize(qint64 nViewSize);
-    qint64 getViewSize();
-    XBinary::_MEMORY_MAP *getMemoryMap();
-    void setLocationMode(LOCMODE locationMode);
-    LOCMODE getlocationMode();
+    XBinaryView *getBinaryView();
+    void setLocationMode(XBinaryView::LOCMODE locationMode);
+    XBinaryView::LOCMODE getlocationMode();
     void setLocationBase(qint32 nBase);
     qint32 getLocationBase();
     qint64 write_array(qint64 nOffset, char *pData, qint64 nDataSize);
@@ -86,9 +68,7 @@ public:
     void adjustAfterAnalysis();  // TODO Check mb remove
     virtual DEVICESTATE getDeviceState();
     virtual void setDeviceState(const DEVICESTATE &deviceState);
-    XVPOS deviceOffsetToViewPos(qint64 nOffset);
-    qint64 viewPosToDeviceOffset(XVPOS nViewPos);
-    XADDR viewPosToAddress(XVPOS nViewPos);
+
     void setDeviceSelection(qint64 nOffset, qint64 nSize);
     bool isPrevVisitedAvailable();
     bool isNextVisitedAvailable();
@@ -99,25 +79,15 @@ public:
 
     virtual void setLocation(quint64 nLocation, qint32 nLocationType, qint64 nSize);
 
-    VIEWSTRUCT _getViewStructByOffset(qint64 nOffset);
-    VIEWSTRUCT _getViewStructByAddress(XADDR nAddress);
-    // VIEWSTRUCT _getViewStructByScroll(qint64 nValue);
-    VIEWSTRUCT _getViewStructByViewPos(XVPOS nViewPos);
-
-    XDisasmCore *getDisasmCore();
-
 public slots:
     void setEdited(qint64 nDeviceOffset, qint64 nDeviceSize);
     void _goToAddressSlot();
     void _goToOffsetSlot();
 
 protected:
-    virtual bool isViewPosValid(XVPOS nViewPos);
-    virtual bool isEnd(XVPOS nOffset);
     virtual void adjustScrollCount();
-    virtual qint64 getViewSizeByViewPos(qint64 nViewPos);
-    virtual qint64 addressToViewPos(XADDR nAddress);
-    virtual qint64 locationToViewPos(XADDR nLocation, XBinary::LT locationType);
+    virtual bool isViewPosValid(XVPOS nViewPos);
+    virtual bool isEnd(XVPOS nViewPos);
 
 signals:
     void visitedStateChanged();
@@ -150,20 +120,11 @@ private:
     static const qint32 N_MAX_VISITED = 100;
     XInfoDB m_emptyXInfoDB;
     XInfoDB *m_pXInfoDB;
-    qint64 m_nStartOffset;
-    qint64 m_nTotalSize;
-    qint64 m_nViewSize;
     XBinary::SEARCHDATA m_searchData;
-    LOCMODE m_locationMode;
+    XBinaryView::LOCMODE m_locationMode;
     qint32 m_nLocationBase;
     QList<qint64> m_listVisited;
     qint32 m_nVisitedIndex;
-
-    XBinary::FT m_fileType;
-    XBinary::DM m_disasmMode;
-    XBinary::_MEMORY_MAP m_memoryMap;
-    QList<VIEWSTRUCT> m_listViewStruct;
-    XDisasmCore m_disasmCore;
 
     XBinaryView m_binaryView;
 };

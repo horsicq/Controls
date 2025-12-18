@@ -22,22 +22,82 @@
 #define XBINARYVIEW_H
 
 #include "xbinary.h"
+#include "xoptions.h"
+#include "xinfodb.h"
+#include "xcapstone.h"
 
 class XBinaryView : public QObject {
     Q_OBJECT
 
 public:
+    enum LOCMODE {
+        LOCMODE_OFFSET = 0,
+        LOCMODE_ADDRESS,
+        LOCMODE_RELADDRESS,
+        LOCMODE_THIS
+    };
+
+    struct OPTIONS {
+        qint64 nStartOffset;
+        qint64 nTotalSize;
+        XADDR nInitAddress;
+        XADDR nEntryPointAddress;  // TODO move to xdb todo use bool
+        XBinary::FT fileType;
+        XBinary::DM disasmMode;
+        bool bAprox;
+        bool bMenu_Hex;
+        bool bMenu_Disasm;
+        bool bMenu_MemoryMap;
+        bool bMenu_MainHex;
+        bool bHideReadOnly;
+        bool bIsImage;
+        XADDR nModuleAddress;
+        bool bShowVirtual;
+        qint64 nStartSelectionOffset;  // -1 no selection
+        qint64 nSizeOfSelection; // TODO Check
+        QString sTitle;  // For dialogs
+        LOCMODE addressMode;
+    };
+
+    struct VIEWSTRUCT {
+        XVPOS nViewPos;
+        XADDR nAddress;
+        qint64 nOffset;
+        qint64 nSize;
+    };
+
     explicit XBinaryView(QObject *pParent = nullptr);
     virtual ~XBinaryView();
 
-    void setData(XBinary::FT fileType, QIODevice *pDevice, bool bIsImage = false, XADDR nModuleAddress = -1);
+    void setData(QIODevice *pDevice, const OPTIONS &options);
+    void reset();
     QIODevice *getDevice();
 
+    XVPOS deviceOffsetToViewPos(qint64 nOffset);
+    qint64 viewPosToDeviceOffset(XVPOS nViewPos);
+    XADDR viewPosToAddress(XVPOS nViewPos);
+    bool isViewPosValid(XVPOS nViewPos);
+    bool isEnd(XVPOS nViewPos);
+    qint64 getViewSizeByViewPos(XVPOS nViewPos);
+    XVPOS addressToViewPos(XADDR nAddress);
+    XVPOS locationToViewPos(XADDR nLocation, XBinary::LT locationType);
+    VIEWSTRUCT _getViewStructByOffset(qint64 nOffset);
+    VIEWSTRUCT _getViewStructByAddress(XADDR nAddress);
+    // VIEWSTRUCT _getViewStructByScroll(qint64 nValue);
+    VIEWSTRUCT _getViewStructByViewPos(XVPOS nViewPos);
+
+    qint64 getViewSize();
+    XBinary::_MEMORY_MAP *getMemoryMap();
+    XDisasmCore *getDisasmCore();
+    OPTIONS *getOptions();
+
 private:
-    XBinary::FT m_fileType;
     QIODevice *m_pDevice;
-    bool m_bIsImage;
-    XADDR m_nModuleAddress;
+    QList<VIEWSTRUCT> m_listViewStruct;
+    XDisasmCore m_disasmCore;
+    XBinary::_MEMORY_MAP m_memoryMap;
+    OPTIONS m_options;
+    qint64 m_nViewSize;
 };
 
 #endif  // XBINARYVIEW_H

@@ -23,15 +23,10 @@
 XDeviceTableView::XDeviceTableView(QWidget *pParent) : XAbstractTableView(pParent)
 {
     m_pXInfoDB = nullptr;
-    m_nViewSize = 0;
     m_searchData = {};
-    m_locationMode = LOCMODE_ADDRESS;
+    m_locationMode = XBinaryView::LOCMODE_ADDRESS;
     m_nLocationBase = 16;
     m_nVisitedIndex = 0;
-    m_fileType = XBinary::FT_UNKNOWN;
-    m_disasmMode = XBinary::DM_UNKNOWN;
-    m_nStartOffset = 0;
-    m_nTotalSize = -1;
 
     connect(this, SIGNAL(selectionChanged()), this, SLOT(selectionChangedSlot()));
     setXInfoDB(&m_emptyXInfoDB);
@@ -58,113 +53,13 @@ XInfoDB *XDeviceTableView::getXInfoDB()
     return m_pXInfoDB;
 }
 
-void XDeviceTableView::setMode(XBinary::FT fileType, XBinary::DM disasmMode, bool bShowVirtual)
+void XDeviceTableView::setData(QIODevice *pDevice, const XBinaryView::OPTIONS &options)
 {
-    m_fileType = fileType;
-    m_disasmMode = disasmMode;
-
-    m_disasmCore.setMode(disasmMode);
-
-    m_memoryMap = XFormats::getMemoryMap(fileType, XBinary::MAPMODE_UNKNOWN, m_binaryView.getDevice());
-
-    XVPOS nViewPos = 0;
-
-    bool bAll = false;
-
-    if (m_binaryView.getDevice()) {
-        if ((m_nStartOffset == 0) && (m_nTotalSize == m_binaryView.getDevice()->size())) {
-            bAll = true;
-        }
-    }
-
-    m_listViewStruct.clear();
-
-    qint32 nNumberOfRecords = getMemoryMap()->listRecords.count();
-    for (qint32 i = 0; i < nNumberOfRecords; i++) {
-        VIEWSTRUCT record = {};
-        record.nAddress = getMemoryMap()->listRecords.at(i).nAddress;
-        record.nOffset = getMemoryMap()->listRecords.at(i).nOffset;
-        record.nSize = getMemoryMap()->listRecords.at(i).nSize;
-        // record.nScrollStart = nScrollStart;
-        record.nViewPos = nViewPos;
-        // record.nScrollCount = record.nSize;
-
-        bool bAdd = true;
-        // // TODO XInfoDB
-
-        if (getMemoryMap()->listRecords.at(i).bIsInvisible) {
-            bAdd = false;
-        }
-
-        if (!bShowVirtual) {
-            if (getMemoryMap()->listRecords.at(i).bIsVirtual) {
-                bAdd = false;
-            }
-        }
-
-        // Add if m_nStartOffset and qint64 m_nTotalSize in this viewStruct
-        if (!bAll) {
-            if (record.nOffset != -1) {
-                if (record.nOffset >= m_nStartOffset && (record.nOffset + record.nSize <= m_nStartOffset + m_nTotalSize)) {
-                    bAdd = true;
-                } else {
-                    bAdd = false;
-                }
-            }
-        }
-
-        // Add if m_nStartOffset and qint64 m_nTotalSize partially in this viewStruct, correct nAddress, nOffset, nSize
-        if (!bAll) {
-            if (record.nOffset != -1) {
-                if (record.nOffset < m_nStartOffset && (record.nOffset + record.nSize > m_nStartOffset)) {
-                    record.nAddress += m_nStartOffset - record.nOffset;
-                    record.nOffset = m_nStartOffset;
-                    record.nSize -= m_nStartOffset - record.nOffset;
-                    bAdd = true;
-                }
-                if (record.nOffset < m_nStartOffset + m_nTotalSize && (record.nOffset + record.nSize > m_nStartOffset + m_nTotalSize)) {
-                    record.nSize = m_nStartOffset + m_nTotalSize - record.nOffset;
-                    bAdd = true;
-                }
-            }
-        }
-
-        if (bAdd) {
-            nViewPos += record.nSize;
-
-            m_listViewStruct.append(record);
-        }
-    }
-
-    setViewSize(nViewPos);
-}
-
-void XDeviceTableView::setDevice(QIODevice *pDevice, qint64 nStartOffset, qint64 nTotalSize)
-{
-    m_binaryView.setData(XBinary::FT_BINARY, pDevice, false, -1);
-    m_nStartOffset = nStartOffset;
-
-    m_nTotalSize = nTotalSize;
-
-    if ((nTotalSize == -1) || (nTotalSize == 0)) {
-        if (pDevice) {
-            m_nTotalSize = pDevice->size() - nStartOffset;
-        } else {
-            m_nTotalSize = 0;
-        }
-    }
-
-    if (pDevice) {
-        if (nStartOffset + nTotalSize > pDevice->size()) {
-            m_nTotalSize = pDevice->size() - nStartOffset;
-        }
-    }
+    m_binaryView.setData(pDevice, options);
 
     m_listVisited.clear();
 
     if (pDevice) {
-        setMode(XBinary::FT_BINARY, XBinary::DM_UNKNOWN, false);
-
         XDeviceTableView::adjustScrollCount();
         //    setReadonly(!(pDevice->isWritable()));
         setActive(true);
@@ -173,27 +68,22 @@ void XDeviceTableView::setDevice(QIODevice *pDevice, qint64 nStartOffset, qint64
     }
 }
 
+void XDeviceTableView::reset()
+{
+    m_binaryView.reset();
+}
+
 QIODevice *XDeviceTableView::getDevice()
 {
     return m_binaryView.getDevice();
 }
 
-void XDeviceTableView::setViewSize(qint64 nViewSize)
+XBinaryView *XDeviceTableView::getBinaryView()
 {
-    m_nViewSize = nViewSize;
+    return &m_binaryView;
 }
 
-qint64 XDeviceTableView::getViewSize()
-{
-    return m_nViewSize;
-}
-
-XBinary::_MEMORY_MAP *XDeviceTableView::getMemoryMap()
-{
-    return &m_memoryMap;
-}
-
-void XDeviceTableView::setLocationMode(XDeviceTableView::LOCMODE locationMode)
+void XDeviceTableView::setLocationMode(XBinaryView::LOCMODE locationMode)
 {
     m_locationMode = locationMode;
 
@@ -202,7 +92,7 @@ void XDeviceTableView::setLocationMode(XDeviceTableView::LOCMODE locationMode)
     emit selectionChanged();
 }
 
-XDeviceTableView::LOCMODE XDeviceTableView::getlocationMode()
+XBinaryView::LOCMODE XDeviceTableView::getlocationMode()
 {
     return m_locationMode;
 }
@@ -226,39 +116,14 @@ void XDeviceTableView::adjustScrollCount()
     // TODO
 }
 
-qint64 XDeviceTableView::getViewSizeByViewPos(qint64 nViewPos)
+bool XDeviceTableView::isViewPosValid(XVPOS nViewPos)
 {
-    Q_UNUSED(nViewPos)
-
-    return 1;
+    return getBinaryView()->isViewPosValid(nViewPos);
 }
 
-qint64 XDeviceTableView::addressToViewPos(XADDR nAddress)
+bool XDeviceTableView::isEnd(XVPOS nViewPos)
 {
-    qint64 nResult = 0;
-
-    qint64 nOffset = XBinary::addressToOffset(getMemoryMap(), nAddress);
-
-    nResult = deviceOffsetToViewPos(nOffset);
-
-    return nResult;
-}
-
-qint64 XDeviceTableView::locationToViewPos(XADDR nLocation, XBinary::LT locationType)
-{
-    qint64 nResult = 0;
-
-    if (locationType == XBinary::LT_ADDRESS) {
-        qint64 nOffset = XBinary::addressToOffset(getMemoryMap(), nLocation);
-        nResult = deviceOffsetToViewPos(nOffset);
-    } else if (locationType == XBinary::LT_RELADDRESS) {
-        qint64 nOffset = XBinary::relAddressToOffset(getMemoryMap(), nLocation);
-        nResult = deviceOffsetToViewPos(nOffset);
-    } else if (locationType == XBinary::LT_OFFSET) {
-        nResult = deviceOffsetToViewPos(nLocation);
-    }
-
-    return nResult;
+    return getBinaryView()->isEnd(nViewPos);
 }
 
 XDeviceTableView::DEVICESTATE XDeviceTableView::getDeviceState()
@@ -266,67 +131,28 @@ XDeviceTableView::DEVICESTATE XDeviceTableView::getDeviceState()
     DEVICESTATE result = {};
     STATE state = getState();
 
-    result.nSelectionDeviceOffset = viewPosToDeviceOffset(state.nSelectionViewPos);
+    result.nSelectionDeviceOffset = getBinaryView()->viewPosToDeviceOffset(state.nSelectionViewPos);
     //    result.nCursorOffset = state.nCursorViewPos;
     result.nSelectionSize = state.nSelectionViewSize;
-    result.nStartDeviceOffset = viewPosToDeviceOffset(getViewPosStart());
+    result.nStartDeviceOffset = getBinaryView()->viewPosToDeviceOffset(getViewPosStart());
 
     return result;
 }
 
 void XDeviceTableView::setDeviceState(const DEVICESTATE &deviceState)
 {
-    _goToViewPos(deviceOffsetToViewPos(deviceState.nStartDeviceOffset));
-    _initSetSelection(deviceOffsetToViewPos(deviceState.nSelectionDeviceOffset), deviceState.nSelectionSize);
+    _goToViewPos(getBinaryView()->deviceOffsetToViewPos(deviceState.nStartDeviceOffset));
+    _initSetSelection(getBinaryView()->deviceOffsetToViewPos(deviceState.nSelectionDeviceOffset), deviceState.nSelectionSize);
     //    setCursorViewPos(deviceState.nCursorOffset);
 
     adjust();
     viewport()->update();
 }
 
-XVPOS XDeviceTableView::deviceOffsetToViewPos(qint64 nOffset)
-{
-    XVPOS nResult = 0;
-
-    VIEWSTRUCT viewStruct = _getViewStructByOffset(nOffset);
-
-    if (viewStruct.nSize) {
-        nResult = viewStruct.nViewPos + (nOffset - viewStruct.nOffset);
-    }
-
-    return nResult;
-}
-
-qint64 XDeviceTableView::viewPosToDeviceOffset(XVPOS nViewPos)
-{
-    qint64 nResult = -1;
-
-    VIEWSTRUCT viewStruct = _getViewStructByViewPos(nViewPos);
-
-    if (viewStruct.nSize && (viewStruct.nOffset != -1)) {
-        nResult = viewStruct.nOffset + (nViewPos - viewStruct.nViewPos);
-    }
-
-    return nResult;
-}
-
-XADDR XDeviceTableView::viewPosToAddress(XVPOS nViewPos)
-{
-    XADDR nResult = -1;
-
-    VIEWSTRUCT viewStruct = _getViewStructByViewPos(nViewPos);
-
-    if (viewStruct.nSize && (viewStruct.nOffset != -1)) {
-        nResult = viewStruct.nAddress + (nViewPos - viewStruct.nViewPos);
-    }
-
-    return nResult;
-}
-
 void XDeviceTableView::setDeviceSelection(qint64 nOffset, qint64 nSize)
 {
     if (isSelectionEnable()) {
-        qint64 nViewPos = deviceOffsetToViewPos(nOffset);
+        qint64 nViewPos = getBinaryView()->deviceOffsetToViewPos(nOffset);
 
         _initSetSelection(nViewPos, nSize);
 
@@ -352,7 +178,7 @@ void XDeviceTableView::goToNextVisited()
         qint64 nViewPos = m_listVisited.at(m_nVisitedIndex);
 
         if (_goToViewPos(nViewPos)) {
-            _initSetSelection(nViewPos, getViewSizeByViewPos(nViewPos));
+            _initSetSelection(nViewPos, getBinaryView()->getViewSizeByViewPos(nViewPos));
         }
     }
 
@@ -366,7 +192,7 @@ void XDeviceTableView::goToPrevVisited()
         qint64 nViewPos = m_listVisited.at(m_nVisitedIndex);
 
         if (_goToViewPos(nViewPos)) {
-            _initSetSelection(nViewPos, getViewSizeByViewPos(nViewPos));
+            _initSetSelection(nViewPos, getBinaryView()->getViewSizeByViewPos(nViewPos));
         }
     }
 
@@ -409,61 +235,6 @@ void XDeviceTableView::setLocation(quint64 nLocation, qint32 nLocationType, qint
     setLocationOffset(nLocation, (XBinary::LT)nLocationType, nSize);
 }
 
-XDisasmCore *XDeviceTableView::getDisasmCore()
-{
-    return &m_disasmCore;
-}
-
-XDeviceTableView::VIEWSTRUCT XDeviceTableView::_getViewStructByViewPos(XVPOS nViewPos)
-{
-    VIEWSTRUCT result = {};
-
-    qint32 nNumberOfRecords = m_listViewStruct.count();
-
-    for (qint32 i = 0; i < nNumberOfRecords; i++) {
-        if ((m_listViewStruct.at(i).nViewPos <= nViewPos) && (nViewPos < (m_listViewStruct.at(i).nViewPos + m_listViewStruct.at(i).nSize))) {
-            result = m_listViewStruct.at(i);
-            break;
-        }
-    }
-
-    return result;
-}
-
-XDeviceTableView::VIEWSTRUCT XDeviceTableView::_getViewStructByAddress(XADDR nAddress)
-{
-    VIEWSTRUCT result = {};
-
-    qint32 nNumberOfRecords = m_listViewStruct.count();
-
-    for (qint32 i = 0; i < nNumberOfRecords; i++) {
-        if ((m_listViewStruct.at(i).nAddress != (XADDR)-1) && (m_listViewStruct.at(i).nAddress <= nAddress) &&
-            (nAddress < (m_listViewStruct.at(i).nAddress + m_listViewStruct.at(i).nSize))) {
-            result = m_listViewStruct.at(i);
-            break;
-        }
-    }
-
-    return result;
-}
-
-XDeviceTableView::VIEWSTRUCT XDeviceTableView::_getViewStructByOffset(qint64 nOffset)
-{
-    VIEWSTRUCT result = {};
-
-    qint32 nNumberOfRecords = m_listViewStruct.count();
-
-    for (qint32 i = 0; i < nNumberOfRecords; i++) {
-        if ((m_listViewStruct.at(i).nOffset != -1) && (m_listViewStruct.at(i).nOffset <= nOffset) &&
-            (nOffset < (m_listViewStruct.at(i).nOffset + m_listViewStruct.at(i).nSize))) {
-            result = m_listViewStruct.at(i);
-            break;
-        }
-    }
-
-    return result;
-}
-
 qint64 XDeviceTableView::write_array(qint64 nOffset, char *pData, qint64 nDataSize)
 {
     qint64 nResult = 0;
@@ -482,7 +253,7 @@ QByteArray XDeviceTableView::read_array(qint64 nOffset, qint32 nSize)
     QByteArray baResult;
 
     if (getDevice()) {
-        baResult = XBinary::read_array(getDevice(), nOffset, nSize);
+        baResult = XBinary::read_array_simple(getDevice(), nOffset, nSize);
     }
 
     return baResult;
@@ -501,7 +272,7 @@ void XDeviceTableView::goToOffset(qint64 nOffset, bool bShort, bool bAprox, bool
 void XDeviceTableView::goToLocation(XADDR nLocation, XBinary::LT locationType, bool bShort, bool bAprox, bool bSaveVisited)
 {
     if (nLocation != (XADDR)-1) {
-        qint64 nViewPos = locationToViewPos(nLocation, locationType);
+        qint64 nViewPos = getBinaryView()->locationToViewPos(nLocation, locationType);
 
         if (bSaveVisited) {
             addVisited(getState().nSelectionViewPos);
@@ -512,7 +283,7 @@ void XDeviceTableView::goToLocation(XADDR nLocation, XBinary::LT locationType, b
                 addVisited(nViewPos);
             }
 
-            qint64 nViewSize = getViewSizeByViewPos(nViewPos);
+            qint64 nViewSize = getBinaryView()->getViewSizeByViewPos(nViewPos);
 
             _initSetSelection(nViewPos, nViewSize);
             // TODO
@@ -527,9 +298,9 @@ void XDeviceTableView::setLocationOffset(XADDR nLocation, XBinary::LT locationTy
 
     // TODO move to Binary
     if (locationType == XBinary::LT_ADDRESS) {
-        nOffset = XBinary::addressToOffset(getMemoryMap(), nLocation);
+        nOffset = XBinary::addressToOffset(getBinaryView()->getMemoryMap(), nLocation);
     } else if (locationType == XBinary::LT_RELADDRESS) {
-        nOffset = XBinary::relAddressToOffset(getMemoryMap(), nLocation);
+        nOffset = XBinary::relAddressToOffset(getBinaryView()->getMemoryMap(), nLocation);
     } else if (locationType == XBinary::LT_OFFSET) {
         nOffset = nLocation;
     }
@@ -539,14 +310,14 @@ void XDeviceTableView::setLocationOffset(XADDR nLocation, XBinary::LT locationTy
 
 void XDeviceTableView::setSelectionAddress(XADDR nAddress, qint64 nSize)
 {
-    qint64 nOffset = XBinary::addressToOffset(getMemoryMap(), nAddress);
+    qint64 nOffset = XBinary::addressToOffset(getBinaryView()->getMemoryMap(), nAddress);
 
     setSelectionOffset(nOffset, nSize);
 }
 
 void XDeviceTableView::setSelectionRelAddress(XADDR nRelAddress, qint64 nSize)
 {
-    qint64 nOffset = XBinary::relAddressToOffset(getMemoryMap(), nRelAddress);
+    qint64 nOffset = XBinary::relAddressToOffset(getBinaryView()->getMemoryMap(), nRelAddress);
 
     setSelectionOffset(nOffset, nSize);
 }
@@ -554,7 +325,7 @@ void XDeviceTableView::setSelectionRelAddress(XADDR nRelAddress, qint64 nSize)
 void XDeviceTableView::setSelectionOffset(qint64 nOffset, qint64 nSize)
 {
     if (nOffset != -1) {
-        qint64 nViewPos = deviceOffsetToViewPos(nOffset);
+        qint64 nViewPos = getBinaryView()->deviceOffsetToViewPos(nOffset);
         qint64 nViewSize = nSize;
 
         _initSetSelection(nViewPos, nViewSize);
@@ -607,22 +378,6 @@ void XDeviceTableView::adjustAfterAnalysis()
     reload(true);
 }
 
-bool XDeviceTableView::isViewPosValid(XVPOS nViewPos)
-{
-    bool bResult = false;
-
-    if ((nViewPos >= 0) && (nViewPos < m_nViewSize)) {
-        bResult = true;
-    }
-
-    return bResult;
-}
-
-bool XDeviceTableView::isEnd(XVPOS nOffset)
-{
-    return (nOffset == m_nViewSize);
-}
-
 void XDeviceTableView::_goToAddressSlot()
 {
     DEVICESTATE state = getDeviceState();
@@ -630,13 +385,13 @@ void XDeviceTableView::_goToAddressSlot()
 
     DialogGoToAddress::TYPE type = DialogGoToAddress::TYPE_VIRTUALADDRESS;
 
-    if (m_locationMode == LOCMODE_RELADDRESS) {
-        nAddress = XBinary::offsetToRelAddress(getMemoryMap(), state.nSelectionDeviceOffset);
+    if (m_locationMode == XBinaryView::LOCMODE_RELADDRESS) {
+        nAddress = XBinary::offsetToRelAddress(getBinaryView()->getMemoryMap(), state.nSelectionDeviceOffset);
     } else {
-        nAddress = XBinary::offsetToAddress(getMemoryMap(), state.nSelectionDeviceOffset);
+        nAddress = XBinary::offsetToAddress(getBinaryView()->getMemoryMap(), state.nSelectionDeviceOffset);
     }
 
-    DialogGoToAddress da(this, getMemoryMap(), type, nAddress);
+    DialogGoToAddress da(this, getBinaryView()->getMemoryMap(), type, nAddress);
     da.setGlobal(getShortcuts(), getGlobalOptions());
 
     if (da.exec() == QDialog::Accepted)  // TODO use status
@@ -651,7 +406,7 @@ void XDeviceTableView::_goToOffsetSlot()
 {
     DEVICESTATE state = getDeviceState();
 
-    DialogGoToAddress da(this, getMemoryMap(), DialogGoToAddress::TYPE_OFFSET, state.nSelectionDeviceOffset);
+    DialogGoToAddress da(this, getBinaryView()->getMemoryMap(), DialogGoToAddress::TYPE_OFFSET, state.nSelectionDeviceOffset);
     da.setGlobal(getShortcuts(), getGlobalOptions());
 
     if (da.exec() == QDialog::Accepted)  // TODO use status
@@ -729,7 +484,7 @@ void XDeviceTableView::_findSlot(XBinary::SEARCHMODE mode)
         dsp.showDialogDelay();
 
         if (m_searchData.nResultOffset != -1) {
-            qint64 nViewPos = deviceOffsetToViewPos(m_searchData.nResultOffset);
+            qint64 nViewPos = getBinaryView()->deviceOffsetToViewPos(m_searchData.nResultOffset);
             qint64 nViewSize = m_searchData.nResultSize;
 
             _goToViewPos(nViewPos);
@@ -757,7 +512,7 @@ void XDeviceTableView::_findNextSlot()
 
         if (dsp.isSuccess())  // TODO use status
         {
-            qint64 nViewPos = deviceOffsetToViewPos(m_searchData.nResultOffset);
+            qint64 nViewPos = getBinaryView()->deviceOffsetToViewPos(m_searchData.nResultOffset);
             qint64 nViewSize = m_searchData.nResultSize;
 
             _goToViewPos(nViewPos);
@@ -772,7 +527,7 @@ void XDeviceTableView::_findNextSlot()
 
 void XDeviceTableView::_selectAllSlot()
 {
-    _initSetSelection(0, getViewSize());
+    _initSetSelection(0, getBinaryView()->getViewSize());
     viewport()->update();
 }
 
@@ -780,7 +535,7 @@ void XDeviceTableView::_copyAddressSlot()
 {
     DEVICESTATE state = getDeviceState();
 
-    XADDR nAddress = XBinary::offsetToAddress(getMemoryMap(), state.nSelectionDeviceOffset);
+    XADDR nAddress = XBinary::offsetToAddress(getBinaryView()->getMemoryMap(), state.nSelectionDeviceOffset);
 
     QApplication::clipboard()->setText(XBinary::valueToHex(XBinary::MODE_UNKNOWN, nAddress));
 }
@@ -789,7 +544,7 @@ void XDeviceTableView::_copyRelAddressSlot()
 {
     DEVICESTATE state = getDeviceState();
 
-    XADDR nAddress = XBinary::offsetToRelAddress(getMemoryMap(), state.nSelectionDeviceOffset);
+    XADDR nAddress = XBinary::offsetToRelAddress(getBinaryView()->getMemoryMap(), state.nSelectionDeviceOffset);
 
     QApplication::clipboard()->setText(XBinary::valueToHex(XBinary::MODE_UNKNOWN, nAddress));
 }
@@ -843,7 +598,7 @@ void XDeviceTableView::changeLocationMode()
     QAction *pAction = qobject_cast<QAction *>(sender());
 
     if (pAction) {
-        LOCMODE mode = (LOCMODE)pAction->property("mode").toUInt();
+        XBinaryView::LOCMODE mode = (XBinaryView::LOCMODE)pAction->property("mode").toUInt();
 
         setLocationMode(mode);
     }
@@ -854,7 +609,7 @@ void XDeviceTableView::changeLocationBase()
     QAction *pAction = qobject_cast<QAction *>(sender());
 
     if (pAction) {
-        qint32 nBase = (LOCMODE)pAction->property("base").toInt();
+        qint32 nBase = (XBinaryView::LOCMODE)pAction->property("base").toInt();
 
         setLocationBase(nBase);
     }
