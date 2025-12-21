@@ -54,8 +54,8 @@ public:
         XADDR nModuleAddress;
         bool bShowVirtual;
         qint64 nStartSelectionOffset;  // -1 no selection
-        qint64 nSizeOfSelection; // TODO Check
-        QString sTitle;  // For dialogs
+        qint64 nSizeOfSelection;       // TODO Check
+        QString sTitle;                // For dialogs
         LOCMODE addressMode;
     };
 

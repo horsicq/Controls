@@ -122,7 +122,6 @@ void XBinaryView::reset()
     m_options = {};
     m_nViewSize = 0;
     m_listViewStruct.clear();
-
 }
 
 QIODevice *XBinaryView::getDevice()
