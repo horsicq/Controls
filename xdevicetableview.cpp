@@ -253,7 +253,7 @@ QByteArray XDeviceTableView::read_array(qint64 nOffset, qint32 nSize)
     QByteArray baResult;
 
     if (getDevice()) {
-        baResult = XBinary::read_array_simple(getDevice(), nOffset, nSize);
+        baResult = XBinary::read_array(getDevice(), nOffset, nSize);
     }
 
     return baResult;
