@@ -52,9 +52,9 @@ void XModel_ArchiveRecords::_initColumns()
         else if (fpartProp == XBinary::FPART_PROP_UNCOMPRESSEDSIZE) sName = QObject::tr("Size");
         else if (fpartProp == XBinary::FPART_PROP_STREAMOFFSET) sName = QObject::tr("Stream offset");
         else if (fpartProp == XBinary::FPART_PROP_STREAMSIZE) sName = QObject::tr("Stream size");
-        else if (fpartProp == XBinary::FPART_PROP_COMPRESSMETHOD) sName = QObject::tr("Method");
+        else if (fpartProp == XBinary::FPART_PROP_HANDLEMETHOD1) sName = QObject::tr("Method");
 
-        if ((fpartProp == XBinary::FPART_PROP_ORIGINALNAME) || (fpartProp == XBinary::FPART_PROP_COMPRESSMETHOD)) nFlags = Qt::AlignVCenter | Qt::AlignLeft;
+        if ((fpartProp == XBinary::FPART_PROP_ORIGINALNAME) || (fpartProp == XBinary::FPART_PROP_HANDLEMETHOD1)) nFlags = Qt::AlignVCenter | Qt::AlignLeft;
         else nFlags = Qt::AlignVCenter | Qt::AlignRight;
 
         if (fpartProp == XBinary::FPART_PROP_ORIGINALNAME) nSymbolSize = 20;
@@ -91,8 +91,8 @@ QVariant XModel_ArchiveRecords::data(const QModelIndex &index, int nRole) const
                         result = rec.nStreamOffset;
                     } else if (fpartProp == XBinary::FPART_PROP_STREAMSIZE) {
                         result = rec.nStreamSize;
-                    } else if (fpartProp == XBinary::FPART_PROP_COMPRESSMETHOD) {
-                        result = XBinary::compressMethodToString((XBinary::COMPRESS_METHOD)rec.mapProperties.value(fpartProp).toInt());
+                    } else if (fpartProp == XBinary::FPART_PROP_HANDLEMETHOD1) {
+                        result = XBinary::handleMethodToString((XBinary::HANDLE_METHOD)rec.mapProperties.value(fpartProp).toInt());
                     }
                 }
 
