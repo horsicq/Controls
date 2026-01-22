@@ -354,8 +354,6 @@ bool XAbstractTableView::setTextFontFromOptions(XOptions::ID id)
         if (_font.fromString(sFont)) {
             setTextFont(_font);
             bResult = true;
-        } else {
-            emit errorMessage(QString("%1: %2").arg(tr("Invalid font"), sFont));
         }
     }
 
