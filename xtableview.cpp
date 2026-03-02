@@ -195,7 +195,7 @@ void XTableView::onFilterChanged()
     // Elapsed time
     QElapsedTimer timer;
     timer.start();
-    qDebug("onFilterChanged START");
+    qDebug("XTableView::onFilterChanged(): START");
 #endif
 
     QList<QString> listFilters = m_pHeaderView->getFilters();
@@ -219,11 +219,12 @@ void XTableView::onFilterChanged()
     }
 
 #ifdef QT_DEBUG
-    qDebug("onFilterChanged Elapsed time: %lld ms", timer.elapsed());
+    qDebug("XTableView::onFilterChanged(): Elapsed time: %lld ms", timer.elapsed());
     // 16266 ms
     // 16342
     //
     //
+    qDebug("XTableView::onFilterChanged(): STOP");
 #endif
 }
 
