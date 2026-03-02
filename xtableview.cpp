@@ -47,7 +47,7 @@ XTableView::XTableView(QWidget *pParent) : QTableView(pParent)
 XTableView::~XTableView()
 {
 #ifdef QT_DEBUG
-    qDebug("~XTableView()");
+    qDebug("XTableView::~XTableView(): Closing window");
 #endif
 
     m_bIsStop = true;
