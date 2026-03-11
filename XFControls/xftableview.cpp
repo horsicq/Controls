@@ -85,6 +85,22 @@ void XFTableView::adjust()
     resizeRowsToContents();
 }
 
+void XFTableView::setShowOffset(bool bShowOffset)
+{
+    if (m_pTableModel) {
+        m_pTableModel->setShowOffset(bShowOffset);
+        adjust();
+    }
+}
+
+void XFTableView::setShowPresentation(bool bShowPresentation)
+{
+    if (m_pTableModel) {
+        m_pTableModel->setShowPresentation(bShowPresentation);
+        adjust();
+    }
+}
+
 void XFTableView::currentChanged(const QModelIndex &current, const QModelIndex &previous)
 {
     QTableView::currentChanged(current, previous);

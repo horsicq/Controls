@@ -40,6 +40,9 @@ public:
     void clear();
     void adjust();
 
+    void setShowOffset(bool bShowOffset);
+    void setShowPresentation(bool bShowPresentation);
+
 signals:
     void fieldSelected(qint32 nFieldIndex, quint64 nValue, const XBinary::XFRECORD &xfRecord);
     void fieldDoubleClicked(qint32 nFieldIndex, quint64 nValue, const XBinary::XFRECORD &xfRecord);

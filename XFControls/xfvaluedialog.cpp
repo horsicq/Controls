@@ -20,6 +20,8 @@
  */
 
 #include "xfvaluedialog.h"
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
 
 XFValueDialog::XFValueDialog(QWidget *pParent) : QDialog(pParent)
 {
@@ -44,12 +46,14 @@ XFValueDialog::XFValueDialog(QWidget *pParent) : QDialog(pParent)
     pGridLayout->addWidget(pLabelHex, 1, 0);
 
     m_pLineEditHex = new QLineEdit(this);
+    m_pLineEditHex->setValidator(new QRegularExpressionValidator(QRegularExpression("[0-9a-fA-F]*"), this));
     pGridLayout->addWidget(m_pLineEditHex, 1, 1);
 
     QLabel *pLabelDec = new QLabel(tr("Dec:"), this);
     pGridLayout->addWidget(pLabelDec, 2, 0);
 
     m_pLineEditDec = new QLineEdit(this);
+    m_pLineEditDec->setValidator(new QRegularExpressionValidator(QRegularExpression("[0-9]*"), this));
     pGridLayout->addWidget(m_pLineEditDec, 2, 1);
 
     pMainLayout->addLayout(pGridLayout);

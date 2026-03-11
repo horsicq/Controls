@@ -20,6 +20,8 @@
  */
 
 #include "xfsizedialog.h"
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
 
 XFSizeDialog::XFSizeDialog(QWidget *pParent) : QDialog(pParent)
 {
@@ -41,12 +43,14 @@ XFSizeDialog::XFSizeDialog(QWidget *pParent) : QDialog(pParent)
     pGridLayout->addWidget(pLabelHex, 0, 0);
 
     m_pLineEditHex = new QLineEdit(this);
+    m_pLineEditHex->setValidator(new QRegularExpressionValidator(QRegularExpression("[0-9a-fA-F]*"), this));
     pGridLayout->addWidget(m_pLineEditHex, 0, 1);
 
     QLabel *pLabelDec = new QLabel(tr("Dec:"), this);
     pGridLayout->addWidget(pLabelDec, 1, 0);
 
     m_pLineEditDec = new QLineEdit(this);
+    m_pLineEditDec->setValidator(new QRegularExpressionValidator(QRegularExpression("[0-9]*"), this));
     pGridLayout->addWidget(m_pLineEditDec, 1, 1);
 
     QLabel *pLabelSize = new QLabel(tr("Size:"), this);
