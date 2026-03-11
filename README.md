@@ -1,10 +1,19 @@
 # Controls
 
-Controls for some projects:
+Controls is used for following projects:
 
-* Detect it Easy
+* Detect It Easy
+* Nauz File Detector
 * XPEViewer
+* XNEViewer
 * XELFViewer
+* XLEViewer
 * XMachOViewer
 * XAPKDetector
+* XIPADetector
+* XMSDOSViewer
 * xntsv
+* XBinaryViewer
+* XHexViewer
+* XDemangler
+* XOpcodeCalc
