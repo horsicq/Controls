@@ -79,6 +79,7 @@ void XTableView::setCustomModel(QAbstractItemModel *pModel, bool bFilterEnabled)
         // 470701 ms
 #endif
         // m_pOldModel->clear();
+        qDebug("m_pOldModel->clear() STOP");
         deleteOldModel(&m_pOldModel);
 #ifdef QT_DEBUG
         qDebug("setCustomModel Elapsed time: %lld ms", timer.elapsed());
