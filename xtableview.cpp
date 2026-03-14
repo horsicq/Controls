@@ -40,6 +40,10 @@ XTableView::XTableView(QWidget *pParent) : QTableView(pParent)
     connect(horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(horisontalScroll()));
     connect(this, SIGNAL(invalidateSignal()), m_pSortFilterProxyModel, SLOT(invalidate()));
 
+    m_pFilterTimer = new QTimer(this);
+    m_pFilterTimer->setSingleShot(true);
+    connect(m_pFilterTimer, SIGNAL(timeout()), this, SLOT(onFilterApply()));
+
     setSortingEnabled(true);
     setWordWrap(false);
 }
@@ -79,7 +83,6 @@ void XTableView::setCustomModel(QAbstractItemModel *pModel, bool bFilterEnabled)
         // 470701 ms
 #endif
         // m_pOldModel->clear();
-        qDebug("m_pOldModel->clear() STOP");
         deleteOldModel(&m_pOldModel);
 #ifdef QT_DEBUG
         qDebug("setCustomModel Elapsed time: %lld ms", timer.elapsed());
@@ -114,7 +117,7 @@ void XTableView::deleteOldModel(QAbstractItemModel **ppOldModel)
 
 void XTableView::handleFilter()
 {
-    QList<QString> listFilters = m_pHeaderView->getFilters();
+    QList<QString> listFilters = m_listCurrentFilters;
 
     qint32 nNumberOfRows = m_pModel->rowCount();
     qint32 nNumberOfFilters = listFilters.count();
@@ -165,6 +168,22 @@ void XTableView::setFilterEnabled(qint32 nColumn, bool bFilterEnabled)
     m_pHeaderView->setFilterEnabled(nColumn, bFilterEnabled);
 }
 
+void XTableView::setColumnFilterString(qint32 nColumn, const QString &sFilter)
+{
+    m_pSortFilterProxyModel->setColumnFilter(nColumn, sFilter);
+    m_listCurrentFilters = m_pSortFilterProxyModel->getFilters();
+
+    if (m_bIsCustomFilter) {
+        m_bIsStop = true;
+        m_watcher.waitForFinished();
+        m_bIsStop = false;
+
+        handleFilter();
+    } else {
+        m_pSortFilterProxyModel->invalidate();
+    }
+}
+
 void XTableView::adjust()
 {
     m_pXModel = dynamic_cast<XModel *>(m_pModel);
@@ -192,16 +211,22 @@ void XTableView::adjust()
 
 void XTableView::onFilterChanged()
 {
+    m_pFilterTimer->start(300);
+}
+
+void XTableView::onFilterApply()
+{
 #ifdef QT_DEBUG
     // Elapsed time
     QElapsedTimer timer;
     timer.start();
-    qDebug("XTableView::onFilterChanged(): START");
+    qDebug("XTableView::onFilterApply(): START");
 #endif
 
     QList<QString> listFilters = m_pHeaderView->getFilters();
 
     m_pSortFilterProxyModel->setFilters(listFilters);
+    m_listCurrentFilters = listFilters;
 
     if (m_bIsCustomFilter) {
         m_bIsStop = true;

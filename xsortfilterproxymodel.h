@@ -23,12 +23,15 @@
 #define XSORTFILTERPROXYMODEL_H
 
 #include <QSortFilterProxyModel>
+#include <QVector>
 #include "xmodel.h"
 
 class XSortFilterProxyModel : public QSortFilterProxyModel {
 public:
     explicit XSortFilterProxyModel(QObject *pParent = nullptr);
     void setFilters(const QList<QString> &listFilters);
+    void setColumnFilter(qint32 nColumn, const QString &sFilter);
+    QList<QString> getFilters() const;
     void setSortMethod(qint32 nColumn, XModel::SORT_METHOD sortMethod);
     void setSourceModel(QAbstractItemModel *sourceModel) override;
     QVariant data(const QModelIndex &index, int nRole = Qt::DisplayRole) const override;
@@ -39,12 +42,19 @@ protected:
     bool lessThan(const QModelIndex &left, const QModelIndex &right) const override;
 
 private:
+    void buildSortCache(qint32 nColumn);
+    void clearSortCache();
+
     bool m_bIsXmodel;
     bool m_bIsCustomFilter;
     bool m_bIsCustomSort;
     XModel *m_pXModel;
     QList<QString> m_listFilters;
     QMap<qint32, XModel::SORT_METHOD> m_mapSortMethods;
+    bool m_bSortCacheValid;
+    XModel::SORT_METHOD m_sortCacheMethod;
+    QVector<quint64> m_vecSortCacheHex;
+    QVector<QString> m_vecSortCacheStr;
 };
 
 #endif  // XSORTFILTERPROXYMODEL_H

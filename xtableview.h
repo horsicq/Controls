@@ -27,6 +27,7 @@
 #include <QStandardItemModel>
 #include <QElapsedTimer>
 #include <QFutureWatcher>
+#include <QTimer>
 
 #include "xheaderview.h"
 #include "xsortfilterproxymodel.h"
@@ -44,6 +45,7 @@ public:
     void clear();
     XSortFilterProxyModel *getProxyModel();
     void setFilterEnabled(qint32 nColumn, bool bFilterEnabled);
+    void setColumnFilterString(qint32 nColumn, const QString &sFilter);
     void adjust();
 
 signals:
@@ -55,6 +57,7 @@ private:
 
 private slots:
     void onFilterChanged();
+    void onFilterApply();
     void onSortChanged(int column, Qt::SortOrder order);
     void horisontalScroll();
 
@@ -69,6 +72,8 @@ private:
     XModel *m_pXModel;
     QFutureWatcher<void> m_watcher;
     bool m_bIsStop;
+    QTimer *m_pFilterTimer;
+    QList<QString> m_listCurrentFilters;
 };
 
 #endif  // XTABLEVIEW_H

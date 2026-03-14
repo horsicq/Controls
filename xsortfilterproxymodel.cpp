@@ -27,11 +27,27 @@ XSortFilterProxyModel::XSortFilterProxyModel(QObject *pParent) : QSortFilterProx
     m_bIsCustomFilter = false;
     m_bIsCustomSort = false;
     m_pXModel = nullptr;
+    m_bSortCacheValid = false;
+    m_sortCacheMethod = XModel::SORT_METHOD_DEFAULT;
 }
 
 void XSortFilterProxyModel::setFilters(const QList<QString> &listFilters)
 {
     m_listFilters = listFilters;
+}
+
+void XSortFilterProxyModel::setColumnFilter(qint32 nColumn, const QString &sFilter)
+{
+    while (m_listFilters.count() <= nColumn) {
+        m_listFilters.append(QString());
+    }
+
+    m_listFilters[nColumn] = sFilter;
+}
+
+QList<QString> XSortFilterProxyModel::getFilters() const
+{
+    return m_listFilters;
 }
 
 void XSortFilterProxyModel::setSortMethod(qint32 nColumn, XModel::SORT_METHOD sortMethod)
@@ -73,7 +89,9 @@ QVariant XSortFilterProxyModel::data(const QModelIndex &index, int nRole) const
 
 void XSortFilterProxyModel::sort(int column, Qt::SortOrder order)
 {
+    buildSortCache(column);
     QSortFilterProxyModel::sort(column, order);
+    clearSortCache();
 }
 
 bool XSortFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
@@ -111,6 +129,15 @@ bool XSortFilterProxyModel::lessThan(const QModelIndex &left, const QModelIndex 
 
     if (m_bIsCustomSort) {
         bResult = (m_pXModel->getRowPrio(left.row()) < m_pXModel->getRowPrio(right.row()));
+    } else if (m_bSortCacheValid) {
+        qint32 nLeftRow = left.row();
+        qint32 nRightRow = right.row();
+
+        if (m_sortCacheMethod == XModel::SORT_METHOD_HEX) {
+            bResult = m_vecSortCacheHex.at(nLeftRow) < m_vecSortCacheHex.at(nRightRow);
+        } else {
+            bResult = m_vecSortCacheStr.at(nLeftRow) < m_vecSortCacheStr.at(nRightRow);
+        }
     } else {
         qint32 nColumn = left.column();
 
@@ -130,4 +157,43 @@ bool XSortFilterProxyModel::lessThan(const QModelIndex &left, const QModelIndex 
     }
 
     return bResult;
+}
+
+void XSortFilterProxyModel::buildSortCache(qint32 nColumn)
+{
+    QAbstractItemModel *pSource = sourceModel();
+
+    if (!pSource) {
+        m_bSortCacheValid = false;
+        return;
+    }
+
+    qint32 nRowCount = pSource->rowCount();
+    m_sortCacheMethod = m_mapSortMethods.value(nColumn, XModel::SORT_METHOD_DEFAULT);
+
+    if (m_sortCacheMethod == XModel::SORT_METHOD_HEX) {
+        m_vecSortCacheHex.resize(nRowCount);
+
+        for (qint32 i = 0; i < nRowCount; i++) {
+            QModelIndex idx = pSource->index(i, nColumn);
+            QString sVal = pSource->data(idx).toString().remove(" ");
+            m_vecSortCacheHex[i] = sVal.toULongLong(nullptr, 16);
+        }
+    } else {
+        m_vecSortCacheStr.resize(nRowCount);
+
+        for (qint32 i = 0; i < nRowCount; i++) {
+            QModelIndex idx = pSource->index(i, nColumn);
+            m_vecSortCacheStr[i] = pSource->data(idx).toString();
+        }
+    }
+
+    m_bSortCacheValid = true;
+}
+
+void XSortFilterProxyModel::clearSortCache()
+{
+    m_vecSortCacheHex.clear();
+    m_vecSortCacheStr.clear();
+    m_bSortCacheValid = false;
 }

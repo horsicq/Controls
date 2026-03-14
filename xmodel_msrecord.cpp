@@ -32,6 +32,7 @@ XModel_MSRecord::XModel_MSRecord(QIODevice *pDevice, const XBinary::_MEMORY_MAP 
 
     m_endian = XBinary::ENDIAN_LITTLE;
     m_valueType = valueType;
+    m_bValueCacheValid = false;
 
     qint32 nRowCount = pListRecods->count();
 
@@ -123,7 +124,9 @@ QVariant XModel_MSRecord::data(const QModelIndex &index, int nRole) const
                         }
                     }
                 } else if (nColumn == COLUMN_VALUE) {
-                    if ((m_valueType == XBinary::VT_STRING) || (m_valueType == XBinary::VT_A_I) || (m_valueType == XBinary::VT_U_I) ||
+                    if (m_bValueCacheValid && (nRow < m_vecValueCache.count())) {
+                        result = m_vecValueCache.at(nRow);
+                    } else if ((m_valueType == XBinary::VT_STRING) || (m_valueType == XBinary::VT_A_I) || (m_valueType == XBinary::VT_U_I) ||
                         (m_valueType == XBinary::VT_UTF8_I)) {
                         XBinary binary(m_pDevice);
                         XBinary::VT valueType = m_valueType;
@@ -242,7 +245,7 @@ QVariant XModel_MSRecord::headerData(int nSection, Qt::Orientation orientation, 
 
 bool XModel_MSRecord::isCustomFilter()
 {
-    return false;
+    return true;
 }
 
 bool XModel_MSRecord::isCustomSort()
@@ -254,9 +257,63 @@ XModel::SORT_METHOD XModel_MSRecord::getSortMethod(qint32 nColumn)
 {
     SORT_METHOD result = SORT_METHOD_DEFAULT;
 
-    if ((nColumn == COLUMN_OFFSET) || (nColumn == COLUMN_OFFSET) || (nColumn == COLUMN_SIZE)) {
+    if ((nColumn == COLUMN_OFFSET) || (nColumn == COLUMN_ADDRESS) || (nColumn == COLUMN_SIZE)) {
         result = SORT_METHOD_HEX;
     }
 
     return result;
+}
+
+void XModel_MSRecord::buildValueCache()
+{
+    qint32 nRowCount = m_pListRecords->count();
+    m_vecValueCache.resize(nRowCount);
+
+    XBinary binary(m_pDevice);
+
+    for (qint32 i = 0; i < nRowCount; i++) {
+        QString sValue;
+
+        if ((m_valueType == XBinary::VT_STRING) || (m_valueType == XBinary::VT_A_I) || (m_valueType == XBinary::VT_U_I) ||
+            (m_valueType == XBinary::VT_UTF8_I)) {
+            XBinary::VT valueType = m_valueType;
+            if (m_valueType == XBinary::VT_STRING) {
+                valueType = (XBinary::VT)(m_pListRecords->at(i).nValueType);
+            }
+            qint16 nRegionIndex = m_pListRecords->at(i).nRegionIndex;
+
+            if (nRegionIndex != -1) {
+                if (m_memoryMap.listRecords.at(nRegionIndex).nOffset != -1) {
+                    qint64 nOffset = m_memoryMap.listRecords.at(nRegionIndex).nOffset + m_pListRecords->at(i).nRelOffset;
+                    sValue = binary.read_value(valueType, nOffset, m_pListRecords->at(i).nSize, m_endian == XBinary::ENDIAN_BIG).toString();
+                }
+            } else {
+                qint64 nOffset = m_pListRecords->at(i).nRelOffset;
+                sValue = binary.read_value(valueType, nOffset, m_pListRecords->at(i).nSize, m_endian == XBinary::ENDIAN_BIG).toString();
+            }
+        } else if (m_valueType == XBinary::VT_SIGNATURE) {
+            if (m_pListSignatureRecords && (m_pListSignatureRecords->count() > m_pListRecords->at(i).nInfo)) {
+                sValue = m_pListSignatureRecords->at(m_pListRecords->at(i).nInfo).sName;
+            } else {
+                sValue = m_sValue;
+            }
+        } else {
+            sValue = m_sValue;
+        }
+
+        m_vecValueCache[i] = sValue;
+    }
+
+    m_bValueCacheValid = true;
+}
+
+void XModel_MSRecord::clearValueCache()
+{
+    m_vecValueCache.clear();
+    m_bValueCacheValid = false;
+}
+
+bool XModel_MSRecord::isValueCacheValid() const
+{
+    return m_bValueCacheValid;
 }

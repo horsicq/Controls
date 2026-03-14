@@ -51,6 +51,9 @@ public:
     virtual SORT_METHOD getSortMethod(qint32 nColumn);
     virtual bool isCustomFilter();
     virtual bool isCustomSort();
+    void buildValueCache();
+    void clearValueCache();
+    bool isValueCacheValid() const;
 
 private:
     QIODevice *m_pDevice;
@@ -63,6 +66,8 @@ private:
     XBinary::VT m_valueType;
     QString m_sValue;
     QList<XBinary::SIGNATUREDB_RECORD> *m_pListSignatureRecords;
+    QVector<QString> m_vecValueCache;
+    bool m_bValueCacheValid;
 };
 
 #endif  // XMODEL_MSRECORD_H
