@@ -144,13 +144,17 @@ bool XSortFilterProxyModel::lessThan(const QModelIndex &left, const QModelIndex 
         XModel::SORT_METHOD sortMethod = m_mapSortMethods.value(nColumn, XModel::SORT_METHOD_DEFAULT);
 
         if (sortMethod == XModel::SORT_METHOD_HEX) {
-            QString sLeft = left.data().toString();
-            QString sRight = right.data().toString();
+            if (m_bIsXmodel && m_pXModel && m_pXModel->hasSortKeyHex()) {
+                bResult = m_pXModel->getSortKeyHex(left.row(), nColumn) < m_pXModel->getSortKeyHex(right.row(), nColumn);
+            } else {
+                QString sLeft = left.data().toString();
+                QString sRight = right.data().toString();
 
-            sLeft = sLeft.remove(" ");
-            sRight = sRight.remove(" ");
+                sLeft = sLeft.remove(" ");
+                sRight = sRight.remove(" ");
 
-            bResult = sLeft.toULongLong(0, 16) < sRight.toULongLong(0, 16);
+                bResult = sLeft.toULongLong(0, 16) < sRight.toULongLong(0, 16);
+            }
         } else {
             bResult = QSortFilterProxyModel::lessThan(left, right);
         }
@@ -174,10 +178,16 @@ void XSortFilterProxyModel::buildSortCache(qint32 nColumn)
     if (m_sortCacheMethod == XModel::SORT_METHOD_HEX) {
         m_vecSortCacheHex.resize(nRowCount);
 
-        for (qint32 i = 0; i < nRowCount; i++) {
-            QModelIndex idx = pSource->index(i, nColumn);
-            QString sVal = pSource->data(idx).toString().remove(" ");
-            m_vecSortCacheHex[i] = sVal.toULongLong(nullptr, 16);
+        if (m_bIsXmodel && m_pXModel && m_pXModel->hasSortKeyHex()) {
+            for (qint32 i = 0; i < nRowCount; i++) {
+                m_vecSortCacheHex[i] = m_pXModel->getSortKeyHex(i, nColumn);
+            }
+        } else {
+            for (qint32 i = 0; i < nRowCount; i++) {
+                QModelIndex idx = pSource->index(i, nColumn);
+                QString sVal = pSource->data(idx).toString().remove(" ");
+                m_vecSortCacheHex[i] = sVal.toULongLong(nullptr, 16);
+            }
         }
     } else {
         m_vecSortCacheStr.resize(nRowCount);

@@ -51,6 +51,8 @@ public:
     virtual SORT_METHOD getSortMethod(qint32 nColumn);
     virtual bool isCustomFilter();
     virtual bool isCustomSort();
+    virtual bool hasSortKeyHex() const;
+    virtual quint64 getSortKeyHex(qint32 nRow, qint32 nColumn) const;
     void buildValueCache();
     void clearValueCache();
     bool isValueCacheValid() const;

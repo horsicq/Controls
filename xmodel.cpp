@@ -71,9 +71,44 @@ bool XModel::isCustomSort()
     return false;
 }
 
+bool XModel::hasSortKeyHex() const
+{
+    return false;
+}
+
+quint64 XModel::getSortKeyHex(qint32 nRow, qint32 nColumn) const
+{
+    Q_UNUSED(nRow)
+    Q_UNUSED(nColumn)
+
+    return 0;
+}
+
 void XModel::setRowHidden(qint32 nRow, bool bState)
 {
-    m_hashRowHidden[nRow] = bState;  // TODO optimize use allocated memory
+    if ((nRow >= 0) && (nRow < m_vecRowHidden.size())) {
+        m_vecRowHidden[nRow] = bState;
+    }
+}
+
+void XModel::clearRowHidden()
+{
+    m_vecRowHidden.fill(false);
+}
+
+qint32 XModel::getVisibleRowCount() const
+{
+    qint32 nResult = m_nRowCount;
+
+    qint32 nSize = m_vecRowHidden.size();
+
+    for (qint32 i = 0; i < nSize; i++) {
+        if (m_vecRowHidden.at(i)) {
+            nResult--;
+        }
+    }
+
+    return nResult;
 }
 
 void XModel::setRowPrio(qint32 nRow, quint64 nPrio)
@@ -83,7 +118,11 @@ void XModel::setRowPrio(qint32 nRow, quint64 nPrio)
 
 bool XModel::isRowHidden(qint32 nRow)
 {
-    return m_hashRowHidden.value(nRow, false);
+    if ((nRow >= 0) && (nRow < m_vecRowHidden.size())) {
+        return m_vecRowHidden.at(nRow);
+    }
+
+    return false;
 }
 
 quint64 XModel::getRowPrio(qint32 nRow)
@@ -112,6 +151,8 @@ QModelIndex XModel::parent(const QModelIndex &child) const
 void XModel::_setRowCount(qint32 nRowCount)
 {
     m_nRowCount = nRowCount;
+    m_vecRowHidden.resize(nRowCount);
+    m_vecRowHidden.fill(false);
 }
 
 void XModel::_setColumnCount(qint32 nColumnCount)

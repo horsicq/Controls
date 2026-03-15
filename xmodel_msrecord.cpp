@@ -20,6 +20,7 @@
  */
 
 #include "xmodel_msrecord.h"
+#include <QFile>
 
 XModel_MSRecord::XModel_MSRecord(QIODevice *pDevice, const XBinary::_MEMORY_MAP &memoryMap, QVector<XBinary::MS_RECORD> *pListRecods, XBinary::VT valueType,
                                  QObject *pParent)
@@ -264,44 +265,195 @@ XModel::SORT_METHOD XModel_MSRecord::getSortMethod(qint32 nColumn)
     return result;
 }
 
+bool XModel_MSRecord::hasSortKeyHex() const
+{
+    return true;
+}
+
+quint64 XModel_MSRecord::getSortKeyHex(qint32 nRow, qint32 nColumn) const
+{
+    quint64 nResult = 0;
+
+    if ((nRow >= 0) && (nRow < m_pListRecords->count())) {
+        if (nColumn == COLUMN_OFFSET) {
+            qint16 nRegionIndex = m_pListRecords->at(nRow).nRegionIndex;
+
+            if (nRegionIndex != -1) {
+                if (m_memoryMap.listRecords.at(nRegionIndex).nOffset != -1) {
+                    nResult = m_memoryMap.listRecords.at(nRegionIndex).nOffset + m_pListRecords->at(nRow).nRelOffset;
+                }
+            } else {
+                nResult = m_pListRecords->at(nRow).nRelOffset;
+            }
+        } else if (nColumn == COLUMN_ADDRESS) {
+            qint16 nRegionIndex = m_pListRecords->at(nRow).nRegionIndex;
+
+            if (nRegionIndex != -1) {
+                if (m_memoryMap.listRecords.at(nRegionIndex).nAddress != (XADDR)-1) {
+                    nResult = m_memoryMap.listRecords.at(nRegionIndex).nAddress + m_pListRecords->at(nRow).nRelOffset;
+                }
+            }
+        } else if (nColumn == COLUMN_SIZE) {
+            nResult = m_pListRecords->at(nRow).nSize;
+        }
+    }
+
+    return nResult;
+}
+
 void XModel_MSRecord::buildValueCache()
 {
     qint32 nRowCount = m_pListRecords->count();
     m_vecValueCache.resize(nRowCount);
 
-    XBinary binary(m_pDevice);
+    // Try memory mapping for fast access (avoids per-byte I/O)
+    QFile *pFile = qobject_cast<QFile *>(m_pDevice);
+    qint64 nFileSize = m_pDevice->size();
+    uchar *pMapped = nullptr;
 
-    for (qint32 i = 0; i < nRowCount; i++) {
-        QString sValue;
+    if (pFile && (nFileSize > 0)) {
+        pMapped = pFile->map(0, nFileSize);
+    }
 
-        if ((m_valueType == XBinary::VT_STRING) || (m_valueType == XBinary::VT_A_I) || (m_valueType == XBinary::VT_U_I) ||
-            (m_valueType == XBinary::VT_UTF8_I)) {
-            XBinary::VT valueType = m_valueType;
-            if (m_valueType == XBinary::VT_STRING) {
-                valueType = (XBinary::VT)(m_pListRecords->at(i).nValueType);
-            }
-            qint16 nRegionIndex = m_pListRecords->at(i).nRegionIndex;
+    if (pMapped) {
+        bool bBigEndian = (m_endian == XBinary::ENDIAN_BIG);
 
-            if (nRegionIndex != -1) {
-                if (m_memoryMap.listRecords.at(nRegionIndex).nOffset != -1) {
-                    qint64 nOffset = m_memoryMap.listRecords.at(nRegionIndex).nOffset + m_pListRecords->at(i).nRelOffset;
-                    sValue = binary.read_value(valueType, nOffset, m_pListRecords->at(i).nSize, m_endian == XBinary::ENDIAN_BIG).toString();
+        for (qint32 i = 0; i < nRowCount; i++) {
+            QString sValue;
+
+            if ((m_valueType == XBinary::VT_STRING) || (m_valueType == XBinary::VT_A_I) || (m_valueType == XBinary::VT_U_I) ||
+                (m_valueType == XBinary::VT_UTF8_I)) {
+                XBinary::VT valueType = m_valueType;
+
+                if (m_valueType == XBinary::VT_STRING) {
+                    valueType = (XBinary::VT)(m_pListRecords->at(i).nValueType);
                 }
-            } else {
-                qint64 nOffset = m_pListRecords->at(i).nRelOffset;
-                sValue = binary.read_value(valueType, nOffset, m_pListRecords->at(i).nSize, m_endian == XBinary::ENDIAN_BIG).toString();
-            }
-        } else if (m_valueType == XBinary::VT_SIGNATURE) {
-            if (m_pListSignatureRecords && (m_pListSignatureRecords->count() > m_pListRecords->at(i).nInfo)) {
-                sValue = m_pListSignatureRecords->at(m_pListRecords->at(i).nInfo).sName;
+
+                qint64 nOffset = -1;
+                qint16 nRegionIndex = m_pListRecords->at(i).nRegionIndex;
+
+                if (nRegionIndex != -1) {
+                    if (m_memoryMap.listRecords.at(nRegionIndex).nOffset != -1) {
+                        nOffset = m_memoryMap.listRecords.at(nRegionIndex).nOffset + m_pListRecords->at(i).nRelOffset;
+                    }
+                } else {
+                    nOffset = m_pListRecords->at(i).nRelOffset;
+                }
+
+                qint64 nSize = qMin((qint64)(m_pListRecords->at(i).nSize), (qint64)128);
+
+                if ((nOffset >= 0) && (nOffset + nSize <= nFileSize)) {
+                    const char *pData = (const char *)(pMapped + nOffset);
+
+                    if ((valueType == XBinary::VT_A) || (valueType == XBinary::VT_A_I)) {
+                        qint32 nLen = 0;
+
+                        for (qint32 j = 0; j < nSize; j++) {
+                            if (pData[j] == 0) {
+                                break;
+                            }
+
+                            nLen++;
+                        }
+
+                        sValue = QString::fromLatin1(pData, nLen);
+                    } else if ((valueType == XBinary::VT_U) || (valueType == XBinary::VT_U_I)) {
+                        qint32 nCharCount = nSize / 2;
+                        qint32 nLen = 0;
+                        const quint16 *pUData = (const quint16 *)pData;
+
+                        for (qint32 j = 0; j < nCharCount; j++) {
+                            quint16 nCh = pUData[j];
+
+                            if (bBigEndian) {
+                                nCh = ((nCh >> 8) & 0xFF) | ((nCh << 8) & 0xFF00);
+                            }
+
+                            if (nCh == 0) {
+                                break;
+                            }
+
+                            nLen++;
+                        }
+
+                        if (bBigEndian) {
+                            QVector<quint16> vecSwapped(nLen);
+
+                            for (qint32 j = 0; j < nLen; j++) {
+                                quint16 nCh = pUData[j];
+                                vecSwapped[j] = ((nCh >> 8) & 0xFF) | ((nCh << 8) & 0xFF00);
+                            }
+
+                            sValue = QString::fromUtf16(vecSwapped.constData(), nLen);
+                        } else {
+                            sValue = QString::fromUtf16(pUData, nLen);
+                        }
+                    } else if ((valueType == XBinary::VT_UTF8) || (valueType == XBinary::VT_UTF8_I)) {
+                        qint32 nLen = 0;
+
+                        for (qint32 j = 0; j < nSize; j++) {
+                            if (pData[j] == 0) {
+                                break;
+                            }
+
+                            nLen++;
+                        }
+
+                        sValue = QString::fromUtf8(pData, nLen);
+                    }
+                }
+            } else if (m_valueType == XBinary::VT_SIGNATURE) {
+                if (m_pListSignatureRecords && (m_pListSignatureRecords->count() > m_pListRecords->at(i).nInfo)) {
+                    sValue = m_pListSignatureRecords->at(m_pListRecords->at(i).nInfo).sName;
+                } else {
+                    sValue = m_sValue;
+                }
             } else {
                 sValue = m_sValue;
             }
-        } else {
-            sValue = m_sValue;
+
+            m_vecValueCache[i] = sValue;
         }
 
-        m_vecValueCache[i] = sValue;
+        pFile->unmap(pMapped);
+    } else {
+        // Fallback to original per-byte I/O for non-file QIODevice
+        XBinary binary(m_pDevice);
+
+        for (qint32 i = 0; i < nRowCount; i++) {
+            QString sValue;
+
+            if ((m_valueType == XBinary::VT_STRING) || (m_valueType == XBinary::VT_A_I) || (m_valueType == XBinary::VT_U_I) ||
+                (m_valueType == XBinary::VT_UTF8_I)) {
+                XBinary::VT valueType = m_valueType;
+
+                if (m_valueType == XBinary::VT_STRING) {
+                    valueType = (XBinary::VT)(m_pListRecords->at(i).nValueType);
+                }
+
+                qint16 nRegionIndex = m_pListRecords->at(i).nRegionIndex;
+
+                if (nRegionIndex != -1) {
+                    if (m_memoryMap.listRecords.at(nRegionIndex).nOffset != -1) {
+                        qint64 nOffset = m_memoryMap.listRecords.at(nRegionIndex).nOffset + m_pListRecords->at(i).nRelOffset;
+                        sValue = binary.read_value(valueType, nOffset, m_pListRecords->at(i).nSize, m_endian == XBinary::ENDIAN_BIG).toString();
+                    }
+                } else {
+                    qint64 nOffset = m_pListRecords->at(i).nRelOffset;
+                    sValue = binary.read_value(valueType, nOffset, m_pListRecords->at(i).nSize, m_endian == XBinary::ENDIAN_BIG).toString();
+                }
+            } else if (m_valueType == XBinary::VT_SIGNATURE) {
+                if (m_pListSignatureRecords && (m_pListSignatureRecords->count() > m_pListRecords->at(i).nInfo)) {
+                    sValue = m_pListSignatureRecords->at(m_pListRecords->at(i).nInfo).sName;
+                } else {
+                    sValue = m_sValue;
+                }
+            } else {
+                sValue = m_sValue;
+            }
+
+            m_vecValueCache[i] = sValue;
+        }
     }
 
     m_bValueCacheValid = true;

@@ -23,6 +23,7 @@
 #define XMODEL_H
 
 #include <QAbstractItemModel>
+#include <QVector>
 
 class XModel : public QAbstractItemModel {
     Q_OBJECT
@@ -54,7 +55,11 @@ public:
     virtual SORT_METHOD getSortMethod(qint32 nColumn);
     virtual bool isCustomFilter();
     virtual bool isCustomSort();
+    virtual bool hasSortKeyHex() const;
+    virtual quint64 getSortKeyHex(qint32 nRow, qint32 nColumn) const;
     void setRowHidden(qint32 nRow, bool bState);
+    void clearRowHidden();
+    qint32 getVisibleRowCount() const;
     void setRowPrio(qint32 nRow, quint64 nPrio);
     bool isRowHidden(qint32 nRow);
     quint64 getRowPrio(qint32 nRow);
@@ -69,7 +74,7 @@ public:
     void adjustColumnsToContent(bool bHeader);
 
 private:
-    QHash<qint32, bool> m_hashRowHidden;
+    QVector<bool> m_vecRowHidden;
     QHash<qint32, quint64> m_hashRowPrio;
     QHash<qint32, qint32> m_hashColumnSymbolSize;
     QHash<qint32, qint32> m_hashColumnAlignment;

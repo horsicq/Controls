@@ -122,27 +122,42 @@ void XTableView::handleFilter()
     qint32 nNumberOfRows = m_pModel->rowCount();
     qint32 nNumberOfFilters = listFilters.count();
 
+    // Clear all hidden states in bulk
+    if (m_bIsXmodel) {
+        m_pXModel->clearRowHidden();
+    }
+
+    // Pre-compute active filter columns to skip empty filters in inner loop
+    QVector<qint32> vecActiveColumns;
+
+    for (qint32 j = 0; j < nNumberOfFilters; j++) {
+        if (!listFilters.at(j).isEmpty()) {
+            vecActiveColumns.append(j);
+        }
+    }
+
+    qint32 nActiveCount = vecActiveColumns.count();
+
     for (qint32 i = 0; (i < nNumberOfRows) && (!m_bIsStop); i++) {
         bool bHidden = false;
 
-        for (qint32 j = 0; j < nNumberOfFilters; j++) {
-            QString sFilter = listFilters.at(j);
-            if (sFilter != "") {
-                QModelIndex index = m_pModel->index(i, j);
+        for (qint32 k = 0; k < nActiveCount; k++) {
+            qint32 nColumn = vecActiveColumns.at(k);
+            QModelIndex index = m_pModel->index(i, nColumn);
 
-                if (index.isValid()) {
-                    QString sValue = m_pModel->data(index).toString();
+            if (index.isValid()) {
+                QString sValue = m_pModel->data(index).toString();
 
-                    if (!sValue.contains(sFilter, Qt::CaseInsensitive)) {
-                        bHidden = true;
-                        break;
-                    }
+                if (!sValue.contains(listFilters.at(nColumn), Qt::CaseInsensitive)) {
+                    bHidden = true;
+                    break;
                 }
             }
         }
 
-        if (m_bIsXmodel) {
-            m_pXModel->setRowHidden(i, bHidden);
+        // Only set hidden=true; non-hidden rows already cleared by clearRowHidden()
+        if (m_bIsXmodel && bHidden) {
+            m_pXModel->setRowHidden(i, true);
         }
     }
 
@@ -178,7 +193,13 @@ void XTableView::setColumnFilterString(qint32 nColumn, const QString &sFilter)
         m_watcher.waitForFinished();
         m_bIsStop = false;
 
+        // Block proxy signals to avoid expensive layoutChanged processing in view
+        bool bOldBlocked = m_pSortFilterProxyModel->blockSignals(true);
         handleFilter();
+        m_pSortFilterProxyModel->blockSignals(bOldBlocked);
+
+        // Efficient view refresh instead of processing layoutChanged for all rows
+        reset();
     } else {
         m_pSortFilterProxyModel->invalidate();
     }
