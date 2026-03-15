@@ -36,6 +36,7 @@ public:
     void setSourceModel(QAbstractItemModel *sourceModel) override;
     QVariant data(const QModelIndex &index, int nRole = Qt::DisplayRole) const override;
     virtual void sort(int column, Qt::SortOrder order = Qt::AscendingOrder) override;
+    void resetModel();
 
 protected:
     bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override;

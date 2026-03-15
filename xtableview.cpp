@@ -193,13 +193,7 @@ void XTableView::setColumnFilterString(qint32 nColumn, const QString &sFilter)
         m_watcher.waitForFinished();
         m_bIsStop = false;
 
-        // Block proxy signals to avoid expensive layoutChanged processing in view
-        bool bOldBlocked = m_pSortFilterProxyModel->blockSignals(true);
         handleFilter();
-        m_pSortFilterProxyModel->blockSignals(bOldBlocked);
-
-        // Efficient view refresh instead of processing layoutChanged for all rows
-        reset();
     } else {
         m_pSortFilterProxyModel->invalidate();
     }

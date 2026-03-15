@@ -94,6 +94,12 @@ void XSortFilterProxyModel::sort(int column, Qt::SortOrder order)
     clearSortCache();
 }
 
+void XSortFilterProxyModel::resetModel()
+{
+    beginResetModel();
+    endResetModel();
+}
+
 bool XSortFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
 {
     bool bResult = true;
