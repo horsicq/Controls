@@ -22,14 +22,13 @@
 #ifndef XFTABLEVIEW_H
 #define XFTABLEVIEW_H
 
-#include <QTableView>
-#include <QHeaderView>
 #include <QMenu>
 #include <QAction>
+#include "xtableview.h"
 #include "xfmodel_header.h"
 #include "xfmodel_table.h"
 
-class XFTableView : public QTableView {
+class XFTableView : public XTableView {
     Q_OBJECT
 
 public:

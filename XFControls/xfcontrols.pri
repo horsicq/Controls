@@ -6,6 +6,11 @@ DEPENDPATH += $$PWD
     include($$PWD/../../Formats/xfmodel.pri)
 }
 
+!contains(XCONFIG, xtableview) {
+    XCONFIG += xtableview
+    include($$PWD/../xtableview.pri)
+}
+
 HEADERS += \
     $$PWD/xftableview.h \
     $$PWD/xftreeview.h \

@@ -21,7 +21,7 @@
 
 #include "xftableview.h"
 
-XFTableView::XFTableView(QWidget *pParent) : QTableView(pParent)
+XFTableView::XFTableView(QWidget *pParent) : XTableView(pParent)
 {
     m_pXBinary = nullptr;
     m_pHeaderModel = nullptr;
@@ -30,7 +30,6 @@ XFTableView::XFTableView(QWidget *pParent) : QTableView(pParent)
     setSelectionBehavior(QAbstractItemView::SelectRows);
     setSelectionMode(QAbstractItemView::SingleSelection);
     setContextMenuPolicy(Qt::CustomContextMenu);
-    setWordWrap(false);
 
     connect(this, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(onDoubleClicked(QModelIndex)));
     connect(this, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(onCustomContextMenuRequested(QPoint)));
@@ -43,7 +42,9 @@ XFTableView::~XFTableView()
 
 void XFTableView::setData(XBinary *pXBinary, const XBinary::XFHEADER &xfHeader)
 {
-    clear();
+    // Don't call clear() here — setCustomModel() handles old model deletion
+    m_pHeaderModel = nullptr;
+    m_pTableModel = nullptr;
 
     m_pXBinary = pXBinary;
     m_xfHeader = xfHeader;
@@ -51,31 +52,22 @@ void XFTableView::setData(XBinary *pXBinary, const XBinary::XFHEADER &xfHeader)
     if (m_xfHeader.xfType == XBinary::XFTYPE_HEADER) {
         m_pHeaderModel = new XFModel_header(this);
         m_pHeaderModel->setData(m_pXBinary, m_xfHeader);
-        setModel(m_pHeaderModel);
+        setCustomModel(m_pHeaderModel, true);
+        resizeColumnsToContents();
     } else if (m_xfHeader.xfType == XBinary::XFTYPE_TABLE) {
         m_pTableModel = new XFModel_table(this);
         m_pTableModel->setShowPresentation(true);
         m_pTableModel->setData(m_pXBinary, m_xfHeader);
-        setModel(m_pTableModel);
+        setCustomModel(m_pTableModel, true);
     }
-
-    adjust();
 }
 
 void XFTableView::clear()
 {
-    setModel(nullptr);
-
-    if (m_pHeaderModel) {
-        delete m_pHeaderModel;
-        m_pHeaderModel = nullptr;
-    }
-
-    if (m_pTableModel) {
-        delete m_pTableModel;
-        m_pTableModel = nullptr;
-    }
-
+    XTableView::clear();
+    // Models are owned by Qt parent-child; don't double-delete
+    m_pHeaderModel = nullptr;
+    m_pTableModel = nullptr;
     m_pXBinary = nullptr;
 }
 
@@ -103,7 +95,7 @@ void XFTableView::setShowPresentation(bool bShowPresentation)
 
 void XFTableView::currentChanged(const QModelIndex &current, const QModelIndex &previous)
 {
-    QTableView::currentChanged(current, previous);
+    XTableView::currentChanged(current, previous);
 
     if (current.isValid()) {
         qint32 nRow = current.row();
