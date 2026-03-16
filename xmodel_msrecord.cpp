@@ -40,6 +40,12 @@ XModel_MSRecord::XModel_MSRecord(QIODevice *pDevice, const XBinary::_MEMORY_MAP 
     _setRowCount(nRowCount);
     _setColumnCount(__COLUMN_SIZE);
 
+    m_vecSortIndex.resize(nRowCount);
+
+    for (qint32 i = 0; i < nRowCount; i++) {
+        m_vecSortIndex[i] = i;
+    }
+
     m_modeAddress = XBinary::getWidthModeFromSize(memoryMap.nModuleAddress + memoryMap.nImageSize);
     m_modeOffset = XBinary::getWidthModeFromSize(memoryMap.nBinarySize);
 
@@ -82,42 +88,43 @@ QVariant XModel_MSRecord::data(const QModelIndex &index, int nRole) const
     if (index.isValid()) {
         qint32 nRow = index.row();
 
-        if (nRow >= 0) {
+        if ((nRow >= 0) && (nRow < m_vecSortIndex.size())) {
+            qint32 nDataRow = m_vecSortIndex.at(nRow);
             qint32 nColumn = index.column();
 
             if (nRole == Qt::DisplayRole) {
                 if (nColumn == COLUMN_NUMBER) {
-                    result = nRow;
+                    result = nDataRow;
                 } else if (nColumn == COLUMN_OFFSET) {
-                    qint16 nRegionIndex = m_pListRecords->at(nRow).nRegionIndex;
+                    qint16 nRegionIndex = m_pListRecords->at(nDataRow).nRegionIndex;
                     if (nRegionIndex != -1) {
                         if (m_memoryMap.listRecords.at(nRegionIndex).nOffset != -1) {
-                            result = XBinary::valueToHex(m_modeOffset, m_memoryMap.listRecords.at(nRegionIndex).nOffset + m_pListRecords->at(nRow).nRelOffset);
+                            result = XBinary::valueToHex(m_modeOffset, m_memoryMap.listRecords.at(nRegionIndex).nOffset + m_pListRecords->at(nDataRow).nRelOffset);
                         }
                     } else {
-                        result = XBinary::valueToHex(m_modeOffset, m_pListRecords->at(nRow).nRelOffset);
+                        result = XBinary::valueToHex(m_modeOffset, m_pListRecords->at(nDataRow).nRelOffset);
                     }
                 } else if (nColumn == COLUMN_ADDRESS) {
-                    qint16 nRegionIndex = m_pListRecords->at(nRow).nRegionIndex;
+                    qint16 nRegionIndex = m_pListRecords->at(nDataRow).nRegionIndex;
                     if (nRegionIndex != -1) {
                         if (m_memoryMap.listRecords.at(nRegionIndex).nAddress != (XADDR)-1) {
-                            result = XBinary::valueToHex(m_modeAddress, m_memoryMap.listRecords.at(nRegionIndex).nAddress + m_pListRecords->at(nRow).nRelOffset);
+                            result = XBinary::valueToHex(m_modeAddress, m_memoryMap.listRecords.at(nRegionIndex).nAddress + m_pListRecords->at(nDataRow).nRelOffset);
                         }
                     }
                 } else if (nColumn == COLUMN_REGION) {
-                    if (m_pListRecords->at(nRow).nRegionIndex >= 0) {
-                        result = m_memoryMap.listRecords.at(m_pListRecords->at(nRow).nRegionIndex).sName;
+                    if (m_pListRecords->at(nDataRow).nRegionIndex >= 0) {
+                        result = m_memoryMap.listRecords.at(m_pListRecords->at(nDataRow).nRegionIndex).sName;
                     }
                 } else if (nColumn == COLUMN_SIZE) {
-                    result = QString::number(m_pListRecords->at(nRow).nSize, 16);
+                    result = QString::number(m_pListRecords->at(nDataRow).nSize, 16);
                 } else if (nColumn == COLUMN_INFO) {
                     if (m_valueType != XBinary::VT_SIGNATURE) {
-                        result = XBinary::valueTypeToString((XBinary::VT)(m_pListRecords->at(nRow).nValueType), 0);
+                        result = XBinary::valueTypeToString((XBinary::VT)(m_pListRecords->at(nDataRow).nValueType), 0);
                     } else {
                         if (nColumn == COLUMN_INFO) {
                             if (m_valueType == XBinary::VT_SIGNATURE) {
-                                if (m_pListSignatureRecords && (m_pListSignatureRecords->count() > m_pListRecords->at(nRow).nInfo)) {
-                                    if (m_pListSignatureRecords->at(m_pListRecords->at(nRow).nInfo).sPatch != "") {
+                                if (m_pListSignatureRecords && (m_pListSignatureRecords->count() > m_pListRecords->at(nDataRow).nInfo)) {
+                                    if (m_pListSignatureRecords->at(m_pListRecords->at(nDataRow).nInfo).sPatch != "") {
                                         result = tr("Patch");
                                     }
                                 }
@@ -125,29 +132,29 @@ QVariant XModel_MSRecord::data(const QModelIndex &index, int nRole) const
                         }
                     }
                 } else if (nColumn == COLUMN_VALUE) {
-                    if (m_bValueCacheValid && (nRow < m_vecValueCache.count())) {
-                        result = m_vecValueCache.at(nRow);
+                    if (m_bValueCacheValid && (nDataRow < m_vecValueCache.count())) {
+                        result = m_vecValueCache.at(nDataRow);
                     } else if ((m_valueType == XBinary::VT_STRING) || (m_valueType == XBinary::VT_A_I) || (m_valueType == XBinary::VT_U_I) ||
                         (m_valueType == XBinary::VT_UTF8_I)) {
                         XBinary binary(m_pDevice);
                         XBinary::VT valueType = m_valueType;
                         if (m_valueType == XBinary::VT_STRING) {
-                            valueType = (XBinary::VT)(m_pListRecords->at(nRow).nValueType);
+                            valueType = (XBinary::VT)(m_pListRecords->at(nDataRow).nValueType);
                         }
-                        qint16 nRegionIndex = m_pListRecords->at(nRow).nRegionIndex;
+                        qint16 nRegionIndex = m_pListRecords->at(nDataRow).nRegionIndex;
 
                         if (nRegionIndex != -1) {
                             if (m_memoryMap.listRecords.at(nRegionIndex).nOffset != -1) {
-                                qint64 _nOffset = m_memoryMap.listRecords.at(nRegionIndex).nOffset + m_pListRecords->at(nRow).nRelOffset;
-                                result = binary.read_value(valueType, _nOffset, m_pListRecords->at(nRow).nSize, m_endian == XBinary::ENDIAN_BIG).toString();
+                                qint64 _nOffset = m_memoryMap.listRecords.at(nRegionIndex).nOffset + m_pListRecords->at(nDataRow).nRelOffset;
+                                result = binary.read_value(valueType, _nOffset, m_pListRecords->at(nDataRow).nSize, m_endian == XBinary::ENDIAN_BIG).toString();
                             }
                         } else {
-                            qint64 _nOffset = m_pListRecords->at(nRow).nRelOffset;
-                            result = binary.read_value(valueType, _nOffset, m_pListRecords->at(nRow).nSize, m_endian == XBinary::ENDIAN_BIG).toString();
+                            qint64 _nOffset = m_pListRecords->at(nDataRow).nRelOffset;
+                            result = binary.read_value(valueType, _nOffset, m_pListRecords->at(nDataRow).nSize, m_endian == XBinary::ENDIAN_BIG).toString();
                         }
                     } else if (m_valueType == XBinary::VT_SIGNATURE) {
-                        if (m_pListSignatureRecords && (m_pListSignatureRecords->count() > m_pListRecords->at(nRow).nInfo)) {
-                            result = m_pListSignatureRecords->at(m_pListRecords->at(nRow).nInfo).sName;
+                        if (m_pListSignatureRecords && (m_pListSignatureRecords->count() > m_pListRecords->at(nDataRow).nInfo)) {
+                            result = m_pListSignatureRecords->at(m_pListRecords->at(nDataRow).nInfo).sName;
                         } else {
                             result = m_sValue;
                         }
@@ -161,38 +168,28 @@ QVariant XModel_MSRecord::data(const QModelIndex &index, int nRole) const
                 } else {
                     result = (qint32)Qt::AlignVCenter + (qint32)Qt::AlignLeft;
                 }
-                // } else if (nRole == Qt::CheckStateRole) {
-                //     if (nColumn == COLUMN_INFO) {
-                //         if (g_valueType == XBinary::VT_SIGNATURE) {
-                //             if (g_pListSignatureRecords && (g_pListSignatureRecords->count() > g_pListRecords->at(nRow).nInfo)) {
-                //                 if (g_pListSignatureRecords->at(g_pListRecords->at(nRow).nInfo).sPatch != "") {
-                //                     result = Qt::Checked;
-                //                 }
-                //             }
-                //         }
-                //     }
             } else if (nRole == Qt::UserRole + USERROLE_ORIGINDEX) {
-                result = nRow;
+                result = nDataRow;
             } else if (nRole == Qt::UserRole + USERROLE_ADDRESS) {
-                qint16 nRegionIndex = m_pListRecords->at(nRow).nRegionIndex;
+                qint16 nRegionIndex = m_pListRecords->at(nDataRow).nRegionIndex;
                 if (nRegionIndex != -1) {
                     if (m_memoryMap.listRecords.at(nRegionIndex).nAddress != (XADDR)-1) {
-                        result = m_memoryMap.listRecords.at(nRegionIndex).nAddress + m_pListRecords->at(nRow).nRelOffset;
+                        result = m_memoryMap.listRecords.at(nRegionIndex).nAddress + m_pListRecords->at(nDataRow).nRelOffset;
                     }
                 }
             } else if (nRole == Qt::UserRole + USERROLE_OFFSET) {
-                qint16 nRegionIndex = m_pListRecords->at(nRow).nRegionIndex;
+                qint16 nRegionIndex = m_pListRecords->at(nDataRow).nRegionIndex;
                 if (nRegionIndex != -1) {
                     if (m_memoryMap.listRecords.at(nRegionIndex).nOffset != -1) {
-                        result = m_memoryMap.listRecords.at(nRegionIndex).nOffset + m_pListRecords->at(nRow).nRelOffset;
+                        result = m_memoryMap.listRecords.at(nRegionIndex).nOffset + m_pListRecords->at(nDataRow).nRelOffset;
                     }
                 } else {
-                    result = m_pListRecords->at(nRow).nRelOffset;
+                    result = m_pListRecords->at(nDataRow).nRelOffset;
                 }
             } else if (nRole == Qt::UserRole + USERROLE_SIZE) {
-                result = m_pListRecords->at(nRow).nSize;
+                result = m_pListRecords->at(nDataRow).nSize;
             } else if (nRole == Qt::UserRole + USERROLE_STRING1) {
-                result = m_pListRecords->at(nRow).nValueType;
+                result = m_pListRecords->at(nDataRow).nValueType;
             }
         }
     }
@@ -251,7 +248,7 @@ bool XModel_MSRecord::isCustomFilter()
 
 bool XModel_MSRecord::isCustomSort()
 {
-    return false;
+    return true;
 }
 
 XModel::SORT_METHOD XModel_MSRecord::getSortMethod(qint32 nColumn)
@@ -272,29 +269,103 @@ bool XModel_MSRecord::hasSortKeyHex() const
 
 quint64 XModel_MSRecord::getSortKeyHex(qint32 nRow, qint32 nColumn) const
 {
+    if ((nRow >= 0) && (nRow < m_vecSortIndex.size())) {
+        return _getRawSortKey(m_vecSortIndex.at(nRow), nColumn);
+    }
+
+    return 0;
+}
+
+void XModel_MSRecord::sortByColumn(qint32 nColumn, Qt::SortOrder order)
+{
+    qint32 nRowCount = m_pListRecords->count();
+
+    m_vecSortIndex.resize(nRowCount);
+
+    if (nColumn == COLUMN_NUMBER) {
+        for (qint32 i = 0; i < nRowCount; i++) {
+            m_vecSortIndex[i] = i;
+        }
+
+        if (order == Qt::DescendingOrder) {
+            std::reverse(m_vecSortIndex.begin(), m_vecSortIndex.end());
+        }
+
+        return;
+    }
+
+    SORT_METHOD sortMethod = getSortMethod(nColumn);
+
+    if (sortMethod == SORT_METHOD_HEX) {
+        QVector<QPair<quint64, qint32>> vecPairs(nRowCount);
+
+        for (qint32 i = 0; i < nRowCount; i++) {
+            vecPairs[i].first = _getRawSortKey(i, nColumn);
+            vecPairs[i].second = i;
+        }
+
+        if (order == Qt::AscendingOrder) {
+            std::sort(vecPairs.begin(), vecPairs.end(), [](const QPair<quint64, qint32> &a, const QPair<quint64, qint32> &b) { return a.first < b.first; });
+        } else {
+            std::sort(vecPairs.begin(), vecPairs.end(), [](const QPair<quint64, qint32> &a, const QPair<quint64, qint32> &b) { return a.first > b.first; });
+        }
+
+        for (qint32 i = 0; i < nRowCount; i++) {
+            m_vecSortIndex[i] = vecPairs[i].second;
+        }
+    } else {
+        QVector<QPair<QString, qint32>> vecPairs(nRowCount);
+
+        for (qint32 i = 0; i < nRowCount; i++) {
+            if ((nColumn == COLUMN_VALUE) && m_bValueCacheValid) {
+                vecPairs[i].first = m_vecValueCache.at(i);
+            } else if (nColumn == COLUMN_REGION) {
+                if (m_pListRecords->at(i).nRegionIndex >= 0) {
+                    vecPairs[i].first = m_memoryMap.listRecords.at(m_pListRecords->at(i).nRegionIndex).sName;
+                }
+            } else if (nColumn == COLUMN_INFO) {
+                vecPairs[i].first = XBinary::valueTypeToString((XBinary::VT)(m_pListRecords->at(i).nValueType), 0);
+            }
+            vecPairs[i].second = i;
+        }
+
+        if (order == Qt::AscendingOrder) {
+            std::sort(vecPairs.begin(), vecPairs.end(), [](const QPair<QString, qint32> &a, const QPair<QString, qint32> &b) { return a.first < b.first; });
+        } else {
+            std::sort(vecPairs.begin(), vecPairs.end(), [](const QPair<QString, qint32> &a, const QPair<QString, qint32> &b) { return a.first > b.first; });
+        }
+
+        for (qint32 i = 0; i < nRowCount; i++) {
+            m_vecSortIndex[i] = vecPairs[i].second;
+        }
+    }
+}
+
+quint64 XModel_MSRecord::_getRawSortKey(qint32 nDataRow, qint32 nColumn) const
+{
     quint64 nResult = 0;
 
-    if ((nRow >= 0) && (nRow < m_pListRecords->count())) {
+    if ((nDataRow >= 0) && (nDataRow < m_pListRecords->count())) {
         if (nColumn == COLUMN_OFFSET) {
-            qint16 nRegionIndex = m_pListRecords->at(nRow).nRegionIndex;
+            qint16 nRegionIndex = m_pListRecords->at(nDataRow).nRegionIndex;
 
             if (nRegionIndex != -1) {
                 if (m_memoryMap.listRecords.at(nRegionIndex).nOffset != -1) {
-                    nResult = m_memoryMap.listRecords.at(nRegionIndex).nOffset + m_pListRecords->at(nRow).nRelOffset;
+                    nResult = m_memoryMap.listRecords.at(nRegionIndex).nOffset + m_pListRecords->at(nDataRow).nRelOffset;
                 }
             } else {
-                nResult = m_pListRecords->at(nRow).nRelOffset;
+                nResult = m_pListRecords->at(nDataRow).nRelOffset;
             }
         } else if (nColumn == COLUMN_ADDRESS) {
-            qint16 nRegionIndex = m_pListRecords->at(nRow).nRegionIndex;
+            qint16 nRegionIndex = m_pListRecords->at(nDataRow).nRegionIndex;
 
             if (nRegionIndex != -1) {
                 if (m_memoryMap.listRecords.at(nRegionIndex).nAddress != (XADDR)-1) {
-                    nResult = m_memoryMap.listRecords.at(nRegionIndex).nAddress + m_pListRecords->at(nRow).nRelOffset;
+                    nResult = m_memoryMap.listRecords.at(nRegionIndex).nAddress + m_pListRecords->at(nDataRow).nRelOffset;
                 }
             }
         } else if (nColumn == COLUMN_SIZE) {
-            nResult = m_pListRecords->at(nRow).nSize;
+            nResult = m_pListRecords->at(nDataRow).nSize;
         }
     }
 

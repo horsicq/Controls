@@ -165,7 +165,10 @@ void XTableView::handleFilter()
 #ifdef QT_DEBUG
         qDebug("invalidateSignal");
 #endif
-        emit invalidateSignal();
+        m_pSortFilterProxyModel->blockSignals(true);
+        m_pSortFilterProxyModel->invalidate();
+        m_pSortFilterProxyModel->blockSignals(false);
+        reset();
     } else {
 #ifdef QT_DEBUG
         qDebug("XTableView::handleFilter is stopped");

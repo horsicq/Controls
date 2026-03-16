@@ -57,6 +57,7 @@ public:
     virtual bool isCustomSort();
     virtual bool hasSortKeyHex() const;
     virtual quint64 getSortKeyHex(qint32 nRow, qint32 nColumn) const;
+    virtual void sortByColumn(qint32 nColumn, Qt::SortOrder order);
     void setRowHidden(qint32 nRow, bool bState);
     void clearRowHidden();
     qint32 getVisibleRowCount() const;

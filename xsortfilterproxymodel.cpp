@@ -89,9 +89,13 @@ QVariant XSortFilterProxyModel::data(const QModelIndex &index, int nRole) const
 
 void XSortFilterProxyModel::sort(int column, Qt::SortOrder order)
 {
-    buildSortCache(column);
-    QSortFilterProxyModel::sort(column, order);
-    clearSortCache();
+    if (m_bIsCustomSort && m_pXModel) {
+        m_pXModel->sortByColumn(column, order);
+    } else {
+        buildSortCache(column);
+        QSortFilterProxyModel::sort(column, order);
+        clearSortCache();
+    }
 }
 
 void XSortFilterProxyModel::resetModel()
@@ -134,7 +138,7 @@ bool XSortFilterProxyModel::lessThan(const QModelIndex &left, const QModelIndex 
     bool bResult = false;
 
     if (m_bIsCustomSort) {
-        bResult = (m_pXModel->getRowPrio(left.row()) < m_pXModel->getRowPrio(right.row()));
+        bResult = (left.row() < right.row());
     } else if (m_bSortCacheValid) {
         qint32 nLeftRow = left.row();
         qint32 nRightRow = right.row();

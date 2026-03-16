@@ -24,6 +24,7 @@
 
 #include "xbinary.h"
 #include "xmodel.h"
+#include <algorithm>
 
 class XModel_MSRecord : public XModel {
     Q_OBJECT
@@ -53,11 +54,14 @@ public:
     virtual bool isCustomSort();
     virtual bool hasSortKeyHex() const;
     virtual quint64 getSortKeyHex(qint32 nRow, qint32 nColumn) const;
+    virtual void sortByColumn(qint32 nColumn, Qt::SortOrder order);
     void buildValueCache();
     void clearValueCache();
     bool isValueCacheValid() const;
 
 private:
+    quint64 _getRawSortKey(qint32 nDataRow, qint32 nColumn) const;
+
     QIODevice *m_pDevice;
     XBinary::_MEMORY_MAP m_memoryMap;
     QVector<XBinary::MS_RECORD> *m_pListRecords;
@@ -70,6 +74,7 @@ private:
     QList<XBinary::SIGNATUREDB_RECORD> *m_pListSignatureRecords;
     QVector<QString> m_vecValueCache;
     bool m_bValueCacheValid;
+    QVector<qint32> m_vecSortIndex;
 };
 
 #endif  // XMODEL_MSRECORD_H

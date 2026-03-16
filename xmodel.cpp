@@ -84,6 +84,12 @@ quint64 XModel::getSortKeyHex(qint32 nRow, qint32 nColumn) const
     return 0;
 }
 
+void XModel::sortByColumn(qint32 nColumn, Qt::SortOrder order)
+{
+    Q_UNUSED(nColumn)
+    Q_UNUSED(order)
+}
+
 void XModel::setRowHidden(qint32 nRow, bool bState)
 {
     if ((nRow >= 0) && (nRow < m_vecRowHidden.size())) {
