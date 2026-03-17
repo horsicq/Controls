@@ -135,7 +135,7 @@ QVariant XModel_MSRecord::data(const QModelIndex &index, int nRole) const
                     if (m_bValueCacheValid && (nDataRow < m_vecValueCache.count())) {
                         result = m_vecValueCache.at(nDataRow);
                     } else if ((m_valueType == XBinary::VT_STRING) || (m_valueType == XBinary::VT_A_I) || (m_valueType == XBinary::VT_U_I) ||
-                        (m_valueType == XBinary::VT_UTF8_I)) {
+                               (m_valueType == XBinary::VT_UTF8_I)) {
                         XBinary binary(m_pDevice);
                         XBinary::VT valueType = m_valueType;
                         if (m_valueType == XBinary::VT_STRING) {
@@ -392,8 +392,7 @@ void XModel_MSRecord::buildValueCache()
         for (qint32 i = 0; i < nRowCount; i++) {
             QString sValue;
 
-            if ((m_valueType == XBinary::VT_STRING) || (m_valueType == XBinary::VT_A_I) || (m_valueType == XBinary::VT_U_I) ||
-                (m_valueType == XBinary::VT_UTF8_I)) {
+            if ((m_valueType == XBinary::VT_STRING) || (m_valueType == XBinary::VT_A_I) || (m_valueType == XBinary::VT_U_I) || (m_valueType == XBinary::VT_UTF8_I)) {
                 XBinary::VT valueType = m_valueType;
 
                 if (m_valueType == XBinary::VT_STRING) {
@@ -494,8 +493,7 @@ void XModel_MSRecord::buildValueCache()
         for (qint32 i = 0; i < nRowCount; i++) {
             QString sValue;
 
-            if ((m_valueType == XBinary::VT_STRING) || (m_valueType == XBinary::VT_A_I) || (m_valueType == XBinary::VT_U_I) ||
-                (m_valueType == XBinary::VT_UTF8_I)) {
+            if ((m_valueType == XBinary::VT_STRING) || (m_valueType == XBinary::VT_A_I) || (m_valueType == XBinary::VT_U_I) || (m_valueType == XBinary::VT_UTF8_I)) {
                 XBinary::VT valueType = m_valueType;
 
                 if (m_valueType == XBinary::VT_STRING) {
