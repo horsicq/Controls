@@ -46,6 +46,7 @@ XTableView::XTableView(QWidget *pParent) : QTableView(pParent)
 
     setSortingEnabled(true);
     setWordWrap(false);
+    verticalHeader()->setDefaultSectionSize(verticalHeader()->minimumSectionSize());
 }
 
 XTableView::~XTableView()
@@ -274,11 +275,20 @@ void XTableView::onFilterApply()
 
 void XTableView::onSortChanged(int column, Qt::SortOrder order)
 {
+    if (m_bIsCustomFilter) {
+        m_bIsStop = true;
+        m_watcher.waitForFinished();
+        m_bIsStop = false;
+    }
+
     if (m_bIsCustomSort) {
-        // TODO Thread
         m_pSortFilterProxyModel->sort(column, order);
     } else {
         m_pSortFilterProxyModel->sort(column, order);
+    }
+
+    if (m_bIsCustomFilter) {
+        handleFilter();
     }
 }
 
