@@ -292,7 +292,7 @@ void XTableView::onSortChanged(int column, Qt::SortOrder order)
     }
 }
 
-void XTableView::horisontalScroll()
+void XTableView::horizontalScroll()
 {
     m_pHeaderView->adjustPositions();
 }

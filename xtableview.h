@@ -59,7 +59,7 @@ private slots:
     void onFilterChanged();
     void onFilterApply();
     void onSortChanged(int column, Qt::SortOrder order);
-    void horisontalScroll();
+    void horizontalScroll();
 
 private:
     XHeaderView *m_pHeaderView;
