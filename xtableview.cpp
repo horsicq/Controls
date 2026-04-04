@@ -37,7 +37,7 @@ XTableView::XTableView(QWidget *pParent) : QTableView(pParent)
 
     connect(m_pHeaderView, SIGNAL(filterChanged()), this, SLOT(onFilterChanged()));
     connect(m_pHeaderView, SIGNAL(sortIndicatorChanged(int, Qt::SortOrder)), this, SLOT(onSortChanged(int, Qt::SortOrder)));
-    connect(horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(horisontalScroll()));
+    connect(horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(horizontalScroll()));
     connect(this, SIGNAL(invalidateSignal()), m_pSortFilterProxyModel, SLOT(invalidate()));
 
     m_pFilterTimer = new QTimer(this);

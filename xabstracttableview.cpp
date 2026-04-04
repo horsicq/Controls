@@ -92,12 +92,12 @@ void XAbstractTableView::setActive(bool bIsActive)
         if (bIsActive) {
             connect(this, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(_customContextMenu(QPoint)));
             connect(verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(verticalScroll()));
-            connect(horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(horisontalScroll()));
+            connect(horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(horizontalScroll()));
         } else {
             // TODO Check
             disconnect(this, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(_customContextMenu(QPoint)));
             disconnect(verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(verticalScroll()));
-            disconnect(horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(horisontalScroll()));
+            disconnect(horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(horizontalScroll()));
 
             verticalScrollBar()->setRange(0, 0);
             horizontalScrollBar()->setRange(0, 0);
@@ -590,7 +590,7 @@ void XAbstractTableView::verticalScroll()
     viewport()->update();
 }
 
-void XAbstractTableView::horisontalScroll()
+void XAbstractTableView::horizontalScroll()
 {
     adjust();
     viewport()->update();

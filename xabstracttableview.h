@@ -200,7 +200,7 @@ protected:
 
 private slots:
     void verticalScroll();
-    void horisontalScroll();
+    void horizontalScroll();
     void _customContextMenu(const QPoint &pos);
     //    void updateBlink();
 
