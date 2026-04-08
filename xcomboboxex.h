@@ -60,7 +60,7 @@ public:
     void setItemEnabled(qint32 nRow, bool bState);
 
 private slots:
-    void currentIndexChangedSlot(int nIndex);
+    void currentIndexChangedSlot(qint32 nIndex);
     void itemChangedSlot(QStandardItem *pItem);
 
 signals:

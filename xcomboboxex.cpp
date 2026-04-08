@@ -47,13 +47,13 @@ void XComboBoxEx::setData(const QMap<quint64, QString> &mapData, CBTYPE cbtype, 
     if ((cbtype == CBTYPE_LIST) || (cbtype == CBTYPE_ELIST)) {
         m_model.setItem(0, 0, new QStandardItem(""));  // Empty
     } else if ((cbtype == CBTYPE_FLAGS) || (cbtype == CBTYPE_CUSTOM_FLAGS)) {
-        QString _sTitle = sTitle;
+        QString sTitleLocal = sTitle;
 
-        if (_sTitle == "") {
-            _sTitle = tr("Flags");
+        if (sTitleLocal == "") {
+            sTitleLocal = tr("Flags");
         }
 
-        m_model.setItem(0, 0, new QStandardItem(_sTitle));
+        m_model.setItem(0, 0, new QStandardItem(sTitleLocal));
     }
 
     qint32 nIndex = 1;
@@ -88,11 +88,11 @@ void XComboBoxEx::setValue(QVariant varValue)
     if (m_cbtype == CBTYPE_LIST) {
         bool bFound = false;
 
-        for (qint32 i = 1; i < nNumberOfItems; i++) {
-            quint64 _nValue = m_model.item(i, 0)->data(Qt::UserRole).toULongLong();
+        for (qint32 nI = 1; nI < nNumberOfItems; nI++) {
+            quint64 nItemValue = m_model.item(nI, 0)->data(Qt::UserRole).toULongLong();
 
-            if (_nValue == varValue) {
-                setCurrentIndex(i);
+            if (nItemValue == varValue) {
+                setCurrentIndex(nI);
                 bFound = true;
                 break;
             }
@@ -105,12 +105,13 @@ void XComboBoxEx::setValue(QVariant varValue)
         bool bFound = false;
         quint64 nValue = varValue.toULongLong();
 
-        for (qint32 i = 1; i < nNumberOfItems; i++) {
-            quint64 _nValue = m_model.item(i, 0)->data(Qt::UserRole).toULongLong();
-            nValue &= m_nMask;
+        nValue &= m_nMask;
 
-            if (_nValue == nValue) {
-                setCurrentIndex(i);
+        for (qint32 nI = 1; nI < nNumberOfItems; nI++) {
+            quint64 nItemValue = m_model.item(nI, 0)->data(Qt::UserRole).toULongLong();
+
+            if (nItemValue == nValue) {
+                setCurrentIndex(nI);
                 bFound = true;
                 break;
             }
@@ -122,13 +123,13 @@ void XComboBoxEx::setValue(QVariant varValue)
     } else if (m_cbtype == CBTYPE_FLAGS) {
         quint64 nValue = varValue.toULongLong();
 
-        for (qint32 i = 1; i < nNumberOfItems; i++) {
-            quint64 _nValue = m_model.item(i, 0)->data(Qt::UserRole).toULongLong();
+        for (qint32 nI = 1; nI < nNumberOfItems; nI++) {
+            quint64 nItemValue = m_model.item(nI, 0)->data(Qt::UserRole).toULongLong();
 
-            if (_nValue & nValue) {
-                m_model.item(i, 0)->setData(Qt::Checked, Qt::CheckStateRole);
+            if (nItemValue & nValue) {
+                m_model.item(nI, 0)->setData(Qt::Checked, Qt::CheckStateRole);
             } else {
-                m_model.item(i, 0)->setData(Qt::Unchecked, Qt::CheckStateRole);
+                m_model.item(nI, 0)->setData(Qt::Unchecked, Qt::CheckStateRole);
             }
         }
     }
@@ -146,11 +147,11 @@ void XComboBoxEx::setReadOnly(bool bIsReadOnly)
     qint32 nNumberOfItems = m_model.rowCount();
 
     if (m_cbtype == CBTYPE_FLAGS) {
-        for (qint32 i = 0; i < nNumberOfItems; i++) {
+        for (qint32 nI = 0; nI < nNumberOfItems; nI++) {
             if (bIsReadOnly) {
-                m_model.item(i, 0)->setFlags(Qt::ItemIsEnabled);
+                m_model.item(nI, 0)->setFlags(Qt::ItemIsEnabled);
             } else {
-                m_model.item(i, 0)->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
+                m_model.item(nI, 0)->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
             }
         }
     }
@@ -168,13 +169,13 @@ QString XComboBoxEx::getDescription()
     if (m_cbtype == CBTYPE_FLAGS) {
         qint32 nNumberOfItems = m_model.rowCount();
 
-        for (qint32 i = 1; i < nNumberOfItems; i++) {
-            if (m_model.item(i, 0)->data(Qt::CheckStateRole).toInt() == Qt::Checked) {
+        for (qint32 nI = 1; nI < nNumberOfItems; nI++) {
+            if (m_model.item(nI, 0)->data(Qt::CheckStateRole).toInt() == Qt::Checked) {
                 if (sResult != "") {
                     sResult += " | ";
                 }
 
-                sResult += m_mapData.value(m_model.item(i, 0)->data(Qt::UserRole).toULongLong());
+                sResult += m_mapData.value(m_model.item(nI, 0)->data(Qt::UserRole).toULongLong());
             }
         }
     }
@@ -193,23 +194,23 @@ void XComboBoxEx::addCustomFlags(const QString &sTitle, const QList<CUSTOM_FLAG>
 
     qint32 nNumberOfRecords = listCustomFlags.count();
 
-    for (qint32 i = 0; i < nNumberOfRecords; i++) {
-        QStandardItem *pItem = new QStandardItem(listCustomFlags.at(i).sString);
-        pItem->setData(listCustomFlags.at(i).nValue, Qt::UserRole);
+    for (qint32 nI = 0; nI < nNumberOfRecords; nI++) {
+        QStandardItem *pItem = new QStandardItem(listCustomFlags.at(nI).sString);
+        pItem->setData(listCustomFlags.at(nI).nValue, Qt::UserRole);
 
-        if (listCustomFlags.at(i).bIsReadOnly) {
+        if (listCustomFlags.at(nI).bIsReadOnly) {
             pItem->setFlags(Qt::ItemIsUserCheckable);
         } else {
             pItem->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
         }
 
-        if (listCustomFlags.at(i).bIsChecked) {
+        if (listCustomFlags.at(nI).bIsChecked) {
             pItem->setData(Qt::Checked, Qt::CheckStateRole);
         } else {
             pItem->setData(Qt::Unchecked, Qt::CheckStateRole);
         }
 
-        m_model.setItem(i + 1, 0, pItem);
+        m_model.setItem(nI + 1, 0, pItem);
     }
 
     setModel(&m_model);
@@ -217,11 +218,11 @@ void XComboBoxEx::addCustomFlags(const QString &sTitle, const QList<CUSTOM_FLAG>
 
 void XComboBoxEx::setCustomFlag(quint64 nValue)
 {
-    qint64 nNumberOfRecords = m_model.rowCount();
+    qint32 nNumberOfRecords = m_model.rowCount();
 
-    for (qint32 i = 1; i < nNumberOfRecords; i++) {
-        if (m_model.item(i, 0)->data(Qt::UserRole).toULongLong() == nValue) {
-            setItemData(i, Qt::Checked, Qt::CheckStateRole);
+    for (qint32 nI = 1; nI < nNumberOfRecords; nI++) {
+        if (m_model.item(nI, 0)->data(Qt::UserRole).toULongLong() == nValue) {
+            setItemData(nI, Qt::Checked, Qt::CheckStateRole);
         }
     }
 }
@@ -232,9 +233,9 @@ QList<quint64> XComboBoxEx::getCustomFlags()
 
     qint32 nNumberOfRecords = m_model.rowCount();
 
-    for (qint32 i = 0; i < nNumberOfRecords; i++) {
-        if (m_model.item(i)->data(Qt::CheckStateRole).toUInt() == Qt::Checked) {
-            quint64 nValue = m_model.item(i)->data(Qt::UserRole).toULongLong();
+    for (qint32 nI = 0; nI < nNumberOfRecords; nI++) {
+        if (m_model.item(nI)->data(Qt::CheckStateRole).toUInt() == Qt::Checked) {
+            quint64 nValue = m_model.item(nI)->data(Qt::UserRole).toULongLong();
 
             listResult.append(nValue);
         }
@@ -259,7 +260,7 @@ void XComboBoxEx::setItemEnabled(qint32 nRow, bool bState)
     m_model.item(nRow, 0)->setEnabled(bState);
 }
 
-void XComboBoxEx::currentIndexChangedSlot(int nIndex)
+void XComboBoxEx::currentIndexChangedSlot(qint32 nIndex)
 {
     if (m_cbtype == CBTYPE_FLAGS) {
         if (nIndex) {
@@ -270,14 +271,14 @@ void XComboBoxEx::currentIndexChangedSlot(int nIndex)
             if (nIndex) {
                 quint64 nCurrentValue = itemData(nIndex).toULongLong();
 
-                quint64 _nValue = m_varValue.toULongLong();
+                quint64 nValue = m_varValue.toULongLong();
 
-                _nValue &= (~m_nMask);
+                nValue &= (~m_nMask);
 
-                _nValue |= nCurrentValue;
+                nValue |= nCurrentValue;
 
-                if (_nValue != m_varValue.toULongLong()) {
-                    m_varValue = _nValue;
+                if (nValue != m_varValue.toULongLong()) {
+                    m_varValue = nValue;
                     emit valueChanged(m_varValue);
                 }
             }
@@ -311,11 +312,11 @@ void XComboBoxEx::itemChangedSlot(QStandardItem *pItem)
 
         qint32 nNumberOfItems = m_model.rowCount();
 
-        for (qint32 i = 1; i < nNumberOfItems; i++) {
-            if (m_model.item(i, 0)->data(Qt::CheckStateRole).toInt() == Qt::Checked) {
-                nCurrentValue |= m_model.item(i, 0)->data(Qt::UserRole).toULongLong();
+        for (qint32 nI = 1; nI < nNumberOfItems; nI++) {
+            if (m_model.item(nI, 0)->data(Qt::CheckStateRole).toInt() == Qt::Checked) {
+                nCurrentValue |= m_model.item(nI, 0)->data(Qt::UserRole).toULongLong();
             } else {
-                nCurrentValue &= (0xFFFFFFFFFFFFFFFF ^ m_model.item(i, 0)->data(Qt::UserRole).toULongLong());
+                nCurrentValue &= (0xFFFFFFFFFFFFFFFF ^ m_model.item(nI, 0)->data(Qt::UserRole).toULongLong());
             }
         }
 
