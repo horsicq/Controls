@@ -164,7 +164,7 @@ void XTableView::handleFilter()
 
     if (!m_bIsStop) {
 #ifdef QT_DEBUG
-        qDebug("invalidateSignal");
+        qDebug("XTableView::handleFilter(): Stop at invalid signal");
 #endif
         m_pSortFilterProxyModel->blockSignals(true);
         m_pSortFilterProxyModel->invalidate();
@@ -172,7 +172,7 @@ void XTableView::handleFilter()
         reset();
     } else {
 #ifdef QT_DEBUG
-        qDebug("XTableView::handleFilter is stopped");
+        qDebug("XTableView::handleFilter() is stopped");
 #endif
     }
 }
