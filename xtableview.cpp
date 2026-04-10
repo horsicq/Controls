@@ -37,7 +37,7 @@ XTableView::XTableView(QWidget *pParent) : QTableView(pParent)
 
     connect(m_pHeaderView, SIGNAL(filterChanged()), this, SLOT(onFilterChanged()));
     connect(m_pHeaderView, SIGNAL(sortIndicatorChanged(int, Qt::SortOrder)), this, SLOT(onSortChanged(int, Qt::SortOrder)));
-    connect(horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(horizontalScroll()));
+    connect(horizontalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(horisontalScroll()));
     connect(this, SIGNAL(invalidateSignal()), m_pSortFilterProxyModel, SLOT(invalidate()));
 
     m_pFilterTimer = new QTimer(this);
@@ -164,7 +164,7 @@ void XTableView::handleFilter()
 
     if (!m_bIsStop) {
 #ifdef QT_DEBUG
-        qDebug("XTableView::handleFilter(): Stop at invalid signal");
+        qDebug("invalidateSignal");
 #endif
         m_pSortFilterProxyModel->blockSignals(true);
         m_pSortFilterProxyModel->invalidate();
@@ -172,7 +172,7 @@ void XTableView::handleFilter()
         reset();
     } else {
 #ifdef QT_DEBUG
-        qDebug("XTableView::handleFilter() is stopped");
+        qDebug("XTableView::handleFilter is stopped");
 #endif
     }
 }

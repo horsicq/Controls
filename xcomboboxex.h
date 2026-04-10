@@ -59,6 +59,9 @@ public:
     static void _addCustomFlag(QList<CUSTOM_FLAG> *pListCustomFlags, quint64 nValue, const QString &sString, bool bChecked);
     void setItemEnabled(qint32 nRow, bool bState);
 
+private:
+    qint32 findItemIndex(quint64 nValue) const;
+
 private slots:
     void currentIndexChangedSlot(qint32 nIndex);
     void itemChangedSlot(QStandardItem *pItem);
