@@ -74,6 +74,9 @@ public:
     void adjustColumnToContent(qint32 nColumn, bool bHeader);
     void adjustColumnsToContent(bool bHeader);
 
+    virtual QString toXML() const;
+    virtual QString toJSON() const;
+
 private:
     QVector<bool> m_vecRowHidden;
     QHash<qint32, quint64> m_hashRowPrio;

@@ -21,6 +21,52 @@
 
 #include "xmodel.h"
 
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QXmlStreamWriter>
+
+namespace {
+QString getHeaderName(const QAbstractItemModel *pModel, qint32 nColumn)
+{
+    QString sResult = pModel->headerData(nColumn, Qt::Horizontal, Qt::DisplayRole).toString().trimmed();
+
+    if (sResult.isEmpty()) {
+        sResult = QString("field_%1").arg(nColumn);
+    }
+
+    return sResult;
+}
+
+QString headerToXmlTagName(const QString &sHeader, qint32 nColumn)
+{
+    QString sSource = sHeader;
+
+    if (sSource.isEmpty()) {
+        sSource = QString("field_%1").arg(nColumn);
+    }
+
+    sSource.replace("#", "Number");
+
+    QString sResult;
+    sResult.reserve(sSource.size());
+
+    for (QChar c : sSource) {
+        if (c.isLetterOrNumber() || (c == '_') || (c == '-') || (c == '.')) {
+            sResult.append(c);
+        } else {
+            sResult.append('_');
+        }
+    }
+
+    if (sResult.isEmpty() || (!(sResult.at(0).isLetter()) && (sResult.at(0) != '_'))) {
+        sResult.prepend("field_");
+    }
+
+    return sResult;
+}
+}  // namespace
+
 XModel::XModel(QObject *pParent) : QAbstractItemModel(pParent)
 {
     m_nRowCount = 0;
@@ -207,6 +253,70 @@ void XModel::adjustColumnsToContent(bool bHeader)
     for (qint32 i = 0; i < nNumberOfColumns; i++) {
         adjustColumnToContent(i, bHeader);
     }
+}
+
+QString XModel::toXML() const
+{
+    QString sResult;
+    QXmlStreamWriter xmlWriter(&sResult);
+
+    xmlWriter.setAutoFormatting(true);
+    xmlWriter.writeStartDocument();
+    xmlWriter.writeStartElement("data");
+
+    const qint32 nNumberOfRows = rowCount();
+    const qint32 nNumberOfColumns = columnCount();
+
+    for (qint32 nRow = 0; nRow < nNumberOfRows; nRow++) {
+        if ((nRow < m_vecRowHidden.size()) && m_vecRowHidden.at(nRow)) {
+            continue;
+        }
+
+        xmlWriter.writeStartElement("row");
+
+        for (qint32 nColumn = 0; nColumn < nNumberOfColumns; nColumn++) {
+            const QString sHeader = getHeaderName(this, nColumn);
+            const QString sValue = data(index(nRow, nColumn), Qt::DisplayRole).toString();
+
+            xmlWriter.writeTextElement(headerToXmlTagName(sHeader, nColumn), sValue);
+        }
+
+        xmlWriter.writeEndElement();
+    }
+
+    xmlWriter.writeEndElement();
+    xmlWriter.writeEndDocument();
+
+    return sResult;
+}
+
+QString XModel::toJSON() const
+{
+    QJsonArray jsonRows;
+
+    const qint32 nNumberOfRows = rowCount();
+    const qint32 nNumberOfColumns = columnCount();
+
+    for (qint32 nRow = 0; nRow < nNumberOfRows; nRow++) {
+        if ((nRow < m_vecRowHidden.size()) && m_vecRowHidden.at(nRow)) {
+            continue;
+        }
+
+        QJsonObject jsonRow;
+
+        for (qint32 nColumn = 0; nColumn < nNumberOfColumns; nColumn++) {
+            const QString sHeader = getHeaderName(this, nColumn);
+            const QString sValue = data(index(nRow, nColumn), Qt::DisplayRole).toString();
+
+            jsonRow.insert(sHeader, sValue);
+        }
+
+        jsonRows.append(jsonRow);
+    }
+
+    QJsonDocument jsonDocument(jsonRows);
+
+    return jsonDocument.toJson(QJsonDocument::Indented);
 }
 
 XModel::SORT_METHOD XModel::getSortMethod(qint32 nColumn)
