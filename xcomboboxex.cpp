@@ -29,7 +29,7 @@ XComboBoxEx::XComboBoxEx(QWidget *pParent) : QComboBox(pParent)
     SubclassOfQStyledItemDelegate *pDelegate = new SubclassOfQStyledItemDelegate(this);
     setItemDelegate(pDelegate);
 
-    connect(this, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &XComboBoxEx::currentIndexChangedSlot);
+    connect(this, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &XComboBoxEx::currentIndexChangedSlot);
     connect(&m_model, &QStandardItemModel::itemChanged, this, &XComboBoxEx::itemChangedSlot);
 }
 
