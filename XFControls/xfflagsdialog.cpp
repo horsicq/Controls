@@ -35,7 +35,7 @@ XFFlagsDialog::XFFlagsDialog(QWidget *pParent) : QDialog(pParent)
     pMainLayout->addWidget(m_pLabelName);
 
     QHBoxLayout *pValueLayout = new QHBoxLayout();
-    m_pLabelValue = new QLabel(tr("Value:"), this);
+    m_pLabelValue = new QLabel(tr("Value") + QString(":"), this);
     pValueLayout->addWidget(m_pLabelValue);
 
     m_pLineEditHex = new QLineEdit(this);

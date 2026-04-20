@@ -34,7 +34,7 @@ XFListDialog::XFListDialog(QWidget *pParent) : QDialog(pParent)
     pMainLayout->addWidget(m_pLabelName);
 
     QHBoxLayout *pValueLayout = new QHBoxLayout();
-    m_pLabelCurrentValue = new QLabel(tr("Current:"), this);
+    m_pLabelCurrentValue = new QLabel(tr("Current") + QString(":"), this);
     pValueLayout->addWidget(m_pLabelCurrentValue);
 
     m_pLineEditHex = new QLineEdit(this);

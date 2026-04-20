@@ -39,21 +39,21 @@ XFSizeDialog::XFSizeDialog(QWidget *pParent) : QDialog(pParent)
 
     QGridLayout *pGridLayout = new QGridLayout();
 
-    QLabel *pLabelHex = new QLabel(tr("Hex:"), this);
+    QLabel *pLabelHex = new QLabel(tr("Hex") + QString(":"), this);
     pGridLayout->addWidget(pLabelHex, 0, 0);
 
     m_pLineEditHex = new QLineEdit(this);
     m_pLineEditHex->setValidator(new QRegularExpressionValidator(QRegularExpression("[0-9a-fA-F]*"), this));
     pGridLayout->addWidget(m_pLineEditHex, 0, 1);
 
-    QLabel *pLabelDec = new QLabel(tr("Dec:"), this);
+    QLabel *pLabelDec = new QLabel(tr("Dec") + QString(":"), this);
     pGridLayout->addWidget(pLabelDec, 1, 0);
 
     m_pLineEditDec = new QLineEdit(this);
     m_pLineEditDec->setValidator(new QRegularExpressionValidator(QRegularExpression("[0-9]*"), this));
     pGridLayout->addWidget(m_pLineEditDec, 1, 1);
 
-    QLabel *pLabelSize = new QLabel(tr("Size:"), this);
+    QLabel *pLabelSize = new QLabel(tr("Size") + QString(":"), this);
     pGridLayout->addWidget(pLabelSize, 2, 0);
 
     m_pLabelHuman = new QLabel(this);

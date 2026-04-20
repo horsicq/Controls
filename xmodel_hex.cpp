@@ -44,7 +44,7 @@ XModel_Hex::XModel_Hex(QIODevice *pDevice, qint64 nOffset, qint64 nSize, quint64
 
     setColumnName(COLUMN_ADDRESS, QObject::tr("Address"));
     setColumnName(COLUMN_HEX, QObject::tr("Hex"));
-    setColumnName(COLUMN_ASCII, QObject::tr("ASCII"));
+    setColumnName(COLUMN_ASCII, QString("ASCII"));
 
     setColumnAlignment(COLUMN_ADDRESS, Qt::AlignVCenter | Qt::AlignRight);
     setColumnAlignment(COLUMN_HEX, Qt::AlignVCenter | Qt::AlignLeft);
