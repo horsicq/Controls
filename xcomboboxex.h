@@ -23,6 +23,7 @@
 
 #include <QComboBox>
 #include <QHash>
+#include <QSet>
 #include <QStandardItemModel>
 #include <QVariant>
 
@@ -40,7 +41,7 @@ public:
     };
 
     struct CUSTOM_FLAG {
-        quint64 nValue;
+        QVariant value;
         QString sString;
         bool bIsChecked;
         bool bIsReadOnly;
@@ -54,9 +55,11 @@ public:
     void setReadOnly(bool bIsReadOnly);
     QString getDescription();
     void addCustomFlags(const QString &sTitle, const QList<CUSTOM_FLAG> &listCustomFlags);
-    void setCustomFlag(quint64 nValue);
-    QList<quint64> getCustomFlags();
-    static void _addCustomFlag(QList<CUSTOM_FLAG> *pListCustomFlags, quint64 nValue, const QString &sString, bool bChecked);
+    void addCustomFlagsFromString(const QString &sTitle, const QString &sString);
+    void setCustomFlagsFromString(const QString &sString);
+    void setCustomFlag(QVariant value);
+    QList<QVariant> getCustomFlags();
+    static void _addCustomFlag(QList<CUSTOM_FLAG> *pListCustomFlags, QVariant value, const QString &sString, bool bChecked);
     void setItemEnabled(qint32 nRow, bool bState);
 
 private:

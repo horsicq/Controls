@@ -153,7 +153,7 @@ void XComboBoxEx::addCustomFlags(const QString &sTitle, const QList<CUSTOM_FLAG>
         const CUSTOM_FLAG &flag = listCustomFlags.at(nI);
 
         QStandardItem *pItem = new QStandardItem(flag.sString);
-        pItem->setData(flag.nValue, Qt::UserRole);
+        pItem->setData(flag.value, Qt::UserRole);
         pItem->setFlags(flag.bIsReadOnly ? Qt::ItemIsUserCheckable : (Qt::ItemIsUserCheckable | Qt::ItemIsEnabled));
         pItem->setData(flag.bIsChecked ? Qt::Checked : Qt::Unchecked, Qt::CheckStateRole);
 
@@ -163,36 +163,67 @@ void XComboBoxEx::addCustomFlags(const QString &sTitle, const QList<CUSTOM_FLAG>
     setModel(&m_model);
 }
 
-void XComboBoxEx::setCustomFlag(quint64 nValue)
+void XComboBoxEx::addCustomFlagsFromString(const QString &sTitle, const QString &sString)
+{
+    // AAAA|FFFF
+    QList<CUSTOM_FLAG> listFlags;
+
+    const QStringList listParts = sString.split("|", Qt::SkipEmptyParts);
+    qint32 nNumberOfParts = listParts.count();
+    for (qint32 i = 0; i < nNumberOfParts; i++) {
+        _addCustomFlag(&listFlags, listParts.at(i).trimmed(), listParts.at(i).trimmed(), false);
+    }
+
+    addCustomFlags(sTitle, listFlags);
+}
+
+void XComboBoxEx::setCustomFlag(QVariant value)
 {
     qint32 nNumberOfRecords = m_model.rowCount();
 
     for (qint32 nI = 1; nI < nNumberOfRecords; nI++) {
-        if (m_model.item(nI, 0)->data(Qt::UserRole).toULongLong() == nValue) {
+        if (m_model.item(nI, 0)->data(Qt::UserRole) == value) {
             setItemData(nI, Qt::Checked, Qt::CheckStateRole);
         }
     }
 }
 
-QList<quint64> XComboBoxEx::getCustomFlags()
+void XComboBoxEx::setCustomFlagsFromString(const QString &sString)
 {
-    QList<quint64> listResult;
+    // AAAA|FFFF
+    QSet<QString> stValues;
+    const QStringList listParts = sString.split("|", Qt::SkipEmptyParts);
+    qint32 nNumberOfParts = listParts.count();
+    for (qint32 i = 0; i < nNumberOfParts; i++) {
+        stValues.insert(listParts.at(i).trimmed());
+    }
+
+    qint32 nNumberOfRecords = m_model.rowCount();
+    for (qint32 i = 1; i < nNumberOfRecords; i++) {
+        Qt::CheckState state = stValues.contains(m_model.item(i, 0)->data(Qt::UserRole).toString()) ? Qt::Checked : Qt::Unchecked;
+        m_model.item(i, 0)->setData(state, Qt::CheckStateRole);
+    }
+}
+
+QList<QVariant> XComboBoxEx::getCustomFlags()
+{
+    QList<QVariant> listResult;
 
     qint32 nNumberOfRecords = m_model.rowCount();
 
     for (qint32 nI = 1; nI < nNumberOfRecords; nI++) {
         if (m_model.item(nI)->data(Qt::CheckStateRole).toUInt() == Qt::Checked) {
-            listResult.append(m_model.item(nI)->data(Qt::UserRole).toULongLong());
+            listResult.append(m_model.item(nI)->data(Qt::UserRole));
         }
     }
 
     return listResult;
 }
 
-void XComboBoxEx::_addCustomFlag(QList<CUSTOM_FLAG> *pListCustomFlags, quint64 nValue, const QString &sString, bool bChecked)
+void XComboBoxEx::_addCustomFlag(QList<CUSTOM_FLAG> *pListCustomFlags, QVariant value, const QString &sString, bool bChecked)
 {
     CUSTOM_FLAG record = {};
-    record.nValue = nValue;
+    record.value = value;
     record.sString = sString;
     record.bIsChecked = bChecked;
 
