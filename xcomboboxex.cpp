@@ -20,6 +20,8 @@
  */
 #include "xcomboboxex.h"
 
+#include <algorithm>
+
 XComboBoxEx::XComboBoxEx(QWidget *pParent) : QComboBox(pParent)
 {
     m_bIsReadonly = false;
@@ -147,10 +149,13 @@ void XComboBoxEx::addCustomFlags(const QString &sTitle, const QList<CUSTOM_FLAG>
     m_model.setColumnCount(1);
     m_model.setItem(0, 0, new QStandardItem(sTitle));
 
-    qint32 nNumberOfRecords = listCustomFlags.count();
+    QList<CUSTOM_FLAG> listSortedCustomFlags = listCustomFlags;
+    std::stable_sort(listSortedCustomFlags.begin(), listSortedCustomFlags.end(), XComboBoxEx::sortCustomFlagByValue);
+
+    qint32 nNumberOfRecords = listSortedCustomFlags.count();
 
     for (qint32 nI = 0; nI < nNumberOfRecords; nI++) {
-        const CUSTOM_FLAG &flag = listCustomFlags.at(nI);
+        const CUSTOM_FLAG &flag = listSortedCustomFlags.at(nI);
 
         QStandardItem *pItem = new QStandardItem(flag.sString);
         pItem->setData(flag.value, Qt::UserRole);
@@ -218,6 +223,38 @@ QList<QVariant> XComboBoxEx::getCustomFlags()
     }
 
     return listResult;
+}
+
+QString XComboBoxEx::getCustomFlagAsString()
+{
+    QString sResult;
+
+    qint32 nNumberOfRecords = m_model.rowCount();
+
+    for (qint32 nI = 1; nI < nNumberOfRecords; nI++) {
+        if (m_model.item(nI)->data(Qt::CheckStateRole).toUInt() == Qt::Checked) {
+            if (!sResult.isEmpty()) {
+                sResult += " | ";
+            }
+            sResult += m_model.item(nI)->data(Qt::UserRole).toString();
+        }
+    }
+
+    return sResult;
+}
+
+bool XComboBoxEx::sortCustomFlagByValue(const CUSTOM_FLAG &flag1, const CUSTOM_FLAG &flag2)
+{
+    bool bIsNumber1 = false;
+    bool bIsNumber2 = false;
+    quint64 nValue1 = flag1.value.toULongLong(&bIsNumber1);
+    quint64 nValue2 = flag2.value.toULongLong(&bIsNumber2);
+
+    if (bIsNumber1 && bIsNumber2 && (nValue1 != nValue2)) {
+        return nValue1 < nValue2;
+    }
+
+    return (flag1.value.toString() < flag2.value.toString());
 }
 
 void XComboBoxEx::_addCustomFlag(QList<CUSTOM_FLAG> *pListCustomFlags, QVariant value, const QString &sString, bool bChecked)

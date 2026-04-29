@@ -59,6 +59,8 @@ public:
     void setCustomFlagsFromString(const QString &sString);
     void setCustomFlag(QVariant value);
     QList<QVariant> getCustomFlags();
+    QString getCustomFlagAsString();
+    static bool sortCustomFlagByValue(const CUSTOM_FLAG &flag1, const CUSTOM_FLAG &flag2);
     static void _addCustomFlag(QList<CUSTOM_FLAG> *pListCustomFlags, QVariant value, const QString &sString, bool bChecked);
     void setItemEnabled(qint32 nRow, bool bState);
 
