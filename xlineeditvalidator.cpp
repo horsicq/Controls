@@ -119,7 +119,7 @@ QValidator::State XLineEditValidator::validate(QString &sInput, int &nPos) const
 
                 if (bSuccess && (sInput.length() <= nLenght)) {
                     if (m_mode != MODE_HEX_64) {
-                        if ((qint64)nValue <= nMax) {
+                        if (static_cast<qint64>(nValue) <= nMax) {
                             result = Acceptable;
                         }
                     } else {
@@ -134,7 +134,7 @@ QValidator::State XLineEditValidator::validate(QString &sInput, int &nPos) const
 
                 if (bSuccess) {
                     if (m_mode != MODE_DEC_64) {
-                        if ((qint64)nValue <= nMax) {
+                        if (static_cast<qint64>(nValue) <= nMax) {
                             result = Acceptable;
                         }
                     } else {
@@ -160,7 +160,7 @@ QValidator::State XLineEditValidator::validate(QString &sInput, int &nPos) const
 
                 if (bSuccess && (sInput.length() <= nLenght)) {
                     if (m_mode != MODE_BIN_64) {
-                        if ((qint64)nValue <= nMax) {
+                        if (static_cast<qint64>(nValue) <= nMax) {
                             result = Acceptable;
                         }
                     } else {
@@ -252,8 +252,6 @@ QString XLineEditValidator::_valueToBinString(quint64 nValue, qint32 nBits)
 
 QString XLineEditValidator::_valueToSizeString(quint64 nValue)
 {
-    QString sResult;
-
     quint64 nBase = 1024;
     QString sValue;
     QString sUnit;
@@ -262,37 +260,33 @@ QString XLineEditValidator::_valueToSizeString(quint64 nValue)
         sValue = QString::number(nValue);
         sUnit = tr("Bytes");
     } else if (nValue < (nBase * nBase)) {
-        sValue = QString::number((double)nValue / nBase, 'f', 2);
+        sValue = QString::number(static_cast<double>(nValue) / nBase, 'f', 2);
         sUnit = tr("KiB");
     } else if (nValue < (nBase * nBase * nBase)) {
-        sValue = QString::number((double)nValue / (nBase * nBase), 'f', 2);
+        sValue = QString::number(static_cast<double>(nValue) / (nBase * nBase), 'f', 2);
         sUnit = tr("MiB");
     } else if (nValue < (nBase * nBase * nBase * nBase)) {
-        sValue = QString::number((double)nValue / (nBase * nBase * nBase), 'f', 2);
+        sValue = QString::number(static_cast<double>(nValue) / (nBase * nBase * nBase), 'f', 2);
         sUnit = tr("GiB");
     } else {
-        sValue = QString::number((double)nValue / (nBase * nBase * nBase * nBase), 'f', 2);
+        sValue = QString::number(static_cast<double>(nValue) / (nBase * nBase * nBase * nBase), 'f', 2);
         sUnit = tr("TiB");
     }
 
-    sResult = QString("%1 %2").arg(sValue, sUnit);
-
-    return sResult;
+    return QString("%1 %2").arg(sValue, sUnit);
 }
 
 qint32 XLineEditValidator::getNumberOfBits(MODE mode)
 {
-    qint32 nResult = 0;
-
     if ((mode == MODE_DEC_8) || (mode == MODE_SIGN_DEC_8) || (mode == MODE_BIN_8) || (mode == MODE_HEX_8)) {
-        nResult = 8;
+        return 8;
     } else if ((mode == MODE_DEC_16) || (mode == MODE_SIGN_DEC_16) || (mode == MODE_BIN_16) || (mode == MODE_HEX_16)) {
-        nResult = 16;
+        return 16;
     } else if ((mode == MODE_DEC_32) || (mode == MODE_SIGN_DEC_32) || (mode == MODE_BIN_32) || (mode == MODE_HEX_32)) {
-        nResult = 32;
+        return 32;
     } else if ((mode == MODE_DEC_64) || (mode == MODE_SIGN_DEC_64) || (mode == MODE_BIN_64) || (mode == MODE_HEX_64)) {
-        nResult = 64;
+        return 64;
     }
 
-    return nResult;
+    return 0;
 }

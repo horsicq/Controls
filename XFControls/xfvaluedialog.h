@@ -37,7 +37,6 @@ class XFValueDialog : public QDialog {
 
 public:
     explicit XFValueDialog(QWidget *pParent);
-    virtual ~XFValueDialog();
 
     void setData(const QString &sFieldName, quint64 nValue, XBinary::VT valueType);
     quint64 getValue();

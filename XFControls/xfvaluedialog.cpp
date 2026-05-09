@@ -42,14 +42,14 @@ XFValueDialog::XFValueDialog(QWidget *pParent) : QDialog(pParent)
     m_pLabelType = new QLabel(this);
     pGridLayout->addWidget(m_pLabelType, 0, 0, 1, 2);
 
-    QLabel *pLabelHex = new QLabel(tr("Hex") + QString(":"), this);
+    QLabel *pLabelHex = new QLabel(tr("Hex") + ":", this);
     pGridLayout->addWidget(pLabelHex, 1, 0);
 
     m_pLineEditHex = new QLineEdit(this);
     m_pLineEditHex->setValidator(new QRegularExpressionValidator(QRegularExpression("[0-9a-fA-F]*"), this));
     pGridLayout->addWidget(m_pLineEditHex, 1, 1);
 
-    QLabel *pLabelDec = new QLabel(tr("Dec") + QString(":"), this);
+    QLabel *pLabelDec = new QLabel(tr("Dec") + ":", this);
     pGridLayout->addWidget(pLabelDec, 2, 0);
 
     m_pLineEditDec = new QLineEdit(this);
@@ -77,10 +77,6 @@ XFValueDialog::XFValueDialog(QWidget *pParent) : QDialog(pParent)
     connect(m_pLineEditDec, SIGNAL(textChanged(QString)), this, SLOT(onDecChanged(QString)));
 
     resize(400, 180);
-}
-
-XFValueDialog::~XFValueDialog()
-{
 }
 
 void XFValueDialog::setData(const QString &sFieldName, quint64 nValue, XBinary::VT valueType)
