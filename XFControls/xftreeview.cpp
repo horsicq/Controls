@@ -84,7 +84,7 @@ XBinary::XFHEADER XFTreeView::getSelectedHeader()
     QModelIndex currentIndex = this->currentIndex();
 
     if (currentIndex.isValid() && m_pTreeModel) {
-        XFTreeModel::TREEITEM *pItem = m_pTreeModel->itemFromIndex(currentIndex);
+        const XFTreeModel::TREEITEM *pItem = m_pTreeModel->itemFromIndex(currentIndex);
 
         if (pItem) {
             result = pItem->xfHeader;
@@ -99,7 +99,7 @@ void XFTreeView::currentChanged(const QModelIndex &current, const QModelIndex &p
     QTreeView::currentChanged(current, previous);
 
     if (current.isValid() && m_pTreeModel) {
-        XFTreeModel::TREEITEM *pItem = m_pTreeModel->itemFromIndex(current);
+        const XFTreeModel::TREEITEM *pItem = m_pTreeModel->itemFromIndex(current);
 
         if (pItem) {
             emit headerSelected(pItem->xfHeader);

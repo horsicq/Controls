@@ -123,7 +123,7 @@ void XLineEditHEX::setValue_uint32(quint32 nValue, _MODE mode)
             quint16 nLow = (quint16)(nValue);
             QString sHigh = QString("%1").arg(nHigh, 4, 16, QChar('0'));
             QString sLow = QString("%1").arg(nLow, 4, 16, QChar('0'));
-            sText = QString("%1:%2").arg(sHigh, sLow);
+            sText = QString("%1:%2").arg(sHigh).arg(sLow);
         } else {
             sText = QString("%1").arg(nValue, 8, 16, QChar('0'));
         }
@@ -165,7 +165,7 @@ void XLineEditHEX::setValue_uint64(quint64 nValue, _MODE mode)
             quint32 nLow = (quint32)(nValue);
             QString sHigh = QString("%1").arg(nHigh, 8, 16, QChar('0'));
             QString sLow = QString("%1").arg(nLow, 8, 16, QChar('0'));
-            sText = QString("%1:%2").arg(sHigh, sLow);
+            sText = QString("%1:%2").arg(sHigh).arg(sLow);
         } else {
             sText = QString("%1").arg(nValue, 16, 16, QChar('0'));
         }

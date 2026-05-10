@@ -342,7 +342,7 @@ void XDeviceTableEditView::_bookmarkNew()
         DEVICESTATE state = getDeviceState();
 
         QString sComment =
-            QString("%1 - %2").arg(QString::number(state.nSelectionDeviceOffset, 16), QString::number(state.nSelectionDeviceOffset + state.nSelectionSize, 16));
+            QString("%1 - %2").arg(QString::number(state.nSelectionDeviceOffset, 16)).arg(QString::number(state.nSelectionDeviceOffset + state.nSelectionSize, 16));
 
         XInfoDB::BOOKMARKRECORD record = {};
         record.sUUID = XBinary::generateUUID();

@@ -62,8 +62,8 @@ public:
     void clearRowHidden();
     qint32 getVisibleRowCount() const;
     void setRowPrio(qint32 nRow, quint64 nPrio);
-    bool isRowHidden(qint32 nRow);
-    quint64 getRowPrio(qint32 nRow);
+    bool isRowHidden(qint32 nRow) const;
+    quint64 getRowPrio(qint32 nRow) const;
     virtual QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
     virtual QModelIndex parent(const QModelIndex &child) const override;
     void _setRowCount(qint32 nRowCount);

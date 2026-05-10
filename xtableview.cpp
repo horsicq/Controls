@@ -57,6 +57,9 @@ XTableView::~XTableView()
 
     m_bIsStop = true;
     m_watcher.waitForFinished();
+    m_pSortFilterProxyModel->setSourceModel(nullptr);
+    setModel(nullptr);
+    deleteOldModel(&m_pModel);
 }
 
 void XTableView::setCustomModel(QAbstractItemModel *pModel, bool bFilterEnabled)
@@ -65,6 +68,8 @@ void XTableView::setCustomModel(QAbstractItemModel *pModel, bool bFilterEnabled)
     m_pOldModel = m_pModel;
 
     if (m_pOldModel) {
+        m_pSortFilterProxyModel->setSourceModel(nullptr);
+        setModel(nullptr);
         // #ifdef QT_CONCURRENT_LIB
         // #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         //         QtConcurrent::run(&XTableView::deleteOldModel, this, &m_pOldModel);
@@ -93,7 +98,7 @@ void XTableView::setCustomModel(QAbstractItemModel *pModel, bool bFilterEnabled)
 
     m_pModel = pModel;
 
-    if (bFilterEnabled) {
+    if (pModel && bFilterEnabled) {
         m_pHeaderView->setNumberOfFilters(pModel->columnCount());
         m_pSortFilterProxyModel->setSourceModel(pModel);
         setModel(m_pSortFilterProxyModel);
@@ -106,14 +111,18 @@ void XTableView::setCustomModel(QAbstractItemModel *pModel, bool bFilterEnabled)
 
 void XTableView::clear()
 {
+    m_pSortFilterProxyModel->setSourceModel(nullptr);
     setModel(nullptr);
+    deleteOldModel(&m_pModel);
 }
 
 void XTableView::deleteOldModel(QAbstractItemModel **ppOldModel)
 {
-    delete (*ppOldModel);
+    if (ppOldModel && *ppOldModel) {
+        delete (*ppOldModel);
 
-    (*ppOldModel) = nullptr;
+        (*ppOldModel) = nullptr;
+    }
 }
 
 void XTableView::handleFilter()

@@ -273,7 +273,7 @@ QString XLineEditValidator::_valueToSizeString(quint64 nValue)
         sUnit = tr("TiB");
     }
 
-    return QString("%1 %2").arg(sValue, sUnit);
+    return QString("%1 %2").arg(sValue).arg(sUnit);
 }
 
 qint32 XLineEditValidator::getNumberOfBits(MODE mode)

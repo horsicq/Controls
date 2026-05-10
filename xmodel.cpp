@@ -168,7 +168,7 @@ void XModel::setRowPrio(qint32 nRow, quint64 nPrio)
     m_hashRowPrio[nRow] = nPrio;
 }
 
-bool XModel::isRowHidden(qint32 nRow)
+bool XModel::isRowHidden(qint32 nRow) const
 {
     if ((nRow >= 0) && (nRow < m_vecRowHidden.size())) {
         return m_vecRowHidden.at(nRow);
@@ -177,7 +177,7 @@ bool XModel::isRowHidden(qint32 nRow)
     return false;
 }
 
-quint64 XModel::getRowPrio(qint32 nRow)
+quint64 XModel::getRowPrio(qint32 nRow) const
 {
     return m_hashRowPrio.value(nRow, 0);
 }
@@ -186,7 +186,7 @@ QModelIndex XModel::index(int row, int column, const QModelIndex &parent) const
 {
     QModelIndex result;
 
-    if (hasIndex(row, column, parent)) {
+    if (!parent.isValid() && hasIndex(row, column, parent)) {
         result = createIndex(row, column);
     }
 
@@ -202,26 +202,34 @@ QModelIndex XModel::parent(const QModelIndex &child) const
 
 void XModel::_setRowCount(qint32 nRowCount)
 {
+    beginResetModel();
     m_nRowCount = nRowCount;
     m_vecRowHidden.resize(nRowCount);
     m_vecRowHidden.fill(false);
+    endResetModel();
 }
 
 void XModel::_setColumnCount(qint32 nColumnCount)
 {
+    beginResetModel();
     m_nColumnCount = nColumnCount;
+    endResetModel();
 }
 
 int XModel::rowCount(const QModelIndex &parent) const
 {
-    Q_UNUSED(parent)
+    if (parent.isValid()) {
+        return 0;
+    }
 
     return m_nRowCount;
 }
 
 int XModel::columnCount(const QModelIndex &parent) const
 {
-    Q_UNUSED(parent)
+    if (parent.isValid()) {
+        return 0;
+    }
 
     return m_nColumnCount;
 }

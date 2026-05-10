@@ -280,6 +280,12 @@ void XModel_MSRecord::sortByColumn(qint32 nColumn, Qt::SortOrder order)
 {
     qint32 nRowCount = m_pListRecords->count();
 
+    if ((nColumn == COLUMN_VALUE) && !m_bValueCacheValid) {
+        buildValueCache();
+    }
+
+    emit layoutAboutToBeChanged();
+
     m_vecSortIndex.resize(nRowCount);
 
     if (nColumn == COLUMN_NUMBER) {
@@ -291,6 +297,7 @@ void XModel_MSRecord::sortByColumn(qint32 nColumn, Qt::SortOrder order)
             std::reverse(m_vecSortIndex.begin(), m_vecSortIndex.end());
         }
 
+        emit layoutChanged();
         return;
     }
 
@@ -305,9 +312,13 @@ void XModel_MSRecord::sortByColumn(qint32 nColumn, Qt::SortOrder order)
         }
 
         if (order == Qt::AscendingOrder) {
-            std::sort(vecPairs.begin(), vecPairs.end(), [](const QPair<quint64, qint32> &a, const QPair<quint64, qint32> &b) { return a.first < b.first; });
+            std::sort(vecPairs.begin(), vecPairs.end(), [](const QPair<quint64, qint32> &a, const QPair<quint64, qint32> &b) {
+                return (a.first == b.first) ? (a.second < b.second) : (a.first < b.first);
+            });
         } else {
-            std::sort(vecPairs.begin(), vecPairs.end(), [](const QPair<quint64, qint32> &a, const QPair<quint64, qint32> &b) { return a.first > b.first; });
+            std::sort(vecPairs.begin(), vecPairs.end(), [](const QPair<quint64, qint32> &a, const QPair<quint64, qint32> &b) {
+                return (a.first == b.first) ? (a.second < b.second) : (a.first > b.first);
+            });
         }
 
         for (qint32 i = 0; i < nRowCount; i++) {
@@ -330,15 +341,29 @@ void XModel_MSRecord::sortByColumn(qint32 nColumn, Qt::SortOrder order)
         }
 
         if (order == Qt::AscendingOrder) {
-            std::sort(vecPairs.begin(), vecPairs.end(), [](const QPair<QString, qint32> &a, const QPair<QString, qint32> &b) { return a.first < b.first; });
+            std::sort(vecPairs.begin(), vecPairs.end(), [](const QPair<QString, qint32> &a, const QPair<QString, qint32> &b) {
+                qint32 nCompare = QString::compare(a.first, b.first, Qt::CaseInsensitive);
+                if (nCompare == 0) {
+                    nCompare = QString::compare(a.first, b.first, Qt::CaseSensitive);
+                }
+                return (nCompare == 0) ? (a.second < b.second) : (nCompare < 0);
+            });
         } else {
-            std::sort(vecPairs.begin(), vecPairs.end(), [](const QPair<QString, qint32> &a, const QPair<QString, qint32> &b) { return a.first > b.first; });
+            std::sort(vecPairs.begin(), vecPairs.end(), [](const QPair<QString, qint32> &a, const QPair<QString, qint32> &b) {
+                qint32 nCompare = QString::compare(a.first, b.first, Qt::CaseInsensitive);
+                if (nCompare == 0) {
+                    nCompare = QString::compare(a.first, b.first, Qt::CaseSensitive);
+                }
+                return (nCompare == 0) ? (a.second < b.second) : (nCompare > 0);
+            });
         }
 
         for (qint32 i = 0; i < nRowCount; i++) {
             m_vecSortIndex[i] = vecPairs[i].second;
         }
     }
+
+    emit layoutChanged();
 }
 
 quint64 XModel_MSRecord::_getRawSortKey(qint32 nDataRow, qint32 nColumn) const

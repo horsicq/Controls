@@ -34,6 +34,7 @@ XSortFilterProxyModel::XSortFilterProxyModel(QObject *pParent) : QSortFilterProx
 void XSortFilterProxyModel::setFilters(const QList<QString> &listFilters)
 {
     m_listFilters = listFilters;
+    invalidateFilter();
 }
 
 void XSortFilterProxyModel::setColumnFilter(qint32 nColumn, const QString &sFilter)
@@ -43,6 +44,7 @@ void XSortFilterProxyModel::setColumnFilter(qint32 nColumn, const QString &sFilt
     }
 
     m_listFilters[nColumn] = sFilter;
+    invalidateFilter();
 }
 
 QList<QString> XSortFilterProxyModel::getFilters() const
@@ -53,11 +55,14 @@ QList<QString> XSortFilterProxyModel::getFilters() const
 void XSortFilterProxyModel::setSortMethod(qint32 nColumn, XModel::SORT_METHOD sortMethod)
 {
     m_mapSortMethods.insert(nColumn, sortMethod);
+    clearSortCache();
 }
 
 void XSortFilterProxyModel::setSourceModel(QAbstractItemModel *sourceModel)
 {
     m_listFilters.clear();
+    m_mapSortMethods.clear();
+    clearSortCache();
 
     m_pXModel = dynamic_cast<XModel *>(sourceModel);
 
