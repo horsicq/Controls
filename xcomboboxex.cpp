@@ -257,12 +257,13 @@ bool XComboBoxEx::sortCustomFlagByValue(const CUSTOM_FLAG &flag1, const CUSTOM_F
     return (flag1.value.toString() < flag2.value.toString());
 }
 
-void XComboBoxEx::_addCustomFlag(QList<CUSTOM_FLAG> *pListCustomFlags, QVariant value, const QString &sString, bool bChecked)
+void XComboBoxEx::_addCustomFlag(QList<CUSTOM_FLAG> *pListCustomFlags, QVariant value, const QString &sString, bool bChecked, bool bIsReadOnly)
 {
     CUSTOM_FLAG record = {};
     record.value = value;
     record.sString = sString;
     record.bIsChecked = bChecked;
+    record.bIsReadOnly = bIsReadOnly;
 
     pListCustomFlags->append(record);
 }
