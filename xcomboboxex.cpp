@@ -103,6 +103,48 @@ QVariant XComboBoxEx::getValue()
     return m_varValue;
 }
 
+void XComboBoxEx::setValueAsString(const QString &sValue)
+{
+    if (m_cbtype == CBTYPE_CUSTOM_FLAGS) {
+        setCustomFlagsFromString(sValue);
+        m_varValue = getCustomFlagAsString();
+    } else if (m_cbtype == CBTYPE_FLAGS) {
+        setValue(sValue.toULongLong());
+    } else if ((m_cbtype == CBTYPE_LIST) || (m_cbtype == CBTYPE_ELIST)) {
+        qint32 nIndex = -1;
+        qint32 nNumberOfItems = m_model.rowCount();
+
+        for (qint32 i = 1; i < nNumberOfItems; i++) {
+            if (m_model.item(i, 0)->data(Qt::UserRole).toString() == sValue) {
+                nIndex = i;
+                break;
+            }
+        }
+
+        if (nIndex != -1) {
+            m_varValue = m_model.item(nIndex, 0)->data(Qt::UserRole);
+            setCurrentIndex(nIndex);
+        } else {
+            setValue(sValue);
+        }
+    } else {
+        setValue(sValue);
+    }
+}
+
+QString XComboBoxEx::getValueAsString()
+{
+    QString sResult;
+
+    if (m_cbtype == CBTYPE_CUSTOM_FLAGS) {
+        sResult = getCustomFlagAsString();
+    } else {
+        sResult = m_varValue.toString();
+    }
+
+    return sResult;
+}
+
 void XComboBoxEx::setReadOnly(bool bIsReadOnly)
 {
     m_bIsReadonly = bIsReadOnly;
@@ -343,6 +385,13 @@ void XComboBoxEx::itemChangedSlot(QStandardItem *pItem)
         if (nCurrentValue != m_varValue.toULongLong()) {
             m_varValue = nCurrentValue;
             emit valueChanged(nCurrentValue);
+        }
+    } else if ((m_cbtype == CBTYPE_CUSTOM_FLAGS) && count()) {
+        QString sCurrentValue = getCustomFlagAsString();
+
+        if (sCurrentValue != m_varValue.toString()) {
+            m_varValue = sCurrentValue;
+            emit valueChanged(m_varValue);
         }
     }
 }
