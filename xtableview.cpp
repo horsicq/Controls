@@ -276,8 +276,6 @@ void XTableView::onFilterApply()
     qDebug("XTableView::onFilterChanged(): Elapsed time: %lld ms", timer.elapsed());
     // 16266 ms
     // 16342
-    //
-    //
     qDebug("XTableView::onFilterChanged(): STOP");
 #endif
 }
