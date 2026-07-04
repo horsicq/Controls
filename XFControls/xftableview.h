@@ -22,43 +22,76 @@
 #ifndef XFTABLEVIEW_H
 #define XFTABLEVIEW_H
 
+#include <QWidget>
 #include <QMenu>
 #include <QAction>
+#include <QToolBar>
+#include <QProgressBar>
+#include <QStatusBar>
 #include "xtableview.h"
 #include "xfmodel_header.h"
 #include "xfmodel_table.h"
+#include "xformats.h"
 
-class XFTableView : public XTableView {
+class XFTableView : public QWidget {
     Q_OBJECT
 
 public:
     explicit XFTableView(QWidget *pParent = nullptr);
     virtual ~XFTableView();
 
-    void setData(XBinary *pXBinary, const XBinary::XFHEADER &xfHeader);
+    void setData(const XFormats::INDATA &inData, const XBinary::XFHEADER &xfHeader);
     void clear();
     void adjust();
+    QAbstractItemModel *model() const;
 
     void setShowOffset(bool bShowOffset);
     void setShowPresentation(bool bShowPresentation);
+    void setStretchLastColumn(bool bState);
+
+    // Resize to fit contents, but a column with the stretched last section is
+    // left alone (Qt would just re-stretch it afterward), and the header title
+    // itself is taken into account, not only the cell contents.
+    void resizeColumnToContents(int column);
+    void resizeColumnsToContents();
+
+    void setProgressVisible(bool bVisible);
+    void setProgressRange(qint32 nMinimum, qint32 nMaximum);
+    void setProgressValue(qint32 nValue);
+
+    void setStatusBarText(const QString &sText);
 
 signals:
-    void fieldSelected(qint32 nFieldIndex, quint64 nValue, const XBinary::XFRECORD &xfRecord);
-    void fieldDoubleClicked(qint32 nFieldIndex, quint64 nValue, const XBinary::XFRECORD &xfRecord);
+    void fieldSelected(qint32 nFieldIndex, QVariant value, const XBinary::XFRECORD &xfRecord);
+    void fieldDoubleClicked(qint32 nFieldIndex, QVariant value, const XBinary::XFRECORD &xfRecord);
     void rowSelected(qint32 nRow);
 
-protected:
-    virtual void currentChanged(const QModelIndex &current, const QModelIndex &previous) override;
-
 private slots:
+    void onCurrentChanged(const QModelIndex &current, const QModelIndex &previous);
     void onDoubleClicked(const QModelIndex &index);
     void onCustomContextMenuRequested(const QPoint &pos);
+    void onSaveClicked();
+    void onFilterChanged();
+    void onSortIndicatorChanged(int nColumn, Qt::SortOrder order);
+    void onResetFilterClicked();
+    void onTableBusyChanged(bool bBusy);
 
 private:
-    XBinary *m_pXBinary;
+    void updateResetFilterEnabled();
+
+private:
+    XFormats::INDATA m_inData;
     XBinary::XFHEADER m_xfHeader;
     XFModel_header *m_pHeaderModel;
     XFModel_table *m_pTableModel;
+
+    XTableView *m_pTableView;
+    QToolBar *m_pToolBar;
+    QAction *m_pActionResetFilter;
+    QAction *m_pActionSave;
+    QProgressBar *m_pProgressBar;
+    QStatusBar *m_pStatusBar;
+    bool m_bSortActive;
 };
 
 #endif  // XFTABLEVIEW_H

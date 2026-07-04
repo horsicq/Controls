@@ -33,7 +33,7 @@ public:
     explicit XFTreeView(QWidget *pParent = nullptr);
     virtual ~XFTreeView();
 
-    void setData(XBinary *pXBinary, const QList<XBinary::XFHEADER> &listHeaders);
+    void setData(const XFormats::INDATA &inData, const QList<XBinary::XFHEADER> &listHeaders);
     void clear();
     void adjust();
 
@@ -47,7 +47,7 @@ protected:
     virtual void currentChanged(const QModelIndex &current, const QModelIndex &previous) override;
 
 private:
-    XBinary *m_pXBinary;
+    XFormats::INDATA m_inData;
     XFTreeModel *m_pTreeModel;
 };
 

@@ -28,12 +28,15 @@ XSortFilterProxyModel::XSortFilterProxyModel(QObject *pParent) : QSortFilterProx
     m_bIsCustomSort = false;
     m_pXModel = nullptr;
     m_bSortCacheValid = false;
+    m_nSortCacheColumn = -1;
     m_sortCacheMethod = XModel::SORT_METHOD_DEFAULT;
+    m_bFilterAcceptCacheValid = false;
 }
 
 void XSortFilterProxyModel::setFilters(const QList<QString> &listFilters)
 {
     m_listFilters = listFilters;
+    clearFilterAcceptCache();
     invalidateFilter();
 }
 
@@ -44,7 +47,13 @@ void XSortFilterProxyModel::setColumnFilter(qint32 nColumn, const QString &sFilt
     }
 
     m_listFilters[nColumn] = sFilter;
+    clearFilterAcceptCache();
     invalidateFilter();
+}
+
+void XSortFilterProxyModel::setFiltersQuiet(const QList<QString> &listFilters)
+{
+    m_listFilters = listFilters;
 }
 
 QList<QString> XSortFilterProxyModel::getFilters() const
@@ -63,6 +72,7 @@ void XSortFilterProxyModel::setSourceModel(QAbstractItemModel *sourceModel)
     m_listFilters.clear();
     m_mapSortMethods.clear();
     clearSortCache();
+    clearFilterAcceptCache();
 
     m_pXModel = dynamic_cast<XModel *>(sourceModel);
 
@@ -97,7 +107,9 @@ void XSortFilterProxyModel::sort(int column, Qt::SortOrder order)
     if (m_bIsCustomSort && m_pXModel) {
         m_pXModel->sortByColumn(column, order);
     } else {
-        buildSortCache(column);
+        if (!(m_bSortCacheValid && (m_nSortCacheColumn == column))) {
+            buildSortCache(column);
+        }
         QSortFilterProxyModel::sort(column, order);
         clearSortCache();
     }
@@ -115,6 +127,22 @@ bool XSortFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &s
 
     if (m_bIsCustomFilter) {
         bResult = !(m_pXModel->isRowHidden(sourceRow));
+        return bResult;
+    }
+
+    bool bCacheValid = false;
+    bool bCachedResult = true;
+
+    {
+        QMutexLocker locker(&m_cacheMutex);
+        bCacheValid = m_bFilterAcceptCacheValid;
+        if (bCacheValid) {
+            bCachedResult = ((sourceRow >= 0) && (sourceRow < m_vecFilterAcceptCache.count())) ? m_vecFilterAcceptCache.at(sourceRow) : true;
+        }
+    }
+
+    if (bCacheValid) {
+        bResult = bCachedResult;
     } else {
         qint32 nCount = m_listFilters.count();
 
@@ -144,16 +172,28 @@ bool XSortFilterProxyModel::lessThan(const QModelIndex &left, const QModelIndex 
 
     if (m_bIsCustomSort) {
         bResult = (left.row() < right.row());
-    } else if (m_bSortCacheValid) {
-        qint32 nLeftRow = left.row();
-        qint32 nRightRow = right.row();
+        return bResult;
+    }
 
-        if (m_sortCacheMethod == XModel::SORT_METHOD_HEX) {
-            bResult = m_vecSortCacheHex.at(nLeftRow) < m_vecSortCacheHex.at(nRightRow);
-        } else {
-            bResult = m_vecSortCacheStr.at(nLeftRow) < m_vecSortCacheStr.at(nRightRow);
+    bool bCacheValid = false;
+
+    {
+        QMutexLocker locker(&m_cacheMutex);
+        bCacheValid = m_bSortCacheValid;
+
+        if (bCacheValid) {
+            qint32 nLeftRow = left.row();
+            qint32 nRightRow = right.row();
+
+            if (m_sortCacheMethod == XModel::SORT_METHOD_HEX) {
+                bResult = m_vecSortCacheHex.at(nLeftRow) < m_vecSortCacheHex.at(nRightRow);
+            } else {
+                bResult = m_vecSortCacheStr.at(nLeftRow) < m_vecSortCacheStr.at(nRightRow);
+            }
         }
-    } else {
+    }
+
+    if (!bCacheValid) {
         qint32 nColumn = left.column();
 
         XModel::SORT_METHOD sortMethod = m_mapSortMethods.value(nColumn, XModel::SORT_METHOD_DEFAULT);
@@ -178,47 +218,141 @@ bool XSortFilterProxyModel::lessThan(const QModelIndex &left, const QModelIndex 
     return bResult;
 }
 
-void XSortFilterProxyModel::buildSortCache(qint32 nColumn)
+bool XSortFilterProxyModel::buildSortCache(qint32 nColumn, QAtomicInt *pCancelFlag)
 {
     QAbstractItemModel *pSource = sourceModel();
 
     if (!pSource) {
+        QMutexLocker locker(&m_cacheMutex);
         m_bSortCacheValid = false;
-        return;
+        return false;
     }
 
     qint32 nRowCount = pSource->rowCount();
-    m_sortCacheMethod = m_mapSortMethods.value(nColumn, XModel::SORT_METHOD_DEFAULT);
+    XModel::SORT_METHOD sortMethod = m_mapSortMethods.value(nColumn, XModel::SORT_METHOD_DEFAULT);
 
-    if (m_sortCacheMethod == XModel::SORT_METHOD_HEX) {
-        m_vecSortCacheHex.resize(nRowCount);
+    // Computed into locals first — only reads sourceModel(), no shared-state writes,
+    // so this loop is safe to run concurrently with GUI-thread reads of the (still
+    // previous, still valid) cache below.
+    QVector<quint64> vecHex;
+    QVector<QString> vecStr;
+
+    if (sortMethod == XModel::SORT_METHOD_HEX) {
+        vecHex.resize(nRowCount);
 
         if (m_bIsXmodel && m_pXModel && m_pXModel->hasSortKeyHex()) {
             for (qint32 i = 0; i < nRowCount; i++) {
-                m_vecSortCacheHex[i] = m_pXModel->getSortKeyHex(i, nColumn);
+                if (pCancelFlag && pCancelFlag->loadAcquire()) {
+                    return false;
+                }
+                vecHex[i] = m_pXModel->getSortKeyHex(i, nColumn);
             }
         } else {
             for (qint32 i = 0; i < nRowCount; i++) {
+                if (pCancelFlag && pCancelFlag->loadAcquire()) {
+                    return false;
+                }
                 QModelIndex idx = pSource->index(i, nColumn);
                 QString sVal = pSource->data(idx).toString().remove(" ");
-                m_vecSortCacheHex[i] = sVal.toULongLong(nullptr, 16);
+                vecHex[i] = sVal.toULongLong(nullptr, 16);
             }
         }
     } else {
-        m_vecSortCacheStr.resize(nRowCount);
+        vecStr.resize(nRowCount);
 
         for (qint32 i = 0; i < nRowCount; i++) {
+            if (pCancelFlag && pCancelFlag->loadAcquire()) {
+                return false;
+            }
             QModelIndex idx = pSource->index(i, nColumn);
-            m_vecSortCacheStr[i] = pSource->data(idx).toString();
+            vecStr[i] = pSource->data(idx).toString();
         }
     }
 
+    QMutexLocker locker(&m_cacheMutex);
+
+    if (sortMethod == XModel::SORT_METHOD_HEX) {
+        m_vecSortCacheHex = vecHex;
+        m_vecSortCacheStr.clear();
+    } else {
+        m_vecSortCacheStr = vecStr;
+        m_vecSortCacheHex.clear();
+    }
+
+    m_sortCacheMethod = sortMethod;
+    m_nSortCacheColumn = nColumn;
     m_bSortCacheValid = true;
+
+    return true;
 }
 
 void XSortFilterProxyModel::clearSortCache()
 {
+    QMutexLocker locker(&m_cacheMutex);
     m_vecSortCacheHex.clear();
     m_vecSortCacheStr.clear();
     m_bSortCacheValid = false;
+    m_nSortCacheColumn = -1;
+}
+
+bool XSortFilterProxyModel::buildFilterAcceptCache(const QList<QString> &listFilters, QAtomicInt *pCancelFlag)
+{
+    QAbstractItemModel *pSource = sourceModel();
+
+    if (!pSource) {
+        QMutexLocker locker(&m_cacheMutex);
+        m_bFilterAcceptCacheValid = false;
+        return false;
+    }
+
+    qint32 nRowCount = pSource->rowCount();
+    qint32 nNumberOfFilters = listFilters.count();
+
+    QVector<qint32> vecActiveColumns;
+
+    for (qint32 j = 0; j < nNumberOfFilters; j++) {
+        if (!listFilters.at(j).isEmpty()) {
+            vecActiveColumns.append(j);
+        }
+    }
+
+    qint32 nActiveCount = vecActiveColumns.count();
+    QVector<bool> vecResult(nRowCount, true);
+
+    for (qint32 i = 0; i < nRowCount; i++) {
+        if (pCancelFlag && pCancelFlag->loadAcquire()) {
+            return false;
+        }
+
+        bool bAccepted = true;
+
+        for (qint32 k = 0; k < nActiveCount; k++) {
+            qint32 nColumn = vecActiveColumns.at(k);
+            QModelIndex index = pSource->index(i, nColumn);
+
+            if (index.isValid()) {
+                QString sValue = pSource->data(index).toString();
+
+                if (!sValue.contains(listFilters.at(nColumn), Qt::CaseInsensitive)) {
+                    bAccepted = false;
+                    break;
+                }
+            }
+        }
+
+        vecResult[i] = bAccepted;
+    }
+
+    QMutexLocker locker(&m_cacheMutex);
+    m_vecFilterAcceptCache = vecResult;
+    m_bFilterAcceptCacheValid = true;
+
+    return true;
+}
+
+void XSortFilterProxyModel::clearFilterAcceptCache()
+{
+    QMutexLocker locker(&m_cacheMutex);
+    m_vecFilterAcceptCache.clear();
+    m_bFilterAcceptCacheValid = false;
 }

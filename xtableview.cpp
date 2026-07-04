@@ -33,6 +33,12 @@ XTableView::XTableView(QWidget *pParent) : QTableView(pParent)
     m_pXModel = nullptr;
     m_bIsStop = false;
 
+    m_bThreadedEnabled = false;
+    m_pAsyncWatcher = nullptr;
+    m_pendingOperation = OPERATION_NONE;
+    m_nPendingSortColumn = -1;
+    m_pendingSortOrder = Qt::AscendingOrder;
+
     setHorizontalHeader(m_pHeaderView);
 
     connect(m_pHeaderView, SIGNAL(filterChanged()), this, SLOT(onFilterChanged()));
@@ -57,6 +63,7 @@ XTableView::~XTableView()
 
     m_bIsStop = true;
     m_watcher.waitForFinished();
+    cancelAsyncOperation();
     m_pSortFilterProxyModel->setSourceModel(nullptr);
     setModel(nullptr);
     deleteOldModel(&m_pModel);
@@ -65,6 +72,8 @@ XTableView::~XTableView()
 void XTableView::setCustomModel(QAbstractItemModel *pModel, bool bFilterEnabled)
 {
     // TODO Stretch last section
+    cancelAsyncOperation();
+
     m_pOldModel = m_pModel;
 
     if (m_pOldModel) {
@@ -102,6 +111,11 @@ void XTableView::setCustomModel(QAbstractItemModel *pModel, bool bFilterEnabled)
         m_pHeaderView->setNumberOfFilters(pModel->columnCount());
         m_pSortFilterProxyModel->setSourceModel(pModel);
         setModel(m_pSortFilterProxyModel);
+        // Column count can change later without a new setCustomModel() call (e.g.
+        // XFModel_table interleaving presentation columns on setShowPresentation()).
+        // Keep the header's per-column filter row in sync with it, or the stale
+        // line edits end up positioned against sections that no longer exist.
+        connect(pModel, SIGNAL(modelReset()), this, SLOT(onSourceModelReset()), Qt::UniqueConnection);
     } else {
         setModel(pModel);
     }
@@ -109,8 +123,19 @@ void XTableView::setCustomModel(QAbstractItemModel *pModel, bool bFilterEnabled)
     adjust();
 }
 
+void XTableView::onSourceModelReset()
+{
+    if (m_pModel) {
+        m_pHeaderView->setNumberOfFilters(m_pModel->columnCount());
+        m_pHeaderView->updateGeometries();
+        m_pHeaderView->update();
+        viewport()->update();
+    }
+}
+
 void XTableView::clear()
 {
+    cancelAsyncOperation();
     m_pSortFilterProxyModel->setSourceModel(nullptr);
     setModel(nullptr);
     deleteOldModel(&m_pModel);
@@ -198,6 +223,20 @@ void XTableView::setFilterEnabled(qint32 nColumn, bool bFilterEnabled)
 
 void XTableView::setColumnFilterString(qint32 nColumn, const QString &sFilter)
 {
+    if (m_bThreadedEnabled && !m_bIsCustomFilter) {
+        QList<QString> listFilters = m_pSortFilterProxyModel->getFilters();
+
+        while (listFilters.count() <= nColumn) {
+            listFilters.append(QString());
+        }
+
+        listFilters[nColumn] = sFilter;
+        m_listCurrentFilters = listFilters;
+
+        startAsyncFilterOperation(listFilters);
+        return;
+    }
+
     m_pSortFilterProxyModel->setColumnFilter(nColumn, sFilter);
     m_listCurrentFilters = m_pSortFilterProxyModel->getFilters();
 
@@ -210,6 +249,16 @@ void XTableView::setColumnFilterString(qint32 nColumn, const QString &sFilter)
     } else {
         m_pSortFilterProxyModel->invalidate();
     }
+}
+
+void XTableView::setThreadedFilterSortEnabled(bool bEnabled)
+{
+    m_bThreadedEnabled = bEnabled;
+}
+
+bool XTableView::isThreadedFilterSortEnabled() const
+{
+    return m_bThreadedEnabled;
 }
 
 void XTableView::adjust()
@@ -253,6 +302,12 @@ void XTableView::onFilterApply()
 
     QList<QString> listFilters = m_pHeaderView->getFilters();
 
+    if (m_bThreadedEnabled && !m_bIsCustomFilter) {
+        m_listCurrentFilters = listFilters;
+        startAsyncFilterOperation(listFilters);
+        return;
+    }
+
     m_pSortFilterProxyModel->setFilters(listFilters);
     m_listCurrentFilters = listFilters;
 
@@ -282,17 +337,18 @@ void XTableView::onFilterApply()
 
 void XTableView::onSortChanged(int column, Qt::SortOrder order)
 {
+    if (m_bThreadedEnabled && !m_bIsCustomSort) {
+        startAsyncSortOperation(column, order);
+        return;
+    }
+
     if (m_bIsCustomFilter) {
         m_bIsStop = true;
         m_watcher.waitForFinished();
         m_bIsStop = false;
     }
 
-    if (m_bIsCustomSort) {
-        m_pSortFilterProxyModel->sort(column, order);
-    } else {
-        m_pSortFilterProxyModel->sort(column, order);
-    }
+    m_pSortFilterProxyModel->sort(column, order);
 
     if (m_bIsCustomFilter) {
         handleFilter();
@@ -302,4 +358,89 @@ void XTableView::onSortChanged(int column, Qt::SortOrder order)
 void XTableView::horizontalScroll()
 {
     m_pHeaderView->adjustPositions();
+}
+
+void XTableView::startAsyncFilterOperation(const QList<QString> &listFilters)
+{
+    cancelAsyncOperation();
+
+    m_pendingOperation = OPERATION_FILTER;
+    m_listPendingFilters = listFilters;
+
+    XSortFilterProxyModel *pProxy = m_pSortFilterProxyModel;
+    QAtomicInt *pCancelFlag = &m_asyncCancelFlag;
+
+    QFuture<bool> future = QtConcurrent::run([pProxy, listFilters, pCancelFlag]() {
+        return pProxy->buildFilterAcceptCache(listFilters, pCancelFlag);
+    });
+
+    m_pAsyncWatcher = new QFutureWatcher<bool>(this);
+    connect(m_pAsyncWatcher, SIGNAL(finished()), this, SLOT(onAsyncOperationFinished()));
+    m_pAsyncWatcher->setFuture(future);
+
+    emit busyChanged(true);
+}
+
+void XTableView::startAsyncSortOperation(qint32 nColumn, Qt::SortOrder order)
+{
+    cancelAsyncOperation();
+
+    if (nColumn < 0) {
+        m_pSortFilterProxyModel->sort(nColumn, order);
+        return;
+    }
+
+    m_pendingOperation = OPERATION_SORT;
+    m_nPendingSortColumn = nColumn;
+    m_pendingSortOrder = order;
+
+    XSortFilterProxyModel *pProxy = m_pSortFilterProxyModel;
+    QAtomicInt *pCancelFlag = &m_asyncCancelFlag;
+
+    QFuture<bool> future = QtConcurrent::run([pProxy, nColumn, pCancelFlag]() {
+        return pProxy->buildSortCache(nColumn, pCancelFlag);
+    });
+
+    m_pAsyncWatcher = new QFutureWatcher<bool>(this);
+    connect(m_pAsyncWatcher, SIGNAL(finished()), this, SLOT(onAsyncOperationFinished()));
+    m_pAsyncWatcher->setFuture(future);
+
+    emit busyChanged(true);
+}
+
+void XTableView::cancelAsyncOperation()
+{
+    if (m_pAsyncWatcher) {
+        m_asyncCancelFlag.storeRelease(1);
+        m_pAsyncWatcher->waitForFinished();
+        disconnect(m_pAsyncWatcher, nullptr, this, nullptr);
+        m_pAsyncWatcher->deleteLater();
+        m_pAsyncWatcher = nullptr;
+        m_asyncCancelFlag.storeRelease(0);
+    }
+
+    m_pendingOperation = OPERATION_NONE;
+}
+
+void XTableView::onAsyncOperationFinished()
+{
+    QFutureWatcher<bool> *pWatcher = m_pAsyncWatcher;
+    m_pAsyncWatcher = nullptr;
+
+    bool bSuccess = pWatcher->result();
+    PENDING_OPERATION op = m_pendingOperation;
+    m_pendingOperation = OPERATION_NONE;
+
+    pWatcher->deleteLater();
+
+    if (bSuccess) {
+        if (op == OPERATION_FILTER) {
+            m_pSortFilterProxyModel->setFiltersQuiet(m_listPendingFilters);
+            m_pSortFilterProxyModel->invalidate();
+        } else if (op == OPERATION_SORT) {
+            m_pSortFilterProxyModel->sort(m_nPendingSortColumn, m_pendingSortOrder);
+        }
+    }
+
+    emit busyChanged(false);
 }

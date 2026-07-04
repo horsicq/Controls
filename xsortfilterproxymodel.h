@@ -24,6 +24,8 @@
 
 #include <QSortFilterProxyModel>
 #include <QVector>
+#include <QAtomicInt>
+#include <QMutex>
 #include "xmodel.h"
 
 class XSortFilterProxyModel : public QSortFilterProxyModel {
@@ -38,12 +40,24 @@ public:
     virtual void sort(int column, Qt::SortOrder order = Qt::AscendingOrder) override;
     void resetModel();
 
+    // Pure read-only computation over sourceModel(); safe to call from a worker thread.
+    // pCancelFlag is polled between rows and, if set, aborts early returning false
+    // (the corresponding cache is left/marked invalid).
+    bool buildSortCache(qint32 nColumn, QAtomicInt *pCancelFlag = nullptr);
+    bool buildFilterAcceptCache(const QList<QString> &listFilters, QAtomicInt *pCancelFlag = nullptr);
+    void clearFilterAcceptCache();
+
+    // Assigns m_listFilters without triggering invalidateFilter(). For callers (the
+    // threaded pipeline) that apply the new filter state themselves once a matching
+    // buildFilterAcceptCache() result is ready, instead of paying for a synchronous
+    // filter pass twice.
+    void setFiltersQuiet(const QList<QString> &listFilters);
+
 protected:
     bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const override;
     bool lessThan(const QModelIndex &left, const QModelIndex &right) const override;
 
 private:
-    void buildSortCache(qint32 nColumn);
     void clearSortCache();
 
     bool m_bIsXmodel;
@@ -53,9 +67,18 @@ private:
     QList<QString> m_listFilters;
     QMap<qint32, XModel::SORT_METHOD> m_mapSortMethods;
     bool m_bSortCacheValid;
+    qint32 m_nSortCacheColumn;
     XModel::SORT_METHOD m_sortCacheMethod;
     QVector<quint64> m_vecSortCacheHex;
     QVector<QString> m_vecSortCacheStr;
+
+    bool m_bFilterAcceptCacheValid;
+    QVector<bool> m_vecFilterAcceptCache;
+
+    // Guards the sort/filter cache members above: buildSortCache()/buildFilterAcceptCache()
+    // may run on a worker thread while lessThan()/filterAcceptsRow() run on the GUI thread
+    // (e.g. dynamicSortFilter reacting to a source dataChanged mid-build).
+    mutable QMutex m_cacheMutex;
 };
 
 #endif  // XSORTFILTERPROXYMODEL_H

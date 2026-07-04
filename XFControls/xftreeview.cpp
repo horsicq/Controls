@@ -23,7 +23,6 @@
 
 XFTreeView::XFTreeView(QWidget *pParent) : QTreeView(pParent)
 {
-    m_pXBinary = nullptr;
     m_pTreeModel = nullptr;
 
     setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -36,14 +35,14 @@ XFTreeView::~XFTreeView()
     clear();
 }
 
-void XFTreeView::setData(XBinary *pXBinary, const QList<XBinary::XFHEADER> &listHeaders)
+void XFTreeView::setData(const XFormats::INDATA &inData, const QList<XBinary::XFHEADER> &listHeaders)
 {
     clear();
 
-    m_pXBinary = pXBinary;
+    m_inData = inData;
 
     m_pTreeModel = new XFTreeModel(this);
-    m_pTreeModel->setData(m_pXBinary, listHeaders);
+    m_pTreeModel->setData(m_inData, listHeaders);
     setModel(m_pTreeModel);
 
     adjust();
@@ -59,8 +58,6 @@ void XFTreeView::clear()
         delete m_pTreeModel;
         m_pTreeModel = nullptr;
     }
-
-    m_pXBinary = nullptr;
 }
 
 void XFTreeView::adjust()
