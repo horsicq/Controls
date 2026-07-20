@@ -22,23 +22,29 @@
 
 XBinaryView::XBinaryView(QObject *pParent) : QObject(pParent)
 {
-    m_pDevice = nullptr;
+    m_inData = {};
     m_options = {};
     m_nViewSize = 0;
 }
 
 XBinaryView::~XBinaryView()
 {
+    reset();
 }
 
-void XBinaryView::setData(QIODevice *pDevice, const OPTIONS &options)
+void XBinaryView::setData(const XBinary::INDATA &inData, const OPTIONS &options)
 {
-    m_pDevice = pDevice;
+    reset();
+
+    m_inData = inData;
+    m_inData.pDevice = XFormats::createDevice(inData);
     m_options = options;
+
+    QIODevice *pDevice = getDevice();
 
     m_disasmCore.setMode(m_options.disasmMode);
 
-    m_memoryMap = XFormats::getMemoryMap(m_options.fileType, XBinary::MAPMODE_UNKNOWN, m_pDevice);
+    m_memoryMap = XFormats::getMemoryMap(m_options.fileType, XBinary::MAPMODE_UNKNOWN, pDevice);
 
     XVPOS nViewPos = 0;
 
@@ -116,9 +122,17 @@ void XBinaryView::setData(QIODevice *pDevice, const OPTIONS &options)
     m_nViewSize = nViewPos;
 }
 
+void XBinaryView::setData(QIODevice *pDevice, const OPTIONS &options)
+{
+    setData(XFormats::createINDATA(options.fileType, pDevice, options.bIsImage, options.nModuleAddress), options);
+}
+
 void XBinaryView::reset()
 {
-    m_pDevice = nullptr;
+    QIODevice *pDevice = getDevice();
+
+    XFormats::removeDevice(pDevice, m_inData);
+    m_inData = {};
     m_options = {};
     m_nViewSize = 0;
     m_listViewStruct.clear();
@@ -126,7 +140,7 @@ void XBinaryView::reset()
 
 QIODevice *XBinaryView::getDevice()
 {
-    return m_pDevice;
+    return m_inData.pDevice;
 }
 
 XBinaryView::VIEWSTRUCT XBinaryView::_getViewStructByViewPos(XVPOS nViewPos)

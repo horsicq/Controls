@@ -36,6 +36,8 @@ XFTableView::XFTableView(QWidget *pParent) : QWidget(pParent)
     m_pHeaderModel = nullptr;
     m_pTableModel = nullptr;
     m_bSortActive = false;
+    m_progressStateBeforeBusy = {};
+    m_bProgressStateSaved = false;
 
     m_pTableView = new XTableView(this);
     m_pTableView->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -78,6 +80,7 @@ XFTableView::XFTableView(QWidget *pParent) : QWidget(pParent)
     connect(m_pTableView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(onDoubleClicked(QModelIndex)));
     connect(m_pTableView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(onCustomContextMenuRequested(QPoint)));
     connect(m_pTableView, SIGNAL(busyChanged(bool)), this, SLOT(onTableBusyChanged(bool)));
+    connect(m_pTableView, SIGNAL(busyChanged(bool)), this, SIGNAL(busyChanged(bool)));
     connect(m_pActionSave, SIGNAL(triggered()), this, SLOT(onSaveClicked()));
     connect(m_pActionResetFilter, SIGNAL(triggered()), this, SLOT(onResetFilterClicked()));
 
@@ -85,7 +88,7 @@ XFTableView::XFTableView(QWidget *pParent) : QWidget(pParent)
 
     if (pHeaderView) {
         connect(pHeaderView, SIGNAL(filterChanged()), this, SLOT(onFilterChanged()));
-        connect(pHeaderView, SIGNAL(sortIndicatorChanged(int, Qt::SortOrder)), this, SLOT(onSortIndicatorChanged(int, Qt::SortOrder)));
+        connect(pHeaderView, SIGNAL(sortRequested(int, Qt::SortOrder)), this, SLOT(onSortIndicatorChanged(int, Qt::SortOrder)));
     }
 }
 
@@ -94,7 +97,7 @@ XFTableView::~XFTableView()
     clear();
 }
 
-void XFTableView::setData(const XFormats::INDATA &inData, const XBinary::XFHEADER &xfHeader)
+void XFTableView::setData(const XBinary::INDATA &inData, const XBinary::XFHEADER &xfHeader)
 {
     // setCustomModel() deletes the previous model itself
     m_pHeaderModel = nullptr;
@@ -112,9 +115,24 @@ void XFTableView::setData(const XFormats::INDATA &inData, const XBinary::XFHEADE
         m_pTableModel->setShowPresentation(true);
         m_pTableModel->setData(m_inData, m_xfHeader);
         m_pTableView->setCustomModel(m_pTableModel, true);
+    } else {
+        // e.g. XFTYPE_COMMAND synthetic nodes ("!STRINGS", "!IMPORT", ...) carry no field/row data
+        m_pTableView->clear();
     }
 
-    connect(m_pTableView->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)), this, SLOT(onCurrentChanged(QModelIndex, QModelIndex)), Qt::UniqueConnection);
+    if (m_pTableView->selectionModel()) {
+        connect(m_pTableView->selectionModel(), SIGNAL(currentChanged(QModelIndex, QModelIndex)), this, SLOT(onCurrentChanged(QModelIndex, QModelIndex)), Qt::UniqueConnection);
+    }
+
+    m_bSortActive = false;
+    updateResetFilterEnabled();
+}
+
+void XFTableView::setCustomModel(QAbstractItemModel *pModel, bool bFilterEnabled)
+{
+    m_pHeaderModel = nullptr;
+    m_pTableModel = nullptr;
+    m_pTableView->setCustomModel(pModel, bFilterEnabled);
 
     m_bSortActive = false;
     updateResetFilterEnabled();
@@ -136,6 +154,51 @@ void XFTableView::adjust()
 QAbstractItemModel *XFTableView::model() const
 {
     return m_pTableView->model();
+}
+
+QItemSelectionModel *XFTableView::selectionModel() const
+{
+    return m_pTableView->selectionModel();
+}
+
+void XFTableView::setSelectionBehavior(QAbstractItemView::SelectionBehavior behavior)
+{
+    m_pTableView->setSelectionBehavior(behavior);
+}
+
+void XFTableView::setSelectionMode(QAbstractItemView::SelectionMode mode)
+{
+    m_pTableView->setSelectionMode(mode);
+}
+
+void XFTableView::setEditTriggers(QAbstractItemView::EditTriggers triggers)
+{
+    m_pTableView->setEditTriggers(triggers);
+}
+
+void XFTableView::setSortingEnabled(bool bEnable)
+{
+    m_pTableView->setSortingEnabled(bEnable);
+}
+
+QHeaderView *XFTableView::horizontalHeader() const
+{
+    return m_pTableView->horizontalHeader();
+}
+
+QHeaderView *XFTableView::verticalHeader() const
+{
+    return m_pTableView->verticalHeader();
+}
+
+void XFTableView::setThreadedFilterSortEnabled(bool bEnabled)
+{
+    m_pTableView->setThreadedFilterSortEnabled(bEnabled);
+}
+
+bool XFTableView::isThreadedFilterSortEnabled() const
+{
+    return m_pTableView->isThreadedFilterSortEnabled();
 }
 
 void XFTableView::setShowOffset(bool bShowOffset)
@@ -277,12 +340,31 @@ void XFTableView::updateResetFilterEnabled()
 void XFTableView::onTableBusyChanged(bool bBusy)
 {
     if (bBusy) {
+        if (!m_bProgressStateSaved) {
+            m_progressStateBeforeBusy.bVisible = m_pProgressBar->isVisible();
+            m_progressStateBeforeBusy.nMinimum = m_pProgressBar->minimum();
+            m_progressStateBeforeBusy.nMaximum = m_pProgressBar->maximum();
+            m_progressStateBeforeBusy.nValue = m_pProgressBar->value();
+            m_progressStateBeforeBusy.sFormat = m_pProgressBar->format();
+            m_bProgressStateSaved = true;
+        }
+
         m_pProgressBar->setRange(0, 0);  // indeterminate/"marquee" mode, no exact progress available
+        m_pProgressBar->setFormat(tr("Sorting/filtering") + QString("..."));
         m_pProgressBar->setVisible(true);
     } else {
-        m_pProgressBar->setRange(0, 100);
-        m_pProgressBar->setValue(0);
-        m_pProgressBar->setVisible(false);
+        if (m_bProgressStateSaved) {
+            m_pProgressBar->setRange(m_progressStateBeforeBusy.nMinimum, m_progressStateBeforeBusy.nMaximum);
+            m_pProgressBar->setValue(m_progressStateBeforeBusy.nValue);
+            m_pProgressBar->setFormat(m_progressStateBeforeBusy.sFormat);
+            m_pProgressBar->setVisible(m_progressStateBeforeBusy.bVisible);
+            m_progressStateBeforeBusy = {};
+            m_bProgressStateSaved = false;
+        } else {
+            m_pProgressBar->setRange(0, 100);
+            m_pProgressBar->setValue(0);
+            m_pProgressBar->setVisible(false);
+        }
     }
 }
 
@@ -299,6 +381,11 @@ void XFTableView::setProgressRange(qint32 nMinimum, qint32 nMaximum)
 void XFTableView::setProgressValue(qint32 nValue)
 {
     m_pProgressBar->setValue(nValue);
+}
+
+void XFTableView::setProgressFormat(const QString &sFormat)
+{
+    m_pProgressBar->setFormat(sFormat);
 }
 
 void XFTableView::setStatusBarText(const QString &sText)

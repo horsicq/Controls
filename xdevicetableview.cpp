@@ -34,7 +34,7 @@ XDeviceTableView::XDeviceTableView(QWidget *pParent) : XAbstractTableView(pParen
 
 XDeviceTableView::~XDeviceTableView()
 {
-    // TODO Check
+    reset();
 }
 
 void XDeviceTableView::setXInfoDB(XInfoDB *pXInfoDB)
@@ -53,13 +53,15 @@ XInfoDB *XDeviceTableView::getXInfoDB()
     return m_pXInfoDB;
 }
 
-void XDeviceTableView::setData(QIODevice *pDevice, const XBinaryView::OPTIONS &options)
+void XDeviceTableView::setData(const XBinary::INDATA &inData, const XBinaryView::OPTIONS &options)
 {
-    m_binaryView.setData(pDevice, options);
+    reset();
+
+    m_binaryView.setData(inData, options);
 
     m_listVisited.clear();
 
-    if (pDevice) {
+    if (getDevice()) {
         XDeviceTableView::adjustScrollCount();
         //    setReadonly(!(pDevice->isWritable()));
         setActive(true);
@@ -68,9 +70,16 @@ void XDeviceTableView::setData(QIODevice *pDevice, const XBinaryView::OPTIONS &o
     }
 }
 
+void XDeviceTableView::setData(QIODevice *pDevice, const XBinaryView::OPTIONS &options)
+{
+    setData(XFormats::createINDATA(options.fileType, pDevice, options.bIsImage, options.nModuleAddress), options);
+}
+
 void XDeviceTableView::reset()
 {
     m_binaryView.reset();
+    m_listVisited.clear();
+    setActive(false);
 }
 
 QIODevice *XDeviceTableView::getDevice()

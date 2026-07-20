@@ -69,6 +69,7 @@ public:
     explicit XBinaryView(QObject *pParent = nullptr);
     virtual ~XBinaryView();
 
+    void setData(const XBinary::INDATA &inData, const OPTIONS &options);
     void setData(QIODevice *pDevice, const OPTIONS &options);
     void reset();
     QIODevice *getDevice();
@@ -92,7 +93,7 @@ public:
     OPTIONS *getOptions();
 
 private:
-    QIODevice *m_pDevice;
+    XBinary::INDATA m_inData;
     QList<VIEWSTRUCT> m_listViewStruct;
     XDisasmCore m_disasmCore;
     XBinary::_MEMORY_MAP m_memoryMap;

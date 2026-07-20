@@ -35,14 +35,14 @@ XFTreeView::~XFTreeView()
     clear();
 }
 
-void XFTreeView::setData(const XFormats::INDATA &inData, const QList<XBinary::XFHEADER> &listHeaders)
+void XFTreeView::setData(const XBinary::INDATA &inData, const QList<XBinary::XFHEADER> &listHeaders, bool bExtraInfo)
 {
     clear();
 
     m_inData = inData;
 
     m_pTreeModel = new XFTreeModel(this);
-    m_pTreeModel->setData(m_inData, listHeaders);
+    m_pTreeModel->setData(m_inData, listHeaders, bExtraInfo);
     setModel(m_pTreeModel);
 
     adjust();

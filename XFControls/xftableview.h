@@ -40,11 +40,21 @@ public:
     explicit XFTableView(QWidget *pParent = nullptr);
     virtual ~XFTableView();
 
-    void setData(const XFormats::INDATA &inData, const XBinary::XFHEADER &xfHeader);
+    void setData(const XBinary::INDATA &inData, const XBinary::XFHEADER &xfHeader);
+    void setCustomModel(QAbstractItemModel *pModel, bool bFilterEnabled);
     void clear();
     void adjust();
     QAbstractItemModel *model() const;
+    QItemSelectionModel *selectionModel() const;
 
+    void setSelectionBehavior(QAbstractItemView::SelectionBehavior behavior);
+    void setSelectionMode(QAbstractItemView::SelectionMode mode);
+    void setEditTriggers(QAbstractItemView::EditTriggers triggers);
+    void setSortingEnabled(bool bEnable);
+    QHeaderView *horizontalHeader() const;
+    QHeaderView *verticalHeader() const;
+    void setThreadedFilterSortEnabled(bool bEnabled);
+    bool isThreadedFilterSortEnabled() const;
     void setShowOffset(bool bShowOffset);
     void setShowPresentation(bool bShowPresentation);
     void setStretchLastColumn(bool bState);
@@ -58,6 +68,7 @@ public:
     void setProgressVisible(bool bVisible);
     void setProgressRange(qint32 nMinimum, qint32 nMaximum);
     void setProgressValue(qint32 nValue);
+    void setProgressFormat(const QString &sFormat);
 
     void setStatusBarText(const QString &sText);
 
@@ -65,6 +76,7 @@ signals:
     void fieldSelected(qint32 nFieldIndex, QVariant value, const XBinary::XFRECORD &xfRecord);
     void fieldDoubleClicked(qint32 nFieldIndex, QVariant value, const XBinary::XFRECORD &xfRecord);
     void rowSelected(qint32 nRow);
+    void busyChanged(bool bBusy);
 
 private slots:
     void onCurrentChanged(const QModelIndex &current, const QModelIndex &previous);
@@ -80,7 +92,15 @@ private:
     void updateResetFilterEnabled();
 
 private:
-    XFormats::INDATA m_inData;
+    struct PROGRESS_STATE {
+        bool bVisible;
+        qint32 nMinimum;
+        qint32 nMaximum;
+        qint32 nValue;
+        QString sFormat;
+    };
+
+    XBinary::INDATA m_inData;
     XBinary::XFHEADER m_xfHeader;
     XFModel_header *m_pHeaderModel;
     XFModel_table *m_pTableModel;
@@ -91,7 +111,9 @@ private:
     QAction *m_pActionSave;
     QProgressBar *m_pProgressBar;
     QStatusBar *m_pStatusBar;
+    PROGRESS_STATE m_progressStateBeforeBusy;
     bool m_bSortActive;
+    bool m_bProgressStateSaved;
 };
 
 #endif  // XFTABLEVIEW_H

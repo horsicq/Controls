@@ -43,13 +43,17 @@ public:
 private slots:
     void _textChanged(const QString &sText);
     void onSectionResized(int i, int nOldSize, int nNewSize);
+    void onSectionPressed(int logicalIndex);
     void onSectionClicked(int logicalIndex);
 
 signals:
     void filterChanged();
+    void sortRequested(int nColumn, Qt::SortOrder order);
 
 private:
     QList<QLineEdit *> m_listLineEdits;
+    qint32 m_nPressedSortIndicatorSection;
+    Qt::SortOrder m_pressedSortIndicatorOrder;
 };
 
 #endif  // XHEADERVIEW_H

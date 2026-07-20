@@ -20,13 +20,73 @@
  */
 
 #include "xmodel_msrecord.h"
+
 #include <QFile>
+
+namespace {
+QIODevice *createINDATADevice(const XBinary::INDATA &inData)
+{
+    QIODevice *pResult = nullptr;
+
+    if (inData.inDataMode == XBinary::INDATA_MODE_FILE) {
+        QFile *pFile = new QFile();
+        pFile->setFileName(inData.sFileName);
+
+        if (pFile->open(QIODevice::ReadOnly)) {
+            pResult = pFile;
+        } else {
+            delete pFile;
+        }
+    } else if (inData.inDataMode == XBinary::INDATA_MODE_DEVICE) {
+        pResult = inData.pDevice;
+    }
+
+    return pResult;
+}
+
+void removeINDATADevice(QIODevice *pDevice, const XBinary::INDATA &inData)
+{
+    if ((inData.inDataMode == XBinary::INDATA_MODE_FILE) && pDevice) {
+        pDevice->close();
+        delete pDevice;
+    }
+}
+}  // namespace
 
 XModel_MSRecord::XModel_MSRecord(QIODevice *pDevice, const XBinary::_MEMORY_MAP &memoryMap, QVector<XBinary::MS_RECORD> *pListRecods, XBinary::VT valueType,
                                  QObject *pParent)
     : XModel(pParent)
 {
     m_pDevice = pDevice;
+    m_inData = {};
+    m_inData.inDataMode = XBinary::INDATA_MODE_DEVICE;
+    m_inData.fileType = memoryMap.fileType;
+    m_inData.pDevice = pDevice;
+    m_inData.bIsImage = memoryMap.bIsImage;
+    m_inData.nModuleAddress = memoryMap.nModuleAddress;
+    m_bIsDeviceCreated = false;
+    _init(memoryMap, pListRecods, valueType);
+}
+
+XModel_MSRecord::XModel_MSRecord(const XBinary::INDATA &inData, const XBinary::_MEMORY_MAP &memoryMap, QVector<XBinary::MS_RECORD> *pListRecods,
+                                 XBinary::VT valueType, QObject *pParent)
+    : XModel(pParent)
+{
+    m_inData = inData;
+    m_pDevice = createINDATADevice(m_inData);
+    m_bIsDeviceCreated = true;
+    _init(memoryMap, pListRecods, valueType);
+}
+
+XModel_MSRecord::~XModel_MSRecord()
+{
+    if (m_bIsDeviceCreated) {
+        removeINDATADevice(m_pDevice, m_inData);
+    }
+}
+
+void XModel_MSRecord::_init(const XBinary::_MEMORY_MAP &memoryMap, QVector<XBinary::MS_RECORD> *pListRecods, XBinary::VT valueType)
+{
     m_memoryMap = memoryMap;
     m_pListRecords = pListRecods;
     m_pListSignatureRecords = nullptr;
@@ -132,10 +192,12 @@ QVariant XModel_MSRecord::data(const QModelIndex &index, int nRole) const
                         }
                     }
                 } else if (nColumn == COLUMN_VALUE) {
-                    if (m_bValueCacheValid && (nDataRow < m_vecValueCache.count())) {
+                    if (!m_pListRecords->at(nDataRow).sValue.isEmpty()) {
+                        result = m_pListRecords->at(nDataRow).sValue;
+                    } else if (m_bValueCacheValid && (nDataRow < m_vecValueCache.count())) {
                         result = m_vecValueCache.at(nDataRow);
-                    } else if ((m_valueType == XBinary::VT_STRING) || (m_valueType == XBinary::VT_A_I) || (m_valueType == XBinary::VT_U_I) ||
-                               (m_valueType == XBinary::VT_UTF8_I)) {
+                    } else if (m_pDevice && ((m_valueType == XBinary::VT_STRING) || (m_valueType == XBinary::VT_A_I) || (m_valueType == XBinary::VT_U_I) ||
+                                             (m_valueType == XBinary::VT_UTF8_I))) {
                         XBinary binary(m_pDevice);
                         XBinary::VT valueType = m_valueType;
                         if (m_valueType == XBinary::VT_STRING) {
@@ -243,12 +305,12 @@ QVariant XModel_MSRecord::headerData(int nSection, Qt::Orientation orientation, 
 
 bool XModel_MSRecord::isCustomFilter()
 {
-    return true;
+    return false;
 }
 
 bool XModel_MSRecord::isCustomSort()
 {
-    return true;
+    return false;
 }
 
 XModel::SORT_METHOD XModel_MSRecord::getSortMethod(qint32 nColumn)
@@ -402,6 +464,11 @@ void XModel_MSRecord::buildValueCache()
     qint32 nRowCount = m_pListRecords->count();
     m_vecValueCache.resize(nRowCount);
 
+    if (!m_pDevice) {
+        m_bValueCacheValid = true;
+        return;
+    }
+
     // Try memory mapping for fast access (avoids per-byte I/O)
     QFile *pFile = qobject_cast<QFile *>(m_pDevice);
     qint64 nFileSize = m_pDevice->size();
@@ -417,7 +484,9 @@ void XModel_MSRecord::buildValueCache()
         for (qint32 i = 0; i < nRowCount; i++) {
             QString sValue;
 
-            if ((m_valueType == XBinary::VT_STRING) || (m_valueType == XBinary::VT_A_I) || (m_valueType == XBinary::VT_U_I) || (m_valueType == XBinary::VT_UTF8_I)) {
+            if (!m_pListRecords->at(i).sValue.isEmpty()) {
+                sValue = m_pListRecords->at(i).sValue;
+            } else if ((m_valueType == XBinary::VT_STRING) || (m_valueType == XBinary::VT_A_I) || (m_valueType == XBinary::VT_U_I) || (m_valueType == XBinary::VT_UTF8_I)) {
                 XBinary::VT valueType = m_valueType;
 
                 if (m_valueType == XBinary::VT_STRING) {
@@ -518,7 +587,9 @@ void XModel_MSRecord::buildValueCache()
         for (qint32 i = 0; i < nRowCount; i++) {
             QString sValue;
 
-            if ((m_valueType == XBinary::VT_STRING) || (m_valueType == XBinary::VT_A_I) || (m_valueType == XBinary::VT_U_I) || (m_valueType == XBinary::VT_UTF8_I)) {
+            if (!m_pListRecords->at(i).sValue.isEmpty()) {
+                sValue = m_pListRecords->at(i).sValue;
+            } else if ((m_valueType == XBinary::VT_STRING) || (m_valueType == XBinary::VT_A_I) || (m_valueType == XBinary::VT_U_I) || (m_valueType == XBinary::VT_UTF8_I)) {
                 XBinary::VT valueType = m_valueType;
 
                 if (m_valueType == XBinary::VT_STRING) {

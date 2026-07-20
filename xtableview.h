@@ -28,6 +28,7 @@
 #include <QElapsedTimer>
 #include <QFutureWatcher>
 #include <QAtomicInt>
+#include <QSharedPointer>
 #include <QTimer>
 
 #include "xheaderview.h"
@@ -48,6 +49,7 @@ public:
     void setFilterEnabled(qint32 nColumn, bool bFilterEnabled);
     void setColumnFilterString(qint32 nColumn, const QString &sFilter);
     void adjust();
+    bool isSortingEnabled() const;
 
     // Opt-in: run filtering/sorting on a worker thread and show progress via
     // busyChanged(). Off by default so every existing caller keeps today's
@@ -55,6 +57,10 @@ public:
     // one is still computing cancels it and starts fresh.
     void setThreadedFilterSortEnabled(bool bEnabled);
     bool isThreadedFilterSortEnabled() const;
+
+public slots:
+    void setSortingEnabled(bool bEnable);
+    void sortByColumn(int column, Qt::SortOrder order);
 
 signals:
     void invalidateSignal();
@@ -67,8 +73,9 @@ private:
     enum PENDING_OPERATION { OPERATION_NONE = 0, OPERATION_FILTER, OPERATION_SORT };
 
     void startAsyncFilterOperation(const QList<QString> &listFilters);
+    void startAsyncCustomFilterOperation(const QList<QString> &listFilters);
     void startAsyncSortOperation(qint32 nColumn, Qt::SortOrder order);
-    void cancelAsyncOperation();
+    void cancelAsyncOperation(bool bWait = true);
 
 private slots:
     void onFilterChanged();
@@ -93,12 +100,15 @@ private:
     QList<QString> m_listCurrentFilters;
 
     bool m_bThreadedEnabled;
+    bool m_bSortingEnabled;
+    bool m_bApplyingAsyncSort;
     QFutureWatcher<bool> *m_pAsyncWatcher;
-    QAtomicInt m_asyncCancelFlag;
+    QSharedPointer<QAtomicInt> m_pAsyncCancelFlag;
     PENDING_OPERATION m_pendingOperation;
     QList<QString> m_listPendingFilters;
     qint32 m_nPendingSortColumn;
     Qt::SortOrder m_pendingSortOrder;
+    qint32 m_nCustomFilterGeneration;
 };
 
 #endif  // XTABLEVIEW_H

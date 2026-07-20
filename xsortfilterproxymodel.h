@@ -70,7 +70,7 @@ private:
     qint32 m_nSortCacheColumn;
     XModel::SORT_METHOD m_sortCacheMethod;
     QVector<quint64> m_vecSortCacheHex;
-    QVector<QString> m_vecSortCacheStr;
+    QVector<QVariant> m_vecSortCacheVariants;
 
     bool m_bFilterAcceptCacheValid;
     QVector<bool> m_vecFilterAcceptCache;

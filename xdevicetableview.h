@@ -46,6 +46,7 @@ public:
 
     void setXInfoDB(XInfoDB *pXInfoDB);
     XInfoDB *getXInfoDB();
+    void setData(const XBinary::INDATA &inData, const XBinaryView::OPTIONS &options);
     void setData(QIODevice *pDevice, const XBinaryView::OPTIONS &options);
     void reset();
     QIODevice *getDevice();

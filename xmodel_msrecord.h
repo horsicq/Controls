@@ -43,6 +43,9 @@ public:
 
     XModel_MSRecord(QIODevice *pDevice, const XBinary::_MEMORY_MAP &memoryMap, QVector<XBinary::MS_RECORD> *pListRecods, XBinary::VT valueType,
                     QObject *pParent = nullptr);
+    XModel_MSRecord(const XBinary::INDATA &inData, const XBinary::_MEMORY_MAP &memoryMap, QVector<XBinary::MS_RECORD> *pListRecods,
+                    XBinary::VT valueType, QObject *pParent = nullptr);
+    ~XModel_MSRecord() override;
 
     void setValue(XBinary::ENDIAN endian, XBinary::VT valueType, QVariant varValue);
     void setSignaturesList(QList<XBinary::SIGNATUREDB_RECORD> *pListSignatureRecords);
@@ -60,9 +63,12 @@ public:
     bool isValueCacheValid() const;
 
 private:
+    void _init(const XBinary::_MEMORY_MAP &memoryMap, QVector<XBinary::MS_RECORD> *pListRecods, XBinary::VT valueType);
     quint64 _getRawSortKey(qint32 nDataRow, qint32 nColumn) const;
 
+    XBinary::INDATA m_inData;
     QIODevice *m_pDevice;
+    bool m_bIsDeviceCreated;
     XBinary::_MEMORY_MAP m_memoryMap;
     QVector<XBinary::MS_RECORD> *m_pListRecords;
     XBinary::MODE m_modeAddress;

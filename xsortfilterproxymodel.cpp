@@ -21,6 +21,31 @@
 
 #include "xsortfilterproxymodel.h"
 
+namespace {
+bool isNumericVariant(const QVariant &value)
+{
+    switch (value.userType()) {
+        case QMetaType::Int:
+        case QMetaType::UInt:
+        case QMetaType::LongLong:
+        case QMetaType::ULongLong:
+        case QMetaType::Double:
+            return true;
+        default:
+            return false;
+    }
+}
+
+bool variantLessThan(const QVariant &left, const QVariant &right)
+{
+    if (isNumericVariant(left) && isNumericVariant(right)) {
+        return left.toDouble() < right.toDouble();
+    }
+
+    return left.toString() < right.toString();
+}
+}  // namespace
+
 XSortFilterProxyModel::XSortFilterProxyModel(QObject *pParent) : QSortFilterProxyModel(pParent)
 {
     m_bIsXmodel = false;
@@ -104,6 +129,12 @@ QVariant XSortFilterProxyModel::data(const QModelIndex &index, int nRole) const
 
 void XSortFilterProxyModel::sort(int column, Qt::SortOrder order)
 {
+    if (column < 0) {
+        QSortFilterProxyModel::sort(column, order);
+        clearSortCache();
+        return;
+    }
+
     if (m_bIsCustomSort && m_pXModel) {
         m_pXModel->sortByColumn(column, order);
     } else {
@@ -188,7 +219,7 @@ bool XSortFilterProxyModel::lessThan(const QModelIndex &left, const QModelIndex 
             if (m_sortCacheMethod == XModel::SORT_METHOD_HEX) {
                 bResult = m_vecSortCacheHex.at(nLeftRow) < m_vecSortCacheHex.at(nRightRow);
             } else {
-                bResult = m_vecSortCacheStr.at(nLeftRow) < m_vecSortCacheStr.at(nRightRow);
+                bResult = variantLessThan(m_vecSortCacheVariants.at(nLeftRow), m_vecSortCacheVariants.at(nRightRow));
             }
         }
     }
@@ -235,7 +266,7 @@ bool XSortFilterProxyModel::buildSortCache(qint32 nColumn, QAtomicInt *pCancelFl
     // so this loop is safe to run concurrently with GUI-thread reads of the (still
     // previous, still valid) cache below.
     QVector<quint64> vecHex;
-    QVector<QString> vecStr;
+    QVector<QVariant> vecVariants;
 
     if (sortMethod == XModel::SORT_METHOD_HEX) {
         vecHex.resize(nRowCount);
@@ -258,24 +289,28 @@ bool XSortFilterProxyModel::buildSortCache(qint32 nColumn, QAtomicInt *pCancelFl
             }
         }
     } else {
-        vecStr.resize(nRowCount);
+        vecVariants.resize(nRowCount);
 
         for (qint32 i = 0; i < nRowCount; i++) {
             if (pCancelFlag && pCancelFlag->loadAcquire()) {
                 return false;
             }
             QModelIndex idx = pSource->index(i, nColumn);
-            vecStr[i] = pSource->data(idx).toString();
+            vecVariants[i] = pSource->data(idx);
         }
+    }
+
+    if (pCancelFlag && pCancelFlag->loadAcquire()) {
+        return false;
     }
 
     QMutexLocker locker(&m_cacheMutex);
 
     if (sortMethod == XModel::SORT_METHOD_HEX) {
         m_vecSortCacheHex = vecHex;
-        m_vecSortCacheStr.clear();
+        m_vecSortCacheVariants.clear();
     } else {
-        m_vecSortCacheStr = vecStr;
+        m_vecSortCacheVariants = vecVariants;
         m_vecSortCacheHex.clear();
     }
 
@@ -290,7 +325,7 @@ void XSortFilterProxyModel::clearSortCache()
 {
     QMutexLocker locker(&m_cacheMutex);
     m_vecSortCacheHex.clear();
-    m_vecSortCacheStr.clear();
+    m_vecSortCacheVariants.clear();
     m_bSortCacheValid = false;
     m_nSortCacheColumn = -1;
 }
@@ -341,6 +376,10 @@ bool XSortFilterProxyModel::buildFilterAcceptCache(const QList<QString> &listFil
         }
 
         vecResult[i] = bAccepted;
+    }
+
+    if (pCancelFlag && pCancelFlag->loadAcquire()) {
+        return false;
     }
 
     QMutexLocker locker(&m_cacheMutex);

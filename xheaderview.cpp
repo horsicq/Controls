@@ -19,10 +19,15 @@
  * SOFTWARE.
  */
 #include "xheaderview.h"
+#include <QSignalBlocker>
 
 XHeaderView::XHeaderView(QWidget *pParent) : QHeaderView(Qt::Horizontal, pParent)
 {
+    m_nPressedSortIndicatorSection = -1;
+    m_pressedSortIndicatorOrder = Qt::AscendingOrder;
+
     connect(this, SIGNAL(sectionResized(int, int, int)), this, SLOT(onSectionResized(int, int, int)));
+    connect(this, SIGNAL(sectionPressed(int)), this, SLOT(onSectionPressed(int)));
     connect(this, SIGNAL(sectionClicked(int)), this, SLOT(onSectionClicked(int)));
 
     setSectionsClickable(true);
@@ -145,15 +150,28 @@ void XHeaderView::onSectionResized(int i, int nOldSize, int nNewSize)
     adjustPositions();
 }
 
+void XHeaderView::onSectionPressed(int logicalIndex)
+{
+    Q_UNUSED(logicalIndex)
+
+    m_nPressedSortIndicatorSection = sortIndicatorSection();
+    m_pressedSortIndicatorOrder = sortIndicatorOrder();
+}
+
 void XHeaderView::onSectionClicked(int logicalIndex)
 {
-    Qt::SortOrder sortOrder = sortIndicatorOrder();
+    Qt::SortOrder sortOrder = Qt::AscendingOrder;
 
-    if (sortIndicatorSection() == logicalIndex) {
-        sortOrder = (sortOrder == Qt::AscendingOrder) ? Qt::DescendingOrder : Qt::AscendingOrder;
+    if (m_nPressedSortIndicatorSection == logicalIndex) {
+        sortOrder = (m_pressedSortIndicatorOrder == Qt::AscendingOrder) ? Qt::DescendingOrder : Qt::AscendingOrder;
     } else {
         sortOrder = Qt::AscendingOrder;
     }
 
-    emit sortIndicatorChanged(logicalIndex, sortOrder);
+    {
+        QSignalBlocker blocker(this);
+        setSortIndicator(logicalIndex, sortOrder);
+    }
+
+    emit sortRequested(logicalIndex, sortOrder);
 }
