@@ -40,7 +40,7 @@ void XBinaryView::setData(const XBinary::INDATA &inData, const OPTIONS &options)
     m_inData.pDevice = XFormats::createDevice(inData);
     m_options = options;
 
-    QIODevice *pDevice = getDevice();
+    QIODevice *pDevice = m_inData.pDevice;
 
     m_disasmCore.setMode(m_options.disasmMode);
 
@@ -100,9 +100,10 @@ void XBinaryView::setData(const XBinary::INDATA &inData, const OPTIONS &options)
         if (!bAll) {
             if (record.nOffset != -1) {
                 if (record.nOffset < m_options.nStartOffset && (record.nOffset + record.nSize > m_options.nStartOffset)) {
-                    record.nAddress += m_options.nStartOffset - record.nOffset;
+                    qint64 nDelta = m_options.nStartOffset - record.nOffset;
+                    record.nAddress += nDelta;
+                    record.nSize -= nDelta;
                     record.nOffset = m_options.nStartOffset;
-                    record.nSize -= m_options.nStartOffset - record.nOffset;
                     bAdd = true;
                 }
                 if (record.nOffset < m_options.nStartOffset + m_options.nTotalSize && (record.nOffset + record.nSize > m_options.nStartOffset + m_options.nTotalSize)) {
@@ -122,14 +123,9 @@ void XBinaryView::setData(const XBinary::INDATA &inData, const OPTIONS &options)
     m_nViewSize = nViewPos;
 }
 
-void XBinaryView::setData(QIODevice *pDevice, const OPTIONS &options)
-{
-    setData(XFormats::createINDATA(options.fileType, pDevice, options.bIsImage, options.nModuleAddress), options);
-}
-
 void XBinaryView::reset()
 {
-    QIODevice *pDevice = getDevice();
+    QIODevice *pDevice = m_inData.pDevice;
 
     XFormats::removeDevice(pDevice, m_inData);
     m_inData = {};
@@ -138,9 +134,9 @@ void XBinaryView::reset()
     m_listViewStruct.clear();
 }
 
-QIODevice *XBinaryView::getDevice()
+const XBinary::INDATA &XBinaryView::getInData()
 {
-    return m_inData.pDevice;
+    return m_inData;
 }
 
 XBinaryView::VIEWSTRUCT XBinaryView::_getViewStructByViewPos(XVPOS nViewPos)

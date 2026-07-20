@@ -70,9 +70,8 @@ public:
     virtual ~XBinaryView();
 
     void setData(const XBinary::INDATA &inData, const OPTIONS &options);
-    void setData(QIODevice *pDevice, const OPTIONS &options);
     void reset();
-    QIODevice *getDevice();
+    const XBinary::INDATA &getInData();
 
     XVPOS deviceOffsetToViewPos(qint64 nOffset);
     qint64 viewPosToDeviceOffset(XVPOS nViewPos);

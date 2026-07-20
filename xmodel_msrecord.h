@@ -26,6 +26,8 @@
 #include "xmodel.h"
 #include <algorithm>
 
+#include <QTemporaryFile>
+
 class XModel_MSRecord : public XModel {
     Q_OBJECT
 
@@ -61,10 +63,13 @@ public:
     void buildValueCache();
     void clearValueCache();
     bool isValueCacheValid() const;
+    bool spillValuesToDisk();  // Move string values to a memory-mapped temp file to reduce RAM usage; the model reads them back on demand
+    bool isValueStoreActive() const;
 
 private:
     void _init(const XBinary::_MEMORY_MAP &memoryMap, QVector<XBinary::MS_RECORD> *pListRecods, XBinary::VT valueType);
     quint64 _getRawSortKey(qint32 nDataRow, qint32 nColumn) const;
+    QString _readValueFromStore(qint32 nDataRow) const;
 
     XBinary::INDATA m_inData;
     QIODevice *m_pDevice;
@@ -81,6 +86,9 @@ private:
     QVector<QString> m_vecValueCache;
     bool m_bValueCacheValid;
     QVector<qint32> m_vecSortIndex;
+    QTemporaryFile m_valueStoreFile;             // Disk cache with the UTF-8 encoded string values; removed automatically
+    const uchar *m_pValueStoreMapped;            // Memory mapping of the store: immutable, safe for concurrent reads from the filter/sort threads
+    QVector<quint64> m_vecValueStoreIndex;       // Packed per record: (nOffset << 24) | nUtf8Length
 };
 
 #endif  // XMODEL_MSRECORD_H

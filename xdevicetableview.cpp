@@ -61,7 +61,7 @@ void XDeviceTableView::setData(const XBinary::INDATA &inData, const XBinaryView:
 
     m_listVisited.clear();
 
-    if (getDevice()) {
+    if (m_binaryView.getInData().pDevice) {
         XDeviceTableView::adjustScrollCount();
         //    setReadonly(!(pDevice->isWritable()));
         setActive(true);
@@ -70,21 +70,11 @@ void XDeviceTableView::setData(const XBinary::INDATA &inData, const XBinaryView:
     }
 }
 
-void XDeviceTableView::setData(QIODevice *pDevice, const XBinaryView::OPTIONS &options)
-{
-    setData(XFormats::createINDATA(options.fileType, pDevice, options.bIsImage, options.nModuleAddress), options);
-}
-
 void XDeviceTableView::reset()
 {
     m_binaryView.reset();
     m_listVisited.clear();
     setActive(false);
-}
-
-QIODevice *XDeviceTableView::getDevice()
-{
-    return m_binaryView.getDevice();
 }
 
 XBinaryView *XDeviceTableView::getBinaryView()
@@ -248,9 +238,9 @@ qint64 XDeviceTableView::write_array(qint64 nOffset, char *pData, qint64 nDataSi
 {
     qint64 nResult = 0;
 
-    if (getDevice()) {
+    if (m_binaryView.getInData().pDevice) {
         if (saveBackup()) {
-            nResult = XBinary::write_array(getDevice(), nOffset, pData, nDataSize);
+            nResult = XBinary::write_array(m_binaryView.getInData().pDevice, nOffset, pData, nDataSize);
         }
     }
 
@@ -261,8 +251,8 @@ QByteArray XDeviceTableView::read_array(qint64 nOffset, qint32 nSize)
 {
     QByteArray baResult;
 
-    if (getDevice()) {
-        baResult = XBinary::read_array(getDevice(), nOffset, nSize);
+    if (m_binaryView.getInData().pDevice) {
+        baResult = XBinary::read_array(m_binaryView.getInData().pDevice, nOffset, nSize);
     }
 
     return baResult;
@@ -344,7 +334,7 @@ void XDeviceTableView::setSelectionOffset(qint64 nOffset, qint64 nSize)
 
 bool XDeviceTableView::isEdited()
 {
-    bool bResult = XBinary::isBackupPresent(XBinary::getBackupDevice(getDevice()));
+    bool bResult = XBinary::isBackupPresent(XBinary::getBackupDevice(m_binaryView.getInData().pDevice));
 
     return bResult;
 }
@@ -355,7 +345,7 @@ bool XDeviceTableView::saveBackup()
 
     if ((getGlobalOptions()->isSaveBackup()) && (!isEdited())) {
         // Save backup
-        bResult = XBinary::saveBackup(XBinary::getBackupDevice(getDevice()));
+        bResult = XBinary::saveBackup(XBinary::getBackupDevice(m_binaryView.getInData().pDevice));
     }
 
     return bResult;
@@ -481,14 +471,14 @@ void XDeviceTableView::_findSlot(XBinary::SEARCHMODE mode)
     DialogSearch::OPTIONS options = {};
     options.bShowBegin = true;
 
-    DialogSearch dialogSearch(this, getDevice(), &m_searchData, mode, options);
+    DialogSearch dialogSearch(this, m_binaryView.getInData().pDevice, &m_searchData, mode, options);
 
     if (dialogSearch.exec() == QDialog::Accepted)  // TODO use status
     {
         SearchProcess searchProcess;
         XDialogProcess dsp(this, &searchProcess);
         dsp.setGlobal(getShortcuts(), getGlobalOptions());
-        searchProcess.setData(getDevice(), &m_searchData, dsp.getPdStruct());
+        searchProcess.setData(m_binaryView.getInData().pDevice, &m_searchData, dsp.getPdStruct());
         dsp.start();
         dsp.showDialogDelay();
 
@@ -515,7 +505,7 @@ void XDeviceTableView::_findNextSlot()
         SearchProcess searchProcess;
         XDialogProcess dsp(this, &searchProcess);
         dsp.setGlobal(getShortcuts(), getGlobalOptions());
-        searchProcess.setData(getDevice(), &m_searchData, dsp.getPdStruct());
+        searchProcess.setData(m_binaryView.getInData().pDevice, &m_searchData, dsp.getPdStruct());
         dsp.start();
         dsp.showDialogDelay();
 

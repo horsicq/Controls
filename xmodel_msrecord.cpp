@@ -94,6 +94,7 @@ void XModel_MSRecord::_init(const XBinary::_MEMORY_MAP &memoryMap, QVector<XBina
     m_endian = XBinary::ENDIAN_LITTLE;
     m_valueType = valueType;
     m_bValueCacheValid = false;
+    m_pValueStoreMapped = nullptr;
 
     qint32 nRowCount = pListRecods->count();
 
@@ -194,6 +195,8 @@ QVariant XModel_MSRecord::data(const QModelIndex &index, int nRole) const
                 } else if (nColumn == COLUMN_VALUE) {
                     if (!m_pListRecords->at(nDataRow).sValue.isEmpty()) {
                         result = m_pListRecords->at(nDataRow).sValue;
+                    } else if (m_pValueStoreMapped) {
+                        result = _readValueFromStore(nDataRow);  // Disk cache: keeps the exact decoded strings and is safe for the filter/sort threads
                     } else if (m_bValueCacheValid && (nDataRow < m_vecValueCache.count())) {
                         result = m_vecValueCache.at(nDataRow);
                     } else if (m_pDevice && ((m_valueType == XBinary::VT_STRING) || (m_valueType == XBinary::VT_A_I) || (m_valueType == XBinary::VT_U_I) ||
@@ -342,8 +345,8 @@ void XModel_MSRecord::sortByColumn(qint32 nColumn, Qt::SortOrder order)
 {
     qint32 nRowCount = m_pListRecords->count();
 
-    if ((nColumn == COLUMN_VALUE) && !m_bValueCacheValid) {
-        buildValueCache();
+    if ((nColumn == COLUMN_VALUE) && !m_bValueCacheValid && !m_pValueStoreMapped) {
+        buildValueCache();  // With an active disk store the values are read directly from it below
     }
 
     emit layoutAboutToBeChanged();
@@ -390,7 +393,9 @@ void XModel_MSRecord::sortByColumn(qint32 nColumn, Qt::SortOrder order)
         QVector<QPair<QString, qint32>> vecPairs(nRowCount);
 
         for (qint32 i = 0; i < nRowCount; i++) {
-            if ((nColumn == COLUMN_VALUE) && m_bValueCacheValid) {
+            if ((nColumn == COLUMN_VALUE) && m_pValueStoreMapped) {
+                vecPairs[i].first = _readValueFromStore(i);
+            } else if ((nColumn == COLUMN_VALUE) && m_bValueCacheValid) {
                 vecPairs[i].first = m_vecValueCache.at(i);
             } else if (nColumn == COLUMN_REGION) {
                 if (m_pListRecords->at(i).nRegionIndex >= 0) {
@@ -463,6 +468,16 @@ void XModel_MSRecord::buildValueCache()
 {
     qint32 nRowCount = m_pListRecords->count();
     m_vecValueCache.resize(nRowCount);
+
+    if (m_pValueStoreMapped) {
+        // The values are cached on disk: read them back from the store, not from the device
+        for (qint32 i = 0; i < nRowCount; i++) {
+            m_vecValueCache[i] = _readValueFromStore(i);
+        }
+
+        m_bValueCacheValid = true;
+        return;
+    }
 
     if (!m_pDevice) {
         m_bValueCacheValid = true;
@@ -633,4 +648,99 @@ void XModel_MSRecord::clearValueCache()
 bool XModel_MSRecord::isValueCacheValid() const
 {
     return m_bValueCacheValid;
+}
+
+bool XModel_MSRecord::spillValuesToDisk()
+{
+    if (m_pValueStoreMapped) {
+        return true;  // Already spilled
+    }
+
+    qint32 nRowCount = m_pListRecords->count();
+
+    if (nRowCount == 0) {
+        return false;
+    }
+
+    if (!m_valueStoreFile.open()) {
+        return false;
+    }
+
+    m_vecValueStoreIndex.resize(nRowCount);
+
+    qint64 nCurrentOffset = 0;
+    QByteArray baBuffer;
+    const qint32 N_BUFFER_LIMIT = 0x400000;  // Flush in 4 MiB chunks
+
+    for (qint32 i = 0; i < nRowCount; i++) {
+        QByteArray baValue = m_pListRecords->at(i).sValue.toUtf8();
+        qint32 nLength = qMin(baValue.size(), (qint32)0xFFFFFF);  // 24 bits for the length
+
+        m_vecValueStoreIndex[i] = ((quint64)nCurrentOffset << 24) | (quint64)nLength;
+
+        baBuffer.append(baValue.constData(), nLength);
+        nCurrentOffset += nLength;
+
+        if (baBuffer.size() >= N_BUFFER_LIMIT) {
+            if (m_valueStoreFile.write(baBuffer) != baBuffer.size()) {
+                m_valueStoreFile.close();
+                m_vecValueStoreIndex.clear();
+                return false;
+            }
+
+            baBuffer.clear();
+        }
+    }
+
+    if (!baBuffer.isEmpty()) {
+        if (m_valueStoreFile.write(baBuffer) != baBuffer.size()) {
+            m_valueStoreFile.close();
+            m_vecValueStoreIndex.clear();
+            return false;
+        }
+    }
+
+    m_valueStoreFile.flush();
+
+    if (nCurrentOffset > 0) {
+        m_pValueStoreMapped = m_valueStoreFile.map(0, nCurrentOffset);
+    }
+
+    if (m_pValueStoreMapped == nullptr) {
+        // Nothing to store or mapping failed: keep the values in memory
+        m_valueStoreFile.close();
+        m_vecValueStoreIndex.clear();
+        return false;
+    }
+
+    // The values are safe on disk now; release the RAM
+    for (qint32 i = 0; i < nRowCount; i++) {
+        (*m_pListRecords)[i].sValue = QString();
+    }
+
+    clearValueCache();
+
+    return true;
+}
+
+bool XModel_MSRecord::isValueStoreActive() const
+{
+    return (m_pValueStoreMapped != nullptr);
+}
+
+QString XModel_MSRecord::_readValueFromStore(qint32 nDataRow) const
+{
+    QString sResult;
+
+    if (m_pValueStoreMapped && (nDataRow >= 0) && (nDataRow < m_vecValueStoreIndex.size())) {
+        quint64 nPacked = m_vecValueStoreIndex.at(nDataRow);
+        qint64 nOffset = (qint64)(nPacked >> 24);
+        qint32 nLength = (qint32)(nPacked & 0xFFFFFF);
+
+        if (nLength > 0) {
+            sResult = QString::fromUtf8((const char *)(m_pValueStoreMapped + nOffset), nLength);
+        }
+    }
+
+    return sResult;
 }
