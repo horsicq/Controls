@@ -42,14 +42,14 @@ bool XDeviceTableEditView::getViewWidgetState(VIEWWIDGET viewWidget)
 
 void XDeviceTableEditView::dumpMemory(const QString &sDumpName, qint64 nOffset, qint64 nSize)
 {
-    QString sSaveFileName = XBinary::getResultFileName(getDevice(), QString("%1.bin").arg(sDumpName));
+    QString sSaveFileName = XBinary::getResultFileName(getBinaryView()->getInData().pDevice, QString("%1.bin").arg(sDumpName));
     QString sFileName = QFileDialog::getSaveFileName(this, tr("Save dump"), sSaveFileName, QString("%1 (*.bin)").arg(tr("Raw data")));
 
     if (!sFileName.isEmpty()) {
         DumpProcess dumpProcess;
         XDialogProcess dd(this, &dumpProcess);
         dd.setGlobal(getShortcuts(), getGlobalOptions());
-        dumpProcess.setData(getDevice(), nOffset, nSize, sFileName, DumpProcess::DT_DUMP_DEVICE_OFFSET, dd.getPdStruct());
+        dumpProcess.setData(getBinaryView()->getInData().pDevice, nOffset, nSize, sFileName, DumpProcess::DT_DUMP_DEVICE_OFFSET, dd.getPdStruct());
         dd.start();
         dd.showDialogDelay();
     }
@@ -104,7 +104,7 @@ void XDeviceTableEditView::_editHex()
 
         //        connect(&dialogHexEdit,SIGNAL(changed()),this,SLOT(_setEdited()));
 
-        dialogHexEdit.setData(getDevice(), state.nSelectionDeviceOffset, state.nSelectionSize);
+        dialogHexEdit.setData(getBinaryView()->getInData().pDevice, state.nSelectionDeviceOffset, state.nSelectionSize);
 
         dialogHexEdit.exec();
 
@@ -116,13 +116,13 @@ void XDeviceTableEditView::_editPatch()
 {
     if (!isReadonly()) {
         QString sJsonFileName =
-            QFileDialog::getOpenFileName(this, tr("Open file") + QString("..."), XBinary::getDeviceDirectory(getDevice()), QString("%1 (*.patch.json)").arg(tr("Patch")));
+            QFileDialog::getOpenFileName(this, tr("Open file") + QString("..."), XBinary::getDeviceDirectory(getBinaryView()->getInData().pDevice), QString("%1 (*.patch.json)").arg(tr("Patch")));
 
         if (sJsonFileName != "") {
             DumpProcess dumpProcess;
             XDialogProcess dd(this, &dumpProcess);
             dd.setGlobal(getShortcuts(), getGlobalOptions());
-            dumpProcess.setData(getDevice(), DumpProcess::DT_PATCH_DEVICE_OFFSET, sJsonFileName, dd.getPdStruct());
+            dumpProcess.setData(getBinaryView()->getInData().pDevice, DumpProcess::DT_PATCH_DEVICE_OFFSET, sJsonFileName, dd.getPdStruct());
             dd.start();
             dd.showDialogDelay();
 
@@ -134,13 +134,13 @@ void XDeviceTableEditView::_editPatch()
 void XDeviceTableEditView::_editRemove()
 {
     if (!isReadonly()) {
-        if (XBinary::isResizeEnable(getDevice())) {
+        if (XBinary::isResizeEnable(getBinaryView()->getInData().pDevice)) {
             DEVICESTATE state = getDeviceState();
 
             DialogRemove::DATA _data = {};
             _data.nOffset = state.nSelectionDeviceOffset;
             _data.nSize = state.nSelectionSize;
-            _data.nMaxSize = getDevice()->size();
+            _data.nMaxSize = getBinaryView()->getInData().pDevice->size();
 
             DialogRemove dialogRemove(this, &_data);
             dialogRemove.setGlobal(getShortcuts(), getGlobalOptions());
@@ -152,8 +152,8 @@ void XDeviceTableEditView::_editRemove()
                 if (nOldSize != nNewSize) {
                     if (saveBackup()) {
                         // mb TODO Process move memory
-                        if (XBinary::moveMemory(getDevice(), _data.nOffset + _data.nSize, _data.nOffset, _data.nSize)) {
-                            if (XBinary::resize(getDevice(), nNewSize)) {
+                        if (XBinary::moveMemory(getBinaryView()->getInData().pDevice, _data.nOffset + _data.nSize, _data.nOffset, _data.nSize)) {
+                            if (XBinary::resize(getBinaryView()->getInData().pDevice, nNewSize)) {
                                 // mb TODO correct bookmarks
                                 adjustScrollCount();
                                 reload(true);
@@ -171,9 +171,9 @@ void XDeviceTableEditView::_editRemove()
 void XDeviceTableEditView::_editResize()
 {
     if (!isReadonly()) {
-        if (XBinary::isResizeEnable(getDevice())) {
+        if (XBinary::isResizeEnable(getBinaryView()->getInData().pDevice)) {
             DialogResize::DATA _data = {};
-            _data.nOldSize = getDevice()->size();
+            _data.nOldSize = getBinaryView()->getInData().pDevice->size();
             _data.nNewSize = _data.nOldSize;
 
             DialogResize dialogResize(this, &_data);
@@ -182,7 +182,7 @@ void XDeviceTableEditView::_editResize()
             if (dialogResize.exec() == QDialog::Accepted) {
                 if (_data.nOldSize != _data.nNewSize) {
                     if (saveBackup()) {
-                        if (XBinary::resize(getDevice(), _data.nNewSize)) {
+                        if (XBinary::resize(getBinaryView()->getInData().pDevice, _data.nNewSize)) {
                             // mb TODO correct bookmarks
                             adjustScrollCount();
                             reload(true);
@@ -222,7 +222,7 @@ void XDeviceTableEditView::_strings()
         stringsOptions.bUnicode = true;
         stringsOptions.bNullTerminated = false;
 
-        dialogSearchStrings.setData(getDevice(), XBinary::FT_UNKNOWN, stringsOptions, true);
+        dialogSearchStrings.setData(getBinaryView()->getInData().pDevice, XBinary::FT_UNKNOWN, stringsOptions, true);
 
         XOptions::_adjustStayOnTop(&dialogSearchStrings, true);
 
@@ -247,7 +247,7 @@ void XDeviceTableEditView::_visualization()
 
         dialogVisualization.setGlobal(getShortcuts(), getGlobalOptions());
 
-        dialogVisualization.setData(getDevice(), XBinary::FT_UNKNOWN, true);  // TODO options
+        dialogVisualization.setData(getBinaryView()->getInData().pDevice, XBinary::FT_UNKNOWN, true);  // TODO options
 
         XOptions::_adjustStayOnTop(&dialogVisualization, true);
 
@@ -266,7 +266,7 @@ void XDeviceTableEditView::_dataInspector()
 
         XDeviceTableView::DEVICESTATE deviceState = getDeviceState();
 
-        DialogDataInspector dialogDataInspector(this, getDevice(), deviceState.nSelectionDeviceOffset, deviceState.nSelectionSize);
+        DialogDataInspector dialogDataInspector(this, getBinaryView()->getInData().pDevice, deviceState.nSelectionDeviceOffset, deviceState.nSelectionSize);
         dialogDataInspector.setGlobal(getShortcuts(), getGlobalOptions());
 
         connect(this, SIGNAL(currentLocationChanged(quint64, qint32, qint64)), &dialogDataInspector, SLOT(currentLocationChangedSlot(quint64, qint32, qint64)));
@@ -291,7 +291,7 @@ void XDeviceTableEditView::_dataConvertor()
 
         XDeviceTableView::DEVICESTATE deviceState = getDeviceState();
 
-        SubDevice sd(getDevice(), deviceState.nSelectionDeviceOffset, deviceState.nSelectionSize);
+        SubDevice sd(getBinaryView()->getInData().pDevice, deviceState.nSelectionDeviceOffset, deviceState.nSelectionSize);
 
         if (sd.open(QIODevice::ReadOnly)) {
             DialogXDataConvertor dialogDataConvertor(this);
@@ -321,7 +321,7 @@ void XDeviceTableEditView::_multisearch()
 
         DialogSearchValues dialogSearchValues(this);
         dialogSearchValues.setGlobal(getShortcuts(), getGlobalOptions());
-        dialogSearchValues.setData(getDevice(), options);
+        dialogSearchValues.setData(getBinaryView()->getInData().pDevice, options);
 
         connect(&dialogSearchValues, SIGNAL(currentLocationChanged(quint64, qint32, qint64)), this, SLOT(currentLocationChangedSlot(quint64, qint32, qint64)));
         connect(this, SIGNAL(closeWidget_Multisearch()), &dialogSearchValues, SLOT(close()));
@@ -365,7 +365,7 @@ void XDeviceTableEditView::_bookmarkList()
             setViewWidgetState(VIEWWIDGET_BOOKMARKS, true);
 
             quint64 nLocation = 0;
-            XIODevice *pSubDevice = dynamic_cast<XIODevice *>(getDevice());
+            XIODevice *pSubDevice = dynamic_cast<XIODevice *>(getBinaryView()->getInData().pDevice);
 
             if (pSubDevice) {
                 nLocation = pSubDevice->getInitLocation();
@@ -373,7 +373,7 @@ void XDeviceTableEditView::_bookmarkList()
 
             DialogBookmarks dialogBookmarks(this);
 
-            dialogBookmarks.setData(getXInfoDB(), nLocation, -1, getDevice()->size());
+            dialogBookmarks.setData(getXInfoDB(), nLocation, -1, getBinaryView()->getInData().pDevice->size());
 
             connect(&dialogBookmarks, SIGNAL(currentLocationChanged(quint64, qint32, qint64)), this, SLOT(currentLocationChangedSlot(quint64, qint32, qint64)));
             connect(this, SIGNAL(closeWidget_Bookmarks()), &dialogBookmarks, SLOT(close()));
@@ -392,7 +392,7 @@ void XDeviceTableEditView::_copyDataSlot()
 {
     DEVICESTATE state = getDeviceState();
 
-    DialogShowData dialogShowData(this, getDevice(), state.nSelectionDeviceOffset, state.nSelectionSize);
+    DialogShowData dialogShowData(this, getBinaryView()->getInData().pDevice, state.nSelectionDeviceOffset, state.nSelectionSize);
     dialogShowData.setGlobal(getShortcuts(), getGlobalOptions());
 
     dialogShowData.exec();
@@ -409,7 +409,7 @@ void XDeviceTableEditView::_hexSignatureSlot()
 {
     DEVICESTATE state = getDeviceState();
 
-    DialogHexSignature dhs(this, getDevice(), state.nSelectionDeviceOffset, state.nSelectionSize);
+    DialogHexSignature dhs(this, getBinaryView()->getInData().pDevice, state.nSelectionDeviceOffset, state.nSelectionSize);
     dhs.setGlobal(getShortcuts(), getGlobalOptions());
 
     dhs.exec();
