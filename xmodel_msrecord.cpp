@@ -21,6 +21,7 @@
 
 #include "xmodel_msrecord.h"
 
+#include <limits>
 #include <QFile>
 
 namespace {
@@ -50,6 +51,55 @@ void removeINDATADevice(QIODevice *pDevice, const XBinary::INDATA &inData)
         pDevice->close();
         delete pDevice;
     }
+}
+
+bool isValidMemoryRecordIndex(const XBinary::_MEMORY_MAP &memoryMap, qint32 nRegionIndex)
+{
+    return (nRegionIndex >= 0) && (nRegionIndex < memoryMap.listRecords.count());
+}
+
+bool getMSRecordOffset(const XBinary::_MEMORY_MAP &memoryMap, const XBinary::MS_RECORD &record, qint64 *pnOffset)
+{
+    if (!pnOffset || (record.nRelOffset > (quint64)(std::numeric_limits<qint64>::max)())) {
+        return false;
+    }
+
+    const qint64 nRelOffset = (qint64)record.nRelOffset;
+
+    if (record.nRegionIndex == -1) {
+        *pnOffset = nRelOffset;
+        return true;
+    }
+
+    if (!isValidMemoryRecordIndex(memoryMap, record.nRegionIndex)) {
+        return false;
+    }
+
+    const qint64 nRegionOffset = memoryMap.listRecords.at(record.nRegionIndex).nOffset;
+
+    if ((nRegionOffset < 0) || (nRelOffset > (std::numeric_limits<qint64>::max)() - nRegionOffset)) {
+        return false;
+    }
+
+    *pnOffset = nRegionOffset + nRelOffset;
+    return true;
+}
+
+bool getMSRecordAddress(const XBinary::_MEMORY_MAP &memoryMap, const XBinary::MS_RECORD &record, XADDR *pnAddress)
+{
+    if (!pnAddress || !isValidMemoryRecordIndex(memoryMap, record.nRegionIndex)) {
+        return false;
+    }
+
+    const XADDR nRegionAddress = memoryMap.listRecords.at(record.nRegionIndex).nAddress;
+    const quint64 nRelOffset = (quint64)record.nRelOffset;
+
+    if ((nRegionAddress == (XADDR)-1) || (nRelOffset > (std::numeric_limits<XADDR>::max)() - nRegionAddress)) {
+        return false;
+    }
+
+    *pnAddress = nRegionAddress + nRelOffset;
+    return true;
 }
 }  // namespace
 
@@ -157,24 +207,19 @@ QVariant XModel_MSRecord::data(const QModelIndex &index, int nRole) const
                 if (nColumn == COLUMN_NUMBER) {
                     result = nDataRow;
                 } else if (nColumn == COLUMN_OFFSET) {
-                    qint16 nRegionIndex = m_pListRecords->at(nDataRow).nRegionIndex;
-                    if (nRegionIndex != -1) {
-                        if (m_memoryMap.listRecords.at(nRegionIndex).nOffset != -1) {
-                            result = XBinary::valueToHex(m_modeOffset, m_memoryMap.listRecords.at(nRegionIndex).nOffset + m_pListRecords->at(nDataRow).nRelOffset);
-                        }
-                    } else {
-                        result = XBinary::valueToHex(m_modeOffset, m_pListRecords->at(nDataRow).nRelOffset);
+                    qint64 nRecordOffset = -1;
+                    if (getMSRecordOffset(m_memoryMap, m_pListRecords->at(nDataRow), &nRecordOffset)) {
+                        result = XBinary::valueToHex(m_modeOffset, nRecordOffset);
                     }
                 } else if (nColumn == COLUMN_ADDRESS) {
-                    qint16 nRegionIndex = m_pListRecords->at(nDataRow).nRegionIndex;
-                    if (nRegionIndex != -1) {
-                        if (m_memoryMap.listRecords.at(nRegionIndex).nAddress != (XADDR)-1) {
-                            result = XBinary::valueToHex(m_modeAddress, m_memoryMap.listRecords.at(nRegionIndex).nAddress + m_pListRecords->at(nDataRow).nRelOffset);
-                        }
+                    XADDR nRecordAddress = (XADDR)-1;
+                    if (getMSRecordAddress(m_memoryMap, m_pListRecords->at(nDataRow), &nRecordAddress)) {
+                        result = XBinary::valueToHex(m_modeAddress, nRecordAddress);
                     }
                 } else if (nColumn == COLUMN_REGION) {
-                    if (m_pListRecords->at(nDataRow).nRegionIndex >= 0) {
-                        result = m_memoryMap.listRecords.at(m_pListRecords->at(nDataRow).nRegionIndex).sName;
+                    const qint32 nRegionIndex = m_pListRecords->at(nDataRow).nRegionIndex;
+                    if (isValidMemoryRecordIndex(m_memoryMap, nRegionIndex)) {
+                        result = m_memoryMap.listRecords.at(nRegionIndex).sName;
                     }
                 } else if (nColumn == COLUMN_SIZE) {
                     result = QString::number(m_pListRecords->at(nDataRow).nSize, 16);
@@ -202,20 +247,21 @@ QVariant XModel_MSRecord::data(const QModelIndex &index, int nRole) const
                     } else if (m_pDevice && ((m_valueType == XBinary::VT_STRING) || (m_valueType == XBinary::VT_A_I) || (m_valueType == XBinary::VT_U_I) ||
                                              (m_valueType == XBinary::VT_UTF8_I))) {
                         XBinary binary(m_pDevice);
+                        const XBinary::MS_RECORD &record = m_pListRecords->at(nDataRow);
                         XBinary::VT valueType = m_valueType;
                         if (m_valueType == XBinary::VT_STRING) {
-                            valueType = (XBinary::VT)(m_pListRecords->at(nDataRow).nValueType);
+                            valueType = (XBinary::VT)record.nValueType;
                         }
-                        qint16 nRegionIndex = m_pListRecords->at(nDataRow).nRegionIndex;
-
-                        if (nRegionIndex != -1) {
-                            if (m_memoryMap.listRecords.at(nRegionIndex).nOffset != -1) {
-                                qint64 _nOffset = m_memoryMap.listRecords.at(nRegionIndex).nOffset + m_pListRecords->at(nDataRow).nRelOffset;
-                                result = binary.read_value(valueType, _nOffset, m_pListRecords->at(nDataRow).nSize, m_endian == XBinary::ENDIAN_BIG).toString();
+                        qint64 nRecordOffset = -1;
+                        if (getMSRecordOffset(m_memoryMap, record, &nRecordOffset)) {
+                            if (m_valueType == XBinary::VT_STRING) {
+                                result = binary.read_msRecordString(record, nRecordOffset);
+                            } else {
+                                XBinary::MS_RECORD fixedTypeRecord = record;
+                                fixedTypeRecord.nValueType = valueType;
+                                fixedTypeRecord.nInfo = (m_endian == XBinary::ENDIAN_BIG) ? XBinary::ENDIAN_BIG : XBinary::ENDIAN_LITTLE;
+                                result = binary.read_msRecordString(fixedTypeRecord, nRecordOffset);
                             }
-                        } else {
-                            qint64 _nOffset = m_pListRecords->at(nDataRow).nRelOffset;
-                            result = binary.read_value(valueType, _nOffset, m_pListRecords->at(nDataRow).nSize, m_endian == XBinary::ENDIAN_BIG).toString();
                         }
                     } else if (m_valueType == XBinary::VT_SIGNATURE) {
                         if (m_pListSignatureRecords && (m_pListSignatureRecords->count() > m_pListRecords->at(nDataRow).nInfo)) {
@@ -236,20 +282,14 @@ QVariant XModel_MSRecord::data(const QModelIndex &index, int nRole) const
             } else if (nRole == Qt::UserRole + USERROLE_ORIGINDEX) {
                 result = nDataRow;
             } else if (nRole == Qt::UserRole + USERROLE_ADDRESS) {
-                qint16 nRegionIndex = m_pListRecords->at(nDataRow).nRegionIndex;
-                if (nRegionIndex != -1) {
-                    if (m_memoryMap.listRecords.at(nRegionIndex).nAddress != (XADDR)-1) {
-                        result = m_memoryMap.listRecords.at(nRegionIndex).nAddress + m_pListRecords->at(nDataRow).nRelOffset;
-                    }
+                XADDR nRecordAddress = (XADDR)-1;
+                if (getMSRecordAddress(m_memoryMap, m_pListRecords->at(nDataRow), &nRecordAddress)) {
+                    result = nRecordAddress;
                 }
             } else if (nRole == Qt::UserRole + USERROLE_OFFSET) {
-                qint16 nRegionIndex = m_pListRecords->at(nDataRow).nRegionIndex;
-                if (nRegionIndex != -1) {
-                    if (m_memoryMap.listRecords.at(nRegionIndex).nOffset != -1) {
-                        result = m_memoryMap.listRecords.at(nRegionIndex).nOffset + m_pListRecords->at(nDataRow).nRelOffset;
-                    }
-                } else {
-                    result = m_pListRecords->at(nDataRow).nRelOffset;
+                qint64 nRecordOffset = -1;
+                if (getMSRecordOffset(m_memoryMap, m_pListRecords->at(nDataRow), &nRecordOffset)) {
+                    result = nRecordOffset;
                 }
             } else if (nRole == Qt::UserRole + USERROLE_SIZE) {
                 result = m_pListRecords->at(nDataRow).nSize;
@@ -398,8 +438,9 @@ void XModel_MSRecord::sortByColumn(qint32 nColumn, Qt::SortOrder order)
             } else if ((nColumn == COLUMN_VALUE) && m_bValueCacheValid) {
                 vecPairs[i].first = m_vecValueCache.at(i);
             } else if (nColumn == COLUMN_REGION) {
-                if (m_pListRecords->at(i).nRegionIndex >= 0) {
-                    vecPairs[i].first = m_memoryMap.listRecords.at(m_pListRecords->at(i).nRegionIndex).sName;
+                const qint32 nRegionIndex = m_pListRecords->at(i).nRegionIndex;
+                if (isValidMemoryRecordIndex(m_memoryMap, nRegionIndex)) {
+                    vecPairs[i].first = m_memoryMap.listRecords.at(nRegionIndex).sName;
                 }
             } else if (nColumn == COLUMN_INFO) {
                 vecPairs[i].first = XBinary::valueTypeToString((XBinary::VT)(m_pListRecords->at(i).nValueType), 0);
@@ -439,22 +480,14 @@ quint64 XModel_MSRecord::_getRawSortKey(qint32 nDataRow, qint32 nColumn) const
 
     if ((nDataRow >= 0) && (nDataRow < m_pListRecords->count())) {
         if (nColumn == COLUMN_OFFSET) {
-            qint16 nRegionIndex = m_pListRecords->at(nDataRow).nRegionIndex;
-
-            if (nRegionIndex != -1) {
-                if (m_memoryMap.listRecords.at(nRegionIndex).nOffset != -1) {
-                    nResult = m_memoryMap.listRecords.at(nRegionIndex).nOffset + m_pListRecords->at(nDataRow).nRelOffset;
-                }
-            } else {
-                nResult = m_pListRecords->at(nDataRow).nRelOffset;
+            qint64 nRecordOffset = -1;
+            if (getMSRecordOffset(m_memoryMap, m_pListRecords->at(nDataRow), &nRecordOffset)) {
+                nResult = nRecordOffset;
             }
         } else if (nColumn == COLUMN_ADDRESS) {
-            qint16 nRegionIndex = m_pListRecords->at(nDataRow).nRegionIndex;
-
-            if (nRegionIndex != -1) {
-                if (m_memoryMap.listRecords.at(nRegionIndex).nAddress != (XADDR)-1) {
-                    nResult = m_memoryMap.listRecords.at(nRegionIndex).nAddress + m_pListRecords->at(nDataRow).nRelOffset;
-                }
+            XADDR nRecordAddress = (XADDR)-1;
+            if (getMSRecordAddress(m_memoryMap, m_pListRecords->at(nDataRow), &nRecordAddress)) {
+                nResult = nRecordAddress;
             }
         } else if (nColumn == COLUMN_SIZE) {
             nResult = m_pListRecords->at(nDataRow).nSize;
@@ -495,6 +528,7 @@ void XModel_MSRecord::buildValueCache()
 
     if (pMapped) {
         bool bBigEndian = (m_endian == XBinary::ENDIAN_BIG);
+        XBinary binary(m_pDevice);
 
         for (qint32 i = 0; i < nRowCount; i++) {
             QString sValue;
@@ -502,29 +536,25 @@ void XModel_MSRecord::buildValueCache()
             if (!m_pListRecords->at(i).sValue.isEmpty()) {
                 sValue = m_pListRecords->at(i).sValue;
             } else if ((m_valueType == XBinary::VT_STRING) || (m_valueType == XBinary::VT_A_I) || (m_valueType == XBinary::VT_U_I) || (m_valueType == XBinary::VT_UTF8_I)) {
+                const XBinary::MS_RECORD &record = m_pListRecords->at(i);
                 XBinary::VT valueType = m_valueType;
 
                 if (m_valueType == XBinary::VT_STRING) {
-                    valueType = (XBinary::VT)(m_pListRecords->at(i).nValueType);
+                    valueType = (XBinary::VT)record.nValueType;
                 }
 
                 qint64 nOffset = -1;
-                qint16 nRegionIndex = m_pListRecords->at(i).nRegionIndex;
+                getMSRecordOffset(m_memoryMap, record, &nOffset);
 
-                if (nRegionIndex != -1) {
-                    if (m_memoryMap.listRecords.at(nRegionIndex).nOffset != -1) {
-                        nOffset = m_memoryMap.listRecords.at(nRegionIndex).nOffset + m_pListRecords->at(i).nRelOffset;
-                    }
-                } else {
-                    nOffset = m_pListRecords->at(i).nRelOffset;
-                }
+                qint64 nSize = qMin((qint64)record.nSize, (qint64)128);
+                const qint64 nRequiredSize = (m_valueType == XBinary::VT_STRING) ? record.nSize : nSize;
 
-                qint64 nSize = qMin((qint64)(m_pListRecords->at(i).nSize), (qint64)128);
-
-                if ((nOffset >= 0) && (nOffset + nSize <= nFileSize)) {
+                if ((nOffset >= 0) && (nOffset <= nFileSize) && (nRequiredSize <= nFileSize - nOffset)) {
                     const char *pData = (const char *)(pMapped + nOffset);
 
-                    if ((valueType == XBinary::VT_A) || (valueType == XBinary::VT_A_I)) {
+                    if (m_valueType == XBinary::VT_STRING) {
+                        sValue = binary.read_msRecordString(record, nOffset);
+                    } else if ((valueType == XBinary::VT_A) || (valueType == XBinary::VT_A_I)) {
                         qint32 nLen = 0;
 
                         for (qint32 j = 0; j < nSize; j++) {
@@ -605,22 +635,23 @@ void XModel_MSRecord::buildValueCache()
             if (!m_pListRecords->at(i).sValue.isEmpty()) {
                 sValue = m_pListRecords->at(i).sValue;
             } else if ((m_valueType == XBinary::VT_STRING) || (m_valueType == XBinary::VT_A_I) || (m_valueType == XBinary::VT_U_I) || (m_valueType == XBinary::VT_UTF8_I)) {
+                const XBinary::MS_RECORD &record = m_pListRecords->at(i);
                 XBinary::VT valueType = m_valueType;
 
                 if (m_valueType == XBinary::VT_STRING) {
-                    valueType = (XBinary::VT)(m_pListRecords->at(i).nValueType);
+                    valueType = (XBinary::VT)record.nValueType;
                 }
 
-                qint16 nRegionIndex = m_pListRecords->at(i).nRegionIndex;
-
-                if (nRegionIndex != -1) {
-                    if (m_memoryMap.listRecords.at(nRegionIndex).nOffset != -1) {
-                        qint64 nOffset = m_memoryMap.listRecords.at(nRegionIndex).nOffset + m_pListRecords->at(i).nRelOffset;
-                        sValue = binary.read_value(valueType, nOffset, m_pListRecords->at(i).nSize, m_endian == XBinary::ENDIAN_BIG).toString();
+                qint64 nRecordOffset = -1;
+                if (getMSRecordOffset(m_memoryMap, record, &nRecordOffset)) {
+                    if (m_valueType == XBinary::VT_STRING) {
+                        sValue = binary.read_msRecordString(record, nRecordOffset);
+                    } else {
+                        XBinary::MS_RECORD fixedTypeRecord = record;
+                        fixedTypeRecord.nValueType = valueType;
+                        fixedTypeRecord.nInfo = (m_endian == XBinary::ENDIAN_BIG) ? XBinary::ENDIAN_BIG : XBinary::ENDIAN_LITTLE;
+                        sValue = binary.read_msRecordString(fixedTypeRecord, nRecordOffset);
                     }
-                } else {
-                    qint64 nOffset = m_pListRecords->at(i).nRelOffset;
-                    sValue = binary.read_value(valueType, nOffset, m_pListRecords->at(i).nSize, m_endian == XBinary::ENDIAN_BIG).toString();
                 }
             } else if (m_valueType == XBinary::VT_SIGNATURE) {
                 if (m_pListSignatureRecords && (m_pListSignatureRecords->count() > m_pListRecords->at(i).nInfo)) {
@@ -660,6 +691,16 @@ bool XModel_MSRecord::spillValuesToDisk()
 
     if (nRowCount == 0) {
         return false;
+    }
+
+    if (m_valueType == XBinary::VT_STRING) {
+        for (qint32 i = 0; i < nRowCount; i++) {
+            if (m_pListRecords->at(i).sValue.isEmpty()) {
+                // An empty search-string value can mean prefetch was canceled.
+                // Keep the in-memory records so data() can decode it lazily.
+                return false;
+            }
+        }
     }
 
     if (!m_valueStoreFile.open()) {
