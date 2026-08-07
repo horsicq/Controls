@@ -40,6 +40,10 @@ XDeviceTableView::~XDeviceTableView()
 void XDeviceTableView::setXInfoDB(XInfoDB *pXInfoDB)
 {
     if (m_pXInfoDB != pXInfoDB) {
+        if (m_pXInfoDB) {
+            disconnect(m_pXInfoDB, SIGNAL(reloadViewSignal()), this, SLOT(reloadView()));
+        }
+
         m_pXInfoDB = pXInfoDB;
 
         if (pXInfoDB) {

@@ -577,7 +577,14 @@ void XTableView::cancelAsyncOperation(bool bWait)
         m_pAsyncCancelFlag->storeRelease(1);
     }
 
+    // A live watcher means an in-flight op already emitted busyChanged(true). We are about to
+    // detach its finished()->onAsyncOperationFinished() connection (the only other place that
+    // emits busyChanged(false)), so we must emit the balancing false ourselves - otherwise the
+    // "Sorting/filtering..." marquee spins forever (sort(-1)/Reset filter, clear(), setCustomModel()).
+    bool bWasBusy = false;
+
     if (m_pAsyncWatcher) {
+        bWasBusy = true;
         disconnect(m_pAsyncWatcher, nullptr, this, nullptr);
 
         if (bWait) {
@@ -592,6 +599,10 @@ void XTableView::cancelAsyncOperation(bool bWait)
 
     m_pAsyncCancelFlag.clear();
     m_pendingOperation = OPERATION_NONE;
+
+    if (bWasBusy) {
+        emit busyChanged(false);
+    }
 }
 
 void XTableView::onAsyncOperationFinished()

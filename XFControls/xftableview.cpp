@@ -20,6 +20,7 @@
  */
 
 #include "xftableview.h"
+#include "xoptions.h"
 #include <QVBoxLayout>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -149,6 +150,15 @@ void XFTableView::clear()
 void XFTableView::adjust()
 {
     m_pTableView->adjust();
+}
+
+void XFTableView::adjustView(XOptions *pXOptions)
+{
+    if (pXOptions) {
+        pXOptions->adjustTableView(m_pTableView, XOptions::ID_VIEW_FONT_TABLEVIEWS);
+    }
+
+    adjust();
 }
 
 QAbstractItemModel *XFTableView::model() const

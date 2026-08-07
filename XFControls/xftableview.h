@@ -44,6 +44,8 @@ public:
     void setCustomModel(QAbstractItemModel *pModel, bool bFilterEnabled);
     void clear();
     void adjust();
+    // Apply the user's ID_VIEW_FONT_TABLEVIEWS font to the inner view, then adjust().
+    void adjustView(XOptions *pXOptions);
     QAbstractItemModel *model() const;
     QItemSelectionModel *selectionModel() const;
 
