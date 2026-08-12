@@ -69,6 +69,8 @@ public:
 
     static QList<HIGHLIGHTREGION> _convertBookmarksToHighlightRegion(QVector<XInfoDB::BOOKMARKRECORD> *pList);
     static QList<HIGHLIGHTREGION> getHighlightRegion(QList<HIGHLIGHTREGION> *pList, quint64 nLocation, XBinary::LT locationType);
+    static bool adjustOffsetBookmarksAfterRemoval(QVector<XInfoDB::BOOKMARKRECORD> *pBookmarks, qint64 nOldSize,
+                                                  qint64 nRemoveOffset, qint64 nRemoveSize);
 
     void setViewWidgetState(VIEWWIDGET viewWidget, bool bState);
     bool getViewWidgetState(VIEWWIDGET viewWidget);

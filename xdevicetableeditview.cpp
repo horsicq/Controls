@@ -94,6 +94,77 @@ QList<XDeviceTableEditView::HIGHLIGHTREGION> XDeviceTableEditView::_convertBookm
     return listResult;
 }
 
+bool XDeviceTableEditView::adjustOffsetBookmarksAfterRemoval(QVector<XInfoDB::BOOKMARKRECORD> *pBookmarks, qint64 nOldSize,
+                                                              qint64 nRemoveOffset, qint64 nRemoveSize)
+{
+    if (!pBookmarks || (nOldSize < 0) || (nRemoveOffset < 0) || (nRemoveSize <= 0) ||
+        (nRemoveOffset > nOldSize) || (nRemoveSize > (nOldSize - nRemoveOffset))) {
+        return false;
+    }
+
+    QVector<XInfoDB::BOOKMARKRECORD> transformedBookmarks;
+    transformedBookmarks.reserve(pBookmarks->size());
+    bool bChanged = false;
+
+    const quint64 nRemoveStart = (quint64)nRemoveOffset;
+    const quint64 nRemoveEnd = nRemoveStart + (quint64)nRemoveSize;
+
+    for (const XInfoDB::BOOKMARKRECORD &sourceRecord : qAsConst(*pBookmarks)) {
+        XInfoDB::BOOKMARKRECORD record = sourceRecord;
+        if (record.locationType != XBinary::LT_OFFSET) {
+            transformedBookmarks.append(record);
+            continue;
+        }
+
+        const quint64 nBookmarkStart = record.nLocation;
+        if ((record.nSize <= 0) || (nBookmarkStart > (quint64)nOldSize) ||
+            ((quint64)record.nSize > ((quint64)nOldSize - nBookmarkStart))) {
+            // Invalid imported offset bookmarks cannot be mapped reliably
+            // across a structural edit. Drop them instead of persisting
+            // overflowed or out-of-file ranges.
+            bChanged = true;
+            continue;
+        }
+
+        const quint64 nBookmarkEnd = nBookmarkStart + (quint64)record.nSize;
+        if (nBookmarkEnd <= nRemoveStart) {
+            transformedBookmarks.append(record);
+            continue;
+        }
+
+        if (nBookmarkStart >= nRemoveEnd) {
+            record.nLocation -= (quint64)nRemoveSize;
+        } else {
+            const quint64 nRemainingBefore = nBookmarkStart < nRemoveStart
+                                                 ? nRemoveStart - nBookmarkStart
+                                                 : 0;
+            const quint64 nRemainingAfter = nBookmarkEnd > nRemoveEnd
+                                                ? nBookmarkEnd - nRemoveEnd
+                                                : 0;
+            const quint64 nNewBookmarkSize = nRemainingBefore + nRemainingAfter;
+
+            if (nNewBookmarkSize == 0) {
+                bChanged = true;
+                continue;
+            }
+
+            record.nLocation = nBookmarkStart < nRemoveStart ? nBookmarkStart : nRemoveStart;
+            record.nSize = (qint64)nNewBookmarkSize;
+        }
+
+        transformedBookmarks.append(record);
+        bChanged = true;
+    }
+
+    if (bChanged) {
+        // Publish the fully transformed, validated vector in one non-throwing
+        // swap so consumers never observe a partially adjusted bookmark set.
+        pBookmarks->swap(transformedBookmarks);
+    }
+
+    return bChanged;
+}
+
 void XDeviceTableEditView::_editHex()
 {
     if (!isReadonly()) {
@@ -127,6 +198,10 @@ void XDeviceTableEditView::_editPatch()
             dd.showDialogDelay();
 
             reload(true);
+
+            // A patch may overwrite bytes anywhere in the device; notify listeners like the other
+            // edit paths do (_editHex/_editRemove/_editResize) so they refresh (overviews, dialogs).
+            emit dataChanged(0, getBinaryView()->getInData().pDevice->size());
         }
     }
 }
@@ -151,16 +226,46 @@ void XDeviceTableEditView::_editRemove()
 
                 if (nOldSize != nNewSize) {
                     if (saveBackup()) {
-                        // mb TODO Process move memory
-                        if (XBinary::moveMemory(getBinaryView()->getInData().pDevice, _data.nOffset + _data.nSize, _data.nOffset, _data.nSize)) {
-                            if (XBinary::resize(getBinaryView()->getInData().pDevice, nNewSize)) {
-                                // mb TODO correct bookmarks
+                        QIODevice *pDevice = getBinaryView()->getInData().pDevice;
+                        const XBinary::REMOVE_MEMORY_RESULT removeResult = XBinary::removeMemoryEx(pDevice, _data.nOffset, _data.nSize);
+
+                        if (removeResult == XBinary::REMOVE_MEMORY_RESULT_OK) {
+                            if (getXInfoDB()) {
+                                QVector<XInfoDB::BOOKMARKRECORD> *pBookmarks = getXInfoDB()->getBookmarkRecords();
+                                if (adjustOffsetBookmarksAfterRemoval(pBookmarks, nOldSize, _data.nOffset, _data.nSize)) {
+                                    getXInfoDB()->setDatabaseChanged(true);
+                                    getXInfoDB()->reloadView();
+                                }
+                            }
+
+                            adjustScrollCount();
+                            clearVisited();
+                            reload(true);
+                            emit deviceSizeChanged(nOldSize, nNewSize);
+                            emit dataChanged(_data.nOffset, nOldSize - _data.nOffset);  // TODO initOffset
+                        } else {
+                            if (removeResult == XBinary::REMOVE_MEMORY_RESULT_FAILED_CHANGED) {
+                                const qint64 nActualSize = pDevice->size();
                                 adjustScrollCount();
+                                clearVisited();
                                 reload(true);
-                                emit deviceSizeChanged(nOldSize, nNewSize);
-                                emit dataChanged(_data.nOffset, nNewSize - _data.nOffset);  // TODO initOffset
+                                if (nActualSize != nOldSize) {
+                                    emit deviceSizeChanged(nOldSize, nActualSize);
+                                }
+                                const qint64 nAffectedEnd = qMax(nOldSize, nActualSize);
+                                if (_data.nOffset < nAffectedEnd) {
+                                    emit dataChanged(_data.nOffset, nAffectedEnd - _data.nOffset);
+                                }
+                                emit errorMessage(tr("Cannot remove bytes, and the original data could not be fully restored"));
+                            } else if (removeResult == XBinary::REMOVE_MEMORY_RESULT_FAILED_RESTORED) {
+                                reload(true);
+                                emit errorMessage(tr("Cannot remove bytes. The original data was restored"));
+                            } else {
+                                emit errorMessage(tr("Cannot remove bytes"));
                             }
                         }
+                    } else {
+                        emit errorMessage(tr("Cannot create the backup. No bytes were removed"));
                     }
                 }
             }
