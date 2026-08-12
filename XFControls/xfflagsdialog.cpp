@@ -49,6 +49,7 @@ XFFlagsDialog::XFFlagsDialog(QWidget *pParent) : QDialog(pParent)
 
     QWidget *pScrollWidget = new QWidget(pScrollArea);
     QVBoxLayout *pScrollLayout = new QVBoxLayout(pScrollWidget);
+    pScrollLayout->setAlignment(Qt::AlignTop);
     pScrollWidget->setLayout(pScrollLayout);
     pScrollArea->setWidget(pScrollWidget);
 
@@ -115,8 +116,6 @@ void XFFlagsDialog::setData(const QString &sFieldName, quint64 nValue, XBinary::
                 m_listCheckBoxes.append(pCheckBox);
                 m_listFlagValues.append(nFlagValue);
             }
-
-            pScrollLayout->addStretch();
         }
     }
 

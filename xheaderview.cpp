@@ -126,6 +126,13 @@ QList<QString> XHeaderView::getFilters()
     return listResult;
 }
 
+void XHeaderView::setFilterText(qint32 nColumn, const QString &sText)
+{
+    if ((nColumn >= 0) && (nColumn < m_listLineEdits.count())) {
+        m_listLineEdits.at(nColumn)->setText(sText);
+    }
+}
+
 void XHeaderView::setFilterEnabled(qint32 nColumn, bool bFilterEnabled)
 {
     // TODO

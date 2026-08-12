@@ -88,11 +88,16 @@ XBinaryView *XDeviceTableView::getBinaryView()
 
 void XDeviceTableView::setLocationMode(XBinaryView::LOCMODE locationMode)
 {
+    if (m_locationMode == locationMode) {
+        return;
+    }
+
     m_locationMode = locationMode;
 
     adjust(true);
     viewport()->update();
     emit selectionChanged();
+    emit locationModeChanged((qint32)locationMode);
 }
 
 XBinaryView::LOCMODE XDeviceTableView::getlocationMode()
@@ -102,11 +107,16 @@ XBinaryView::LOCMODE XDeviceTableView::getlocationMode()
 
 void XDeviceTableView::setLocationBase(qint32 nBase)
 {
+    if (m_nLocationBase == nBase) {
+        return;
+    }
+
     m_nLocationBase = nBase;
 
     adjust(true);
     viewport()->update();
     emit selectionChanged();
+    emit locationBaseChanged(nBase);
 }
 
 qint32 XDeviceTableView::getLocationBase()
@@ -414,7 +424,7 @@ void XDeviceTableView::_goToOffsetSlot()
 
     if (da.exec() == QDialog::Accepted)  // TODO use status
     {
-        goToOffset(da.getValue(), true);
+        goToOffset(da.getValue(), true, false, true);
         setFocus();
         viewport()->update();
     }

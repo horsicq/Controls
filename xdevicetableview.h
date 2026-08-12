@@ -91,6 +91,8 @@ protected:
 signals:
     void visitedStateChanged();
     void deviceSizeChanged(qint64 nOldSize, qint64 nNewSize);
+    void locationModeChanged(qint32 nMode);
+    void locationBaseChanged(qint32 nBase);
 
 protected slots:
     void _goToSelectionStart();

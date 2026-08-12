@@ -24,7 +24,9 @@
 
 #include <QTreeView>
 #include <QHeaderView>
+#include <QTimer>
 #include "xftree_model.h"
+#include "xheaderview.h"
 
 class XFTreeView : public QTreeView {
     Q_OBJECT
@@ -36,6 +38,8 @@ public:
     void setData(const XBinary::INDATA &inData, const QList<XBinary::XFHEADER> &listHeaders, bool bExtraInfo = false);
     void clear();
     void adjust();
+    void selectFirstItem();
+    void clearFilters();
 
     XFTreeModel *getTreeModel();
     XBinary::XFHEADER getSelectedHeader();
@@ -46,9 +50,21 @@ signals:
 protected:
     virtual void currentChanged(const QModelIndex &current, const QModelIndex &previous) override;
 
+private slots:
+    void onFilterChanged();
+    void onFilterTimerTimeout();
+    void onHorizontalScroll();
+
 private:
+    bool _hasActiveFilter() const;
+    void _refreshFilters();
+    bool _applyFilter(const QModelIndex &parentIndex);
+
     XBinary::INDATA m_inData;
     XFTreeModel *m_pTreeModel;
+    XHeaderView *m_pHeaderView;
+    QTimer m_timerFilter;
+    QList<QString> m_listFilters;
 };
 
 #endif  // XFTREEVIEW_H

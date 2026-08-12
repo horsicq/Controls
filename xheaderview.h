@@ -38,6 +38,7 @@ public:
     void updateGeometries() override;
     void adjustPositions();
     QList<QString> getFilters();
+    void setFilterText(qint32 nColumn, const QString &sText);
     void setFilterEnabled(qint32 nColumn, bool bFilterEnabled);
 
 private slots:
