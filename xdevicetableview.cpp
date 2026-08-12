@@ -397,9 +397,12 @@ void XDeviceTableView::_goToAddressSlot()
     XADDR nAddress = 0;
 
     DialogGoToAddress::TYPE type = DialogGoToAddress::TYPE_VIRTUALADDRESS;
+    XBinary::LT locationType = XBinary::LT_ADDRESS;
 
     if (m_locationMode == XBinaryView::LOCMODE_RELADDRESS) {
         nAddress = XBinary::offsetToRelAddress(getBinaryView()->getMemoryMap(), state.nSelectionDeviceOffset);
+        type = DialogGoToAddress::TYPE_RELVIRTUALADDRESS;
+        locationType = XBinary::LT_RELADDRESS;
     } else {
         nAddress = XBinary::offsetToAddress(getBinaryView()->getMemoryMap(), state.nSelectionDeviceOffset);
     }
@@ -409,7 +412,7 @@ void XDeviceTableView::_goToAddressSlot()
 
     if (da.exec() == QDialog::Accepted)  // TODO use status
     {
-        goToAddress(da.getValue(), false, false, true);
+        goToLocation(da.getValue_XADDR(), locationType, false, false, true);
         setFocus();
         viewport()->update();
     }
@@ -424,7 +427,7 @@ void XDeviceTableView::_goToOffsetSlot()
 
     if (da.exec() == QDialog::Accepted)  // TODO use status
     {
-        goToOffset(da.getValue(), true, false, true);
+        goToOffset(static_cast<qint64>(da.getValue_XADDR()), true, false, true);
         setFocus();
         viewport()->update();
     }
