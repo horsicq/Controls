@@ -423,6 +423,66 @@ void XTableView::horizontalScroll()
     m_pHeaderView->adjustPositions();
 }
 
+static QVector<bool> _xtvComputeHiddenRows(const QVector<QStringList> &listRows, const QStringList &listActiveFilters)
+{
+    const qint32 nNumberOfRows = listRows.count();
+    const qint32 nNumberOfFilters = listActiveFilters.count();
+    QVector<bool> vecHidden(nNumberOfRows, false);
+
+    for (qint32 i = 0; i < nNumberOfRows; i++) {
+        bool bHidden = false;
+
+        for (qint32 j = 0; j < nNumberOfFilters; j++) {
+            if (!listRows.at(i).at(j).contains(listActiveFilters.at(j), Qt::CaseInsensitive)) {
+                bHidden = true;
+                break;
+            }
+        }
+
+        vecHidden[i] = bHidden;
+    }
+
+    return vecHidden;
+}
+
+// File-scope functor used as the finished-slot for the custom-filter watcher;
+// declared as a friend of XTableView so it can apply the result exactly the
+// way the inline code did (reading the members at callback time).
+struct XTableViewCustomFilterFinished {
+    XTableView *pView;
+    QFutureWatcher<QVector<bool>> *pWatcher;
+    qint32 nGeneration;
+    QList<QString> listFilters;
+
+    void operator()() const;
+};
+
+void XTableViewCustomFilterFinished::operator()() const
+{
+    QVector<bool> vecHidden = pWatcher->result();
+    pWatcher->deleteLater();
+
+    if (pView->m_nCustomFilterGeneration != nGeneration) {
+        return;
+    }
+
+    if (pView->m_pXModel) {
+        pView->m_pSortFilterProxyModel->setFiltersQuiet(listFilters);
+        pView->m_pXModel->clearRowHidden();
+
+        for (qint32 i = 0; i < vecHidden.count(); i++) {
+            if (vecHidden.at(i)) {
+                pView->m_pXModel->setRowHidden(i, true);
+            }
+        }
+
+        pView->m_pSortFilterProxyModel->invalidate();
+        pView->reset();
+    }
+
+    emit pView->busyChanged(false);
+}
+
 void XTableView::startAsyncCustomFilterOperation(const QList<QString> &listFilters)
 {
     m_nCustomFilterGeneration++;
@@ -470,55 +530,24 @@ void XTableView::startAsyncCustomFilterOperation(const QList<QString> &listFilte
         listRows.append(listRow);
     }
 
-    QFuture<QVector<bool>> future = QtConcurrent::run([listRows, listActiveFilters]() {
-        const qint32 nNumberOfRows = listRows.count();
-        const qint32 nNumberOfFilters = listActiveFilters.count();
-        QVector<bool> vecHidden(nNumberOfRows, false);
-
-        for (qint32 i = 0; i < nNumberOfRows; i++) {
-            bool bHidden = false;
-
-            for (qint32 j = 0; j < nNumberOfFilters; j++) {
-                if (!listRows.at(i).at(j).contains(listActiveFilters.at(j), Qt::CaseInsensitive)) {
-                    bHidden = true;
-                    break;
-                }
-            }
-
-            vecHidden[i] = bHidden;
-        }
-
-        return vecHidden;
-    });
+    QFuture<QVector<bool>> future = QtConcurrent::run(_xtvComputeHiddenRows, listRows, listActiveFilters);
 
     QFutureWatcher<QVector<bool>> *pWatcher = new QFutureWatcher<QVector<bool>>(this);
 
-    connect(pWatcher, &QFutureWatcher<QVector<bool>>::finished, this, [this, pWatcher, nGeneration, listFilters]() {
-        QVector<bool> vecHidden = pWatcher->result();
-        pWatcher->deleteLater();
+    XTableViewCustomFilterFinished functorFinished;
+    functorFinished.pView = this;
+    functorFinished.pWatcher = pWatcher;
+    functorFinished.nGeneration = nGeneration;
+    functorFinished.listFilters = listFilters;
 
-        if (m_nCustomFilterGeneration != nGeneration) {
-            return;
-        }
-
-        if (m_pXModel) {
-            m_pSortFilterProxyModel->setFiltersQuiet(listFilters);
-            m_pXModel->clearRowHidden();
-
-            for (qint32 i = 0; i < vecHidden.count(); i++) {
-                if (vecHidden.at(i)) {
-                    m_pXModel->setRowHidden(i, true);
-                }
-            }
-
-            m_pSortFilterProxyModel->invalidate();
-            reset();
-        }
-
-        emit busyChanged(false);
-    });
+    connect(pWatcher, &QFutureWatcher<QVector<bool>>::finished, this, functorFinished);
 
     pWatcher->setFuture(future);
+}
+
+static bool _xtvBuildFilterAcceptCache(XSortFilterProxyModel *pProxy, const QList<QString> &listFilters, const QSharedPointer<QAtomicInt> &pCancelFlag)
+{
+    return pProxy->buildFilterAcceptCache(listFilters, pCancelFlag.data());
 }
 
 void XTableView::startAsyncFilterOperation(const QList<QString> &listFilters)
@@ -532,15 +561,18 @@ void XTableView::startAsyncFilterOperation(const QList<QString> &listFilters)
     m_pAsyncCancelFlag = QSharedPointer<QAtomicInt>::create(0);
     QSharedPointer<QAtomicInt> pCancelFlag = m_pAsyncCancelFlag;
 
-    QFuture<bool> future = QtConcurrent::run([pProxy, listFilters, pCancelFlag]() {
-        return pProxy->buildFilterAcceptCache(listFilters, pCancelFlag.data());
-    });
+    QFuture<bool> future = QtConcurrent::run(_xtvBuildFilterAcceptCache, pProxy, listFilters, pCancelFlag);
 
     m_pAsyncWatcher = new QFutureWatcher<bool>(this);
     connect(m_pAsyncWatcher, SIGNAL(finished()), this, SLOT(onAsyncOperationFinished()));
     m_pAsyncWatcher->setFuture(future);
 
     emit busyChanged(true);
+}
+
+static bool _xtvBuildSortCache(XSortFilterProxyModel *pProxy, qint32 nColumn, const QSharedPointer<QAtomicInt> &pCancelFlag)
+{
+    return pProxy->buildSortCache(nColumn, pCancelFlag.data());
 }
 
 void XTableView::startAsyncSortOperation(qint32 nColumn, Qt::SortOrder order)
@@ -560,9 +592,7 @@ void XTableView::startAsyncSortOperation(qint32 nColumn, Qt::SortOrder order)
     m_pAsyncCancelFlag = QSharedPointer<QAtomicInt>::create(0);
     QSharedPointer<QAtomicInt> pCancelFlag = m_pAsyncCancelFlag;
 
-    QFuture<bool> future = QtConcurrent::run([pProxy, nColumn, pCancelFlag]() {
-        return pProxy->buildSortCache(nColumn, pCancelFlag.data());
-    });
+    QFuture<bool> future = QtConcurrent::run(_xtvBuildSortCache, pProxy, nColumn, pCancelFlag);
 
     m_pAsyncWatcher = new QFutureWatcher<bool>(this);
     connect(m_pAsyncWatcher, SIGNAL(finished()), this, SLOT(onAsyncOperationFinished()));

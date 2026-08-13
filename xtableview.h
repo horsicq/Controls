@@ -67,6 +67,8 @@ signals:
     void busyChanged(bool bBusy);
 
 private:
+    friend struct XTableViewCustomFilterFinished;
+
     void deleteOldModel(QAbstractItemModel **ppOldModel);
     void handleFilter();
 
