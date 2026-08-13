@@ -192,6 +192,51 @@ void XModel_MSRecord::setSignaturesList(QList<XBinary::SIGNATUREDB_RECORD> *pLis
     m_pListSignatureRecords = pListSignatureRecords;
 }
 
+bool XModel_MSRecord::updateStringRecord(qint32 nRecordIndex, qint64 nSize, XBinary::VT valueType, const QString &sValue)
+{
+    if (!m_pListRecords || (nRecordIndex < 0) || (nRecordIndex >= m_pListRecords->size()) || (nSize < 0) ||
+        (nSize > (std::numeric_limits<quint16>::max)())) {
+        return false;
+    }
+
+    XBinary::MS_RECORD &record = (*m_pListRecords)[nRecordIndex];
+    record.nSize = static_cast<quint16>(nSize);
+    record.nValueType = static_cast<quint16>(valueType);
+    record.sValue = sValue;
+
+    if (m_bValueCacheValid && (nRecordIndex < m_vecValueCache.size())) {
+        m_vecValueCache[nRecordIndex] = sValue;
+    }
+
+    const qint32 nModelRow = m_vecSortIndex.indexOf(nRecordIndex);
+    if (nModelRow >= 0) {
+        emit dataChanged(index(nModelRow, COLUMN_SIZE), index(nModelRow, COLUMN_VALUE));
+    }
+
+    return true;
+}
+
+void XModel_MSRecord::invalidateStringRecord(qint32 nRecordIndex)
+{
+    if (!m_pListRecords || (nRecordIndex < 0) || (nRecordIndex >= m_pListRecords->size())) {
+        return;
+    }
+
+    (*m_pListRecords)[nRecordIndex].sValue.clear();
+    if (m_pValueStoreMapped) {
+        m_valueStoreFile.unmap(const_cast<uchar *>(m_pValueStoreMapped));
+        m_pValueStoreMapped = nullptr;
+        m_vecValueStoreIndex.clear();
+        m_valueStoreFile.close();
+    }
+    clearValueCache();
+
+    const qint32 nModelRow = m_vecSortIndex.indexOf(nRecordIndex);
+    if (nModelRow >= 0) {
+        emit dataChanged(index(nModelRow, COLUMN_VALUE), index(nModelRow, COLUMN_VALUE));
+    }
+}
+
 QVariant XModel_MSRecord::data(const QModelIndex &index, int nRole) const
 {
     QVariant result;
@@ -433,7 +478,9 @@ void XModel_MSRecord::sortByColumn(qint32 nColumn, Qt::SortOrder order)
         QVector<QPair<QString, qint32>> vecPairs(nRowCount);
 
         for (qint32 i = 0; i < nRowCount; i++) {
-            if ((nColumn == COLUMN_VALUE) && m_pValueStoreMapped) {
+            if ((nColumn == COLUMN_VALUE) && !m_pListRecords->at(i).sValue.isEmpty()) {
+                vecPairs[i].first = m_pListRecords->at(i).sValue;
+            } else if ((nColumn == COLUMN_VALUE) && m_pValueStoreMapped) {
                 vecPairs[i].first = _readValueFromStore(i);
             } else if ((nColumn == COLUMN_VALUE) && m_bValueCacheValid) {
                 vecPairs[i].first = m_vecValueCache.at(i);

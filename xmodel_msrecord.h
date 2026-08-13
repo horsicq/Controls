@@ -51,6 +51,8 @@ public:
 
     void setValue(XBinary::ENDIAN endian, XBinary::VT valueType, QVariant varValue);
     void setSignaturesList(QList<XBinary::SIGNATUREDB_RECORD> *pListSignatureRecords);
+    bool updateStringRecord(qint32 nRecordIndex, qint64 nSize, XBinary::VT valueType, const QString &sValue);
+    void invalidateStringRecord(qint32 nRecordIndex);
 
     virtual QVariant data(const QModelIndex &index, int nRole = Qt::DisplayRole) const;
     virtual QVariant headerData(int nSection, Qt::Orientation orientation, int nRole = Qt::DisplayRole) const;
