@@ -27,6 +27,7 @@ XTableView::XTableView(QWidget *pParent) : QTableView(pParent)
 {
     m_pOldModel = nullptr;
     m_pModel = nullptr;
+    m_pOwnedSelectionModel = nullptr;
     m_pHeaderView = new XHeaderView(this);
     m_pSortFilterProxyModel = new XSortFilterProxyModel(this);
     m_bIsXmodel = false;
@@ -71,7 +72,7 @@ XTableView::~XTableView()
     m_watcher.waitForFinished();
     cancelAsyncOperation();
     m_pSortFilterProxyModel->setSourceModel(nullptr);
-    setModel(nullptr);
+    replaceModel(nullptr);
     deleteOldModel(&m_pModel);
 }
 
@@ -85,7 +86,7 @@ void XTableView::setCustomModel(QAbstractItemModel *pModel, bool bFilterEnabled)
 
     if (m_pOldModel) {
         m_pSortFilterProxyModel->setSourceModel(nullptr);
-        setModel(nullptr);
+        replaceModel(nullptr);
         // #ifdef QT_CONCURRENT_LIB
         // #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         //         QtConcurrent::run(&XTableView::deleteOldModel, this, &m_pOldModel);
@@ -117,14 +118,14 @@ void XTableView::setCustomModel(QAbstractItemModel *pModel, bool bFilterEnabled)
     if (pModel && bFilterEnabled) {
         m_pHeaderView->setNumberOfFilters(pModel->columnCount());
         m_pSortFilterProxyModel->setSourceModel(pModel);
-        setModel(m_pSortFilterProxyModel);
+        replaceModel(m_pSortFilterProxyModel);
         // Column count can change later without a new setCustomModel() call (e.g.
         // XFModel_table interleaving presentation columns on setShowPresentation()).
         // Keep the header's per-column filter row in sync with it, or the stale
         // line edits end up positioned against sections that no longer exist.
         connect(pModel, SIGNAL(modelReset()), this, SLOT(onSourceModelReset()), Qt::UniqueConnection);
     } else {
-        setModel(pModel);
+        replaceModel(pModel);
     }
 
     adjust();
@@ -145,8 +146,21 @@ void XTableView::clear()
     m_nCustomFilterGeneration++;
     cancelAsyncOperation();
     m_pSortFilterProxyModel->setSourceModel(nullptr);
-    setModel(nullptr);
+    replaceModel(nullptr);
     deleteOldModel(&m_pModel);
+}
+
+void XTableView::replaceModel(QAbstractItemModel *pModel)
+{
+    QPointer<QItemSelectionModel> pOldSelectionModel = m_pOwnedSelectionModel;
+
+    QTableView::setModel(pModel);
+
+    if (pOldSelectionModel && (pOldSelectionModel != selectionModel())) {
+        delete pOldSelectionModel.data();
+    }
+
+    m_pOwnedSelectionModel = selectionModel();
 }
 
 void XTableView::deleteOldModel(QAbstractItemModel **ppOldModel)

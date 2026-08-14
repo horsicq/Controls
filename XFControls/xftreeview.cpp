@@ -51,7 +51,11 @@ XFTreeView::XFTreeView(QWidget *pParent) : QTreeView(pParent)
 
     setSelectionBehavior(QAbstractItemView::SelectRows);
     setSelectionMode(QAbstractItemView::SingleSelection);
+    setAlternatingRowColors(true);
+    setUniformRowHeights(true);
     setWordWrap(false);
+    setAccessibleName(tr("File structures and analysis tools"));
+    setAccessibleDescription(tr("Select a structure or analysis tool to show its details"));
 }
 
 XFTreeView::~XFTreeView()

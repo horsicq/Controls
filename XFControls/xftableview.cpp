@@ -21,6 +21,7 @@
 
 #include "xftableview.h"
 #include "xoptions.h"
+#include <QIcon>
 #include <QVBoxLayout>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -45,17 +46,24 @@ XFTableView::XFTableView(QWidget *pParent) : QWidget(pParent)
     m_pTableView->setSelectionMode(QAbstractItemView::SingleSelection);
     m_pTableView->setContextMenuPolicy(Qt::CustomContextMenu);
     m_pTableView->setThreadedFilterSortEnabled(true);
+    m_pTableView->setAlternatingRowColors(true);
+    m_pTableView->setAccessibleName(tr("Binary data table"));
+    m_pTableView->setAccessibleDescription(tr("Structured fields and values for the current selection"));
 
     m_pToolBar = new QToolBar(this);
+    m_pToolBar->setObjectName(QStringLiteral("tableToolBar"));
+    m_pToolBar->setAccessibleName(tr("Table actions"));
     m_pToolBar->setMovable(false);
     m_pToolBar->setFloatable(false);
     m_pToolBar->setIconSize(QSize(16, 16));
+    m_pToolBar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 
     m_pProgressBar = new QProgressBar(m_pToolBar);
     m_pProgressBar->setRange(0, 100);
     m_pProgressBar->setValue(0);
     m_pProgressBar->setMaximumWidth(150);
     m_pProgressBar->setVisible(false);
+    m_pProgressBar->setAccessibleName(tr("Table operation progress"));
     m_pToolBar->addWidget(m_pProgressBar);
 
     QWidget *pSpacer = new QWidget(m_pToolBar);
@@ -63,9 +71,16 @@ XFTableView::XFTableView(QWidget *pParent) : QWidget(pParent)
     m_pToolBar->addWidget(pSpacer);
 
     m_pActionResetFilter = m_pToolBar->addAction(tr("Reset filter"));
+    m_pActionResetFilter->setIcon(QIcon(XOptions::getIconPath(XOptions::ICONTYPE_REMOVE)));
+    m_pActionResetFilter->setToolTip(tr("Clear filters and sorting"));
+    m_pActionResetFilter->setStatusTip(tr("Clear all table filters and restore the original order"));
     m_pActionResetFilter->setEnabled(false);
 
     m_pActionSave = m_pToolBar->addAction(tr("Save"));
+    m_pActionSave->setIcon(QIcon(XOptions::getIconPath(XOptions::ICONTYPE_SAVE)));
+    m_pActionSave->setToolTip(tr("Export table"));
+    m_pActionSave->setStatusTip(tr("Export the current table to a file"));
+    m_pActionSave->setEnabled(false);
 
     m_pStatusBar = new QStatusBar(this);
     m_pStatusBar->setSizeGripEnabled(false);
@@ -126,6 +141,7 @@ void XFTableView::setData(const XBinary::INDATA &inData, const XBinary::XFHEADER
     }
 
     m_bSortActive = false;
+    m_pActionSave->setEnabled(m_pTableView->model() != nullptr);
     updateResetFilterEnabled();
 }
 
@@ -136,6 +152,7 @@ void XFTableView::setCustomModel(QAbstractItemModel *pModel, bool bFilterEnabled
     m_pTableView->setCustomModel(pModel, bFilterEnabled);
 
     m_bSortActive = false;
+    m_pActionSave->setEnabled(pModel != nullptr);
     updateResetFilterEnabled();
 }
 
@@ -144,6 +161,7 @@ void XFTableView::clear()
     m_pHeaderModel = nullptr;
     m_pTableModel = nullptr;
     m_pTableView->clear();
+    m_pActionSave->setEnabled(false);
     setStatusBarText(QString());
 }
 

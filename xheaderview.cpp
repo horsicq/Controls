@@ -67,8 +67,22 @@ void XHeaderView::setNumberOfFilters(qint32 nNumberOfFilters)
 
     for (qint32 i = 0; i < nNumberOfFilters; i++) {
         QLineEdit *pLineEdit = new QLineEdit(this);
-        pLineEdit->setPlaceholderText(tr("Filter"));
-        pLineEdit->setToolTip(tr("Filter"));
+        QString sColumnName;
+
+        if (model()) {
+            sColumnName = model()->headerData(i, Qt::Horizontal, Qt::DisplayRole).toString();
+        }
+
+        if (sColumnName.isEmpty()) {
+            sColumnName = tr("column %1").arg(i + 1);
+        }
+
+        QString sFilterPrompt = tr("Filter %1").arg(sColumnName);
+        pLineEdit->setObjectName(QStringLiteral("columnFilter"));
+        pLineEdit->setPlaceholderText(sFilterPrompt);
+        pLineEdit->setToolTip(sFilterPrompt);
+        pLineEdit->setAccessibleName(sFilterPrompt);
+        pLineEdit->setClearButtonEnabled(true);
         connect(pLineEdit, SIGNAL(textChanged(QString)), this, SLOT(_textChanged(QString)));
         m_listLineEdits.append(pLineEdit);
     }

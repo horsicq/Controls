@@ -28,6 +28,8 @@
 #include <QElapsedTimer>
 #include <QFutureWatcher>
 #include <QAtomicInt>
+#include <QItemSelectionModel>
+#include <QPointer>
 #include <QSharedPointer>
 #include <QTimer>
 
@@ -70,6 +72,7 @@ private:
     friend struct XTableViewCustomFilterFinished;
 
     void deleteOldModel(QAbstractItemModel **ppOldModel);
+    void replaceModel(QAbstractItemModel *pModel);
     void handleFilter();
 
     enum PENDING_OPERATION { OPERATION_NONE = 0, OPERATION_FILTER, OPERATION_SORT };
@@ -90,6 +93,7 @@ private slots:
 private:
     XHeaderView *m_pHeaderView;
     XSortFilterProxyModel *m_pSortFilterProxyModel;
+    QPointer<QItemSelectionModel> m_pOwnedSelectionModel;
     QAbstractItemModel *m_pOldModel;
     QAbstractItemModel *m_pModel;
     bool m_bIsXmodel;
