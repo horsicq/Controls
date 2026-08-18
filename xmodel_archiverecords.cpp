@@ -74,6 +74,7 @@ void XModel_ArchiveRecords::_initColumns()
         qint32 nSymbolSize = 16;
 
         if (fpartProp == XBinary::FPART_PROP_ORIGINALNAME) sName = QObject::tr("Name");
+        else if (fpartProp == XBinary::FPART_PROP_OPTIONAL_PATH) sName = QObject::tr("Path");
         else if (fpartProp == XBinary::FPART_PROP_COMPRESSEDSIZE) sName = QObject::tr("Compressed size");
         else if (fpartProp == XBinary::FPART_PROP_UNCOMPRESSEDSIZE) sName = QObject::tr("Size");
         else if (fpartProp == XBinary::FPART_PROP_STREAMOFFSET) sName = QObject::tr("Stream offset");
@@ -141,6 +142,7 @@ void XModel_ArchiveRecords::_initColumns()
         else nFlags = Qt::AlignVCenter | Qt::AlignLeft;
 
         if (fpartProp == XBinary::FPART_PROP_ORIGINALNAME) nSymbolSize = 20;
+        else if (fpartProp == XBinary::FPART_PROP_OPTIONAL_PATH) nSymbolSize = 18;
         else if ((fpartProp == XBinary::FPART_PROP_DATETIME) || (fpartProp == XBinary::FPART_PROP_MTIME) || (fpartProp == XBinary::FPART_PROP_CTIME) ||
                  (fpartProp == XBinary::FPART_PROP_ATIME)) nSymbolSize = 19;
         else if (fpartProp == XBinary::FPART_PROP_ENCRYPTED) nSymbolSize = 9;
@@ -171,7 +173,7 @@ QVariant XModel_ArchiveRecords::data(const QModelIndex &index, int nRole) const
                 if (nColumn < m_listColumns.count()) {
                     XBinary::FPART_PROP fpartProp = m_listColumns.at(nColumn);
 
-                    if (fpartProp == XBinary::FPART_PROP_ORIGINALNAME) {
+                    if ((fpartProp == XBinary::FPART_PROP_ORIGINALNAME) || (fpartProp == XBinary::FPART_PROP_OPTIONAL_PATH)) {
                         result = rec.mapProperties.value(fpartProp).toString();
                     } else if ((fpartProp == XBinary::FPART_PROP_COMPRESSEDSIZE) || (fpartProp == XBinary::FPART_PROP_UNCOMPRESSEDSIZE)) {
                         result = rec.mapProperties.value(fpartProp).toLongLong();
