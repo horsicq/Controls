@@ -129,6 +129,8 @@ void XModel_ArchiveRecords::_initColumns()
         else if (fpartProp == XBinary::FPART_PROP_COMPRESSEDSIZE3) sName = QObject::tr("Compressed size") + " 3";
         else if (fpartProp == XBinary::FPART_PROP_UNCOMPRESSEDSIZE2) sName = QObject::tr("Size") + " 2";
         else if (fpartProp == XBinary::FPART_PROP_UNCOMPRESSEDSIZE3) sName = QObject::tr("Size") + " 3";
+        else if (fpartProp == XBinary::FPART_PROP_ARCHIVE_RECORD_INDEX) sName = QObject::tr("Archive record index");
+        else if (fpartProp == XBinary::FPART_PROP_ARCHIVE_RECORD_TOKEN) sName = QObject::tr("Archive record token");
 
         if (sName.isEmpty()) sName = QString("#%1").arg(static_cast<qint32>(fpartProp));
 
