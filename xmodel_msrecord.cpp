@@ -652,9 +652,11 @@ void XModel_MSRecord::buildValueCache()
                                 vecSwapped[j] = ((nCh >> 8) & 0xFF) | ((nCh << 8) & 0xFF00);
                             }
 
-                            sValue = QString::fromUtf16(vecSwapped.constData(), nLen);
+                            sValue = QString::fromUtf16(
+                                reinterpret_cast<const char16_t *>(vecSwapped.constData()), nLen);
                         } else {
-                            sValue = QString::fromUtf16(pUData, nLen);
+                            sValue = QString::fromUtf16(
+                                reinterpret_cast<const char16_t *>(pUData), nLen);
                         }
                     } else if ((valueType == XBinary::VT_UTF8) || (valueType == XBinary::VT_UTF8_I)) {
                         qint32 nLen = 0;

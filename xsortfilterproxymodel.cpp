@@ -60,20 +60,34 @@ XSortFilterProxyModel::XSortFilterProxyModel(QObject *pParent) : QSortFilterProx
 
 void XSortFilterProxyModel::setFilters(const QList<QString> &listFilters)
 {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 9, 0)
+    beginFilterChange();
+#endif
     m_listFilters = listFilters;
     clearFilterAcceptCache();
+#if QT_VERSION >= QT_VERSION_CHECK(6, 9, 0)
+    endFilterChange(QSortFilterProxyModel::Direction::Rows);
+#else
     invalidateFilter();
+#endif
 }
 
 void XSortFilterProxyModel::setColumnFilter(qint32 nColumn, const QString &sFilter)
 {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 9, 0)
+    beginFilterChange();
+#endif
     while (m_listFilters.count() <= nColumn) {
         m_listFilters.append(QString());
     }
 
     m_listFilters[nColumn] = sFilter;
     clearFilterAcceptCache();
+#if QT_VERSION >= QT_VERSION_CHECK(6, 9, 0)
+    endFilterChange(QSortFilterProxyModel::Direction::Rows);
+#else
     invalidateFilter();
+#endif
 }
 
 void XSortFilterProxyModel::setFiltersQuiet(const QList<QString> &listFilters)

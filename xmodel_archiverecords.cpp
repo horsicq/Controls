@@ -132,6 +132,10 @@ void XModel_ArchiveRecords::_initColumns()
         else if (fpartProp == XBinary::FPART_PROP_UNCOMPRESSEDSIZE3) sName = QObject::tr("Size") + " 3";
         else if (fpartProp == XBinary::FPART_PROP_ARCHIVE_RECORD_INDEX) sName = QObject::tr("Archive record index");
         else if (fpartProp == XBinary::FPART_PROP_ARCHIVE_RECORD_TOKEN) sName = QObject::tr("Archive record token");
+        else if (fpartProp == XBinary::FPART_PROP_REPORTEDMETHOD) sName = QObject::tr("Reported method");
+        else if (fpartProp == XBinary::FPART_PROP_HOSTOS) sName = QObject::tr("Host OS");
+        else if (fpartProp == XBinary::FPART_PROP_CHECKSUM) sName = QObject::tr("Checksum");
+        else if (fpartProp == XBinary::FPART_PROP_CHECKSUMTYPE) sName = QObject::tr("Checksum type");
 
         if (sName.isEmpty()) sName = QString("#%1").arg(static_cast<qint32>(fpartProp));
 
