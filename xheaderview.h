@@ -41,6 +41,9 @@ public:
     void setFilterText(qint32 nColumn, const QString &sText);
     void setFilterEnabled(qint32 nColumn, bool bFilterEnabled);
 
+protected:
+    QSize sectionSizeFromContents(int logicalIndex) const override;
+
 private slots:
     void _textChanged(const QString &sText);
     void onSectionResized(int i, int nOldSize, int nNewSize);

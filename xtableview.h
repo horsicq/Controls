@@ -52,11 +52,17 @@ public:
     void setColumnFilterString(qint32 nColumn, const QString &sFilter);
     void adjust();
     bool isSortingEnabled() const;
+    // Hides QTableView::setColumnWidth(): the width is never allowed below the
+    // header's own hint (title text + padding + sort indicator + filter box), so
+    // value-width columns set by adjust() and by the owning widgets keep their
+    // titles readable. Callers holding a QTableView* get the unclamped base.
+    void setColumnWidth(int nColumn, int nWidth);
 
     // Opt-in: run filtering/sorting on a worker thread and show progress via
     // busyChanged(). Off by default so every existing caller keeps today's
     // synchronous behavior unchanged. Changing a filter/sort while a previous
-    // one is still computing cancels it and starts fresh.
+    // one of the same kind is still computing cancels it and starts fresh; a
+    // cancelled operation of the other kind is re-issued afterwards.
     void setThreadedFilterSortEnabled(bool bEnabled);
     bool isThreadedFilterSortEnabled() const;
 
@@ -118,6 +124,11 @@ private:
     QList<QString> m_listPendingFilters;
     qint32 m_nPendingSortColumn;
     Qt::SortOrder m_pendingSortOrder;
+    // Operation of the other kind that was cancelled by the pending one; re-issued when it finishes
+    PENDING_OPERATION m_queuedOperation;
+    QList<QString> m_listQueuedFilters;
+    qint32 m_nQueuedSortColumn;
+    Qt::SortOrder m_queuedSortOrder;
     qint32 m_nCustomFilterGeneration;
 };
 

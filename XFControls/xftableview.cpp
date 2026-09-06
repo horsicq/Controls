@@ -436,6 +436,13 @@ void XFTableView::onSaveClicked()
         return;
     }
 
+    // An empty or fully filtered table has nothing to export; that is not a write failure.
+    if (pModel->rowCount() == 0) {
+        QMessageBox::information(this, tr("Information"), tr("Nothing to save"));
+
+        return;
+    }
+
     QString sDefaultName = m_pStatusBar->currentMessage();
 
     if (sDefaultName.isEmpty()) {

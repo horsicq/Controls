@@ -20,6 +20,8 @@
  */
 #include "xheaderview.h"
 #include <QSignalBlocker>
+#include <QStyle>
+#include <QStyleOptionHeader>
 
 XHeaderView::XHeaderView(QWidget *pParent) : QHeaderView(Qt::Horizontal, pParent)
 {
@@ -153,6 +155,55 @@ void XHeaderView::setFilterEnabled(qint32 nColumn, bool bFilterEnabled)
     if ((nColumn >= 0) && (nColumn < m_listLineEdits.count())) {
         m_listLineEdits.at(nColumn)->setReadOnly(!bFilterEnabled);
     }
+}
+
+QSize XHeaderView::sectionSizeFromContents(int logicalIndex) const
+{
+    QSize result = QHeaderView::sectionSizeFromContents(logicalIndex);
+
+    // Content-sized tables (value-width columns) end up narrower than their own
+    // title ("Offset" -> "fset"). Never report a section smaller than the title
+    // text plus the style's margins/padding and the sort indicator. The style
+    // sheet path of sizeFromContents(CT_HeaderSection) only adds its padding to
+    // the size it is given and drops the arrow allowance, so build the contents
+    // size explicitly (the same way QCommonStyle does) and let the style pad it.
+    if (model() && (logicalIndex >= 0) && (logicalIndex < count())) {
+        QStyleOptionHeader option;
+        initStyleOption(&option);
+        option.section = logicalIndex;
+        option.text = model()->headerData(logicalIndex, orientation(), Qt::DisplayRole).toString();
+
+        QFont fnt = font();
+        fnt.setBold(true);
+        option.fontMetrics = QFontMetrics(fnt);
+
+        if (isSortIndicatorShown()) {
+            option.sortIndicator = QStyleOptionHeader::SortDown;
+        }
+
+        qint32 nMargin = style()->pixelMetric(QStyle::PM_HeaderMargin, &option, this);
+        QSize sizeText = option.fontMetrics.size(0, option.text);
+        QSize sizeContents(nMargin + sizeText.width() + nMargin, nMargin + sizeText.height() + nMargin);
+
+        if (option.sortIndicator != QStyleOptionHeader::None) {
+            sizeContents.rwidth() += sizeContents.height() + nMargin;
+        }
+
+        QSize sizeMinimum = style()->sizeFromContents(QStyle::CT_HeaderSection, &option, sizeContents, this);
+
+        qint32 nMinimumWidth = sizeMinimum.width();
+
+        if (m_listLineEdits.count()) {
+            // The filter line edit gets sectionSize() - 2 (adjustPositions())
+            nMinimumWidth = qMax(nMinimumWidth, m_listLineEdits.at(0)->minimumSizeHint().width() + 2);
+        }
+
+        if (result.width() < nMinimumWidth) {
+            result.setWidth(nMinimumWidth);
+        }
+    }
+
+    return result;
 }
 
 void XHeaderView::_textChanged(const QString &sText)

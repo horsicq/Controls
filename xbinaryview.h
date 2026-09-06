@@ -76,6 +76,7 @@ public:
     XVPOS deviceOffsetToViewPos(qint64 nOffset);
     qint64 viewPosToDeviceOffset(XVPOS nViewPos);
     XADDR viewPosToAddress(XVPOS nViewPos);
+    QByteArray readViewArray(XVPOS nViewPos, qint32 nSize);
     bool isViewPosValid(XVPOS nViewPos);
     bool isEnd(XVPOS nViewPos);
     qint64 getViewSizeByViewPos(XVPOS nViewPos);

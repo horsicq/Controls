@@ -43,6 +43,9 @@ XTableView::XTableView(QWidget *pParent) : QTableView(pParent)
     m_pendingOperation = OPERATION_NONE;
     m_nPendingSortColumn = -1;
     m_pendingSortOrder = Qt::AscendingOrder;
+    m_queuedOperation = OPERATION_NONE;
+    m_nQueuedSortColumn = -1;
+    m_queuedSortOrder = Qt::AscendingOrder;
     m_nCustomFilterGeneration = 0;
 
     setHorizontalHeader(m_pHeaderView);
@@ -81,6 +84,7 @@ void XTableView::setCustomModel(QAbstractItemModel *pModel, bool bFilterEnabled)
     // TODO Stretch last section
     m_nCustomFilterGeneration++;
     cancelAsyncOperation();
+    m_queuedOperation = OPERATION_NONE;
 
     m_pOldModel = m_pModel;
 
@@ -137,7 +141,35 @@ void XTableView::setCustomModel(QAbstractItemModel *pModel, bool bFilterEnabled)
 void XTableView::onSourceModelReset()
 {
     if (m_pModel) {
-        m_pHeaderView->setNumberOfFilters(m_pModel->columnCount());
+        // setNumberOfFilters() recreates the line edits blank while the proxy still holds the
+        // previous filter, so the table would stay filtered with nothing left to reset. Keep what
+        // the user typed when the column count is unchanged and re-apply the (restored or now
+        // empty) filters so the boxes and the proxy always agree.
+        QList<QString> listFilters = m_pHeaderView->getFilters();
+        qint32 nNumberOfColumns = m_pModel->columnCount();
+        bool bFilterActive = false;
+
+        for (qint32 i = 0; i < listFilters.count(); i++) {
+            if (!listFilters.at(i).isEmpty()) {
+                bFilterActive = true;
+                break;
+            }
+        }
+
+        m_pHeaderView->setNumberOfFilters(nNumberOfColumns);
+
+        if (bFilterActive) {
+            if (listFilters.count() == nNumberOfColumns) {
+                QSignalBlocker blocker(m_pHeaderView);
+
+                for (qint32 i = 0; i < nNumberOfColumns; i++) {
+                    m_pHeaderView->setFilterText(i, listFilters.at(i));
+                }
+            }
+
+            onFilterApply();
+        }
+
         m_pHeaderView->updateGeometries();
         m_pHeaderView->update();
         viewport()->update();
@@ -148,6 +180,7 @@ void XTableView::clear()
 {
     m_nCustomFilterGeneration++;
     cancelAsyncOperation();
+    m_queuedOperation = OPERATION_NONE;
     m_pSortFilterProxyModel->setSourceModel(nullptr);
     replaceModel(nullptr);
     deleteOldModel(&m_pModel);
@@ -319,6 +352,19 @@ void XTableView::setSortingEnabled(bool bEnable)
 bool XTableView::isSortingEnabled() const
 {
     return m_bSortingEnabled;
+}
+
+void XTableView::setColumnWidth(int nColumn, int nWidth)
+{
+    if (m_pHeaderView && model() && (nColumn >= 0) && (nColumn < m_pHeaderView->count())) {
+        qint32 nHeaderWidth = m_pHeaderView->sectionSizeHint(nColumn);
+
+        if (nWidth < nHeaderWidth) {
+            nWidth = nHeaderWidth;
+        }
+    }
+
+    QTableView::setColumnWidth(nColumn, nWidth);
 }
 
 void XTableView::sortByColumn(int column, Qt::SortOrder order)
@@ -569,7 +615,18 @@ static bool _xtvBuildFilterAcceptCache(XSortFilterProxyModel *pProxy, const QLis
 
 void XTableView::startAsyncFilterOperation(const QList<QString> &listFilters)
 {
+    // A sort that is still computing must not be lost: re-issue it once this filter is applied
+    bool bQueueSort = (m_pendingOperation == OPERATION_SORT);
+    qint32 nQueuedSortColumn = m_nPendingSortColumn;
+    Qt::SortOrder queuedSortOrder = m_pendingSortOrder;
+
     cancelAsyncOperation(false);
+
+    if (bQueueSort) {
+        m_queuedOperation = OPERATION_SORT;
+        m_nQueuedSortColumn = nQueuedSortColumn;
+        m_queuedSortOrder = queuedSortOrder;
+    }
 
     m_pendingOperation = OPERATION_FILTER;
     m_listPendingFilters = listFilters;
@@ -594,11 +651,22 @@ static bool _xtvBuildSortCache(XSortFilterProxyModel *pProxy, qint32 nColumn, co
 
 void XTableView::startAsyncSortOperation(qint32 nColumn, Qt::SortOrder order)
 {
+    // A filter that is still computing must not be lost: re-issue it once this sort is applied
+    bool bQueueFilter = (m_pendingOperation == OPERATION_FILTER);
+    QList<QString> listQueuedFilters = m_listPendingFilters;
+
     cancelAsyncOperation(false);
 
     if (nColumn < 0) {
+        // Reset: nothing to re-issue (Reset filter re-applies the cleared boxes itself)
+        m_queuedOperation = OPERATION_NONE;
         m_pSortFilterProxyModel->sort(nColumn, order);
         return;
+    }
+
+    if (bQueueFilter) {
+        m_queuedOperation = OPERATION_FILTER;
+        m_listQueuedFilters = listQueuedFilters;
     }
 
     m_pendingOperation = OPERATION_SORT;
@@ -677,4 +745,14 @@ void XTableView::onAsyncOperationFinished()
     }
 
     emit busyChanged(false);
+
+    // Re-issue the operation this one cancelled (after the balancing busyChanged(false) above,
+    // so the marquee is shown again for the whole queued run)
+    if (m_queuedOperation == OPERATION_FILTER) {
+        m_queuedOperation = OPERATION_NONE;
+        startAsyncFilterOperation(m_listQueuedFilters);
+    } else if (m_queuedOperation == OPERATION_SORT) {
+        m_queuedOperation = OPERATION_NONE;
+        startAsyncSortOperation(m_nQueuedSortColumn, m_queuedSortOrder);
+    }
 }

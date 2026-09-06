@@ -18,6 +18,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+#include <limits>
+
 #include "xdevicetableeditview.h"
 
 XDeviceTableEditView::XDeviceTableEditView(QWidget *pParent) : XDeviceTableView(pParent)
@@ -106,8 +108,9 @@ bool XDeviceTableEditView::adjustOffsetBookmarksAfterRemoval(QVector<XInfoDB::BO
 
     const quint64 nRemoveStart = (quint64)nRemoveOffset;
     const quint64 nRemoveEnd = nRemoveStart + (quint64)nRemoveSize;
+    const QVector<XInfoDB::BOOKMARKRECORD> &listBookmarks = *pBookmarks;
 
-    for (const XInfoDB::BOOKMARKRECORD &sourceRecord : qAsConst(*pBookmarks)) {
+    for (const XInfoDB::BOOKMARKRECORD &sourceRecord : listBookmarks) {
         XInfoDB::BOOKMARKRECORD record = sourceRecord;
         if (record.locationType != XBinary::LT_OFFSET) {
             transformedBookmarks.append(record);
@@ -438,9 +441,15 @@ void XDeviceTableEditView::_bookmarkNew()
 {
     if (getXInfoDB()) {
         DEVICESTATE state = getDeviceState();
+        quint64 nSelectionEnd = state.nSelectionDeviceOffset;
 
-        QString sComment =
-            QString("%1 - %2").arg(QString::number(state.nSelectionDeviceOffset, 16)).arg(QString::number(state.nSelectionDeviceOffset + state.nSelectionSize, 16));
+        if ((state.nSelectionSize > 1) && ((quint64)(state.nSelectionSize - 1) <= (std::numeric_limits<quint64>::max() - nSelectionEnd))) {
+            nSelectionEnd += (quint64)(state.nSelectionSize - 1);
+        } else if (state.nSelectionSize > 1) {
+            nSelectionEnd = std::numeric_limits<quint64>::max();
+        }
+
+        QString sComment = QString("%1 - %2").arg(QString::number(state.nSelectionDeviceOffset, 16)).arg(QString::number(nSelectionEnd, 16));
 
         XInfoDB::BOOKMARKRECORD record = {};
         record.sUUID = XBinary::generateUUID();

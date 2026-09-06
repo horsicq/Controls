@@ -91,11 +91,15 @@ QVariant XModel_XSymbol::data(const QModelIndex &index, int nRole) const
                 } else if (nColumn == COLUMN_TYPE) {
                     result = symbolTypeToString(rec.symbolType);
                 } else if (nColumn == COLUMN_OFFSET) {
-                    result = QString::number(rec.nOffset, 16);
+                    if (rec.nOffset >= 0) {  // -1: address not mapped to the file
+                        result = QString::number(rec.nOffset, 16);
+                    }
                 } else if (nColumn == COLUMN_SIZE) {
                     result = QString::number(rec.nSize, 16);
                 } else if (nColumn == COLUMN_ADDRESS) {
-                    result = QString::number(rec.nAddress, 16);
+                    if (rec.nAddress != (XADDR)-1) {  // -1: no address
+                        result = QString::number(rec.nAddress, 16);
+                    }
                 }
             } else if (nRole == Qt::TextAlignmentRole) {
                 result = getColumnAlignment(nColumn);

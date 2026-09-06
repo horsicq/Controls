@@ -18,6 +18,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+#include <limits>
+
 #include "xdevicetableview.h"
 
 XDeviceTableView::XDeviceTableView(QWidget *pParent) : XAbstractTableView(pParent)
@@ -26,7 +28,7 @@ XDeviceTableView::XDeviceTableView(QWidget *pParent) : XAbstractTableView(pParen
     m_searchData = {};
     m_locationMode = XBinaryView::LOCMODE_ADDRESS;
     m_nLocationBase = 16;
-    m_nVisitedIndex = 0;
+    m_nVisitedIndex = -1;
 
     connect(this, SIGNAL(selectionChanged()), this, SLOT(selectionChangedSlot()));
     setXInfoDB(&m_emptyXInfoDB);
@@ -34,6 +36,7 @@ XDeviceTableView::XDeviceTableView(QWidget *pParent) : XAbstractTableView(pParen
 
 XDeviceTableView::~XDeviceTableView()
 {
+    blockSignals(true);
     reset();
 }
 
@@ -63,8 +66,6 @@ void XDeviceTableView::setData(const XBinary::INDATA &inData, const XBinaryView:
 
     m_binaryView.setData(inData, options);
 
-    m_listVisited.clear();
-
     if (m_binaryView.getInData().pDevice) {
         XDeviceTableView::adjustScrollCount();
         //    setReadonly(!(pDevice->isWritable()));
@@ -77,7 +78,7 @@ void XDeviceTableView::setData(const XBinary::INDATA &inData, const XBinaryView:
 void XDeviceTableView::reset()
 {
     m_binaryView.reset();
-    m_listVisited.clear();
+    clearVisited();
     setActive(false);
 }
 
@@ -94,6 +95,7 @@ void XDeviceTableView::setLocationMode(XBinaryView::LOCMODE locationMode)
 
     m_locationMode = locationMode;
 
+    adjustColumns();
     adjust(true);
     viewport()->update();
     emit selectionChanged();
@@ -176,21 +178,22 @@ void XDeviceTableView::setDeviceSelection(qint64 nOffset, qint64 nSize)
 
 bool XDeviceTableView::isPrevVisitedAvailable()
 {
-    return m_nVisitedIndex > 0;
+    return (m_nVisitedIndex > 0) && (m_nVisitedIndex < m_listVisited.count());
 }
 
 bool XDeviceTableView::isNextVisitedAvailable()
 {
-    return m_nVisitedIndex < (m_listVisited.count() - 1);
+    return (m_nVisitedIndex >= 0) && (m_nVisitedIndex < (m_listVisited.count() - 1));
 }
 
 void XDeviceTableView::goToNextVisited()
 {
     if (isNextVisitedAvailable()) {
-        m_nVisitedIndex++;
-        qint64 nViewPos = m_listVisited.at(m_nVisitedIndex);
+        const qint32 nCandidateIndex = m_nVisitedIndex + 1;
+        const qint64 nViewPos = m_listVisited.at(nCandidateIndex);
 
         if (_goToViewPos(nViewPos)) {
+            m_nVisitedIndex = nCandidateIndex;
             _initSetSelection(nViewPos, getBinaryView()->getViewSizeByViewPos(nViewPos));
         }
     }
@@ -201,10 +204,11 @@ void XDeviceTableView::goToNextVisited()
 void XDeviceTableView::goToPrevVisited()
 {
     if (isPrevVisitedAvailable()) {
-        m_nVisitedIndex--;
-        qint64 nViewPos = m_listVisited.at(m_nVisitedIndex);
+        const qint32 nCandidateIndex = m_nVisitedIndex - 1;
+        const qint64 nViewPos = m_listVisited.at(nCandidateIndex);
 
         if (_goToViewPos(nViewPos)) {
+            m_nVisitedIndex = nCandidateIndex;
             _initSetSelection(nViewPos, getBinaryView()->getViewSizeByViewPos(nViewPos));
         }
     }
@@ -218,14 +222,19 @@ void XDeviceTableView::addVisited(qint64 nViewPos)
     //     qDebug("Add visited %s", XBinary::valueToHex(nViewPos).toLatin1().data());
     // #endif
 
-    if ((m_listVisited.empty()) || (m_listVisited.last() != nViewPos)) {
-        qint32 nNumberOfVisited = m_listVisited.count();
+    bool bStateChanged = false;
 
-        for (qint32 i = nNumberOfVisited - 1; i > m_nVisitedIndex; i--) {
-            m_listVisited.removeAt(i);
-        }
+    while ((m_listVisited.count() - 1) > m_nVisitedIndex) {
+        m_listVisited.removeLast();
+        bStateChanged = true;
+    }
 
+    const bool bIsCurrentLocation = (m_nVisitedIndex >= 0) && (m_nVisitedIndex < m_listVisited.count()) &&
+                                    (m_listVisited.at(m_nVisitedIndex) == nViewPos);
+
+    if (!bIsCurrentLocation) {
         m_listVisited.append(nViewPos);
+        bStateChanged = true;
 
         if (m_listVisited.count() > N_MAX_VISITED) {
             m_listVisited.removeFirst();
@@ -233,13 +242,23 @@ void XDeviceTableView::addVisited(qint64 nViewPos)
 
         m_nVisitedIndex = m_listVisited.count() - 1;
 
+    }
+
+    if (bStateChanged) {
         emit visitedStateChanged();
     }
 }
 
 void XDeviceTableView::clearVisited()
 {
+    const bool bStateChanged = !m_listVisited.isEmpty() || (m_nVisitedIndex != -1);
+
     m_listVisited.clear();
+    m_nVisitedIndex = -1;
+
+    if (bStateChanged) {
+        emit visitedStateChanged();
+    }
 }
 
 void XDeviceTableView::setLocation(quint64 nLocation, qint32 nLocationType, qint64 nSize)
@@ -286,13 +305,11 @@ void XDeviceTableView::goToLocation(XADDR nLocation, XBinary::LT locationType, b
 {
     if (nLocation != (XADDR)-1) {
         qint64 nViewPos = getBinaryView()->locationToViewPos(nLocation, locationType);
-
-        if (bSaveVisited) {
-            addVisited(getState().nSelectionViewPos);
-        }
+        const qint64 nPreviousViewPos = getState().nSelectionViewPos;
 
         if (_goToViewPos(nViewPos, false, bShort, bAprox)) {
             if (bSaveVisited) {
+                addVisited(nPreviousViewPos);
                 addVisited(nViewPos);
             }
 
@@ -448,12 +465,15 @@ void XDeviceTableView::_goToSelectionEnd()
 {
     DEVICESTATE state = getDeviceState();
 
-    if (state.nSelectionSize) {
-        qint64 nOffset = state.nSelectionDeviceOffset + state.nSelectionSize;
+    if ((state.nSelectionSize > 0) && (state.nSelectionDeviceOffset <= (quint64)std::numeric_limits<qint64>::max())) {
+        const qint64 nSelectionStart = (qint64)state.nSelectionDeviceOffset;
+        const qint64 nSelectionDelta = state.nSelectionSize - 1;
 
-        if (isEnd(nOffset)) {
-            nOffset--;
+        if (nSelectionDelta > (std::numeric_limits<qint64>::max() - nSelectionStart)) {
+            return;
         }
+
+        const qint64 nOffset = nSelectionStart + nSelectionDelta;
 
         // mb TODO go to end alignment
         goToOffset(nOffset, true);
@@ -499,7 +519,13 @@ void XDeviceTableView::_findSlot(XBinary::SEARCHMODE mode)
         dsp.start();
         dsp.showDialogDelay();
 
-        if (m_searchData.nResultOffset != -1) {
+        const XBinaryView::VIEWSTRUCT viewStruct = getBinaryView()->_getViewStructByOffset(m_searchData.nResultOffset);
+        const qint64 nRelativeResultOffset = m_searchData.nResultOffset - viewStruct.nOffset;
+        const bool bResultFitsView = (m_searchData.nResultOffset >= 0) && (m_searchData.nResultSize > 0) && (viewStruct.nSize > 0) &&
+                                     (nRelativeResultOffset >= 0) && (nRelativeResultOffset <= viewStruct.nSize) &&
+                                     (m_searchData.nResultSize <= (viewStruct.nSize - nRelativeResultOffset));
+
+        if (dsp.isSuccess() && bResultFitsView) {
             qint64 nViewPos = getBinaryView()->deviceOffsetToViewPos(m_searchData.nResultOffset);
             qint64 nViewSize = m_searchData.nResultSize;
 
@@ -507,7 +533,7 @@ void XDeviceTableView::_findSlot(XBinary::SEARCHMODE mode)
             _initSetSelection(nViewPos, nViewSize);
             setFocus();
             viewport()->update();
-        } else {
+        } else if (dsp.isSuccess()) {
             emit errorMessage(tr("Nothing found"));
         }
     }
@@ -515,8 +541,15 @@ void XDeviceTableView::_findSlot(XBinary::SEARCHMODE mode)
 
 void XDeviceTableView::_findNextSlot()
 {
-    if (m_searchData.bIsInit) {
+    if (m_searchData.bIsInit && (m_searchData.nResultOffset >= 0)) {
+        if (m_searchData.nResultOffset == std::numeric_limits<qint64>::max()) {
+            m_searchData.bIsInit = false;
+            emit errorMessage(tr("Nothing found"));
+            return;
+        }
+
         m_searchData.nCurrentOffset = m_searchData.nResultOffset + 1;
+        m_searchData.nResultOffset = -1;
         m_searchData.startFrom = XBinary::SF_CURRENTOFFSET;
 
         SearchProcess searchProcess;
@@ -526,8 +559,13 @@ void XDeviceTableView::_findNextSlot()
         dsp.start();
         dsp.showDialogDelay();
 
-        if (dsp.isSuccess())  // TODO use status
-        {
+        const XBinaryView::VIEWSTRUCT viewStruct = getBinaryView()->_getViewStructByOffset(m_searchData.nResultOffset);
+        const qint64 nRelativeResultOffset = m_searchData.nResultOffset - viewStruct.nOffset;
+        const bool bResultFitsView = (m_searchData.nResultOffset >= 0) && (m_searchData.nResultSize > 0) && (viewStruct.nSize > 0) &&
+                                     (nRelativeResultOffset >= 0) && (nRelativeResultOffset <= viewStruct.nSize) &&
+                                     (m_searchData.nResultSize <= (viewStruct.nSize - nRelativeResultOffset));
+
+        if (dsp.isSuccess() && bResultFitsView) {
             qint64 nViewPos = getBinaryView()->deviceOffsetToViewPos(m_searchData.nResultOffset);
             qint64 nViewSize = m_searchData.nResultSize;
 
@@ -535,7 +573,8 @@ void XDeviceTableView::_findNextSlot()
             _initSetSelection(nViewPos, nViewSize);
             setFocus();
             viewport()->update();
-        } else if (m_searchData.valueType != XBinary::VT_UNKNOWN) {
+        } else if (dsp.isSuccess()) {
+            m_searchData.bIsInit = false;
             emit errorMessage(tr("Nothing found"));
         }
     }

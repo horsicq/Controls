@@ -18,6 +18,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+#include <limits>
+
 #include "xbinaryview.h"
 
 XBinaryView::XBinaryView(QObject *pParent) : QObject(pParent)
@@ -226,6 +228,60 @@ XADDR XBinaryView::viewPosToAddress(XVPOS nViewPos)
     }
 
     return nResult;
+}
+
+QByteArray XBinaryView::readViewArray(XVPOS nViewPos, qint32 nSize)
+{
+    QByteArray baResult;
+    QIODevice *pDevice = m_inData.pDevice;
+
+    if (!pDevice || (nSize <= 0) || (m_nViewSize <= 0) || (nViewPos >= (XVPOS)m_nViewSize)) {
+        return baResult;
+    }
+
+    qint64 nRemaining = qMin((qint64)nSize, m_nViewSize - (qint64)nViewPos);
+    XVPOS nCurrentViewPos = nViewPos;
+    baResult.reserve((qint32)nRemaining);
+
+    while (nRemaining > 0) {
+        const VIEWSTRUCT viewStruct = _getViewStructByViewPos(nCurrentViewPos);
+
+        if ((viewStruct.nSize <= 0) || (nCurrentViewPos < viewStruct.nViewPos)) {
+            break;
+        }
+
+        const XVPOS nDelta = nCurrentViewPos - viewStruct.nViewPos;
+        if (nDelta >= (XVPOS)viewStruct.nSize) {
+            break;
+        }
+
+        const qint64 nChunkSize = qMin(nRemaining, viewStruct.nSize - (qint64)nDelta);
+        if (nChunkSize <= 0) {
+            break;
+        }
+
+        if (viewStruct.nOffset == -1) {
+            // File formats use virtual records for loader-created zero-filled regions such as BSS.
+            baResult.append(QByteArray((qint32)nChunkSize, '\0'));
+        } else {
+            if ((viewStruct.nOffset < 0) || ((qint64)nDelta > ((std::numeric_limits<qint64>::max)() - viewStruct.nOffset))) {
+                break;
+            }
+
+            const qint64 nDeviceOffset = viewStruct.nOffset + (qint64)nDelta;
+            const QByteArray baChunk = XBinary::read_array(pDevice, nDeviceOffset, nChunkSize);
+            baResult.append(baChunk);
+
+            if (baChunk.size() != nChunkSize) {
+                break;
+            }
+        }
+
+        nCurrentViewPos += (XVPOS)nChunkSize;
+        nRemaining -= nChunkSize;
+    }
+
+    return baResult;
 }
 
 bool XBinaryView::isViewPosValid(XVPOS nViewPos)

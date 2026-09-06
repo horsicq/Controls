@@ -71,7 +71,9 @@ QVariant XModel_XExport::data(const QModelIndex &index, int nRole) const
                         result = rec.nOrdinal;
                     }
                 } else if (nColumn == COLUMN_OFFSET) {
-                    result = QString::number(rec.nOffset, 16);
+                    if (rec.nOffset >= 0) {  // -1: address not mapped to the file
+                        result = QString::number(rec.nOffset, 16);
+                    }
                 } else if (nColumn == COLUMN_ADDRESS) {
                     result = QString::number(rec.nAddress, 16);
                 }
