@@ -19,7 +19,6 @@
  * SOFTWARE.
  */
 #include "xtableview.h"
-#include <QPointer>
 #include <QSignalBlocker>
 #include <QtConcurrent>
 
@@ -188,12 +187,12 @@ void XTableView::clear()
 
 void XTableView::replaceModel(QAbstractItemModel *pModel)
 {
-    QPointer<QItemSelectionModel> pOldSelectionModel = m_pOwnedSelectionModel;
+    QItemSelectionModel *pOldSelectionModel = m_pOwnedSelectionModel;
 
     QTableView::setModel(pModel);
 
     if (pOldSelectionModel && (pOldSelectionModel != selectionModel())) {
-        delete pOldSelectionModel.data();
+        delete pOldSelectionModel;
     }
 
     m_pOwnedSelectionModel = selectionModel();

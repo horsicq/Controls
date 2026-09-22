@@ -29,7 +29,6 @@
 #include <QFutureWatcher>
 #include <QAtomicInt>
 #include <QItemSelectionModel>
-#include <QPointer>
 #include <QSharedPointer>
 #include <QTimer>
 
@@ -103,7 +102,7 @@ private slots:
 private:
     XHeaderView *m_pHeaderView;
     XSortFilterProxyModel *m_pSortFilterProxyModel;
-    QPointer<QItemSelectionModel> m_pOwnedSelectionModel;
+    QItemSelectionModel *m_pOwnedSelectionModel = nullptr;
     QAbstractItemModel *m_pOldModel;
     QAbstractItemModel *m_pModel;
     bool m_bIsXmodel;
