@@ -229,8 +229,7 @@ void XDeviceTableView::addVisited(qint64 nViewPos)
         bStateChanged = true;
     }
 
-    const bool bIsCurrentLocation = (m_nVisitedIndex >= 0) && (m_nVisitedIndex < m_listVisited.count()) &&
-                                    (m_listVisited.at(m_nVisitedIndex) == nViewPos);
+    const bool bIsCurrentLocation = (m_nVisitedIndex >= 0) && (m_nVisitedIndex < m_listVisited.count()) && (m_listVisited.at(m_nVisitedIndex) == nViewPos);
 
     if (!bIsCurrentLocation) {
         m_listVisited.append(nViewPos);
@@ -241,7 +240,6 @@ void XDeviceTableView::addVisited(qint64 nViewPos)
         }
 
         m_nVisitedIndex = m_listVisited.count() - 1;
-
     }
 
     if (bStateChanged) {
@@ -521,9 +519,8 @@ void XDeviceTableView::_findSlot(XBinary::SEARCHMODE mode)
 
         const XBinaryView::VIEWSTRUCT viewStruct = getBinaryView()->_getViewStructByOffset(m_searchData.nResultOffset);
         const qint64 nRelativeResultOffset = m_searchData.nResultOffset - viewStruct.nOffset;
-        const bool bResultFitsView = (m_searchData.nResultOffset >= 0) && (m_searchData.nResultSize > 0) && (viewStruct.nSize > 0) &&
-                                     (nRelativeResultOffset >= 0) && (nRelativeResultOffset <= viewStruct.nSize) &&
-                                     (m_searchData.nResultSize <= (viewStruct.nSize - nRelativeResultOffset));
+        const bool bResultFitsView = (m_searchData.nResultOffset >= 0) && (m_searchData.nResultSize > 0) && (viewStruct.nSize > 0) && (nRelativeResultOffset >= 0) &&
+                                     (nRelativeResultOffset <= viewStruct.nSize) && (m_searchData.nResultSize <= (viewStruct.nSize - nRelativeResultOffset));
 
         if (dsp.isSuccess() && bResultFitsView) {
             qint64 nViewPos = getBinaryView()->deviceOffsetToViewPos(m_searchData.nResultOffset);
@@ -561,9 +558,8 @@ void XDeviceTableView::_findNextSlot()
 
         const XBinaryView::VIEWSTRUCT viewStruct = getBinaryView()->_getViewStructByOffset(m_searchData.nResultOffset);
         const qint64 nRelativeResultOffset = m_searchData.nResultOffset - viewStruct.nOffset;
-        const bool bResultFitsView = (m_searchData.nResultOffset >= 0) && (m_searchData.nResultSize > 0) && (viewStruct.nSize > 0) &&
-                                     (nRelativeResultOffset >= 0) && (nRelativeResultOffset <= viewStruct.nSize) &&
-                                     (m_searchData.nResultSize <= (viewStruct.nSize - nRelativeResultOffset));
+        const bool bResultFitsView = (m_searchData.nResultOffset >= 0) && (m_searchData.nResultSize > 0) && (viewStruct.nSize > 0) && (nRelativeResultOffset >= 0) &&
+                                     (nRelativeResultOffset <= viewStruct.nSize) && (m_searchData.nResultSize <= (viewStruct.nSize - nRelativeResultOffset));
 
         if (dsp.isSuccess() && bResultFitsView) {
             qint64 nViewPos = getBinaryView()->deviceOffsetToViewPos(m_searchData.nResultOffset);
